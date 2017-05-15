@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<FactionDefs>
+
+  <!-- =============== (Class) Carnival Base -->
+  <FactionDef Name="Carn_Faction_Core" Abstract="True">
+    <defName>Carn_Faction_Core</defName>
+	<factionNameMaker>Carn_Faction_NameSet</factionNameMaker>
+	<pawnsPlural>carnies</pawnsPlural>
+	<leaderTitle>management</leaderTitle>
+	<techLevel>Industrial</techLevel>
+	
+	<canMakeRandomly>false</canMakeRandomly>
+	<hidden>true</hidden>
+	<!-- unhidden later in code to allow relationship tracking -->
+	
+	<raidCommonality>0</raidCommonality>
+	<canStageAttacks>false</canStageAttacks>
+	<canSiege>false</canSiege>
+	
+	<allowedArrivalTemperatureRange>
+	  <min>-20</min>
+	  <max>50</max>
+	</allowedArrivalTemperatureRange>
+	
+	<rescueesCanJoin>true</rescueesCanJoin>
+	<startingGoodwill>
+	  <!-- 1-in-5 chance they are hostile with non-player faction -->
+	  <min>-10</min>
+	  <max>40</max>
+	</startingGoodwill>
+	<naturalColonyGoodwill>
+	  <min>5</min>
+	  <max>15</max>
+	</naturalColonyGoodwill>
+	
+	<hairTags>
+	  <li>Rural</li>
+	  <li>Tribal</li>
+	  <li>Punk</li>
+	  <!-- any others? -->
+	</hairTags>
+	
+	
+	<homeIconPath>World/WorldObjects/DefaultFactionBase</homeIconPath>
+    
+  </FactionDef>
+  
+  <!-- =============== Roaming Carnival -->
+  <FactionDef ParentName="Carn_Faction_Core">
+    <defName>Carn_Faction_Roaming</defName>
+	<label>Roaming Carnival</label>
+	<description>Formed from an eclectic collection of misfits, these sturdy humans have come to live off the flotsam and goodwill of others, and continue to live in this way by providing the scattered peoples of the rim worlds a unique source of curiosity and entertainment in exchange for hospitality. Never keen on lingering anywhere for long, their lives are, and always will be, slaves to the road.</description>
+	
+	<requiredCountAtGameStart>25</requiredCountAtGameStart>
+	
+	<backstoryCategory>Carnivale</backstoryCategory>
+	
+	
+  </FactionDef>
+</FactionDefs>

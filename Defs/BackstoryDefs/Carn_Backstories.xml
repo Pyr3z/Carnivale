@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<BackstoryDefs>
+
+  <!-- =============== (Class) Carnie Cores -->
+  <Carnivale.BackstoryDef Name="Carn_BS_Child" Abstract="True">
+    <!-- Traits shared by all childhood carnies -->
+	<slot>Childhood</slot>
+	
+	<workDisables>
+	  <li>Mining</li>
+	  <li>PlantWork</li>
+	</workDisables>
+	
+  </Carnivale.BackstoryDef>
+
+  <!-- =============== Childhood Backstories -->
+  <Carnivale.BackstoryDef>
+    <defName>Carn_Carnie_Brat</defName>
+	<slot>Childhood</slot>
+	<title>Carnie brat</title>
+	<titleShort>Brat</titleShort>
+	<baseDescription>NAME was raised on the road by HIS caretakers, who happened to roll with a roaming carnival on an outer rim world. On the road, NAME learned a well-rounded balance of skills in order to maintain HIS place in the caravan. Times weren't always great, but at least there was no shortage of the interesting and the new.</baseDescription>
+	
+	
+	
+	<skillGains>
+	  <li><defName>Social</defName><degree>4</degree></li>
+	  <li><defName>Construction</defName><degree>3</degree></li>
+	  <li><defName>Shooting</defName><degree>2</degree></li>
+	  <li><defName>Melee</defName><degree>1</degree></li>
+	  <li><defName>Medicine</defName><degree>1</degree></li>
+	  <li><defName>Intellectual</defName><degree>-2</degree></li>
+	</skillGains>
+	
+	<spawnCategories>
+	  <li>Carnivale</li>
+	  <li>Raider</li>
+	  <li>Slave</li>
+	  <li>Trader</li>
+	  <li>Traveler</li>
+	</spawnCategories>
+	
+  </Carnivale.BackstoryDef>
+  
+  
+  <!-- =============== Adulthood Backstories -->
+  <Carnivale.BackstoryDef>
+    <defName>Carn_Carnie_Crier</defName>
+	<slot>Adulthood</slot>
+	<title>Carnival crier</title>
+	<titleShort>Crier</titleShort>
+	<baseDescription>It was NAME's job to be a constant stream of shiny talk and information in order to hold the rubes' attentions. HECAP is adept at thinking quickly on the spot, and always seems to know just what to say. Like all carnies, NAME had to earn HIS place and so developed a positive work ethic and physical condition.</baseDescription>
+	
+	<skillGains>
+	  <li><defName>Social</defName><degree>6</degree></li>
+	  <li><defName>Shooting</defName><degree>2</degree></li>
+	  <li><defName>Intellectual</defName><degree>-2</degree></li>
+	</skillGains>
+	
+	<disallowedTraits>
+	  <li><defName>NaturalMood</defName><degree>-1</degree></li>
+	  <li><defName>NaturalMood</defName><degree>-2</degree></li>
+	</disallowedTraits>
+	
+	<spawnCategories>
+	  <li>Carnivale</li>
+	</spawnCategories>
+	
+	<shuffleable>false</shuffleable>
+	
+  </Carnivale.BackstoryDef>
+  
+</BackstoryDefs>
