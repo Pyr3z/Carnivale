@@ -18,14 +18,14 @@
 		<li>name2->[strange] [carnival]</li>
 		<li>name2->[carnival]</li>
 		
-		<li>carnival->Carnival</li>
+		<li>carnival->Carnival</li> <!-- consider other names here -->
 		
 		<li>leadername->[exciting] [personname]</li>
 		<li>leadername->[personname]</li>
 		
 		<li>personname->[namefemale]</li>
 		<li>personname->[namemale]</li>
-		<li>personname-->[nameanimal]</li>
+		<li>personname->[nameanimal]</li>
 		
 		<li>group->[group2]</li>
 		<li>group->[group3]</li>

@@ -1,3 +1,6 @@
 C:\Steam\steamapps\common\RimWorld\Mods\Carnivale A17\Assemblies\Carnivale.dll
 C:\Steam\steamapps\common\RimWorld\Mods\Carnivale A17\Source\CarnivaleA17\obj\Debug\Carnivale.csprojResolveAssemblyReference.cache
 C:\Steam\steamapps\common\RimWorld\Mods\Carnivale A17\Source\CarnivaleA17\obj\Debug\Carnivale.dll
+C:\Steam\steamapps\common\RimWorld\Mods\CarnivaleA17\Assemblies\Carnivale.dll
+C:\Steam\steamapps\common\RimWorld\Mods\CarnivaleA17\Source\Carnivale\obj\Debug\Carnivale.csprojResolveAssemblyReference.cache
+C:\Steam\steamapps\common\RimWorld\Mods\CarnivaleA17\Source\Carnivale\obj\Debug\Carnivale.dll

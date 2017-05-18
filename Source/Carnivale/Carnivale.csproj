@@ -57,8 +57,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BackstoryDef.cs" />
+    <Compile Include="Defs\BackstoryDef.cs" />
     <Compile Include="CarnivaleMod.cs" />
+    <Compile Include="Defs\_BackstoryDefOf.cs" />
+    <Compile Include="Defs\_FactionDefOf.cs" />
+    <Compile Include="Defs\_IncidentDefOf.cs" />
+    <Compile Include="Defs\_PawnGroupKindDefOf.cs" />
+    <Compile Include="Defs\_TraitDefOf.cs" />
+    <Compile Include="IncidentWorker_CarnivalFireball.cs" />
+    <Compile Include="IncidentWorker_CarnivalJustice.cs" />
+    <Compile Include="IncidentWorker_CarnivalApproaches.cs" />
+    <Compile Include="Patches\Postfix_GenerateFactionsIntoWorld.cs" />
+    <Compile Include="Patches\Prefix_GenerateNewLeader.cs" />
+    <Compile Include="PawnGroupKindWorker_Carnival.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TraitDefs>
+  
+  <!-- Singular -->
+  
+  <TraitDef>
+    <defName>Narcissist</defName>
+	<commonality>0.15</commonality>
+	<degreeDatas>
+	  <li>
+	    <label>narcissist</label>
+		<description>"If only they knew how important I am, how much I have to offer..." - NAME</description>
+		<socialFightChanceFactor>1.25</socialFightChanceFactor>
+		<statOffsets>
+          <GlobalLearningFactor>0.25</GlobalLearningFactor>
+          <MentalBreakThreshold>0.6</MentalBreakThreshold>
+        </statOffsets>
+	  </li>
+	</degreeDatas>
+	<conflictingTraits>
+	  <li>Kind</li>
+	</conflictingTraits>
+  </TraitDef>
+  
+  <!-- Spectrum -->
+  
+  <TraitDef>
+    <defName>Luckiness</defName>
+	<commonality>0.1</commonality>
+	<degreeDatas>
+	  <li>
+	    <label>lucky</label>
+		<description>The stars have always smiled on NAME. HE finds more useful stuffs when mining and harvesting, and tends to survive more than HE should.</description>
+		<degree>1</degree>
+		<statOffsets>
+		  <MiningYield>0.03</MiningYield>
+		  <PlantHarvestYield>0.05</PlantHarvestYield>
+		  <ConstructSuccessChance>0.03</ConstructSuccessChance>
+		  <MedicalSurgerySuccessChance>0.02</MedicalSurgerySuccessChance>
+		  <MeleeDodgeChance>0.05</MeleeDodgeChance>
+		  <FoodPoisonChance>-0.05</FoodPoisonChance>
+		  <TrapSpringChance>-0.05</TrapSpringChance>
+		  <ImmunityGainSpeed>0.03</ImmunityGainSpeed>
+		</statOffsets>
+	  </li>
+	  <li>
+	    <label>unlucky</label>
+		<description>Everywhere HE goes, NAME seems to get the shortest end of the stick. Important details tends to slip his attention, and HIS ailments often take a turn for the worse. It's really a wonder that HE is still alive.</description>
+		<degree>-1</degree>
+		<statOffsets>
+		  <MiningYield>-0.05</MiningYield>
+		  <PlantHarvestYield>-0.03</PlantHarvestYield>
+		  <ConstructSuccessChance>-0.03</ConstructSuccessChance>
+		  <MedicalSurgerySuccessChance>-0.02</MedicalSurgerySuccessChance>
+		  <MeleeDodgeChance>-0.05</MeleeDodgeChance>
+		  <FoodPoisonChance>0.05</FoodPoisonChance>
+		  <TrapSpringChance>0.05</TrapSpringChance>
+		  <ImmunityGainSpeed>-0.02</ImmunityGainSpeed>
+		</statOffsets>
+	  </li>
+	</degreeDatas>
+  </TraitDef>
+  
+</TraitDefs>

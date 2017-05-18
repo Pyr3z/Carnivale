@@ -1,0 +1,22 @@
+﻿using Harmony;
+using RimWorld;
+
+namespace Carnivale.Patches
+{
+    // Faction.GenerateNewLeader() prefix patch:
+    // generates a new leader from existing pawns
+    [HarmonyPatch(typeof(Faction), "GenerateNewLeader")]
+    public static class Prefix_GenerateNewLeader
+    {
+        [HarmonyPrefix]
+        public static bool GenerateNewLeaderFromExistingPawns(Faction __instance)
+        {
+            if (__instance.def.defName.StartsWith("Carn_Faction"))
+            {
+
+            }
+            else
+                return true;
+        }
+    }
+}

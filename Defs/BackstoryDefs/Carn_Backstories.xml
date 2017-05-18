@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <BackstoryDefs>
-
-  <!-- =============== (Class) Carnie Cores -->
-  <Carnivale.BackstoryDef Name="Carn_BS_Child" Abstract="True">
-    <!-- Traits shared by all childhood carnies -->
+  
+  <!-- Cores -->
+  
+  
+  
+  <!-- =============== Childhood Backstories -->
+  
+  <!-- Brat -->
+  <Carnivale.BackstoryDef>
+    <defName>Carn_Brat</defName>
 	<slot>Childhood</slot>
+	<title>Carny brat</title>
+	<titleShort>Brat</titleShort>
+	<baseDescription>NAME was raised on the road by HIS caretakers, who happened to roll with a roaming carnival on an outer rim world. On the road, NAME learned a well-rounded balance of skills in order to maintain HIS place in the caravan. Times weren't always great, but at least there was no shortage of the interesting and the new.</baseDescription>
 	
 	<workDisables>
 	  <li>Mining</li>
 	  <li>PlantWork</li>
 	</workDisables>
-	
-  </Carnivale.BackstoryDef>
-
-  <!-- =============== Childhood Backstories -->
-  <Carnivale.BackstoryDef>
-    <defName>Carn_Carnie_Brat</defName>
-	<slot>Childhood</slot>
-	<title>Carnie brat</title>
-	<titleShort>Brat</titleShort>
-	<baseDescription>NAME was raised on the road by HIS caretakers, who happened to roll with a roaming carnival on an outer rim world. On the road, NAME learned a well-rounded balance of skills in order to maintain HIS place in the caravan. Times weren't always great, but at least there was no shortage of the interesting and the new.</baseDescription>
-	
-	
 	
 	<skillGains>
 	  <li><defName>Social</defName><degree>4</degree></li>
@@ -30,7 +27,7 @@
 	  <li><defName>Shooting</defName><degree>2</degree></li>
 	  <li><defName>Melee</defName><degree>1</degree></li>
 	  <li><defName>Medicine</defName><degree>1</degree></li>
-	  <li><defName>Intellectual</defName><degree>-2</degree></li>
+	  <li><defName>Intellectual</defName><degree>-4</degree></li>
 	</skillGains>
 	
 	<spawnCategories>
@@ -44,18 +41,55 @@
   </Carnivale.BackstoryDef>
   
   
-  <!-- =============== Adulthood Backstories -->
+  <!-- Prodigy -->
   <Carnivale.BackstoryDef>
-    <defName>Carn_Carnie_Crier</defName>
+    <defName>Carn_Prodigy</defName>
+	<slot>Childhood</slot>
+	<title>Carnival prodigy</title>
+	<titleShort>Prodigy</titleShort>
+	<baseDescription>When NAME was born, everyone knew HE was special. Raised by carnies and naturally gifted in all the HE attempted, NAME made a name for himself as one of the youngest and most brilliant acts in the show. This early fame has led to a few... narcissistic tendencies, however.</baseDescription>
+	
+	<skillGains>
+	  <li><defName>Animals</defName><degree>4</degree></li>
+	  <li><defName>Intellectual</defName><degree>2</degree></li>
+	  <li><defName>Artistic</defName><degree>6</degree></li>
+	</skillGains>
+	
+	<workDisables>
+	  <li>ManualDumb</li>
+	  <li>Mining</li>
+	  <li>PlantWork</li>
+	</workDisables>
+	
+	<forcedTraits>
+	  <li><defName>Narcissist</defName><degree>0</degree></li>
+	</forcedTraits>
+	
+	<disallowedTraits>
+	  <li><defName>Ascetic</defName><degree>0</degree></li>
+	</disallowedTraits>
+	
+	<spawnCategories>
+	  <li>CarnivaleRare</li>
+	  <li>Traveler</li>
+	</spawnCategories>
+	
+  </Carnivale.BackstoryDef>
+  
+  
+  <!-- =============== Adulthood Backstories -->
+  
+  <!-- Announcer -->
+  <Carnivale.BackstoryDef>
+    <defName>Carn_Announcer</defName>
 	<slot>Adulthood</slot>
-	<title>Carnival crier</title>
-	<titleShort>Crier</titleShort>
-	<baseDescription>It was NAME's job to be a constant stream of shiny talk and information in order to hold the rubes' attentions. HECAP is adept at thinking quickly on the spot, and always seems to know just what to say. Like all carnies, NAME had to earn HIS place and so developed a positive work ethic and physical condition.</baseDescription>
+	<title>Carnival announcer</title>
+	<titleShort>Announcer</titleShort>
+	<baseDescription>It was NAME's job to be a constant stream of shiny talk and information in order to hold the rubes' attentions. HECAP is adept at thinking quickly on the spot, and always seems to know just what to say.</baseDescription>
 	
 	<skillGains>
 	  <li><defName>Social</defName><degree>6</degree></li>
-	  <li><defName>Shooting</defName><degree>2</degree></li>
-	  <li><defName>Intellectual</defName><degree>-2</degree></li>
+	  <li><defName>Shooting</defName><degree>1</degree></li>
 	</skillGains>
 	
 	<disallowedTraits>
@@ -66,9 +100,131 @@
 	<spawnCategories>
 	  <li>Carnivale</li>
 	</spawnCategories>
+  </Carnivale.BackstoryDef>
+  
+  
+  <!-- Weirdo -->
+  <Carnivale.BackstoryDef>
+    <defName>Carn_Weirdo</defName>
+	<slot>Adulthood</slot>
+	<title>Carnival weirdo</title>
+	<titleShort>Weirdo</titleShort>
+	<baseDescription>All NAME had to do for HIS act was be HIMself. When hands were short, HE made HIMself useful by being quite the eccentric in the kitchen tent.</baseDescription>
 	
-	<shuffleable>false</shuffleable>
+	<skillGains>
+	  <li><defName>Social</defName><degree>2</degree></li>
+	  <li><defName>Artistic</defName><degree>2</degree></li>
+	  <li><defName>Cooking</defName><degree>3</degree></li>
+	</skillGains>
 	
+	<workDisables>
+	  <li>ManualDumb</li>
+	</workDisables>
+	
+	<forcedTraits>
+	  <li><defName>Wimp</defName><degree>0</degree></li>
+	</forcedTraits>
+	
+	<spawnCategories>
+	  <li>Carnivale</li>
+	</spawnCategories>
+  </Carnivale.BackstoryDef>
+  
+  
+  <!-- Razorback -->
+  <Carnivale.BackstoryDef>
+    <defName>Carn_Razorback</defName>
+	<slot>Adulthood</slot>
+	<title>Carnival razorback</title>
+	<titleShort>Razorback</titleShort>
+	<baseDescription>Either nobody remembers or nobody is permitted to remember why NAME was permanently demoted to a razorback, or a grunt in the carnival workforce. Loading and unloading pack animals and carriages have made HIM strong, as well as a regular contender whenever a brawl breaks out.</baseDescription>
+	
+	<skillGains>
+	  <li><defName>Shooting</defName><degree>3</degree></li>
+	  <li><defName>Melee</defName><degree>3</degree></li>
+	  <li><defName>Construction</defName><degree>5</degree></li>
+	</skillGains>
+	
+	<spawnCategories>
+	  <li>Carnivale</li>
+	</spawnCategories>
+  </Carnivale.BackstoryDef>
+  
+  
+  <!-- Gypsy -->
+  <Carnivale.BackstoryDef>
+    <defName>Carn_Gypsy</defName>
+	<slot>Adulthood</slot>
+	<title>Rim world gypsy</title>
+	<titleShort>Gypsy</titleShort>
+	<baseDescription>Folks used to say that gypsies are an ancient human culture often gifted with powers of foresight, and that is why they have been fortunate enough in their wanderlust to have survived the eons since their genesis on Earth. NAME identifies as a gypsy, though whether that is true remains to be known.</baseDescription>
+	
+	<skillGains>
+	  <li><defName>Social</defName><degree>2</degree></li>
+	  <li><defName>Medicine</defName><degree>4</degree></li>
+	</skillGains>
+	
+	<forcedTraits>
+	  <li><defName>PsychicSensitivity</defName><degree>2</degree></li>
+	  <li><defName>Luckiness</defName><degree>1</degree></li>
+	</forcedTraits>
+	
+	<spawnCategories>
+	  <li>CarnivaleRare</li>
+	  <li>Raider</li>
+	  <li>Slave</li>
+	  <li>Trader</li>
+	  <li>Traveler</li>
+	</spawnCategories>
+  </Carnivale.BackstoryDef>
+  
+  
+  <!-- Dancer -->
+  <Carnivale.BackstoryDef>
+    <defName>Carn_Dancer</defName>
+	<slot>Adulthood</slot>
+	<title>Carnival dancer</title>
+	<titleShort>Dancer</titleShort>
+	<baseDescription>It doesn't take much to be a thing of beauty on a rim world. Don't tell NAME that, though.</baseDescription>
+	
+	<skillGains>
+	  <li><defName>Artistic</defName><degree>4</degree></li>
+	  <li><defName>Social</defName><degree>2</degree></li>
+	</skillGains>
+	
+	<forcedTraits>
+	  <li><defName>Beauty</defName><degree>2</degree></li>
+	</forcedTraits>
+	
+	<workDisables>
+	  <li>Violent</li>
+	</workDisables>
+	
+	<spawnCategories>
+	  <li>Carnivale</li>
+	  <li>Slave</li>
+	</spawnCategories>
+  </Carnivale.BackstoryDef>
+  
+  
+  <!-- Beastmaster -->
+  <Carnivale.BackstoryDef>
+    <defName>Carn_Beastmaster</defName>
+	<slot>Adulthood</slot>
+	<title>Carnival beastmaster</title>
+	<titleShort>Beastmaster</titleShort>
+	<baseDescription>NAME handled pack animals for many years, and eventually got HIS own show demonstrating HIS beasts doing incredible tricks.</baseDescription>
+	
+	<skillGains>
+	  <li><defName>Animals</defName><degree>6</degree></li>
+	  <li><defName>Social</defName><degree>-2</degree></li>
+	  <li><defName>Medicine</defName><degree>2</degree></li>
+	</skillGains>
+	
+	<spawnCategories>
+	  <li>Carnivale</li>
+	  <li>Slave</li>
+	</spawnCategories>
   </Carnivale.BackstoryDef>
   
 </BackstoryDefs>

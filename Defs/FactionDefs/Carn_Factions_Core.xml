@@ -3,14 +3,14 @@
 <FactionDefs>
 
   <!-- =============== (Class) Carnival Base -->
-  <FactionDef Name="Carn_Faction_Core" Abstract="True">
-    <defName>Carn_Faction_Core</defName>
+  <FactionDef Name="Factions_Core" Abstract="True">
 	<factionNameMaker>Carn_Faction_NameSet</factionNameMaker>
 	<pawnsPlural>carnies</pawnsPlural>
-	<leaderTitle>management</leaderTitle>
+	<leaderTitle>manager</leaderTitle>
 	<techLevel>Industrial</techLevel>
 	
-	<canMakeRandomly>false</canMakeRandomly>
+	<canMakeRandomly>true</canMakeRandomly>
+	<maxCountAtGameStart>8</maxCountAtGameStart>
 	<hidden>true</hidden>
 	<!-- unhidden later in code to allow relationship tracking -->
 	
@@ -41,20 +41,47 @@
 	  <!-- any others? -->
 	</hairTags>
 	
+	<backstoryCategory>Carnivale</backstoryCategory>
 	
 	<homeIconPath>World/WorldObjects/DefaultFactionBase</homeIconPath>
     
   </FactionDef>
   
   <!-- =============== Roaming Carnival -->
-  <FactionDef ParentName="Carn_Faction_Core">
+  <FactionDef ParentName="Factions_Core">
     <defName>Carn_Faction_Roaming</defName>
 	<label>Roaming Carnival</label>
 	<description>Formed from an eclectic collection of misfits, these sturdy humans have come to live off the flotsam and goodwill of others, and continue to live in this way by providing the scattered peoples of the rim worlds a unique source of curiosity and entertainment in exchange for hospitality. Never keen on lingering anywhere for long, their lives are, and always will be, slaves to the road.</description>
 	
-	<requiredCountAtGameStart>25</requiredCountAtGameStart>
+	<requiredCountAtGameStart>3</requiredCountAtGameStart>
 	
-	<backstoryCategory>Carnivale</backstoryCategory>
+	<pawnGroupMakers>
+	  
+	  <!-- Normal -->
+	  <li>
+	    <kindDef>Normal</kindDef>
+		
+		<options>
+		  <Carny>100</Carny>
+		  <RareCarny>20</RareCarny>
+		  <ManagerCarny>1</ManagerCarny>
+		</options>
+		
+		<traders>
+		  <!-- TODO: make trader pawnkind -->
+		  <RareCarny>1</RareCarny>
+		</traders>
+		
+		<carriers>
+		  <Muffalo>6</Muffalo>
+		</carriers>
+		
+		<guards>
+		  <GuardCarny>6</GuardCarny>
+		</guards>
+	  </li>
+	  
+	</pawnGroupMakers>
 	
 	
   </FactionDef>

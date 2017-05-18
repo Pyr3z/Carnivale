@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<PawnGroupKindDefs>
+  
+  <PawnGroupKindDef>
+    <defName>Carnival</defName>
+	<label>carnival</label>
+	
+	<workerClass>Carnivale.PawnGroupKindWorker_Carnival</workerClass>
+  </PawnGroupKindDef>
+  
+</PawnGroupKindDefs>
