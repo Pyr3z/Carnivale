@@ -6,6 +6,8 @@
     <defName>Carn_Trader_Food</defName>
 	<label>carnival food vendor</label>
 	
+	<commonality>5</commonality>
+	
 	<stockGenerators>
 	  
 	  <li Class="StockGenerator_SingleDef">
@@ -61,6 +63,8 @@
   <TraderKindDef>
     <defName>Carn_Trader_Curios</defName>
 	<label>carnival curios vendor</label>
+	
+	<commonality>1</commonality>
 	
 	<stockGenerators>
 	  
@@ -124,6 +128,8 @@
     <defName>Carn_Trader_Surplus</defName>
 	<label>surplus vendor</label>
 	
+	<commonality>2</commonality>
+	
 	<stockGenerators>
 	  
 	  <li Class="StockGenerator_SingleDef">
@@ -165,7 +171,7 @@
 	  <li Class="StockGenerator_SingleDef">
 		<thingDef>Chemfuel</thingDef>
 		<countRange>
-		  <min>100</min>
+		  <min>50</min>
 		  <max>300</max>
 	    </countRange>
 	  </li>

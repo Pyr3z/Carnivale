@@ -48,15 +48,18 @@
   
   <Xnope.Defs.SpawnCategoryInjectorDef>
     <defName>SCI_CarnivaleTrader</defName>
-    
+	
     <newCategory>CarnivaleTrader</newCategory>
 	<injectToBackstories>
+	  <!-- Want to force Vendor adulthood backstory>
 	  <li>Con artist</li>
 	  <li>Bartender</li>
 	  <li>Caravaneer</li>
+	  <-->
 	  <!-- childhood -->
 	  <li>Shopkeeper</li>
 	  <li>Caravan traveler</li>
+	  <li>Circus performer</li>
 	</injectToBackstories>
   </Xnope.Defs.SpawnCategoryInjectorDef>
   

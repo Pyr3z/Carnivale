@@ -69,21 +69,21 @@
 	    <kindDef>Carnival</kindDef>
 		
 		<options>
-		  <Carny>100</Carny>
-		  <CarnyRare>20</CarnyRare>
+		  <Carny>10</Carny>
+		  <CarnyRare>5</CarnyRare>
 		  <CarnyManager>1</CarnyManager>
 		</options>
 		
 		<traders>
-		  <CarnyTrader>3</CarnyTrader>
+		  <CarnyTrader>1</CarnyTrader>
 		</traders>
 		
 		<carriers>
-		  <Muffalo>6</Muffalo>
+		  <Muffalo>1</Muffalo>
 		</carriers>
 		
 		<guards>
-		  <CarnyGuard>6</CarnyGuard>
+		  <CarnyGuard>1</CarnyGuard>
 		</guards>
 	  </li>
 	  
