@@ -49,4 +49,5 @@ Temporary Items
 # Visual Studio shit
 *.suo
 *.cache
+*.TMP
 obj/
