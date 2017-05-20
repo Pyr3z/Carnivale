@@ -66,11 +66,13 @@
     <Compile Include="Defs\_FactionDefOf.cs" />
     <Compile Include="Defs\_IncidentDefOf.cs" />
     <Compile Include="Defs\_PawnGroupKindDefOf.cs" />
-    <Compile Include="IncidentWorker_CarnivalFireball.cs" />
-    <Compile Include="IncidentWorker_CarnivalJustice.cs" />
-    <Compile Include="IncidentWorker_CarnivalApproaches.cs" />
+    <Compile Include="FactionExt.cs" />
+    <Compile Include="IncidentWorkers\CarnivalFireball.cs" />
+    <Compile Include="IncidentWorkers\CarnivalJustice.cs" />
+    <Compile Include="IncidentWorkers\CarnivalApproaches.cs" />
     <Compile Include="Patches\Postfix_GenerateFactionsIntoWorld.cs" />
-    <Compile Include="PawnGroupKindWorker_Carnival.cs" />
+    <Compile Include="Patches\Postfix_GenerateNewLeader.cs" />
+    <Compile Include="PawnGroupKindWorkers\PawnGroupKindWorker_Carnival.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -9,5 +9,7 @@ namespace Xnope.Defs
         public string newCategory;
         public List<string> injectToBackstories = new List<string>();
         #endregion
+
+        // Actually injected in Postfix_ReloadAllBackstories.
     }
 }

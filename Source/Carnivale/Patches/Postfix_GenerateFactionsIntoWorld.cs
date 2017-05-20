@@ -11,7 +11,7 @@ namespace Carnivale.Patches
     public static class Postfix_GenerateFactionsIntoWorld
     {
         [HarmonyPostfix]
-        public static void UnhideCarnivaleFactions()
+        public static void UnhideCarnivalFactions()
         {
             foreach (FactionDef def in (from d in DefDatabase<FactionDef>.AllDefs
                                         where d.defName.StartsWith("Carn_")

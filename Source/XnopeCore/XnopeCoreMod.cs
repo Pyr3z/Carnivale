@@ -16,16 +16,8 @@ namespace Xnope
 
         static XnopeCoreMod()
         {
-            var harmony = HarmonyInstance.Create(id);
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
+            // Harmony patching handled by HugsLib
 
-            /*
-            harmony.Patch(
-                typeof(PlayDataLoader).GetMethod("DoPlayLoad"),
-                null,
-                new HarmonyMethod(typeof(Postfix_DoPlayLoad).GetMethod("InjectBackstoryData"))
-            );
-            */
         }
     }
 }

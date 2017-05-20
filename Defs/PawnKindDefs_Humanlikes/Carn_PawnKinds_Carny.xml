@@ -27,6 +27,16 @@
 	<backstoryCategory>CarnivaleTrader</backstoryCategory>
   </PawnKindDef>
   
+  <PawnKindDef Name="PawnKinds_Fighter" Abstract="True">
+    <race>Human</race>
+	<defaultFactionType>Carn_Faction_Roaming</defaultFactionType>
+	<chemicalAddictionChance>0.1</chemicalAddictionChance>
+	<baseRecruitDifficulty>0.65</baseRecruitDifficulty>
+	<backstoryCategory>CarnivaleFighter</backstoryCategory>
+	
+	<isFighter>true</isFighter>
+  </PawnKindDef>
+  
   
   <!-- =============== Carny -->
   
@@ -90,7 +100,7 @@
   <!-- =============== Rare Carny -->
   
   <PawnKindDef ParentName="PawnKinds_Rare">
-    <defName>RareCarny</defName>
+    <defName>CarnyRare</defName>
 	<label>carny</label>
 	
 	<!-- from Outlander villager -->
@@ -145,9 +155,10 @@
   
   <!-- =============== Manager -->
   
-  <PawnKindDef ParentName="PawnKinds_Core">
-    <defName>ManagerCarny</defName>
+  <PawnKindDef ParentName="PawnKinds_Rare">
+    <defName>CarnyManager</defName>
 	<label>manager</label>
+	
 	<factionLeader>true</factionLeader>
 	
 	<!-- from Outlander TownGuard -->
@@ -190,10 +201,58 @@
   </PawnKindDef>
   
   
+  <!-- =============== Trader -->
+  
+  <PawnKindDef ParentName="PawnKinds_Trader">
+    <defName>CarnyTrader</defName>
+	<label>carnival vendor</label>
+	
+	<trader>true</trader>
+	
+	<!-- from Outlander villager -->
+	<combatPower>40</combatPower>
+    <itemQuality>Normal</itemQuality>
+    <gearHealthRange>
+      <min>0.5</min>
+      <max>2.0</max>
+    </gearHealthRange>
+    <apparelMoney>
+      <min>400</min>
+      <max>1100</max>
+    </apparelMoney>
+    <apparelAllowHeadwearChance>0.4</apparelAllowHeadwearChance>
+    <weaponMoney>
+      <min>0</min>
+      <max>250</max>
+    </weaponMoney>
+    <weaponTags>
+      <li>Gun</li>
+      <li>Melee</li>
+    </weaponTags>
+    <techHediffsMoney>
+      <min>200</min>
+      <max>300</max>
+    </techHediffsMoney>
+    <techHediffsTags>
+      <li>Simple</li>
+    </techHediffsTags>
+    <techHediffsChance>0.001</techHediffsChance>
+    <invNutrition>2.55</invNutrition>
+    <inventoryOptions>
+      <skipChance>0.0</skipChance>
+      <thingDef>Silver</thingDef>
+          <countRange>
+            <min>200</min>
+            <max>600</max>
+          </countRange>
+    </inventoryOptions>
+  </PawnKindDef>
+  
+  
   <!-- =============== Guard -->
   
-  <PawnKindDef ParentName="PawnKinds_Core">
-    <defName>GuardCarny</defName>
+  <PawnKindDef ParentName="PawnKinds_Fighter">
+    <defName>CarnyGuard</defName>
 	<label>carnival guard</label>
 	
 	<!-- from Outlander TownGuard -->

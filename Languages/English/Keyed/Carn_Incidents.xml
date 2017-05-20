@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+  <!-- General dialog options -->
+  <HangUp>Hang up</HangUp>
+  
+  <!-- Carnival Approaches -->
+  <CarnivalApproachesTitle>{0} wishes to visit your colony!</CarnivalApproachesTitle>
+  <CarnivalApproachesInitial>A roaming carnival by the name of {0} is nearby and wishes to set up their show on your land. They would like to stay for {1} days. Would you like to welcome them to {2}?</CarnivalApproachesInitial>
+  <CarnivalApproachesAccept>Sure!</CarnivalApproachesAccept>
+  <CarnivalApproachesReject>Sorry, no.</CarnivalApproachesReject>
+  <CarnivalApproachesAcceptMessage>{0}, the manager of {1}, excitedly thanks you and informs you that they will arrive in one day.</CarnivalApproachesAcceptMessage>
+  <CarnivalApproachesRejectMessage>You hear muddled curses, and then a tinny voice saying 'let me speak to them'. The voice gains volume and projects toward you, 'hello? Hi there, there seems to have been a--'.</CarnivalApproachesRejectMessage>
+  
+</LanguageData>

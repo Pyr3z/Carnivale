@@ -5,7 +5,7 @@
     <defName>Carnival</defName>
 	<label>carnival</label>
 	
-	<workerClass>Carnivale.PawnGroupKindWorker_Carnival</workerClass>
+	<workerClass>Carnivale.PawnGroupKindWorkers.Carnival</workerClass>
   </PawnGroupKindDef>
   
 </PawnGroupKindDefs>

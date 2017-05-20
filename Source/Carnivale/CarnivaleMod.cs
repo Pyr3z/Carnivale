@@ -16,19 +16,9 @@ namespace Carnivale
 
         static CarnivaleMod()
         {
-            // Init harmony and patch.
-            var harmony = HarmonyInstance.Create(id);
-            
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
+            // Harmony patching handled by HugsLib
 
-            // Manual patching:
-            /*
-            harmony.Patch(
-                typeof(FactionGenerator).GetMethod("GenerateFactionsIntoWorld"),
-                null,
-                new HarmonyMethod(typeof(Postfix_GenerateFactionsIntoWorld).GetMethod("UnhideCarnivaleFactions"))
-            );
-            */
+            
         }
 
     }

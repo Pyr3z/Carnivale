@@ -70,13 +70,12 @@
 		
 		<options>
 		  <Carny>100</Carny>
-		  <RareCarny>20</RareCarny>
-		  <ManagerCarny>1</ManagerCarny>
+		  <CarnyRare>20</CarnyRare>
+		  <CarnyManager>1</CarnyManager>
 		</options>
 		
 		<traders>
-		  <!-- TODO: make trader pawnkind -->
-		  <RareCarny>1</RareCarny>
+		  <CarnyTrader>3</CarnyTrader>
 		</traders>
 		
 		<carriers>
@@ -84,11 +83,39 @@
 		</carriers>
 		
 		<guards>
-		  <GuardCarny>6</GuardCarny>
+		  <CarnyGuard>6</CarnyGuard>
 		</guards>
 	  </li>
 	  
+	  <!-- Normal (dummy) -->
+	  <li>
+	    <kindDef>Normal</kindDef>
+		<commonality>0</commonality>
+		
+		<options>
+		  <CarnyManager>1</CarnyManager>
+		</options>
+	  </li>
+	  
 	</pawnGroupMakers>
+	
+	<caravanTraderKinds>
+	  <li>Carn_Trader_Food</li>
+	  <li>Carn_Trader_Curios</li>
+	  <li>Carn_Trader_Surplus</li>
+	</caravanTraderKinds>
+	
+	<visitorTraderKinds>
+	  <li>Carn_Trader_Food</li>
+	  <li>Carn_Trader_Curios</li>
+	  <li>Carn_Trader_Surplus</li>
+	</visitorTraderKinds>
+	
+	<baseTraderKinds>
+	  <li>Carn_Trader_Food</li>
+	  <li>Carn_Trader_Curios</li>
+	  <li>Carn_Trader_Surplus</li>
+	</baseTraderKinds>
 	
 	
   </FactionDef>

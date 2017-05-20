@@ -9,31 +9,31 @@
 	<rulePack>
 	  
 	  <rulesStrings>
-	    <!-- [leadername] is now dynamically switched to a real faction's leader name -->
 		<li>name->[leadername] and the [group]</li>
-		<li>name->[leadername] and the [name2]</li>
 		<li>name->[leadername]'s [name2]</li>
-		<li>name->[leadername]'s [group]</li>
+		<li>name->[colour] [terrain] [carnival]</li>
 		
 		<li>name2->[cardinal] [carnival]</li>
-		<li>name2->[colour] [terrain] [carnival]</li>
+		<li>name2->[colour] [carnival]</li>
 		<li>name2->[strange] [carnival]</li>
 		<li>name2->[carnival]</li>
 		
 		<li>carnival->Carnival</li> <!-- consider other names here -->
-		<li>carnival->Circus</li>
-		<li>carnival->Roadshow</li>
 		
-		<li>leadername->[exciting] LNAME</li>
-		<li>leadername->[colour] LNAME</li>
-		<li>leadername->LNAME</li>
+		<li>leadername->[exciting] [personname]</li>
+		<li>leadername->[personname]</li>
+		
+		<li>personname->[namefemale]</li>
+		<li>personname->[namemale]</li>
+		<li>personname->[nameanimal]</li>
 		
 		<li>group->[group2]</li>
-		<li>group->[group2]</li>
-		<li>group->[strange] [group2]</li>
-		<li>group->[strange] [group2]</li>
-		<li>group->[strange] [group2]</li>
-		<li>group->[colour] [group2]</li>
+		<li>group->[group3]</li>
+		<li>group->[group3]</li>
+		<li>group->[strange] [group3]</li>
+		<li>group->[strange] [group3]</li>
+		<li>group->[strange] [group3]</li>
+		<li>group->[colour] [group3]</li>
 	  </rulesStrings>
 	  
 	  <!-- strings from language files -->
@@ -60,6 +60,32 @@
 		  </pathList>
 		</li>
 		
+		<li Class="Rule_File">
+		  <keyword>nameanimal</keyword>
+		  <pathList>
+			<li>Names/Animal_Female</li>
+			<li>Names/Animal_Male</li>
+			<li>Names/Animal_Unisex</li>
+		  </pathList>
+		</li>
+		
+		<li Class="Rule_PersonName">
+		  <gender>Male</gender>
+		  <keyword>namemale</keyword>
+		</li>
+		
+		<li Class="Rule_PersonName">
+		  <gender>Female</gender>
+		  <keyword>namefemale</keyword>
+		</li>
+		
+		<li Class="Rule_File">
+		  <keyword>group2</keyword>
+		  <pathList>
+		    <li>Words/Nouns/GroupNames</li>
+		  </pathList>
+		</li>
+		
 		<!-- words added by this mod -->
 		
 		<li Class="Rule_File">
@@ -70,7 +96,7 @@
 		</li>
 		
 		<li Class="Rule_File">
-		  <keyword>group2</keyword>
+		  <keyword>group3</keyword>
 		  <pathList>
 		    <li>Carn_Words/Nouns/Collectives</li>
 		  </pathList>

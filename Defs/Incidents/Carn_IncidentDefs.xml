@@ -4,7 +4,7 @@
   <IncidentDef>
     <defName>CarnivalApproaches</defName>
 	<label>carnival approaches</label>
-	<workerClass>Carnivale.IncidentWorker_CarnivalApproaches</workerClass>
+	<workerClass>Carnivale.IncidentWorkers.CarnivalApproaches</workerClass>
 	<category>AllyArrival</category>
 	<targetType>MapPlayerHome</targetType>
 	<minPopulation>3</minPopulation>
@@ -16,8 +16,8 @@
   
   <IncidentDef>
     <defName>CarnivalFireball</defName>
-	<label>carnival approaches</label>
-	<workerClass>Carnivale.IncidentWorker_CarnivalFireball</workerClass>
+	<label>carnival approaches</label> <!-- intentional duplicate label -->
+	<workerClass>Carnivale.IncidentWorkers.CarnivalFireball</workerClass>
 	<category>AllyArrival</category>
 	<targetType>MapPlayerHome</targetType>
 	<minPopulation>3</minPopulation>
@@ -30,7 +30,7 @@
   <IncidentDef>
     <defName>CarnivalJustice</defName>
 	<label>carnival justice</label>
-	<workerClass>Carnivale.IncidentWorker_CarnivalJustice</workerClass>
+	<workerClass>Carnivale.IncidentWorkers.CarnivalJustice</workerClass>
 	<category>AllyArrival</category>
 	<targetType>MapPlayerHome</targetType>
   </IncidentDef>
