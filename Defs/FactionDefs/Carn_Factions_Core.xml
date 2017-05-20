@@ -42,8 +42,15 @@
 	</hairTags>
 	
 	<backstoryCategory>Carnivale</backstoryCategory>
+	<basicMemberKind>Carny</basicMemberKind>
 	
 	<homeIconPath>World/WorldObjects/DefaultFactionBase</homeIconPath>
+	
+	<colorSpectrum>
+	  <li>(0.4, 1, 0)</li>
+	  <li>(0.3, 0.75, 0)</li>	  
+	  <li>(0.2, 0.5, 0)</li>
+	</colorSpectrum>
     
   </FactionDef>
   
@@ -57,9 +64,9 @@
 	
 	<pawnGroupMakers>
 	  
-	  <!-- Normal -->
+	  <!-- Carnival -->
 	  <li>
-	    <kindDef>Normal</kindDef>
+	    <kindDef>Carnival</kindDef>
 		
 		<options>
 		  <Carny>100</Carny>

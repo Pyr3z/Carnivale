@@ -14,9 +14,17 @@
   <PawnKindDef Name="PawnKinds_Rare" Abstract="True">
     <race>Human</race>
 	<defaultFactionType>Carn_Faction_Roaming</defaultFactionType>
-	<chemicalAddictionChance>0.12</chemicalAddictionChance>
+	<chemicalAddictionChance>0.15</chemicalAddictionChance>
 	<baseRecruitDifficulty>0.8</baseRecruitDifficulty>
 	<backstoryCategory>CarnivaleRare</backstoryCategory>
+  </PawnKindDef>
+  
+  <PawnKindDef Name="PawnKinds_Trader" Abstract="True">
+    <race>Human</race>
+	<defaultFactionType>Carn_Faction_Roaming</defaultFactionType>
+	<chemicalAddictionChance>0.06</chemicalAddictionChance>
+	<baseRecruitDifficulty>0.6</baseRecruitDifficulty>
+	<backstoryCategory>CarnivaleTrader</backstoryCategory>
   </PawnKindDef>
   
   

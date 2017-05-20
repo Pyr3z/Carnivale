@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TraderKindDefs>
+  
+  <!-- food vendor -->
+  <TraderKindDef>
+    <defName>Carn_Trader_Food</defName>
+	<label>carnival food vendor</label>
+	
+	<stockGenerators>
+	  
+	  <li Class="StockGenerator_SingleDef">
+        <thingDef>Silver</thingDef>
+        <countRange>
+          <min>100</min>
+          <max>300</max>
+        </countRange>
+      </li>
+	  
+	  <li Class="StockGenerator_Category">
+        <categoryDef>FoodRaw</categoryDef>
+		<excludedCategories>
+		  <li>EggsFertilized</li>
+		</excludedCategories>
+        <thingDefCountRange>
+          <min>6</min>
+          <max>12</max>
+        </thingDefCountRange>
+        <totalPriceRange>
+          <min>300</min>
+          <max>1200</max>
+        </totalPriceRange>
+      </li>
+	  
+	  <li Class="StockGenerator_Category">
+	    <categoryDef>FoodMeals</categoryDef>
+		<thingDefCountRange>
+		  <min>3</min>
+		  <max>4</max>
+		</thingDefCountRange>
+		<countRange>
+		  <min>6</min>
+		  <max>24</max>
+		</countRange>
+	  </li>
+	  
+	  <li Class="StockGenerator_SingleDef">
+		<thingDef>Beer</thingDef>
+		<countRange>
+		  <min>64</min>
+		  <max>128</max>
+		</countRange>
+	  </li>
+	  
+	  <li Class="StockGenerator_BuyWeirdOrganic" />
+	  
+	</stockGenerators>
+  </TraderKindDef>
+  
+  
+  <!-- curios vender -->
+  <TraderKindDef>
+    <defName>Carn_Trader_Curios</defName>
+	<label>carnival curios vendor</label>
+	
+	<stockGenerators>
+	  
+	  <li Class="StockGenerator_SingleDef">
+        <thingDef>Silver</thingDef>
+        <countRange>
+          <min>500</min>
+          <max>900</max>
+        </countRange>
+      </li>
+	  
+	  <li Class="StockGenerator_Art">
+	    <countRange>
+		  <min>3</min>
+		  <max>9</max>
+		</countRange>
+	  </li>
+	  
+	  <li Class="StockGenerator_SingleDef">
+		<thingDef>Gold</thingDef>
+		<countRange>
+		  <min>75</min>
+		  <max>150</max>
+		</countRange>
+	  </li>
+	  
+	  <li Class="StockGenerator_Tag">
+	    <tradeTag>Exotic</tradeTag>
+		<thingDefCountRange>
+		  <min>1</min>
+		  <max>6</max>
+		</thingDefCountRange>
+		<countRange>
+		  <min>1</min>
+		  <max>1</max>
+		</countRange>
+	  </li>
+	  
+	  <li Class="StockGenerator_Tag">
+	    <tradeTag>Artifact</tradeTag>
+		<thingDefCountRange>
+		  <min>0</min>
+		  <max>2</max>
+		</thingDefCountRange>
+		<countRange>
+		  <min>1</min>
+		  <max>1</max>
+		</countRange>
+	  </li>
+	  
+	  <li Class="StockGenerator_BuyWeirdOrganic" />
+	  
+	  <li Class="StockGenerator_BuyExpensiveSimple" />
+	  
+	</stockGenerators>
+  </TraderKindDef>
+  
+  
+  <!-- surplus vendor -->
+  <TraderKindDef>
+    <defName>Carn_Trader_Surplus</defName>
+	<label>surplus vendor</label>
+	
+	<stockGenerators>
+	  
+	  <li Class="StockGenerator_SingleDef">
+        <thingDef>Silver</thingDef>
+        <countRange>
+          <min>500</min>
+          <max>900</max>
+        </countRange>
+      </li>
+	  
+	  <li Class="StockGenerator_SingleDef">
+        <thingDef>Component</thingDef>
+        <countRange>
+          <min>1</min>
+          <max>16</max>
+        </countRange>
+      </li>
+	  
+	  <li Class="StockGenerator_SingleDef">
+        <thingDef>Steel</thingDef>
+        <countRange>
+          <min>35</min>
+          <max>150</max>
+        </countRange>
+      </li>
+	  
+	  <li Class="StockGenerator_SingleDef">
+        <thingDef>Cloth</thingDef>
+        <countRange>
+          <min>250</min>
+          <max>400</max>
+        </countRange>
+      </li>
+	  
+	  <li Class="StockGenerator_Category">
+		<categoryDef>Textiles</categoryDef>
+	  </li>
+	  
+	  <li Class="StockGenerator_SingleDef">
+		<thingDef>Chemfuel</thingDef>
+		<countRange>
+		  <min>100</min>
+		  <max>300</max>
+	    </countRange>
+	  </li>
+	  
+	  <li Class="StockGenerator_MultiDef">
+        <thingDefs>
+          <li>Chocolate</li>
+          <li>Kibble</li>
+          <li>Pemmican</li>
+        </thingDefs>
+      </li>
+	  
+	  <li Class="StockGenerator_Clothes">
+        <countRange>
+          <min>1</min>
+          <max>12</max>
+        </countRange>
+      </li>
+	  
+	  <li Class="StockGenerator_Tag">
+        <tradeTag>Furniture</tradeTag>
+        <thingDefCountRange>
+          <min>1</min>
+          <max>9</max>
+        </thingDefCountRange>
+        <countRange>
+          <min>1</min>
+          <max>1</max>
+        </countRange>
+      </li>
+	  
+	  <li Class="StockGenerator_BuyWeirdOrganic" />
+	  
+	</stockGenerators>
+  </TraderKindDef>
+  
+</TraderKindDefs>

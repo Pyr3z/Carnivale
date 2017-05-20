@@ -4,18 +4,18 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7A5AD0BD-70BC-4FC2-8B3E-49007EF61BB2}</ProjectGuid>
+    <ProjectGuid>{251B2720-5D1E-4451-A595-0099C28FBB87}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Carnivale</RootNamespace>
-    <AssemblyName>Carnivale</AssemblyName>
+    <RootNamespace>Xnope</RootNamespace>
+    <AssemblyName>XnopeCore</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>false</DebugSymbols>
-    <DebugType>none</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -55,22 +55,12 @@
       <HintPath>..\..\..\..\RimWorldWin_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="XnopeCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Assemblies\XnopeCore.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CarnivaleMod.cs" />
-    <Compile Include="Defs\_FactionDefOf.cs" />
-    <Compile Include="Defs\_IncidentDefOf.cs" />
-    <Compile Include="Defs\_PawnGroupKindDefOf.cs" />
-    <Compile Include="IncidentWorker_CarnivalFireball.cs" />
-    <Compile Include="IncidentWorker_CarnivalJustice.cs" />
-    <Compile Include="IncidentWorker_CarnivalApproaches.cs" />
-    <Compile Include="Patches\Postfix_GenerateFactionsIntoWorld.cs" />
-    <Compile Include="PawnGroupKindWorker_Carnival.cs" />
+    <Compile Include="Defs\BackstoryDef.cs" />
+    <Compile Include="Defs\SpawnCategoryInjectorDef.cs" />
+    <Compile Include="Patches\Postfix_ReloadAllBackstories.cs" />
+    <Compile Include="XnopeCoreMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

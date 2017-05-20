@@ -1,0 +1,37 @@
+﻿using RimWorld;
+using Verse;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Carnivale
+{
+    public class SpawnCategoryDef : Def
+    {
+        #region XML data
+        string newCategory;
+        List<string> injectToBackstories = new List<string>();
+        #endregion
+
+        public static SpawnCategoryDef Named(string defName)
+        {
+            return DefDatabase<SpawnCategoryDef>.GetNamed(defName);
+        }
+
+        public override void ResolveReferences()
+        {
+            base.ResolveReferences();
+
+            foreach (var targetBS in injectToBackstories)
+            {
+                foreach (var bs in (from b in BackstoryDatabase.allBackstories.Values
+                                    where b.Title.Equals(targetBS)
+                                    select b))
+                {
+                    bs.spawnCategories.Add(newCat);
+                    if (CarnivaleMod.debugLog)
+                        Log.Message("Added spawn category \'" + newCat + "\' to backstory \'" + bs.Title + "\'");
+                }
+            }
+        }
+    }
+}

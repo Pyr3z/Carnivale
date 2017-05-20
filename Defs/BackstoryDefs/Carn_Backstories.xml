@@ -9,8 +9,8 @@
   <!-- =============== Childhood Backstories -->
   
   <!-- Brat -->
-  <Carnivale.BackstoryDef>
-    <defName>Carn_Brat</defName>
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_CarnyBrat</defName>
 	<slot>Childhood</slot>
 	<title>Carny brat</title>
 	<titleShort>Brat</titleShort>
@@ -32,22 +32,23 @@
 	
 	<spawnCategories>
 	  <li>Carnivale</li>
+	  <li>CarnivaleTrader</li>
 	  <li>Raider</li>
 	  <li>Slave</li>
 	  <li>Trader</li>
 	  <li>Traveler</li>
 	</spawnCategories>
 	
-  </Carnivale.BackstoryDef>
+  </Xnope.Defs.BackstoryDef>
   
   
   <!-- Prodigy -->
-  <Carnivale.BackstoryDef>
-    <defName>Carn_Prodigy</defName>
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_CarnyProdigy</defName>
 	<slot>Childhood</slot>
 	<title>Carnival prodigy</title>
 	<titleShort>Prodigy</titleShort>
-	<baseDescription>When NAME was born, everyone knew HE was special. Raised by carnies and naturally gifted in all the HE attempted, NAME made a name for himself as one of the youngest and most brilliant acts in the show. This early fame has led to a few... narcissistic tendencies, however.</baseDescription>
+	<baseDescription>When NAME was born, everyone knew HE was special. Raised by carnies and naturally gifted in all that HE attempted, NAME made a name for HIMself as one of the youngest and most brilliant acts in the show. This early fame has led to a few... narcissistic tendencies, however.</baseDescription>
 	
 	<skillGains>
 	  <li><defName>Animals</defName><degree>4</degree></li>
@@ -74,21 +75,50 @@
 	  <li>Traveler</li>
 	</spawnCategories>
 	
-  </Carnivale.BackstoryDef>
+  </Xnope.Defs.BackstoryDef>
+  
+  
+  <!-- Gypsy Child-->
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_GypsyChild</defName>
+	<slot>Childhood</slot>
+	<title>Gypsy child</title>
+	<titleShort>Gypsy</titleShort>
+	<baseDescription>Folks used to say that gypsies are an ancient human culture often gifted with powers of foresight, and that is why they have been fortunate enough in their wanderlust to have survived the eons since their genesis on Earth. NAME was raised by HIS mother, a rare woman fabled to have descended from these great wandering folk.</baseDescription>
+	
+	<skillGains>
+	  <li><defName>Social</defName><degree>2</degree></li>
+	  <li><defName>Medicine</defName><degree>4</degree></li>
+	</skillGains>
+	
+	<forcedTraits>
+	  <li><defName>PsychicSensitivity</defName><degree>2</degree></li>
+	  <li><defName>Luckiness</defName><degree>1</degree></li>
+	</forcedTraits>
+	
+	<spawnCategories>
+	  <li>CarnivaleRare</li>
+	  <li>Raider</li>
+	  <li>Slave</li>
+	  <li>Trader</li>
+	  <li>Traveler</li>
+	</spawnCategories>
+	
+  </Xnope.Defs.BackstoryDef>
   
   
   <!-- =============== Adulthood Backstories -->
   
   <!-- Announcer -->
-  <Carnivale.BackstoryDef>
-    <defName>Carn_Announcer</defName>
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_Announcer</defName>
 	<slot>Adulthood</slot>
 	<title>Carnival announcer</title>
 	<titleShort>Announcer</titleShort>
 	<baseDescription>It was NAME's job to be a constant stream of shiny talk and information in order to hold the rubes' attentions. HECAP is adept at thinking quickly on the spot, and always seems to know just what to say.</baseDescription>
 	
 	<skillGains>
-	  <li><defName>Social</defName><degree>6</degree></li>
+	  <li><defName>Social</defName><degree>4</degree></li>
 	  <li><defName>Shooting</defName><degree>1</degree></li>
 	</skillGains>
 	
@@ -97,15 +127,49 @@
 	  <li><defName>NaturalMood</defName><degree>-2</degree></li>
 	</disallowedTraits>
 	
+	<requiredWorkTags>
+	  <li>Social</li>
+	</requiredWorkTags>
+	
 	<spawnCategories>
 	  <li>Carnivale</li>
 	</spawnCategories>
-  </Carnivale.BackstoryDef>
+  </Xnope.Defs.BackstoryDef>
+  
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_AnnouncerSweetTalker</defName>
+	<slot>Adulthood</slot>
+	<title>Carnival announcer</title>
+	<titleShort>Announcer</titleShort>
+	<baseDescription>It was NAME's job to be a constant stream of shiny talk and information in order to hold the rubes' attentions. HECAP is adept at thinking quickly on the spot, and always seems to know just what to say.</baseDescription>
+	
+	<skillGains>
+	  <li><defName>Social</defName><degree>4</degree></li>
+	  <li><defName>Shooting</defName><degree>1</degree></li>
+	</skillGains>
+	
+	<disallowedTraits>
+	  <li><defName>NaturalMood</defName><degree>-1</degree></li>
+	  <li><defName>NaturalMood</defName><degree>-2</degree></li>
+	</disallowedTraits>
+	
+	<forcedTraits>
+	  <li><defName>SweetTalker</defName><degree>0</degree></li>
+	</forcedTraits>
+	
+	<requiredWorkTags>
+	  <li>Social</li>
+	</requiredWorkTags>
+	
+	<spawnCategories>
+	  <li>CarnivaleRare</li>
+	</spawnCategories>
+  </Xnope.Defs.BackstoryDef>
   
   
   <!-- Weirdo -->
-  <Carnivale.BackstoryDef>
-    <defName>Carn_Weirdo</defName>
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_Weirdo</defName>
 	<slot>Adulthood</slot>
 	<title>Carnival weirdo</title>
 	<titleShort>Weirdo</titleShort>
@@ -128,12 +192,12 @@
 	<spawnCategories>
 	  <li>Carnivale</li>
 	</spawnCategories>
-  </Carnivale.BackstoryDef>
+  </Xnope.Defs.BackstoryDef>
   
   
   <!-- Razorback -->
-  <Carnivale.BackstoryDef>
-    <defName>Carn_Razorback</defName>
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_Razorback</defName>
 	<slot>Adulthood</slot>
 	<title>Carnival razorback</title>
 	<titleShort>Razorback</titleShort>
@@ -145,79 +209,97 @@
 	  <li><defName>Construction</defName><degree>5</degree></li>
 	</skillGains>
 	
+	<requiredWorkTags>
+	  <li>Hauling</li>
+	</requiredWorkTags>
+	
+	<bodyTypeMale>Hulk</bodyTypeMale>
+	<bodyTypeFemale>Thin</bodyTypeFemale>
+	
 	<spawnCategories>
 	  <li>Carnivale</li>
 	</spawnCategories>
-  </Carnivale.BackstoryDef>
+  </Xnope.Defs.BackstoryDef>
   
   
   <!-- Gypsy -->
-  <Carnivale.BackstoryDef>
-    <defName>Carn_Gypsy</defName>
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_Gypsy</defName>
 	<slot>Adulthood</slot>
 	<title>Rim world gypsy</title>
 	<titleShort>Gypsy</titleShort>
 	<baseDescription>Folks used to say that gypsies are an ancient human culture often gifted with powers of foresight, and that is why they have been fortunate enough in their wanderlust to have survived the eons since their genesis on Earth. NAME identifies as a gypsy, though whether that is true remains to be known.</baseDescription>
 	
 	<skillGains>
-	  <li><defName>Social</defName><degree>2</degree></li>
-	  <li><defName>Medicine</defName><degree>4</degree></li>
+	  <li><defName>Cooking</defName><degree>2</degree></li>
+	  <li><defName>Medicine</defName><degree>3</degree></li>
 	</skillGains>
 	
-	<forcedTraits>
-	  <li><defName>PsychicSensitivity</defName><degree>2</degree></li>
-	  <li><defName>Luckiness</defName><degree>1</degree></li>
-	</forcedTraits>
+	<workDisables>
+	  <li>Mining</li>
+	</workDisables>
 	
 	<spawnCategories>
-	  <li>CarnivaleRare</li>
+	  <li>Carnivale</li>
 	  <li>Raider</li>
 	  <li>Slave</li>
 	  <li>Trader</li>
 	  <li>Traveler</li>
 	</spawnCategories>
-  </Carnivale.BackstoryDef>
+  </Xnope.Defs.BackstoryDef>
   
   
   <!-- Dancer -->
-  <Carnivale.BackstoryDef>
-    <defName>Carn_Dancer</defName>
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_Dancer</defName>
 	<slot>Adulthood</slot>
 	<title>Carnival dancer</title>
 	<titleShort>Dancer</titleShort>
-	<baseDescription>It doesn't take much to be a thing of beauty on a rim world. Don't tell NAME that, though.</baseDescription>
+	<baseDescription>NAME was always lauded for HIS beauty and grace, and when HE dances, the crowd goes into a mesmerised trance. Albeit, it doesn't take much to be a thing of beauty on a rim world...</baseDescription>
 	
 	<skillGains>
-	  <li><defName>Artistic</defName><degree>4</degree></li>
-	  <li><defName>Social</defName><degree>2</degree></li>
+	  <li><defName>Artistic</defName><degree>6</degree></li>
+	  <li><defName>Social</defName><degree>4</degree></li>
 	</skillGains>
 	
 	<forcedTraits>
 	  <li><defName>Beauty</defName><degree>2</degree></li>
 	</forcedTraits>
 	
+	<bodyTypeMale>Male</bodyTypeMale>
+	<bodyTypeFemale>Thin</bodyTypeFemale>
+	
 	<workDisables>
 	  <li>Violent</li>
+	  <li>Hauling</li>
 	</workDisables>
+	
+	<requiredWorkTags>
+	  <li>Artistic</li>
+	</requiredWorkTags>
 	
 	<spawnCategories>
 	  <li>Carnivale</li>
 	  <li>Slave</li>
 	</spawnCategories>
-  </Carnivale.BackstoryDef>
+  </Xnope.Defs.BackstoryDef>
   
   
   <!-- Beastmaster -->
-  <Carnivale.BackstoryDef>
-    <defName>Carn_Beastmaster</defName>
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_Beastmaster</defName>
 	<slot>Adulthood</slot>
 	<title>Carnival beastmaster</title>
 	<titleShort>Beastmaster</titleShort>
 	<baseDescription>NAME handled pack animals for many years, and eventually got HIS own show demonstrating HIS beasts doing incredible tricks.</baseDescription>
 	
+	<requiredWorkTags>
+	  <li>Animals</li>
+	</requiredWorkTags>
+	
 	<skillGains>
 	  <li><defName>Animals</defName><degree>6</degree></li>
-	  <li><defName>Social</defName><degree>-2</degree></li>
+	  <li><defName>Social</defName><degree>2</degree></li>
 	  <li><defName>Medicine</defName><degree>2</degree></li>
 	</skillGains>
 	
@@ -225,6 +307,33 @@
 	  <li>Carnivale</li>
 	  <li>Slave</li>
 	</spawnCategories>
-  </Carnivale.BackstoryDef>
+  </Xnope.Defs.BackstoryDef>
+  
+  
+  <!-- Vendor -->
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_Vendor</defName>
+	<slot>Adulthood</slot>
+	<title>Carnival vendor</title>
+	<titleShort>Vendor</titleShort>
+	<baseDescription>NAME was recognised as a superior haggler when HE joined the carnival. HIS talents became especially useful during fireball shows...</baseDescription>
+	
+	<skillGains>
+	  <li><defName>Social</defName><degree>6</degree></li>
+	</skillGains>
+	
+	<forcedTraits>
+	  <li><defName>SweetTalker</defName><degree>0</degree></li>
+	</forcedTraits>
+	
+	<spawnCategories>
+	  <li>CarnivaleTrader</li>
+	  <li>Slave</li>
+	  <li>Trader</li>
+	</spawnCategories>
+  </Xnope.Defs.BackstoryDef>
+  
+  
+  <!--  -->
   
 </BackstoryDefs>

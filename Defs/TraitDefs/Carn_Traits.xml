@@ -23,6 +23,24 @@
 	</conflictingTraits>
   </TraitDef>
   
+  <TraitDef>
+    <defName>SweetTalker</defName>
+	<commonality>0.25</commonality>
+	<degreeDatas>
+	  <li>
+	    <label>sweet talker</label>
+		<description>NAME instinctually seems to know what people need to hear. HISCAP words carry more impact, and HE generally spins conversations in HIS favour.</description>
+		<socialFightChanceFactor>0.5</socialFightChanceFactor>
+		<statOffsets>
+		  <RecruitPrisonerChance>0.06</RecruitPrisonerChance>
+          <SocialImpact>0.1</SocialImpact>
+		  <GiftImpact>0.08</GiftImpact>
+		  <TradePriceImprovement>0.15</TradePriceImprovement>
+        </statOffsets>
+	  </li>
+	</degreeDatas>
+  </TraitDef>
+  
   <!-- Spectrum -->
   
   <TraitDef>

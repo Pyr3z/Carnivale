@@ -1,12 +1,12 @@
 ﻿using RimWorld;
-using Verse;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
+using Verse;
 
-namespace Carnivale
+namespace Xnope.Defs
 {
-    public class BackstoryDef : Def    // from CCL
+    public class BackstoryDef : Def    // revised from CCL
     {
         #region XML Data
         public string baseDescription;
@@ -37,15 +37,33 @@ namespace Carnivale
             base.ResolveReferences();
 
             if (!this.addToDatabase) return;
-            if (BackstoryDatabase.allBackstories.ContainsKey(this.UniqueSaveKey())) return;
+
+            if (BackstoryDatabase.allBackstories.ContainsKey(this.UniqueSaveKey()))
+            {
+                Log.Error(this.defName + " is duplicated. Skipping.");
+                return;
+            }
+
+            //if (BackstoryDatabase.allBackstories.Remove(defName)) { }
 
             Backstory b = new Backstory();
+
             if (!this.title.NullOrEmpty())
                 b.SetTitle(this.title);
             else
             {
+                Log.Error(this.defName + " requires a title in XML file. Skipping.");
                 return;
             }
+
+            if (spawnCategories.NullOrEmpty())
+            {
+                Log.Error(this.defName + " requires a spawnCategory in XML file. Skipping.");
+                return;
+            }
+            else
+                b.spawnCategories = spawnCategories;
+
             if (!titleShort.NullOrEmpty())
                 b.SetTitleShort(titleShort);
             else
@@ -65,12 +83,8 @@ namespace Carnivale
             b.slot = slot;
 
             b.shuffleable = shuffleable;
-            if (spawnCategories.NullOrEmpty())
-            {
-                return;
-            }
-            else
-                b.spawnCategories = spawnCategories;
+
+
 
             if (workAllows.Count > 0)
             {
@@ -148,7 +162,8 @@ namespace Carnivale
             if (!flag)
             {
                 BackstoryDatabase.AddBackstory(b);
-                Log.Message("Added " + this.UniqueSaveKey() + " backstory");
+                if (XnopeCoreMod.debugLog)
+                    Log.Message("Added " + this.UniqueSaveKey() + " backstory");
             }
         }
     }
@@ -157,7 +172,7 @@ namespace Carnivale
     {
         public static string UniqueSaveKey(this BackstoryDef def)
         {
-            // TODO: externalise this when core mod is extracted
+            if (def.defName.StartsWith("XnopeBS_")) return def.defName;
             return "XnopeBS_" + def.defName;
         }
     }
@@ -167,5 +182,4 @@ namespace Carnivale
         public string defName;
         public int degree;
     }
-
 }

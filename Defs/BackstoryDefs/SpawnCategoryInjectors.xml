@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<SpawnCategoryInjectorDefs>
+  
+  <!-->
+  
+  Use this format to inject custom spawn categories into existing backstories:
+  
+  <Xnope.Defs.SpawnCategoryInjectorDef>
+    <defName>unique_name</defName>
+    
+    <newCategory>newCategory</newCategory>
+	
+	<injectToBackstories>
+	  <li>full_title_of_backstory_1</li>
+	  <li>full_title_of_backstory_2</li>
+	</injectToBackstories>
+  </Xnope.Defs.SpawnCategoryInjectorDef>
+  
+  <-->
+  
+  <Xnope.Defs.SpawnCategoryInjectorDef>
+    <defName>SCI_Carnivale</defName>
+    
+    <newCategory>Carnivale</newCategory>
+	<injectToBackstories>
+	  <li>Actor</li>
+	  <li>Con artist</li>
+	  <li>Courtesan</li>
+	  <li>Defector</li>
+	  <li>Escaped convict</li>
+	  <li>Jailbird</li>
+	  <li>Musician</li>
+	  <li>Medieval doctor</li>
+	  <li>Medieval minstrel</li>
+	  <li>Bodyguard</li>
+	  <li>Caravaneer</li>
+	</injectToBackstories>
+  </Xnope.Defs.SpawnCategoryInjectorDef>
+  
+  <Xnope.Defs.SpawnCategoryInjectorDef>
+    <defName>SCI_CarnivaleTrader</defName>
+    
+    <newCategory>CarnivaleTrader</newCategory>
+	<injectToBackstories>
+	  <li>Con artist</li>
+	  <li>Bartender</li>
+	  <li>Caravaneer</li>
+	</injectToBackstories>
+  </Xnope.Defs.SpawnCategoryInjectorDef>
+  
+</SpawnCategoryInjectorDefs>
