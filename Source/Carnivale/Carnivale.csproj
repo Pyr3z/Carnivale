@@ -68,6 +68,7 @@
     <Compile Include="Defs\_PawnGroupKindDefOf.cs" />
     <Compile Include="Defs\_TraderKindDefOf.cs" />
     <Compile Include="FactionExt.cs" />
+    <Compile Include="IncidentWorkers\CarnivalArrives.cs" />
     <Compile Include="IncidentWorkers\CarnivalFireball.cs" />
     <Compile Include="IncidentWorkers\CarnivalJustice.cs" />
     <Compile Include="IncidentWorkers\CarnivalApproaches.cs" />

@@ -1,12 +1,12 @@
 ﻿using Carnivale.Defs;
 using RimWorld;
-using RimWorld.Planet;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
 namespace Carnivale.IncidentWorkers
 {
-    public class CarnivalApproaches : IncidentWorker_PawnsArrive
+    public class CarnivalApproaches : IncidentWorker
     {
         public override float AdjustedChance
         {
@@ -18,17 +18,6 @@ namespace Carnivale.IncidentWorkers
         }
 
 
-        protected virtual PawnGroupKindDef PawnGroupKindDef
-        { get { return _PawnGroupKindDefOf.Carnival; } }
-
-
-        protected override bool FactionCanBeGroupSource(Faction f, Map map, bool desperate = false)
-        {
-            return f.IsCarnival() &&
-                base.FactionCanBeGroupSource(f, map, desperate);
-        }
-
-
         public override bool TryExecute(IncidentParms parms)
         {
             Map map = (Map)parms.target;
@@ -36,51 +25,92 @@ namespace Carnivale.IncidentWorkers
             int durationDays = Mathf.RoundToInt(this.def.durationDays.RandomInRange);
 
             // Attempt to find a spawn spot.
-            if (!CellFinder.TryFindRandomEdgeCellWith(
-                (IntVec3 c) => map.reachability.CanReachColony(c),
-                map,
-                CellFinder.EdgeRoadChance_Always,
-                out spawnSpot))
+            if (!FindSpawnSpot(map, out spawnSpot))
             {
                 if (CarnivaleMod.debugLog)
-                    Log.Message("Tried to execute incident CarnivalApproaches, failed to find reachable spawn spot.");
+                    Log.Warning("Tried to execute incident CarnivalApproaches, failed to find reachable spawn spot.");
                 return false;
             }
 
-            Faction faction = parms.faction;
+            if (!FindCarnivalFaction(out parms.faction))
+            {
+                if (CarnivaleMod.debugLog)
+                    Log.Warning("Tried to execute incident CarnivalApproaches, failed to find valid faction.");
+                return false;
+            }
 
             // Main dialog node
-            string title = "CarnivalApproachesTitle".Translate(faction.Name);
+            string title = "CarnivalApproachesTitle".Translate(parms.faction.Name);
             DiaNode initialNode = new DiaNode("CarnivalApproachesInitial".Translate(new object[]
             {
-                faction.Name,
+                parms.faction.Name,
                 durationDays,
-                map.info.parent.Label
+                map.info.parent.Label == "Colony" ? "your colony" : map.info.parent.Label
             }));
 
             // Accept button
             DiaOption acceptOption = new DiaOption("CarnivalApproachesAccept".Translate());
-            //acceptOption.action = delegate { };
-            acceptOption.resolveTree = true;
+            acceptOption.action = delegate
+            {
+                // Do accept action
+
+            };
             initialNode.options.Add(acceptOption);
 
             // Accept thank you message
-            DiaNode acceptedNode = new DiaNode("CarnivalApproachesAcceptMessage".Translate(new object[]
+            DiaNode acceptedMessage = new DiaNode("CarnivalApproachesAcceptMessage".Translate(new object[]
             {
-                faction.leader.Name.ToStringFull,
-                faction.Name
+                parms.faction.leader.Name.ToStringFull
             }));
+            DiaOption ok = new DiaOption("OK".Translate());
+            ok.resolveTree = true;
+            acceptedMessage.options.Add(ok);
+            acceptOption.link = acceptedMessage;
 
             // Reject button
             DiaOption rejectOption = new DiaOption("CarnivalApproachesReject".Translate());
-            //rejectOption.action = delegate { };
-            rejectOption.resolveTree = true;
+            rejectOption.action = delegate
+            {
+                // Do reject action
+
+            };
             initialNode.options.Add(rejectOption);
+
+            // Reject fuck you message (TODO: randomise response)
+            DiaNode rejectedMessage = new DiaNode("CarnivalApproachesRejectMessage".Translate(new object[]
+            {
+                parms.faction.leader.Name.ToStringShort
+            }));
+            DiaOption hangup = new DiaOption("HangUp".Translate());
+            hangup.resolveTree = true;
+            rejectedMessage.options.Add(hangup);
+            rejectOption.link = rejectedMessage;
 
             // Draw dialog
             Find.WindowStack.Add(new Dialog_NodeTree(initialNode, true, true, title));
 
             return true;
         }
+
+
+        private static bool FindCarnivalFaction(out Faction faction)
+        {
+            faction = (from f in Find.FactionManager.AllFactionsListForReading
+                       where f.IsCarnival() && !f.HostileTo(Faction.OfPlayer)
+                       select f).RandomElement();
+
+            if (faction == null) return false;
+            return true;
+        }
+
+        private static bool FindSpawnSpot(Map map, out IntVec3 spot)
+        {
+            return CellFinder.TryFindRandomEdgeCellWith(
+                (IntVec3 c) => map.reachability.CanReachColony(c),
+                map,
+                CellFinder.EdgeRoadChance_Always,
+                out spot);
+        }
+
     }
 }

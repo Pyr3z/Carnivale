@@ -4,7 +4,7 @@
 
   <!-- =============== (Class) Carnival Base -->
   <FactionDef Name="Factions_Core" Abstract="True">
-	<factionNameMaker>Carn_Faction_NameSet</factionNameMaker>
+	<factionNameMaker>Carn_Faction_Namer</factionNameMaker>
 	<pawnsPlural>carnies</pawnsPlural>
 	<leaderTitle>manager</leaderTitle>
 	<techLevel>Industrial</techLevel>

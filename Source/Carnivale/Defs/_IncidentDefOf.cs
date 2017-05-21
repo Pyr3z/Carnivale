@@ -7,6 +7,8 @@ namespace Carnivale.Defs
     {
         public static IncidentDef CarnivalApproaches;
 
+        public static IncidentDef CarnivalArrives;
+
         public static IncidentDef CarnivalFireball;
 
         public static IncidentDef CarnivalJustice;

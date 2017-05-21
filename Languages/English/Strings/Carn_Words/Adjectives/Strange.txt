@@ -3,4 +3,6 @@ misfit
 odd
 motley
 curious
-circus
+zany
+wacky
+fun
