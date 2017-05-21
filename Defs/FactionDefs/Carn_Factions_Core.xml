@@ -11,8 +11,9 @@
 	
 	<canMakeRandomly>true</canMakeRandomly>
 	<maxCountAtGameStart>8</maxCountAtGameStart>
-	<hidden>true</hidden>
-	<!-- unhidden later in code to allow relationship tracking -->
+	<hidden>false</hidden>
+	<!-- hidden then unhidden later in code to allow relationship tracking,
+		 but disable faction base generation. -->
 	
 	<raidCommonality>0</raidCommonality>
 	<canStageAttacks>false</canStageAttacks>

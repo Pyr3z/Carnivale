@@ -74,6 +74,7 @@
     <Compile Include="IncidentWorkers\CarnivalApproaches.cs" />
     <Compile Include="Patches\Postfix_GenerateFactionsIntoWorld.cs" />
     <Compile Include="Patches\Postfix_GenerateNewLeader.cs" />
+    <Compile Include="Patches\Prefix_GenerateFactionsIntoWorld.cs" />
     <Compile Include="PawnGroupKindWorkers\PawnGroupKindWorker_Carnival.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

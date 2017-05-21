@@ -8,6 +8,9 @@ namespace Carnivale.IncidentWorkers
 {
     public class CarnivalApproaches : IncidentWorker
     {
+        private const int acceptanceBonus = 5;
+        private const int rejectionPenalty = -10;
+
         public override float AdjustedChance
         {
             get
@@ -53,7 +56,16 @@ namespace Carnivale.IncidentWorkers
             acceptOption.action = delegate
             {
                 // Do accept action
+                parms.faction.AffectGoodwillWith(Faction.OfPlayer, acceptanceBonus);
 
+                IncidentParms arrivalParms = StorytellerUtility.DefaultParmsNow(Find.Storyteller.def, IncidentCategory.AllyArrival, map);
+                arrivalParms.forced = true;
+                arrivalParms.faction = parms.faction;
+                arrivalParms.spawnCenter = spawnSpot;
+                arrivalParms.points = parms.points; // Do this?
+
+                QueuedIncident qi = new QueuedIncident(new FiringIncident(_IncidentDefOf.CarnivalArrives, null, arrivalParms), Find.TickManager.TicksGame + GenDate.TicksPerDay);
+                Find.Storyteller.incidentQueue.Add(qi);
             };
             initialNode.options.Add(acceptOption);
 
@@ -72,7 +84,7 @@ namespace Carnivale.IncidentWorkers
             rejectOption.action = delegate
             {
                 // Do reject action
-
+                parms.faction.AffectGoodwillWith(Faction.OfPlayer, rejectionPenalty);
             };
             initialNode.options.Add(rejectOption);
 
