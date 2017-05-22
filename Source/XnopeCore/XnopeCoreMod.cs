@@ -1,7 +1,9 @@
 ﻿using Harmony;
 using HugsLib;
+using RimWorld;
 using System.Reflection;
 using Verse;
+using Xnope.Patches;
 
 namespace Xnope
 {
@@ -18,6 +20,19 @@ namespace Xnope
         {
             HarmonyInstance harmony = HarmonyInstance.Create("com.github.xnope.core");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+            //// Manual patching
+            //harmony.Patch(
+            //    typeof(Faction).GetMethod("GenerateNewLeader"),
+            //    new HarmonyMethod(
+            //        typeof(Prefix_GenerateNewLeader).GetMethod("Prefix")
+            //    ),
+            //    new HarmonyMethod(
+            //        typeof(Postfix_GenerateNewLeader).GetMethod("Postfix")
+            //    ),
+            //    null
+            //);
+
         }
     }
 }

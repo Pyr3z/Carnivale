@@ -14,8 +14,8 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -59,7 +59,10 @@
   <ItemGroup>
     <Compile Include="Defs\BackstoryDef.cs" />
     <Compile Include="Defs\SpawnCategoryInjectorDef.cs" />
-    <Compile Include="Patches\Postfix_ReloadAllBackstories.cs" />
+    <Compile Include="Patches\GenerateFactionsIntoWorld.cs" />
+    <Compile Include="Patches\ReloadAllBackstories.cs" />
+    <Compile Include="FactionExtension.cs" />
+    <Compile Include="Patches\GenerateNewLeader.cs" />
     <Compile Include="XnopeCoreMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using RimWorld;
 using Verse;
 using System.Linq;
-using Carnivale.Defs;
-using System.Reflection;
 using UnityEngine;
 
 namespace Carnivale.PawnGroupKindWorkers

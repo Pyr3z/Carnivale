@@ -6,13 +6,20 @@ using Xnope.Defs;
 
 namespace Xnope.Patches
 {
+    // Postfix patch:
     // injects changes to vanilla backstories
-
     [HarmonyPatch(typeof(BackstoryDatabase), "ReloadAllBackstories")]
     public static class Postfix_ReloadAllBackstories
     {
         [HarmonyPostfix]
-        public static void InjectBackstoryData()
+        public static void Postfix()
+        {
+            InjectBackstoryData();
+
+        }
+
+
+        private static void InjectBackstoryData()
         {
             foreach (var injector in DefDatabase<SpawnCategoryInjectorDef>.AllDefs)
             {

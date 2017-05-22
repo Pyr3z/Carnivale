@@ -10,10 +10,17 @@
 	<techLevel>Industrial</techLevel>
 	
 	<canMakeRandomly>true</canMakeRandomly>
-	<maxCountAtGameStart>8</maxCountAtGameStart>
+	<maxCountAtGameStart>3</maxCountAtGameStart>
 	<hidden>false</hidden>
 	<!-- hidden then unhidden later in code to allow relationship tracking,
 		 but disable faction base generation. -->
+		 
+    <modExtensions>
+	  <li Class="Xnope.FactionExtension">
+	    <isRoaming>true</isRoaming>
+		<dynamicNaming>true</dynamicNaming>
+	  </li>
+	</modExtensions>
 	
 	<raidCommonality>0</raidCommonality>
 	<canStageAttacks>false</canStageAttacks>
@@ -61,7 +68,7 @@
 	<label>Roaming Carnival</label>
 	<description>Formed from an eclectic collection of misfits, these sturdy humans have come to live off the flotsam and goodwill of others, and continue to live in this way by providing the scattered peoples of the rim worlds a unique source of curiosity and entertainment in exchange for hospitality. Never keen on lingering anywhere for long, their lives are, and always will be, slaves to the road.</description>
 	
-	<requiredCountAtGameStart>3</requiredCountAtGameStart>
+	<requiredCountAtGameStart>2</requiredCountAtGameStart>
 	
 	<pawnGroupMakers>
 	  

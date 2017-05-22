@@ -15,5 +15,7 @@ namespace Carnivale.IncidentWorkers
             return f.IsCarnival() &&
                 base.FactionCanBeGroupSource(f, map, desperate);
         }
+
+
     }
 }

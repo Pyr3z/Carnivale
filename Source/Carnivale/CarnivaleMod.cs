@@ -6,9 +6,12 @@ namespace Carnivale
     [StaticConstructorOnStartup]
     public class CarnivaleMod : ModBase
     {
+        public static readonly bool debugLog = true;
+
         public override string ModIdentifier { get { return "Carnivale"; } }
 
-        public static readonly bool debugLog = true;
+        protected override bool HarmonyAutoPatch { get { return false; } }
+
 
         static CarnivaleMod()
         {
