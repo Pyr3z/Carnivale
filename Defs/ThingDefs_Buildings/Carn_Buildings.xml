@@ -19,7 +19,12 @@
   
   
   <!-- Tent small -->
-  
+  <ThingDef ParentName="CarnBuilding">
+    <defName>Carn_TentSmall</defName>
+	<label>small carnival tent</label>
+	<thingClass>Carnivale.Building_Tent</thingClass>
+	
+  </ThingDef>
   
   
 </ThingDefs>

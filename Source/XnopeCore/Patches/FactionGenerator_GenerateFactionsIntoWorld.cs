@@ -5,17 +5,25 @@ using Verse;
 
 namespace Xnope.Patches
 {
-    // Prefix patch:
-    // hides roaming factions
     [HarmonyPatch(typeof(FactionGenerator), "GenerateFactionsIntoWorld")]
-    public static class Prefix_GenerateFactionsIntoWorld
+    public static class Patch_FactionGenerator_GenerateFactionsIntoWorld
     {
-        [HarmonyPrefix]
+        // Prefix patch:
+        // hides roaming factions
         public static void Prefix()
         {
             HideRoamingFactions();
 
         }
+
+        // Postfix patch:
+        // unhides roaming factions
+        public static void Postfix()
+        {
+            UnhideRoamingFactions();
+
+        }
+
 
 
         private static void HideRoamingFactions()
@@ -27,22 +35,6 @@ namespace Xnope.Patches
                 def.hidden = true;
             }
         }
-    }
-
-
-
-    // Postfix patch:
-    // unhides roaming factions
-    [HarmonyPatch(typeof(FactionGenerator), "GenerateFactionsIntoWorld")]
-    public static class Postfix_GenerateFactionsIntoWorld
-    {
-        [HarmonyPostfix]
-        public static void Postfix()
-        {
-            UnhideRoamingFactions();
-
-        }
-
 
         private static void UnhideRoamingFactions()
         {
