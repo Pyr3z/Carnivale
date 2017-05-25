@@ -1,3 +1,5 @@
+Requires (XnopeCore)[https://github.com/Xnope/XnopeCore]
+
 # Carnivale
 My first mod for Rimworld. Adds a new unique faction type: carnivals. Many other new unique features like rare items and backstories.
 
