@@ -56,8 +56,7 @@
 	
 	<colorSpectrum>
 	  <li>(0.4, 1, 0)</li>
-	  <li>(0.3, 0.75, 0)</li>	  
-	  <li>(0.2, 0.5, 0)</li>
+	  <li>(0.47, 0.5, 0.91)</li>
 	</colorSpectrum>
     
   </FactionDef>

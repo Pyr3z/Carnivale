@@ -14,8 +14,7 @@ namespace Carnivale
 
         static CarnivaleMod()
         {
-            // Harmony patching handled by HugsLib
-
+            
         }
 
     }
