@@ -98,7 +98,6 @@
 	  <li>CarnivaleRare</li>
 	  <li>Raider</li>
 	  <li>Slave</li>
-	  <li>Trader</li>
 	  <li>Traveler</li>
 	</spawnCategories>
 	
@@ -246,6 +245,39 @@
 	  <li>Raider</li>
 	  <li>Slave</li>
 	  <li>Trader</li>
+	  <li>Traveler</li>
+	</spawnCategories>
+  </Xnope.Defs.BackstoryDef>
+  
+  
+  <!-- GypsyRare -->
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_GypsyRare</defName>
+	<slot>Adulthood</slot>
+	<title>Rim world gypsy</title>
+	<titleShort>Gypsy</titleShort>
+	<baseDescription>Folks used to say that gypsies are an ancient human culture often gifted with powers of foresight, and that is why they have been fortunate enough in their wanderlust to have survived the eons since their genesis on Earth. NAME identifies as a gypsy, and most people believe HIM as HE seems to give off an aura of psychic awareness.</baseDescription>
+	
+	<skillGains>
+	  <li><defName>Cooking</defName><degree>2</degree></li>
+	  <li><defName>Medicine</defName><degree>3</degree></li>
+	</skillGains>
+	
+	<forcedTraits>
+	  <li><defName>PsychicSensitivity</defName><degree>2</degree></li>
+	  <li><defName>Luckiness</defName><degree>1</degree></li>
+	</forcedTraits>
+	
+	<workDisables>
+	  <li>Mining</li>
+	</workDisables>
+	
+	<bodyTypeMale>Male</bodyTypeMale>
+	<bodyTypeFemale>Female</bodyTypeFemale>
+	
+	<spawnCategories>
+	  <li>CarnivaleRare</li>
+	  <li>Slave</li>
 	  <li>Traveler</li>
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>

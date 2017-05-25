@@ -30,14 +30,14 @@ namespace Carnivale.IncidentWorkers
             // Attempt to find a spawn spot.
             if (!FindSpawnSpot(map, out spawnSpot))
             {
-                if (CarnivaleMod.debugLog)
+                if (Prefs.DevMode)
                     Log.Warning("Tried to execute incident CarnivalApproaches, failed to find reachable spawn spot.");
                 return false;
             }
 
             if (!FindCarnivalFaction(out parms.faction))
             {
-                if (CarnivaleMod.debugLog)
+                if (Prefs.DevMode)
                     Log.Warning("Tried to execute incident CarnivalApproaches, failed to find valid faction.");
                 return false;
             }

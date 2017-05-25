@@ -40,7 +40,7 @@ namespace Xnope.Defs
 
             if (BackstoryDatabase.allBackstories.ContainsKey(this.UniqueSaveKey()))
             {
-                Log.Error(this.defName + " is duplicated. Skipping.");
+                Log.Warning(this.defName + " is duplicated. Skipping.");
                 return;
             }
 
@@ -162,7 +162,7 @@ namespace Xnope.Defs
             if (!flag)
             {
                 BackstoryDatabase.AddBackstory(b);
-                if (XnopeCoreMod.debugLog)
+                if (Prefs.DevMode)
                     Log.Message("Added " + this.UniqueSaveKey() + " backstory");
             }
         }

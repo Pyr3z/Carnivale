@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+  
+  <!-- await forum help: this causes black screen of death -->
+  <Operation Class="PatchOperationReplace">
+    <xpath>//StatDef[defName = "MiningYield"]/maxValue</xpath>
+	<value>
+	  <maxValue>1.15</maxValue>
+	</value>
+  </Operation>
+  
+</Patch>

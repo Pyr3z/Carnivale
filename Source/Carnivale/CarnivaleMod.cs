@@ -1,4 +1,5 @@
 ﻿using HugsLib;
+using RimWorld;
 using Verse;
 
 namespace Carnivale
@@ -6,8 +7,6 @@ namespace Carnivale
     [StaticConstructorOnStartup]
     public class CarnivaleMod : ModBase
     {
-        public static readonly bool debugLog = true;
-
         public override string ModIdentifier { get { return "Carnivale"; } }
 
         protected override bool HarmonyAutoPatch { get { return false; } }
@@ -17,7 +16,6 @@ namespace Carnivale
         {
             // Harmony patching handled by HugsLib
 
-            
         }
 
     }

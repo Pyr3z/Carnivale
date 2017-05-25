@@ -15,6 +15,7 @@ namespace Xnope
 
         public void LoadDataFromXmlCustom(XmlNode root)
         {
+            // Necessary?
             this.def = DefDatabase<FactionDef>.GetNamed(root.Name, true);
         }
 

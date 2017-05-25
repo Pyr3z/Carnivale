@@ -12,17 +12,68 @@
     <repairEffect>Repair</repairEffect>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
     <filthLeaving>BuildingRubble</filthLeaving>
-	<statBases>
-	  <sellPriceFactor>0.70</sellPriceFactor>
-	</statBases>
   </ThingDef>
   
   
   <!-- Tent small -->
   <ThingDef ParentName="CarnBuilding">
     <defName>Carn_TentSmall</defName>
-	<label>small carnival tent</label>
 	<thingClass>Carnivale.Building_Tent</thingClass>
+	<label>carnival tent (small)</label>
+	<description>A small carnival tent containing a one-person-at-a-time attraction.</description>
+	
+	<graphicData>
+	  <texPath>Carnivale/Building/TentSmall</texPath>
+	  <graphicClass>Graphic_Multi</graphicClass>
+	  <shaderType>CutoutComplex</shaderType>
+	  <drawSize>(3,3)</drawSize>
+	  <damageData>
+	    <!-->
+	    <scratches>
+		  <li>Damage/Scratch1</li>
+		  <li>Damage/Scratch2</li>
+		  <li>Damage/Scratch3</li>
+		</scratches>
+		<rect>(0.1,0.1,2.9,2.9)</rect>
+		<-->
+	  </damageData>
+	</graphicData>
+	<size>(3,3)</size>
+	<altitudeLayer>PawnUnused</altitudeLayer>
+	<pathCost>60</pathCost>
+	<passability>PassThroughOnly</passability>
+	
+	<stuffCategories>
+	  <li>Fabric</li>
+	  <li>Leathery</li>
+	</stuffCategories>
+	<costStuffCount>150</costStuffCount>
+	<costList>
+	  <WoodLog>25</WoodLog>
+	</costList>
+	
+	<statBases>
+	  <MaxHitPoints>150</MaxHitPoints>
+	  <Flammability>1.5</Flammability>
+	  <WorkToBuild>2000</WorkToBuild>
+	  <Mass>100</Mass>
+	  <Beauty>6</Beauty>
+	</statBases>
+	
+	<building>
+	  <claimable>false</claimable>
+	  <deconstructible>false</deconstructible>
+	</building>
+	
+	<comps>
+	  <li Class="Xnope.CompProperties_Colorable" />
+	</comps>
+	
+	<placeWorkers>
+	  <li>PlaceWorker_NotUnderRoof</li>
+	</placeWorkers>
+	
+	<designationCategory>Joy</designationCategory>
 	
   </ThingDef>
   

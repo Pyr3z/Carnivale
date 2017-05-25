@@ -10,6 +10,6 @@ namespace Xnope.Defs
         public List<string> injectToBackstories = new List<string>();
         #endregion
 
-        // Actually injected in Postfix_ReloadAllBackstories.
+        // Actually injected in Patch_BackstoryDatabase_ReloadAllBackstories.
     }
 }

@@ -57,6 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Misc\CompProperties_Colorable.cs" />
     <Compile Include="Defs\BackstoryDef.cs" />
     <Compile Include="Defs\SpawnCategoryInjectorDef.cs" />
     <Compile Include="Patches\FactionGenerator_GenerateFactionsIntoWorld.cs" />

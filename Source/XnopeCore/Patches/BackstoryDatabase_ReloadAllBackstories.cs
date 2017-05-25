@@ -29,7 +29,7 @@ namespace Xnope.Patches
                                         select b))
                     {
                         bs.spawnCategories.Add(injector.newCategory);
-                        if (XnopeCoreMod.debugLog)
+                        if (Prefs.DevMode)
                             Log.Message("Added spawn category \'" + injector.newCategory + "\' to backstory \'" + targetBS + "\'");
                     }
                 }

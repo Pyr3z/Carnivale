@@ -10,8 +10,6 @@ namespace Xnope
     [StaticConstructorOnStartup]
     public class XnopeCoreMod : ModBase
     {
-        public static readonly bool debugLog = true;
-
         public override string ModIdentifier { get { return "XnopeCore"; } }
 
         protected override bool HarmonyAutoPatch { get { return false; } }
