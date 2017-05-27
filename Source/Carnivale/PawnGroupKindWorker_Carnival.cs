@@ -4,36 +4,18 @@ using Verse;
 using System.Linq;
 using UnityEngine;
 using Carnivale.Defs;
-using RimWorld.Planet;
 
 namespace Carnivale
 {
     public class PawnGroupKindWorker_Carnival : PawnGroupKindWorker
     {
-        private float minPointsInt = 0f;
-
-
 
         public override float MinPointsToGenerateAnything(PawnGroupMaker groupMaker)
         {
             // NOTE: Just figured out that this would never be used for the
             // Carnival GroupKind. Leaving it here in case I can use it elsewhere.
-            if (minPointsInt > 1f)
-                return minPointsInt;
 
-            float minPoints = 0;
-
-            foreach (PawnGenOption option in groupMaker.traders)
-            {
-                minPoints += option.kind.combatPower * option.selectionWeight;
-            }
-
-            foreach (PawnGenOption option in groupMaker.guards)
-            {
-                minPoints += option.kind.combatPower * option.selectionWeight;
-            }
-
-            return (minPointsInt = minPoints);
+            return groupMaker.options.Min(o => o.Cost);
         }
 
 
@@ -42,6 +24,7 @@ namespace Carnivale
         {
             return groupMaker.kindDef == _DefOf.Carnival &&
                 parms.faction.IsCarnival() &&
+                MinPointsToGenerateAnything(groupMaker) < parms.points &&
                 (parms.tile == -1 ||
                     groupMaker.carriers.Any((PawnGenOption x) => Find.WorldGrid[parms.tile].biome.IsPackAnimalAllowed(x.kind.race)));
         }
@@ -64,26 +47,18 @@ namespace Carnivale
                                                     && parms.faction.leader != p
                                               select p;
 
+            if (existingPawns == null)
+                existingPawns = new HashSet<Pawn>();
+
 
             // Generate vendors (costless)
-            for (int i = 0; i < groupMaker.traders.FirstOrDefault().selectionWeight; i++)
+            for (int i = 0; i < groupMaker.traders.First().selectionWeight; i++)
             {
+                // Get a traderkind by commonality:
                 TraderKindDef traderKind = parms.faction.def.caravanTraderKinds.RandomElementByWeight(k => k.commonality);
-                Pawn vendor;
 
-                if (existingPawns.Any() && (vendor = existingPawns.FirstOrDefault(p => p.TraderKind == traderKind)) != null)
-                {
-                    // Tries to get a previously seen vendor
-                    vendor.mindState.wantsToTradeWithColony = true;
-                    PawnComponentsUtility.AddAndRemoveDynamicComponents(vendor, true);
-
-                    outPawns.Add(vendor);
-                }
-                else
-                {
-                    // Generate new vendor
-                    GenerateVendor(parms, groupMaker, traderKind, outPawns);
-                }
+                // Generate vendor
+                GenerateVendor(parms, groupMaker, traderKind, outPawns, existingPawns);
 
                 // Generate wares
                 ItemCollectionGeneratorParams waresParms = default(ItemCollectionGeneratorParams);
@@ -101,9 +76,9 @@ namespace Carnivale
             }
 
             // Generate options
-            GenerateGroup(parms, groupMaker.options, outPawns);
-            // Generate guards
-            GenerateGroup(parms, groupMaker.guards, outPawns);
+            GenerateGroup(parms, groupMaker.options, outPawns, existingPawns, true);
+            // Generate guards (costless)
+            GenerateGroup(parms, groupMaker.guards, outPawns, existingPawns);
             // Generate manager (costless)
             GenerateLeader(parms, outPawns);
         }
@@ -112,38 +87,44 @@ namespace Carnivale
         /* Private Methods */
 
 
-        private void GenerateVendor(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, TraderKindDef traderKind, List<Pawn> outPawns)
+        private void GenerateVendor(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, TraderKindDef traderKind, List<Pawn> outPawns, IEnumerable<Pawn> existingPawns)
         {
-            PawnGenerationRequest request = new PawnGenerationRequest(
-                groupMaker.traders.RandomElementByWeight(
-                    (PawnGenOption x) => (float)x.selectionWeight
-                ).kind,
-                parms.faction,
-                PawnGenerationContext.NonPlayer,
-                parms.tile,
-                false,
-                false,
-                false,
-                false,
-                true,
-                false,
-                1f,
-                true, // Force free warm layers if needed
-                true,
-                true,
-                parms.inhabitants,
-                false,
-                null, // Consider adding predicate for backstory here
-                null,
-                null,
-                null,
-                null,
-                null
-            );
+            Pawn vendor = existingPawns.FirstOrDefault(p => traderKind == p.TraderKind);
 
-            Pawn vendor = PawnGenerator.GeneratePawn(request);
+            // Tries to get existing vendor:
+            if (vendor == null)
+            {
+                // Generate new vendor if no existing vendor
+                PawnGenerationRequest request = new PawnGenerationRequest(
+                    groupMaker.traders.RandomElement().kind,
+                    parms.faction,
+                    PawnGenerationContext.NonPlayer,
+                    parms.tile,
+                    false,
+                    false,
+                    false,
+                    false,
+                    true,
+                    false,
+                    1f,
+                    true, // Force free warm layers if needed
+                    true,
+                    true,
+                    parms.inhabitants,
+                    false,
+                    null, // Consider adding predicate for backstory here
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                );
+
+                vendor = PawnGenerator.GeneratePawn(request);
+            }
 
             vendor.mindState.wantsToTradeWithColony = true;
+
             PawnComponentsUtility.AddAndRemoveDynamicComponents(vendor, true);
             vendor.trader.traderKind = traderKind;
 
@@ -161,7 +142,7 @@ namespace Carnivale
             PawnKindDef carrierKind = (from x in groupMaker.carriers
                                        where parms.tile == -1
                                        || Find.WorldGrid[parms.tile].biome.IsPackAnimalAllowed(x.kind.race)
-                                       select x).RandomElementByWeight((PawnGenOption o) => o.selectionWeight).kind;
+                                       select x).RandomElementByWeight(o => o.selectionWeight).kind;
             int i = 0;
             int numCarriers = Mathf.CeilToInt(waresList.Count / 8f);
 
@@ -213,47 +194,52 @@ namespace Carnivale
 
 
 
-        private void GenerateGroup(PawnGroupMakerParms parms, List<PawnGenOption> group, List<Pawn> outPawns)
+        private void GenerateGroup(PawnGroupMakerParms parms, List<PawnGenOption> group, List<Pawn> outPawns, IEnumerable<Pawn> existingPawns, bool subtractPoints = false)
         {
-            if (!group.Any())
-                return;
 
             foreach (PawnGenOption option in group)
             {
-                // TODO: points scaling curve
                 for (int i = 0; i < option.selectionWeight; i++)
                 {
-                    PawnGenerationRequest request = new PawnGenerationRequest(
-                        option.kind,
-                        parms.faction,
-                        PawnGenerationContext.NonPlayer,
-                        parms.tile,
-                        false,
-                        false,
-                        false,
-                        false,
-                        true,
-                        true,
-                        1f,
-                        true, // Force free warm layers if needed
-                        true,
-                        true,
-                        parms.inhabitants,
-                        false,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
-                    );
+                    if (subtractPoints)
+                        if (option.Cost > parms.points)
+                            continue;
+                        else
+                            parms.points -= option.Cost;
 
-                    if (option.kind.combatPower < parms.points)
+
+                    Pawn pawn = existingPawns.FirstOrDefault(p => p.kindDef == option.kind);
+                    if (pawn == null)
                     {
-                        Pawn pawn = PawnGenerator.GeneratePawn(request);
-                        parms.points -= option.kind.combatPower;
-                        outPawns.Add(pawn);
+                        PawnGenerationRequest request = new PawnGenerationRequest(
+                            option.kind,
+                            parms.faction,
+                            PawnGenerationContext.NonPlayer,
+                            parms.tile,
+                            false,
+                            false,
+                            false,
+                            false,
+                            true,
+                            true,
+                            1f,
+                            true, // Force free warm layers if needed
+                            true,
+                            true,
+                            parms.inhabitants,
+                            false,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null
+                        );
+
+                        pawn = PawnGenerator.GeneratePawn(request);
                     }
+
+                    outPawns.Add(pawn);
                 }
             }
         }

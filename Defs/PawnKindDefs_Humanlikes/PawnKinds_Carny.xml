@@ -158,7 +158,6 @@
 	
 	<factionLeader>true</factionLeader>
 	
-	<!-- from Outlander TownGuard -->
 	<combatPower>55</combatPower>
 	<minGenerationAge>30</minGenerationAge>
 	<maxGenerationAge>65</maxGenerationAge>
@@ -171,7 +170,7 @@
       <min>800</min>
       <max>1300</max>
     </apparelMoney>
-    <apparelAllowHeadwearChance>0.4</apparelAllowHeadwearChance>
+    <apparelAllowHeadwearChance>0.95</apparelAllowHeadwearChance> <!-- Hats. Always. -->
     <weaponMoney>
       <min>200</min>
       <max>600</max>
@@ -208,7 +207,7 @@
 	<trader>true</trader>
 	
 	<!-- from Outlander villager -->
-	<combatPower>40</combatPower>
+	<combatPower>35</combatPower>
     <itemQuality>Normal</itemQuality>
     <gearHealthRange>
       <min>0.5</min>
@@ -265,7 +264,7 @@
       <min>800</min>
       <max>1300</max>
     </apparelMoney>
-    <apparelAllowHeadwearChance>0.4</apparelAllowHeadwearChance>
+    <apparelAllowHeadwearChance>0.2</apparelAllowHeadwearChance>
     <weaponMoney>
       <min>200</min>
       <max>600</max>
@@ -300,7 +299,7 @@
 	<label>roustabout</label>
 	
 	<!-- from Outlander TownGuard -->
-	<combatPower>40</combatPower>
+	<combatPower>35</combatPower>
 	<maxGenerationAge>40</maxGenerationAge>
 	<itemQuality>Shoddy</itemQuality>
 	<gearHealthRange>
@@ -311,7 +310,7 @@
       <min>200</min>
       <max>400</max>
     </apparelMoney>
-    <apparelAllowHeadwearChance>0.4</apparelAllowHeadwearChance>
+    <apparelAllowHeadwearChance>0.2</apparelAllowHeadwearChance>
     <weaponMoney>
       <min>50</min>
       <max>150</max>

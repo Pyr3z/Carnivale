@@ -74,11 +74,11 @@
 	  <!-- Carnival -->
 	  <li>
 	    <kindDef>Carnival</kindDef>
-		<!-- These values are not treated as points by the code, but as counts. -->
+		<!-- These values are not treated as selection weights by the code, but as counts. -->
 		<options>
-		  <Carny>6</Carny>
-		  <CarnyRoustabout>6</CarnyRoustabout>
-		  <CarnyRare>3</CarnyRare>
+		  <Carny>4</Carny>
+		  <CarnyRoustabout>3</CarnyRoustabout>
+		  <CarnyRare>2</CarnyRare>
 		</options>
 		
 		<traders>
@@ -91,7 +91,7 @@
 		</carriers>
 		
 		<guards>
-		  <CarnyGuard>6</CarnyGuard>
+		  <CarnyGuard>2</CarnyGuard>
 		</guards>
 	  </li>
 	  

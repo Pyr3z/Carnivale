@@ -145,12 +145,10 @@
 	<slot>Adulthood</slot>
 	<title>Carnival announcer</title>
 	<titleShort>Announcer</titleShort>
-	<baseDescription>It was NAME's job to be a constant stream of shiny talk and information in order to hold the rubes' attentions. HECAP is adept at thinking quickly on the spot, and always seems to know just what to say.</baseDescription>
+	<baseDescription>Due to an injury sustained by raiders on the road, NAME was no longer able to perform in the traveling carnival HE called home. Determined to remain an important figure in the carnival hierarchy, NAME fulfilled the job of an announcer instead of a performer. After a few seasons, HE learned how to sling shiny talk proficiently as well as control the attentions of anyone within earshot.</baseDescription>
 	
 	<skillGains>
 	  <li><defName>Social</defName><degree>5</degree></li>
-	  <li><defName>Shooting</defName><degree>2</degree></li>
-	  <li><defName>Melee</defName><degree>2</degree></li>
 	</skillGains>
 	
 	<disallowedTraits>

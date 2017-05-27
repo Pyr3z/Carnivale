@@ -35,7 +35,7 @@ namespace Carnivale
             Map map = (Map)parms.target;
             PawnGroupMakerParms defaultMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(parms);
 
-            List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(this.PawnGroupKindDef, defaultMakerParms, false).ToList<Pawn>();
+            List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(this.PawnGroupKindDef, defaultMakerParms, false).ToList();
 
             foreach (Pawn p in list)
             {
@@ -96,7 +96,7 @@ namespace Carnivale
                 text += "CarnivalArrivalVendorsList".Translate();
                 foreach (Pawn vendor in vendors)
                 {
-                    text += "\n  " + vendor.NameStringShort + ", " + vendor.TraderKind.label;
+                    text += "\n  " + vendor.NameStringShort + ", " + vendor.TraderKind.label.CapitalizeFirst();
                 }
             }
 

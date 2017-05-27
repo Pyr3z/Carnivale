@@ -14,7 +14,7 @@
 		<socialFightChanceFactor>1.25</socialFightChanceFactor>
 		<statOffsets>
           <GlobalLearningFactor>0.25</GlobalLearningFactor>
-          <MentalBreakThreshold>0.6</MentalBreakThreshold>
+          <MentalBreakThreshold>0.06</MentalBreakThreshold>
         </statOffsets>
 	  </li>
 	</degreeDatas>
