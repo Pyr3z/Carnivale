@@ -71,32 +71,38 @@
 	
 	<pawnGroupMakers>
 	  
-	  <!-- Carnival -->
+	  <!-- Carnival Groups -->
 	  <li>
 	    <kindDef>Carnival</kindDef>
-		<!-- These values are not treated as selection weights by the code, but as counts. -->
+		<!-- These values are not treated as selection weights by the code, but as maximum counts. -->
 		<options>
-		  <Carny>4</Carny>
-		  <CarnyRoustabout>3</CarnyRoustabout>
-		  <CarnyRare>2</CarnyRare>
+		  <Carny>4</Carny> <!-- Cost: 33 * = 132 -->
+		  <CarnyRoustabout>3</CarnyRoustabout> <!-- Cost: 45 * 3 = 135 -->
+		  <CarnyRare>2</CarnyRare> <!-- Cost: 45 * 2 = 90 -->
+		  <!-- Cost for full group: 357 -->
 		</options>
 		
 		<traders>
+		  <!-- Treated as costless -->
 		  <CarnyTrader>3</CarnyTrader>
 		</traders>
 		
 		<carriers>
+		  <!-- Treated as costless -->
 		  <Muffalo>1</Muffalo>
 		  <Dromedary>1</Dromedary>
 		</carriers>
 		
 		<guards>
+		  <!-- Treated as costless -->
 		  <CarnyGuard>2</CarnyGuard>
 		</guards>
 	  </li>
 	  
-	  <!-- Normal (dummy for leader generation) -->
+	  
+	  
 	  <li>
+	    <!-- (dummy for leader generation) -->
 	    <kindDef>Normal</kindDef>
 		<commonality>0</commonality>
 		

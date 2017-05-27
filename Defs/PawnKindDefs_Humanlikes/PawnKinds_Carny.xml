@@ -114,7 +114,7 @@
 	<label>carny</label>
 	
 	<!-- from Outlander villager -->
-	<combatPower>33</combatPower>
+	<combatPower>45</combatPower>
 	<isFighter>false</isFighter>
     <itemQuality>Good</itemQuality>
     <gearHealthRange>
@@ -299,7 +299,7 @@
 	<label>roustabout</label>
 	
 	<!-- from Outlander TownGuard -->
-	<combatPower>35</combatPower>
+	<combatPower>45</combatPower>
 	<maxGenerationAge>40</maxGenerationAge>
 	<itemQuality>Shoddy</itemQuality>
 	<gearHealthRange>

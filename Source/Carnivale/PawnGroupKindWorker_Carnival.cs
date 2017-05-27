@@ -194,53 +194,58 @@ namespace Carnivale
 
 
 
-        private void GenerateGroup(PawnGroupMakerParms parms, List<PawnGenOption> group, List<Pawn> outPawns, IEnumerable<Pawn> existingPawns, bool subtractPoints = false)
+        private void GenerateGroup(PawnGroupMakerParms parms, List<PawnGenOption> options, List<Pawn> outPawns, IEnumerable<Pawn> existingPawns, bool subtractPoints = false)
         {
-
-            foreach (PawnGenOption option in group)
+            int counter = 0;
+            while (counter < options.Max(o => o.selectionWeight))
             {
-                for (int i = 0; i < option.selectionWeight; i++)
+                foreach (var option in options)
                 {
-                    if (subtractPoints)
-                        if (option.Cost > parms.points)
-                            continue;
-                        else
-                            parms.points -= option.Cost;
-
-
-                    Pawn pawn = existingPawns.FirstOrDefault(p => p.kindDef == option.kind);
-                    if (pawn == null)
+                    if (counter < option.selectionWeight)
                     {
-                        PawnGenerationRequest request = new PawnGenerationRequest(
-                            option.kind,
-                            parms.faction,
-                            PawnGenerationContext.NonPlayer,
-                            parms.tile,
-                            false,
-                            false,
-                            false,
-                            false,
-                            true,
-                            true,
-                            1f,
-                            true, // Force free warm layers if needed
-                            true,
-                            true,
-                            parms.inhabitants,
-                            false,
-                            null,
-                            null,
-                            null,
-                            null,
-                            null,
-                            null
-                        );
+                        if (subtractPoints)
+                            if (option.Cost > parms.points)
+                                continue;
+                            else
+                                parms.points -= option.Cost;
 
-                        pawn = PawnGenerator.GeneratePawn(request);
+
+                        Pawn pawn = existingPawns.FirstOrDefault(p => p.kindDef == option.kind);
+                        if (pawn == null)
+                        {
+                            PawnGenerationRequest request = new PawnGenerationRequest(
+                                option.kind,
+                                parms.faction,
+                                PawnGenerationContext.NonPlayer,
+                                parms.tile,
+                                false,
+                                false,
+                                false,
+                                false,
+                                true,
+                                true,
+                                1f,
+                                true, // Force free warm layers if needed
+                                true,
+                                true,
+                                parms.inhabitants,
+                                false,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            );
+
+                            pawn = PawnGenerator.GeneratePawn(request);
+                        }
+
+                        outPawns.Add(pawn);
                     }
-
-                    outPawns.Add(pawn);
                 }
+
+                counter++;
             }
         }
 
