@@ -4,8 +4,9 @@
   <PawnGroupKindDef>
     <defName>Carnival</defName>
 	<label>carnival</label>
+	<description>A collection of carnies. They are often accompanied by many able-bodied people, vendors, and of course, eccentrics.</description>
 	
-	<workerClass>Carnivale.PawnGroupKindWorkers.Carnival</workerClass>
+	<workerClass>Carnivale.PawnGroupKindWorker_Carnival</workerClass>
   </PawnGroupKindDef>
   
 </PawnGroupKindDefs>

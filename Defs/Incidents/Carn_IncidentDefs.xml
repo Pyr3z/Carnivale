@@ -4,11 +4,14 @@
   <IncidentDef>
     <defName>CarnivalApproaches</defName>
 	<label>carnival approaches</label>
-	<workerClass>Carnivale.IncidentWorkers.CarnivalApproaches</workerClass>
-	<category>Misc</category>
+	<workerClass>Carnivale.IncidentWorker_CarnivalApproaches</workerClass>
+	<category>AllyArrival</category>
 	<targetType>MapPlayerHome</targetType>
+	
 	<minPopulation>3</minPopulation>
-	<baseChance>0</baseChance>
+	<baseChance>1</baseChance>
+	<pointsScaleable>true</pointsScaleable>
+	
 	<durationDays>
 	  <min>2</min>
 	  <max>7</max>
@@ -18,31 +21,33 @@
   <IncidentDef>
     <defName>CarnivalArrives</defName>
 	<label>carnival arrives</label>
-	<workerClass>Carnivale.IncidentWorkers.CarnivalArrives</workerClass>
+	<workerClass>Carnivale.IncidentWorker_CarnivalArrives</workerClass>
 	<category>AllyArrival</category>
 	<targetType>MapPlayerHome</targetType>
+	
+	<pointsScaleable>true</pointsScaleable>
 	<baseChance>0</baseChance> <!-- Manual fire -->
   </IncidentDef>
   
   <IncidentDef>
     <defName>CarnivalFireball</defName>
 	<label>carnival arrives</label> <!-- intentional duplicate label -->
-	<workerClass>Carnivale.IncidentWorkers.CarnivalFireball</workerClass>
+	<workerClass>Carnivale.IncidentWorker_CarnivalFireball</workerClass>
 	<category>AllyArrival</category>
 	<targetType>MapPlayerHome</targetType>
+	
+	<pointsScaleable>true</pointsScaleable>
 	<baseChance>0</baseChance> <!-- Manual fire -->
-	<durationDays>
-	  <min>2</min>
-	  <max>7</max>
-	</durationDays>
   </IncidentDef>
   
   <IncidentDef>
     <defName>CarnivalJustice</defName>
 	<label>carnival justice</label>
-	<workerClass>Carnivale.IncidentWorkers.CarnivalJustice</workerClass>
+	<workerClass>Carnivale.IncidentWorker_CarnivalJustice</workerClass>
 	<category>AllyArrival</category>
 	<targetType>MapPlayerHome</targetType>
+	
+	<pointsScaleable>true</pointsScaleable>
 	<baseChance>0</baseChance> <!-- Manual fire -->
   </IncidentDef>
   

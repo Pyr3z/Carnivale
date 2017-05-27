@@ -37,6 +37,16 @@
 	<isFighter>true</isFighter>
   </PawnKindDef>
   
+  <PawnKindDef Name="PawnKinds_Roustabout" Abstract="True">
+    <race>Human</race>
+	<defaultFactionType>Carn_Faction_Roaming</defaultFactionType>
+	<chemicalAddictionChance>0.1</chemicalAddictionChance>
+	<baseRecruitDifficulty>0.65</baseRecruitDifficulty>
+	<backstoryCategory>CarnivaleRoustabout</backstoryCategory>
+	
+	<isFighter>true</isFighter>
+  </PawnKindDef>
+  
   
   <!-- =============== Carny -->
   
@@ -131,24 +141,11 @@
     <invNutrition>2.55</invNutrition>
     <inventoryOptions>
       <skipChance>0.75</skipChance>
-      <subOptionsChooseOne>
-        <li>
-          <choiceChance>90</choiceChance>
-          <thingDef>Silver</thingDef>
+      <thingDef>Silver</thingDef>
           <countRange>
-            <min>25</min>
-            <max>70</max>
+            <min>15</min>
+            <max>50</max>
           </countRange>
-        </li>
-        <li>
-          <choiceChance>10</choiceChance>
-          <thingDef>Silver</thingDef>
-          <countRange>
-            <min>700</min>
-            <max>1000</max>
-          </countRange>
-        </li>
-      </subOptionsChooseOne>
     </inventoryOptions>
   </PawnKindDef>
   
@@ -165,6 +162,7 @@
 	<combatPower>55</combatPower>
 	<minGenerationAge>30</minGenerationAge>
 	<maxGenerationAge>65</maxGenerationAge>
+	<itemQuality>Excellent</itemQuality>
 	<gearHealthRange>
       <min>0.5</min>
       <max>1.8</max>
@@ -191,11 +189,11 @@
     <techHediffsChance>0.001</techHediffsChance>
     <invNutrition>2.55</invNutrition>
     <inventoryOptions>
-      <skipChance>0.95</skipChance>
+      <skipChance>0.15</skipChance>
       <thingDef>Silver</thingDef>
       <countRange>
-        <min>30</min>
-        <max>100</max>
+        <min>200</min>
+        <max>400</max>
       </countRange>
     </inventoryOptions>
   </PawnKindDef>
@@ -205,7 +203,7 @@
   
   <PawnKindDef ParentName="PawnKinds_Trader">
     <defName>CarnyTrader</defName>
-	<label>carnival vendor</label>
+	<label>vendor</label>
 	
 	<trader>true</trader>
 	
@@ -253,11 +251,12 @@
   
   <PawnKindDef ParentName="PawnKinds_Fighter">
     <defName>CarnyGuard</defName>
-	<label>carnival guard</label>
+	<label>guard</label>
 	
 	<!-- from Outlander TownGuard -->
 	<combatPower>50</combatPower>
 	<maxGenerationAge>65</maxGenerationAge>
+	<itemQuality>Normal</itemQuality>
 	<gearHealthRange>
       <min>0.5</min>
       <max>1.8</max>
@@ -284,15 +283,59 @@
     <techHediffsChance>0.001</techHediffsChance>
     <invNutrition>2.55</invNutrition>
     <inventoryOptions>
-      <skipChance>0.95</skipChance>
+      <skipChance>0.50</skipChance>
       <thingDef>Silver</thingDef>
       <countRange>
-        <min>30</min>
-        <max>100</max>
+        <min>15</min>
+        <max>35</max>
       </countRange>
     </inventoryOptions>
   </PawnKindDef>
   
   
+  <!-- =============== Razorback -->
+  
+  <PawnKindDef ParentName="PawnKinds_Roustabout">
+    <defName>CarnyRoustabout</defName>
+	<label>roustabout</label>
+	
+	<!-- from Outlander TownGuard -->
+	<combatPower>40</combatPower>
+	<maxGenerationAge>40</maxGenerationAge>
+	<itemQuality>Shoddy</itemQuality>
+	<gearHealthRange>
+      <min>0.5</min>
+      <max>1.8</max>
+    </gearHealthRange>
+    <apparelMoney>
+      <min>200</min>
+      <max>400</max>
+    </apparelMoney>
+    <apparelAllowHeadwearChance>0.4</apparelAllowHeadwearChance>
+    <weaponMoney>
+      <min>50</min>
+      <max>150</max>
+    </weaponMoney>
+    <weaponTags>
+      <li>Melee</li>
+    </weaponTags>
+    <techHediffsMoney>
+      <min>200</min>
+      <max>300</max>
+    </techHediffsMoney>
+    <techHediffsTags>
+      <li>Simple</li>
+    </techHediffsTags>
+    <techHediffsChance>0.001</techHediffsChance>
+    <invNutrition>2.55</invNutrition>
+    <inventoryOptions>
+      <skipChance>0.50</skipChance>
+      <thingDef>Silver</thingDef>
+      <countRange>
+        <min>5</min>
+        <max>15</max>
+      </countRange>
+    </inventoryOptions>
+  </PawnKindDef>
   
 </PawnKindDefs>

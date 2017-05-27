@@ -6,10 +6,18 @@
   
   <!-- Carnival Approaches -->
   <CarnivalApproachesTitle>{0} contacts you via short range radio.</CarnivalApproachesTitle>
-  <CarnivalApproachesInitial>A roaming carnival by the name of {0} is nearby and wishes to set up their show on your land.\n\nThey would like to stay for {1} days to provide your people with premium entertainment.\n\nWould you like to welcome them to {2}?</CarnivalApproachesInitial>
+  <CarnivalApproachesInitial>A traveling carnival by the name of {0} is nearby and wishes to set up their show on your land.\n\nThey would like to stay for {1} days to provide your people with premium entertainment.\n\nWould you like to welcome them to {2}?</CarnivalApproachesInitial>
   <CarnivalApproachesAccept>Sure!</CarnivalApproachesAccept>
   <CarnivalApproachesReject>Sorry, no.</CarnivalApproachesReject>
   <CarnivalApproachesAcceptMessage>{0}, the manager, excitedly thanks you and informs you that they will arrive in one day.</CarnivalApproachesAcceptMessage>
   <CarnivalApproachesRejectMessage>You hear muddled curses, and then a tinny voice saying 'let me speak to them'. The voice gains volume and projects toward you.\n\n'Hello? {0} speaking. There seems to have been a--'.</CarnivalApproachesRejectMessage>
+  
+  
+  <!-- Carnival Arrives -->
+  <LetterLabelCarnivalArrival>{0} is here!</LetterLabelCarnivalArrival>
+  <LetterCarnivalArrival>The traveling carnival, {0}, is entering your territory and will begin to set up their attractions. They will remain for {1} days.</LetterCarnivalArrival>
+  <CarnivalArrivalVendorsList>\n\nThere are several vendors with them:</CarnivalArrivalVendorsList>
+  
+  
   
 </LanguageData>

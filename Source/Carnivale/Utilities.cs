@@ -1,9 +1,8 @@
-﻿using Carnivale.Defs;
-using RimWorld;
+﻿using RimWorld;
 
 namespace Carnivale
 {
-    public static class FactionExt
+    public static class Utilities
     {
         public static bool IsCarnival(this Faction faction)
         {

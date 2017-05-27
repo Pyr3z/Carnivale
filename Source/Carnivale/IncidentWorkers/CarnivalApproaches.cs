@@ -4,9 +4,9 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 
-namespace Carnivale.IncidentWorkers
+namespace Carnivale
 {
-    public class CarnivalApproaches : IncidentWorker
+    public class IncidentWorker_CarnivalApproaches : IncidentWorker
     {
         private const int acceptanceBonus = 5;
         private const int rejectionPenalty = -10;
@@ -63,8 +63,11 @@ namespace Carnivale.IncidentWorkers
                 arrivalParms.faction = parms.faction;
                 arrivalParms.spawnCenter = spawnSpot;
                 arrivalParms.points = parms.points; // Do this?
+                // This is super cheaty, but there is no other field to pass this to.
+                arrivalParms.raidPodOpenDelay = durationDays;
+                // End cheaty.
 
-                QueuedIncident qi = new QueuedIncident(new FiringIncident(_IncidentDefOf.CarnivalArrives, null, arrivalParms), Find.TickManager.TicksGame + GenDate.TicksPerDay);
+                QueuedIncident qi = new QueuedIncident(new FiringIncident(_DefOf.CarnivalArrives, null, arrivalParms), Find.TickManager.TicksGame + GenDate.TicksPerDay);
                 Find.Storyteller.incidentQueue.Add(qi);
             };
             initialNode.options.Add(acceptOption);

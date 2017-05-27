@@ -78,8 +78,18 @@
 	  <li>Apocalypse survivor</li>
 	  <li>Caravan traveler</li>
 	  <li>Refugee</li>
-	  <li>Scout</li>
+	  <li>Scout</li> <!-- Oops. There are two backstories named this. -->
 	</injectToBackstories>
   </Xnope.Defs.SpawnCategoryInjectorDef>
   
+  <Xnope.Defs.SpawnCategoryInjectorDef>
+    <defName>SCI_CarnivaleRoustabout</defName>
+    
+    <newCategory>CarnivaleRoustabout</newCategory>
+	<ignoreAdulthoods>true</ignoreAdulthoods>
+	<injectToCategories>
+	  <li>Civil</li>
+	</injectToCategories>
+  </Xnope.Defs.SpawnCategoryInjectorDef>
+
 </SpawnCategoryInjectorDefs>

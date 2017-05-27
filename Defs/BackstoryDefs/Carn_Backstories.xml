@@ -14,7 +14,9 @@
 	<slot>Childhood</slot>
 	<title>Carny brat</title>
 	<titleShort>Brat</titleShort>
-	<baseDescription>NAME was raised on the road by HIS caretakers, who happened to roll with a roaming carnival on an outer rim world. On the road, NAME learned a well-rounded balance of skills in order to maintain HIS place in the caravan. Times weren't always great, but at least there was no shortage of the interesting and the new.</baseDescription>
+	<baseDescription>NAME was raised on the road by HIS caretakers, who happened to roll with a roaming carnival on an outer rimworld. On the road, NAME learned a well-rounded balance of skills in order to maintain HIS place in the caravan. Times weren't always great, but at least there was no shortage of the interesting and the new.</baseDescription>
+	
+	
 	
 	<skillGains>
 	  <li><defName>Social</defName><degree>4</degree></li>
@@ -44,7 +46,7 @@
   <Xnope.Defs.BackstoryDef>
     <defName>XnopeBS_CarnyProdigy</defName>
 	<slot>Childhood</slot>
-	<title>Carnival prodigy</title>
+	<title>Carny prodigy child</title>
 	<titleShort>Prodigy</titleShort>
 	<baseDescription>When NAME was born, everyone knew HE was special. Raised by carnies and naturally gifted in all that HE attempted, NAME made a name for HIMself as one of the youngest and most brilliant acts in the show. This early fame has led to a few... narcissistic tendencies, however.</baseDescription>
 	
@@ -61,7 +63,7 @@
 	</workDisables>
 	
 	<forcedTraits>
-	  <li><defName>Narcissist</defName><degree>0</degree></li>
+	  <li><defName>Carn_NarcissistTrait</defName><degree>0</degree></li>
 	</forcedTraits>
 	
 	<disallowedTraits>
@@ -85,13 +87,12 @@
 	<baseDescription>Folks used to say that gypsies are an ancient human culture often gifted with powers of foresight, and that is why they have been fortunate enough in their wanderlust to have survived the eons since their genesis on Earth. NAME was raised by HIS mother, a rare woman fabled to have descended from these great wandering folk.</baseDescription>
 	
 	<skillGains>
-	  <li><defName>Social</defName><degree>2</degree></li>
+	  <li><defName>Animals</defName><degree>3</degree></li>
 	  <li><defName>Medicine</defName><degree>4</degree></li>
 	</skillGains>
 	
 	<forcedTraits>
-	  <li><defName>PsychicSensitivity</defName><degree>2</degree></li>
-	  <li><defName>Luckiness</defName><degree>1</degree></li>
+	  <li><defName>Carn_LuckinessTrait</defName><degree>1</degree></li>
 	</forcedTraits>
 	
 	<spawnCategories>
@@ -115,8 +116,9 @@
 	<baseDescription>It was NAME's job to be a constant stream of shiny talk and information in order to hold the rubes' attentions. HECAP is adept at thinking quickly on the spot, and always seems to know just what to say.</baseDescription>
 	
 	<skillGains>
-	  <li><defName>Social</defName><degree>4</degree></li>
-	  <li><defName>Shooting</defName><degree>1</degree></li>
+	  <li><defName>Social</defName><degree>5</degree></li>
+	  <li><defName>Shooting</defName><degree>2</degree></li>
+	  <li><defName>Melee</defName><degree>2</degree></li>
 	</skillGains>
 	
 	<disallowedTraits>
@@ -128,8 +130,13 @@
 	  <li>Social</li>
 	</requiredWorkTags>
 	
+	<workDisables>
+	  <li>PlantWork</li>
+	</workDisables>
+	
 	<spawnCategories>
 	  <li>Carnivale</li>
+	  <li>Uncommon</li>
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>
   
@@ -141,8 +148,9 @@
 	<baseDescription>It was NAME's job to be a constant stream of shiny talk and information in order to hold the rubes' attentions. HECAP is adept at thinking quickly on the spot, and always seems to know just what to say.</baseDescription>
 	
 	<skillGains>
-	  <li><defName>Social</defName><degree>4</degree></li>
-	  <li><defName>Shooting</defName><degree>1</degree></li>
+	  <li><defName>Social</defName><degree>5</degree></li>
+	  <li><defName>Shooting</defName><degree>2</degree></li>
+	  <li><defName>Melee</defName><degree>2</degree></li>
 	</skillGains>
 	
 	<disallowedTraits>
@@ -151,15 +159,21 @@
 	</disallowedTraits>
 	
 	<forcedTraits>
-	  <li><defName>SweetTalker</defName><degree>0</degree></li>
+	  <li><defName>Carn_SweetTalkerTrait</defName><degree>0</degree></li>
 	</forcedTraits>
 	
 	<requiredWorkTags>
 	  <li>Social</li>
 	</requiredWorkTags>
 	
+	<workDisables>
+	  <li>PlantWork</li>
+	  <li>Cooking</li>
+	</workDisables>
+	
 	<spawnCategories>
 	  <li>CarnivaleRare</li>
+	  <li>Rare</li>
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>
   
@@ -168,15 +182,20 @@
   <Xnope.Defs.BackstoryDef>
     <defName>XnopeBS_Weirdo</defName>
 	<slot>Adulthood</slot>
-	<title>Carnival weirdo</title>
+	<title>Carny weirdo</title>
 	<titleShort>Weirdo</titleShort>
-	<baseDescription>All NAME had to do for HIS act was be HIMself. When hands were short, HE made HIMself useful by being quite the eccentric in the kitchen tent.</baseDescription>
+	<baseDescription>NAME traveled with a rimworld carnival for many years, where all HE had to do for HIS act was be HIMself. When hands were short, HE made HIMself useful by being quite the eccentric in the kitchen tent.</baseDescription>
 	
 	<skillGains>
 	  <li><defName>Social</defName><degree>2</degree></li>
-	  <li><defName>Artistic</defName><degree>2</degree></li>
+	  <li><defName>Artistic</defName><degree>5</degree></li>
 	  <li><defName>Cooking</defName><degree>3</degree></li>
 	</skillGains>
+	
+	<requiredWorkTags>
+	  <li>Cooking</li>
+	  <li>Artistic</li>
+	</requiredWorkTags>
 	
 	<workDisables>
 	  <li>ManualDumb</li>
@@ -188,6 +207,127 @@
 	
 	<spawnCategories>
 	  <li>Carnivale</li>
+	  <li>Slave</li>
+	  <li>Uncommon</li>
+	</spawnCategories>
+  </Xnope.Defs.BackstoryDef>
+  
+  
+  <!-- Burlesquer -->
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_Burlesquer</defName>
+	<slot>Adulthood</slot>
+	<title>Burlesque performer</title>
+	<titleShort>Burla</titleShort>
+	<baseDescription>NAME used to put on quite a show that got the sultry juices of HIS crowds flowing. Despite portraying numerous colourful personas daily, nobody is entirely sure who the real NAME is.</baseDescription>
+	
+	<skillGains>
+	  <li><defName>Artistic</defName><degree>6</degree></li>
+	  <li><defName>Melee</defName><degree>3</degree></li>
+	</skillGains>
+	
+	<requiredWorkTags>
+	  <li>Artistic</li>
+	</requiredWorkTags>
+	
+	<spawnCategories>
+	  <li>Carnivale</li>
+	  <li>Uncommon</li>
+	</spawnCategories>
+  </Xnope.Defs.BackstoryDef>
+  
+  
+  <!-- Drag Monarch -->
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_DragMonarch</defName>
+	<slot>Adulthood</slot>
+	<title>Drag monarch</title>
+	<titleShort>Monarch</titleShort>
+	<baseDescription>NAME loved getting hoots and hollers out of crowds for cross-dressing so much, that HE turned it into a career. HECAP wrote shows and performances to accompany HIS alter-ego, and HE found much success across several urbworlds. As a drag monarch, NAME developed both a tough skin and a fabulous demeanor.</baseDescription>
+	
+	<bodyTypeFemale>Male</bodyTypeFemale>
+	<bodyTypeMale>Female</bodyTypeMale>
+	
+	<skillGains>
+	  <li><defName>Artistic</defName><degree>6</degree></li>
+	  <li><defName>Social</defName><degree>4</degree></li>
+	</skillGains>
+	
+	<requiredWorkTags>
+	  <li>Artistic</li>
+	</requiredWorkTags>
+	
+	<forcedTraits>
+	  <li><defName>Nerves</defName><degree>2</degree></li>
+	</forcedTraits>
+	
+	<spawnCategories>
+	  <li>CarnivaleRare</li>
+	  <li>Rare</li>
+	</spawnCategories>
+  </Xnope.Defs.BackstoryDef>
+  
+  
+  <!-- Acrobat -->
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_Acrobat</defName>
+	<slot>Adulthood</slot>
+	<title>Carnival acrobat</title>
+	<titleShort>Acrobat</titleShort>
+	<baseDescription>NAME prided HIMself with HIS flexibility since before HE could walk. Coupled with peak physical condition and no small amount of bravery, HE turned HIS talents into a spectacle to behold... and pay to see.</baseDescription>
+	
+	<bodyTypeFemale>Thin</bodyTypeFemale>
+	<bodyTypeMale>Thin</bodyTypeMale>
+	
+	<skillGains>
+	  <li><defName>Artistic</defName><degree>4</degree></li>
+	  <li><defName>Melee</defName><degree>6</degree></li>
+	</skillGains>
+	
+	<requiredWorkTags>
+	  <li>Artistic</li>
+	</requiredWorkTags>
+	
+	<forcedTraits>
+	  <li><defName>SpeedOffset</defName><degree>2</degree></li>
+	</forcedTraits>
+	
+	<spawnCategories>
+	  <li>Carnivale</li>
+	  <li>CarnivaleFighter</li>
+	</spawnCategories>
+  </Xnope.Defs.BackstoryDef>
+  
+  
+  <!-- Booner -->
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_Booner</defName>
+	<slot>Adulthood</slot>
+	<title>Talent scout</title>
+	<titleShort>Booner</titleShort>
+	<baseDescription>NAME worked for a traveling act and HIS main job was to have a keen eye for talent. HECAP learned to be fairly independent and able to work alone, but was nonetheless skilled at convincing people to sign on with HIS show.</baseDescription>
+	
+	<skillGains>
+	  <li><defName>Social</defName><degree>2</degree></li>
+	  <li><defName>Artistic</defName><degree>5</degree></li>
+	  <li><defName>Cooking</defName><degree>3</degree></li>
+	</skillGains>
+	
+	<requiredWorkTags>
+	  <li>Social</li>
+	</requiredWorkTags>
+	
+	<workDisables>
+	  <li>PlantWork</li>
+	  <li>Mining</li>
+	</workDisables>
+	
+	<forcedTraits>
+	  <li><defName>Carn_SweetTalkerTrait</defName><degree>0</degree></li>
+	</forcedTraits>
+	
+	<spawnCategories>
+	  <li>CarnivaleRare</li>
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>
   
@@ -211,13 +351,48 @@
 	</requiredWorkTags>
 	
 	<bodyTypeMale>Hulk</bodyTypeMale>
-	<bodyTypeFemale>Thin</bodyTypeFemale>
+	<bodyTypeFemale>Female</bodyTypeFemale>
 	
 	<spawnCategories>
 	  <li>Carnivale</li>
-	  <li>CarnivaleFighter</li>
+	  <li>CarnivaleRoustabout</li>
+	  <li>CarnivaleFigher</li>
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>
+  
+  
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_Razorback2</defName>
+	<slot>Adulthood</slot>
+	<title>Carnival razorback</title>
+	<titleShort>Razorback</titleShort>
+	<baseDescription>NAME ran away from HIS urbworld problems to join an interstellar carnival, but struggled to make HIS mark for many years. HECAP was kept as a Razorback, a carnival grunt who earns their keep by simply being dumb muscle. Loading and unloading carnival gear has made NAME strong, as well as a regular contender whenever a brawl breaks out.</baseDescription>
+	
+	<skillGains>
+	  <li><defName>Shooting</defName><degree>3</degree></li>
+	  <li><defName>Melee</defName><degree>6</degree></li>
+	  <li><defName>Construction</defName><degree>5</degree></li>
+	</skillGains>
+	
+	<requiredWorkTags>
+	  <li>Hauling</li>
+	</requiredWorkTags>
+	
+	<bodyTypeMale>Hulk</bodyTypeMale>
+	<bodyTypeFemale>Female</bodyTypeFemale>
+	
+	<spawnCategories>
+	  <li>Carnivale</li>
+	  <li>CarnivaleRoustabout</li>
+	  <li>CarnivaleFighter</li>
+	  <li>Slave</li>
+	  <li>Civil</li>
+	</spawnCategories>
+  </Xnope.Defs.BackstoryDef>
+  
+  
+  <!-- Tentperson -->
+  
   
   
   <!-- Gypsy -->
@@ -242,6 +417,7 @@
 	
 	<spawnCategories>
 	  <li>Carnivale</li>
+	  <li>Uncommon</li>
 	  <li>Raider</li>
 	  <li>Slave</li>
 	  <li>Trader</li>
@@ -265,7 +441,7 @@
 	
 	<forcedTraits>
 	  <li><defName>PsychicSensitivity</defName><degree>2</degree></li>
-	  <li><defName>Luckiness</defName><degree>1</degree></li>
+	  <li><defName>Carn_LuckinessTrait</defName><degree>1</degree></li>
 	</forcedTraits>
 	
 	<workDisables>
@@ -277,8 +453,7 @@
 	
 	<spawnCategories>
 	  <li>CarnivaleRare</li>
-	  <li>Slave</li>
-	  <li>Traveler</li>
+	  <li>Rare</li>
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>
   
@@ -351,15 +526,13 @@
 	<slot>Adulthood</slot>
 	<title>Carnival vendor</title>
 	<titleShort>Vendor</titleShort>
-	<baseDescription>NAME was recognised as a superior haggler when HE joined the carnival. HIS talents became especially useful during fireball shows...</baseDescription>
+	<baseDescription>NAME was recognised as a superior haggler when HE joined the carnival. HECAP's held the job ever since, but sometimes HE wonders if HE could someday have HIS own show.</baseDescription>
 	
 	<skillGains>
-	  <li><defName>Social</defName><degree>6</degree></li>
+	  <li><defName>Social</defName><degree>4</degree></li>
+	  <li><defName>Cooking</defName><degree>4</degree></li>
+	  <li><defName>Artistic</defName><degree>2</degree></li>
 	</skillGains>
-	
-	<forcedTraits>
-	  <li><defName>SweetTalker</defName><degree>0</degree></li>
-	</forcedTraits>
 	
 	<spawnCategories>
 	  <li>CarnivaleTrader</li>
@@ -369,6 +542,97 @@
   </Xnope.Defs.BackstoryDef>
   
   
-  <!--  -->
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_VendorSweetTalker</defName>
+	<slot>Adulthood</slot>
+	<title>Carnival vendor</title>
+	<titleShort>Vendor</titleShort>
+	<baseDescription>NAME was recognised as a superior haggler when HE joined the carnival, and HE loves HIS job. HISCAP talents became especially useful during fireball shows...</baseDescription>
+	
+	<skillGains>
+	  <li><defName>Social</defName><degree>6</degree></li>
+	  <li><defName>Melee</defName><degree>3</degree></li>
+	</skillGains>
+	
+	<forcedTraits>
+	  <li><defName>Carn_SweetTalkerTrait</defName><degree>0</degree></li>
+	</forcedTraits>
+	
+	<spawnCategories>
+	  <li>CarnivaleTrader</li>
+	</spawnCategories>
+  </Xnope.Defs.BackstoryDef>
+  
+  
+  <!-- Poor sod -->
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_PoorSod</defName>
+	<slot>Adulthood</slot>
+	<title>Poor sod</title>
+	<titleShort>Sod</titleShort>
+	<baseDescription>NAME feels like a burden to other people wherever HE goes, and most treat HIM as such. Things just never seemed to go HIS way... but, everday HE picks HIMself up and keeps on moving foward. If nothing else, HIS persistence in surviving in this world is a credit to his iron resolve.</baseDescription>
+	
+	<requiredWorkTags>
+	  <li>ManualDumb</li>
+	  <li>Violent</li>
+	</requiredWorkTags>
+	
+	<skillGains>
+	  <li><defName>Melee</defName><degree>6</degree></li>
+	  <li><defName>Social</defName><degree>-2</degree></li>
+	</skillGains>
+	
+	<forcedTraits>
+	  <li><defName>Carn_LuckinessTrait</defName><degree>-1</degree></li>
+	</forcedTraits>
+	
+	<spawnCategories>
+	  <li>Carnivale</li>
+	  <li>CarnivaleFighter</li>
+	  <li>Slave</li>
+	  <li>Traveler</li>
+	  <li>Civil</li>
+	  <li>Raider</li>
+	</spawnCategories>
+  </Xnope.Defs.BackstoryDef>
+  
+  
+  <!-- Grease Monkey -->
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_GreaseMonkey</defName>
+	<slot>Adulthood</slot>
+	<title>Grease monkey</title>
+	<titleShort>Monkey</titleShort>
+	<baseDescription>NAME took to tinkering with rotors, cams, levers, pulleys, and the like in HIS early teens. It wasn't long before HE found a job in it; everywhere HE found HIMself in the civilised (and a few uncivilised) systems, there were engines that needed repairing, axles that needed greasing, and even carnival rides that needed kicking.</baseDescription>
+	
+	<requiredWorkTags>
+	  <li>ManualDumb</li>
+	  <li>ManualSkilled</li>
+	  <li>Intellectual</li>
+	</requiredWorkTags>
+	
+
+	
+	<skillGains>
+	  <li><defName>Melee</defName><degree>3</degree></li>
+	  <li><defName>Shooting</defName><degree>3</degree></li>
+	  <li><defName>Construction</defName><degree>5</degree></li>
+	  <li><defName>Intellectual</defName><degree>5</degree></li>
+	</skillGains>
+	
+	<forcedTraits>
+	  <li><defName>Carn_LuckinessTrait</defName><degree>-1</degree></li>
+	</forcedTraits>
+	
+	<spawnCategories>
+	  <li>Carnivale</li>
+	  <li>CarnivaleRare</li>
+	  <li>Slave</li>
+	  <li>Traveler</li>
+	  <li>Civil</li>
+	  <li>Raider</li>
+	</spawnCategories>
+  </Xnope.Defs.BackstoryDef>
+  
   
 </BackstoryDefs>

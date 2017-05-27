@@ -5,7 +5,7 @@
   <!-- Singular -->
   
   <TraitDef>
-    <defName>Narcissist</defName>
+    <defName>Carn_NarcissistTrait</defName>
 	<commonality>0.15</commonality>
 	<degreeDatas>
 	  <li>
@@ -24,18 +24,18 @@
   </TraitDef>
   
   <TraitDef>
-    <defName>SweetTalker</defName>
+    <defName>Carn_SweetTalkerTrait</defName>
 	<commonality>0.25</commonality>
 	<degreeDatas>
 	  <li>
 	    <label>sweet talker</label>
-		<description>NAME instinctually seems to know what people need to hear. HISCAP words carry more impact, and HE generally spins conversations in HIS favour.</description>
-		<socialFightChanceFactor>0.5</socialFightChanceFactor>
+		<description>NAME instinctually seems to know what people need to hear. HISCAP words carry more impact, and HE generally spins conversations (and altercations) in HIS favour.</description>
+		<socialFightChanceFactor>0.66</socialFightChanceFactor>
 		<statOffsets>
-		  <RecruitPrisonerChance>0.06</RecruitPrisonerChance>
-          <SocialImpact>0.1</SocialImpact>
-		  <GiftImpact>0.08</GiftImpact>
-		  <TradePriceImprovement>0.15</TradePriceImprovement>
+		  <RecruitPrisonerChance>0.055</RecruitPrisonerChance>
+          <SocialImpact>0.06</SocialImpact>
+		  <GiftImpact>0.095</GiftImpact>
+		  <TradePriceImprovement>0.145</TradePriceImprovement>
         </statOffsets>
 	  </li>
 	</degreeDatas>
@@ -44,14 +44,15 @@
   <!-- Spectrum -->
   
   <TraitDef>
-    <defName>Luckiness</defName>
+    <defName>Carn_LuckinessTrait</defName>
 	<commonality>0.1</commonality>
 	<degreeDatas>
 	  <li>
 	    <label>lucky</label>
-		<description>The stars have always smiled on NAME. HE finds more useful stuffs when mining and harvesting, and tends to survive more than HE should.</description>
+		<description>The stars have always smiled on NAME. Seemingly by pure chance, critical details seldom escape HIS attention, HE finds more useful stuffs when harvesting or mining, and HE tends to survive more than HE should.</description>
 		<degree>1</degree>
 		<statOffsets>
+		  <Carn_LuckinessStat>0.2</Carn_LuckinessStat>
 		  <MiningYield>0.03</MiningYield>
 		  <PlantHarvestYield>0.05</PlantHarvestYield>
 		  <ConstructSuccessChance>0.03</ConstructSuccessChance>
@@ -67,6 +68,7 @@
 		<description>Everywhere HE goes, NAME seems to get the shortest end of the stick. Important details tends to slip his attention, and HIS ailments often take a turn for the worse. It's really a wonder that HE is still alive.</description>
 		<degree>-1</degree>
 		<statOffsets>
+		  <Carn_LuckinessStat>-0.2</Carn_LuckinessStat>
 		  <MiningYield>-0.05</MiningYield>
 		  <PlantHarvestYield>-0.03</PlantHarvestYield>
 		  <ConstructSuccessChance>-0.03</ConstructSuccessChance>

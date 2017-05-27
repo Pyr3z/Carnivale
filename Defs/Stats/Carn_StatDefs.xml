@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<StatDefs>
+  
+  <StatDef>
+    <defName>Carn_LuckinessStat</defName>
+	<label>luckiness</label>
+	<description>An offset of how lucky someone is.</description>
+	<category>PawnMisc</category>
+	<showOnMechanoids>false</showOnMechanoids>
+	
+	<defaultBaseValue>0.01</defaultBaseValue>
+	<minValue>-0.66</minValue>
+	<maxValue>0.66</maxValue>
+	
+	<toStringNumberSense>Offset</toStringNumberSense>
+	<toStringStyle>PercentZero</toStringStyle>
+	
+	<!-- do post process curve? -->
+	
+  </StatDef>
+  
+</StatDefs>

@@ -33,12 +33,12 @@
 	
 	<rescueesCanJoin>true</rescueesCanJoin>
 	<startingGoodwill>
-	  <!-- 1-in-5 chance they are hostile with non-player faction -->
+	  <!-- 1-in-5 chance they are no simpatico with non-player faction -->
 	  <min>-10</min>
 	  <max>40</max>
 	</startingGoodwill>
 	<naturalColonyGoodwill>
-	  <min>5</min>
+	  <min>10</min>
 	  <max>15</max>
 	</naturalColonyGoodwill>
 	
@@ -56,7 +56,7 @@
 	
 	<colorSpectrum>
 	  <li>(0.4, 1, 0)</li>
-	  <li>(0.47, 0.5, 0.91)</li>
+	  <li>(0.8, 0.35, 0.05)</li>
 	</colorSpectrum>
     
   </FactionDef>
@@ -65,7 +65,7 @@
   <FactionDef ParentName="Factions_Core">
     <defName>Carn_Faction_Roaming</defName>
 	<label>Roaming Carnival</label>
-	<description>Formed from an eclectic collection of misfits, these sturdy humans have come to live off the flotsam and goodwill of others, and continue to live in this way by providing the scattered peoples of the rim worlds a unique source of curiosity and entertainment in exchange for hospitality. Never keen on lingering anywhere for long, their lives are, and always will be, slaves to the road.</description>
+	<description>Formed from an eclectic collection of misfits, these sturdy humans have come to live off the flotsam and goodwill of others, and continue to live in this way by providing the scattered peoples of the rimworlds a unique source of curiosity and entertainment in exchange for hospitality. Never keen on lingering anywhere for long, their lives are, and always will be, slaves to the road.</description>
 	
 	<requiredCountAtGameStart>2</requiredCountAtGameStart>
 	
@@ -74,27 +74,28 @@
 	  <!-- Carnival -->
 	  <li>
 	    <kindDef>Carnival</kindDef>
-		
+		<!-- These values are not treated as points by the code, but as counts. -->
 		<options>
-		  <Carny>10</Carny>
-		  <CarnyRare>5</CarnyRare>
-		  <CarnyManager>1</CarnyManager>
+		  <Carny>6</Carny>
+		  <CarnyRoustabout>6</CarnyRoustabout>
+		  <CarnyRare>3</CarnyRare>
 		</options>
 		
 		<traders>
-		  <CarnyTrader>1</CarnyTrader>
+		  <CarnyTrader>3</CarnyTrader>
 		</traders>
 		
 		<carriers>
 		  <Muffalo>1</Muffalo>
+		  <Dromedary>1</Dromedary>
 		</carriers>
 		
 		<guards>
-		  <CarnyGuard>1</CarnyGuard>
+		  <CarnyGuard>6</CarnyGuard>
 		</guards>
 	  </li>
 	  
-	  <!-- Normal (dummy) -->
+	  <!-- Normal (dummy for leader generation) -->
 	  <li>
 	    <kindDef>Normal</kindDef>
 		<commonality>0</commonality>

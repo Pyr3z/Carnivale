@@ -4,7 +4,7 @@
   <!-- food vendor -->
   <TraderKindDef>
     <defName>Carn_Trader_Food</defName>
-	<label>carnival food vendor</label>
+	<label>food vendor</label>
 	
 	<commonality>5</commonality>
 	
@@ -62,7 +62,7 @@
   <!-- curios vender -->
   <TraderKindDef>
     <defName>Carn_Trader_Curios</defName>
-	<label>carnival curios vendor</label>
+	<label>curios vendor</label>
 	
 	<commonality>1</commonality>
 	

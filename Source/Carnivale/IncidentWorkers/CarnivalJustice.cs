@@ -1,8 +1,8 @@
 ﻿using RimWorld;
 
-namespace Carnivale.IncidentWorkers
+namespace Carnivale
 {
-    public class CarnivalJustice : IncidentWorker
+    public class IncidentWorker_CarnivalJustice : IncidentWorker
     {
 
     }
