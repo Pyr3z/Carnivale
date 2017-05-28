@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RoofDefs>
+  
+  <RoofDef>
+    <defName>Carn_TentRoof</defName>
+	<label>overhead textile</label>
+	<isThickRoof>false</isThickRoof>
+	<!-- <filthLeaving>SandbagRubble</filthLeaving> -->
+	<soundPunchThrough>MeleeHit_Wood</soundPunchThrough>
+  </RoofDef>
+  
+</RoofDefs>

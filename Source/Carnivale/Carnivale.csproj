@@ -59,10 +59,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\LordToilData_Carnival.cs" />
+    <Compile Include="AI\LordToil_DefendCarnival.cs" />
+    <Compile Include="AI\LordToil_SetupCarnival.cs" />
     <Compile Include="Building_Tent.cs" />
     <Compile Include="CarnivaleMod.cs" />
-    <Compile Include="Defs\_DefOf.cs" />
-    <Compile Include="LordJob_EntertainColony.cs" />
+    <Compile Include="Enums\CarnivalRole.cs" />
+    <Compile Include="Enums\_DefOf.cs" />
+    <Compile Include="AI\LordJob_EntertainColony.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="IncidentWorkers\CarnivalArrives.cs" />
     <Compile Include="IncidentWorkers\CarnivalFireball.cs" />

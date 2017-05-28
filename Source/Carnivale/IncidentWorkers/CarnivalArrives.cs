@@ -1,4 +1,4 @@
-﻿using Carnivale.Defs;
+﻿using Carnivale.AI;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
@@ -106,8 +106,8 @@ namespace Carnivale
             IntVec3 setupSpot;
             RCellFinder.TryFindRandomSpotJustOutsideColony(pawns[0], out setupSpot);
 
-            //LordJob_EntertainColony lordJob = new LordJob_EntertainColony(parms.faction, setupSpot);
-            LordJob_TradeWithColony lordJob = new LordJob_TradeWithColony(parms.faction, setupSpot);
+            LordJob_EntertainColony lordJob = new LordJob_EntertainColony(parms.faction, setupSpot, durationDays);
+            //LordJob_TradeWithColony lordJob = new LordJob_TradeWithColony(parms.faction, setupSpot);
             LordMaker.MakeNewLord(parms.faction, lordJob, map, pawns);
 
             return true;

@@ -3,7 +3,6 @@ using RimWorld;
 using Verse;
 using System.Linq;
 using UnityEngine;
-using Carnivale.Defs;
 
 namespace Carnivale
 {

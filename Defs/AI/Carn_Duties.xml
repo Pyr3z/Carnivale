@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<DutyDefs>
+  
+  <DutyDef>
+    <defName>SetupCarnival</defName>
+	<thinkNode Class="ThinkNode_Priority">
+	  <subNodes>
+	    <li Class="JobGiver_FightFiresNearPoint">
+		  <maxDistFromPoint>25</maxDistFromPoint>
+		</li>
+		<li Class="ThinkNode_ForbidOutsideFlagRadius">
+		  <maxDistToSquadFlag>32</maxDistToSquadFlag>
+		  <subNodes>
+		    <li Class="JobGiver_Work" />
+		  </subNodes>
+		</li>
+		<li Class="JobGiver_AIDefendPoint">
+		  <targetAcquireRadius>42</targetAcquireRadius>
+		  <targetKeepRadius>47</targetKeepRadius>
+		</li>
+		<li Class="ThinkNode_ForbidOutsideFlagRadius">
+          <maxDistToSquadFlag>25</maxDistToSquadFlag>
+          <subNodes>
+            <li Class="ThinkNode_Subtree">
+              <treeDef>SatisfyBasicNeedsAndWork</treeDef>
+            </li>
+          </subNodes>
+        </li>
+		<li Class="JobGiver_WanderNearDutyLocation">
+          <wanderRadius>8</wanderRadius>
+        </li>
+	  </subNodes>
+	</thinkNode>
+  </DutyDef>
+  
+</DutyDefs>

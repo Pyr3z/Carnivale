@@ -1,6 +1,7 @@
 ﻿using RimWorld;
+using Verse;
 
-namespace Carnivale.Defs
+namespace Carnivale
 {
     [DefOf]
     public static class _DefOf
@@ -20,6 +21,20 @@ namespace Carnivale.Defs
 
 
         public static PawnGroupKindDef Carnival;
+
+
+
+        public static PawnKindDef Carny;
+
+        public static PawnKindDef CarnyRare;
+
+        public static PawnKindDef CarnyManager;
+
+        public static PawnKindDef CarnyTrader;
+
+        public static PawnKindDef CarnyGuard;
+
+        public static PawnKindDef CarnyRoustabout;
 
 
 

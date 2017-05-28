@@ -11,6 +11,7 @@
   <CarnivalApproachesReject>Sorry, no.</CarnivalApproachesReject>
   <CarnivalApproachesAcceptMessage>{0}, the manager, excitedly thanks you and informs you that they will arrive in one day.</CarnivalApproachesAcceptMessage>
   <CarnivalApproachesRejectMessage>You hear muddled curses, and then a tinny voice saying 'let me speak to them'. The voice gains volume and projects toward you.\n\n'Hello? {0} speaking. There seems to have been a--'.</CarnivalApproachesRejectMessage>
+  <SendCoordinates>Send setup coordinates</SendCoordinates>
   
   
   <!-- Carnival Arrives -->
