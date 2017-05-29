@@ -31,4 +31,5 @@ I'm a bit stronger on the coding side of things than the texturing side, so if y
   * Luckiness
     * Lucky - slightly better at most random rolls, including carnival game win chances
     * Unlucky - ...quite the opposite.
+  * A secret, rare trait that only one pawn in the game can have, with a devastating yet unique mechanic... look for this pawn amongst carnies.
 * And absolutely (eventually), the ability for players to run their own carnival caravans
