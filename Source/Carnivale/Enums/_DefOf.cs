@@ -38,6 +38,16 @@ namespace Carnivale
 
 
 
+        public static RoofDef Carn_TentRoof;
+
+
+
+        public static ThingDef Invisible_Door;
+
+        public static ThingDef Invisible_Wall;
+
+
+
         public static TraderKindDef Carn_Trader_Food;
 
         public static TraderKindDef Carn_Trader_Curios;

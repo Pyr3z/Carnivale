@@ -18,6 +18,7 @@ namespace Carnivale
             // Always true, because this incident is manually fired by
             // another, which is where the ability for this to fire is
             // resolved.
+            // ...Or should a double check be made? Case: toxic fallout etc
             return true;
         }
 

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <!-- Tent roof -->
+  
+  <RoofDef>
+    <defName>Carn_TentRoof</defName>
+	<label>overhead textile</label>
+	<isThickRoof>false</isThickRoof>
+	<!-- <filthLeaving>SandbagRubble</filthLeaving> -->
+	<soundPunchThrough>MeleeHit_Wood</soundPunchThrough>
+  </RoofDef>
+  
+  
+  
+  <!-- Invisible wall / door -->
+  
+  <ThingDef>
+    <defName>Invisible_Wall</defName>
+	<label>(debug) invisible wall</label>
+	<thingClass>Building</thingClass>
+	<category>Building</category>
+	<selectable>true</selectable>
+	
+	<graphicData>
+	  <texPath>Carnivale/Building/Invisible</texPath>
+	  <graphicClass>Graphic_Single</graphicClass>
+	</graphicData>
+	<size>(1,1)</size>
+	<altitudeLayer>Building</altitudeLayer>
+	<passability>Impassable</passability>
+	
+	<tickerType>Never</tickerType>
+	
+	<building>
+	  <isEdifice>false</isEdifice>
+	  <isInert>true</isInert>
+	  <deconstructible>false</deconstructible>
+	  <claimable>false</claimable>
+	  <ignoreNeedsPower>true</ignoreNeedsPower>
+	</building>
+	
+	<designationCategory>Structure</designationCategory>
+	
+  </ThingDef>
+  
+  
+  
+  <ThingDef>
+    <defName>Invisible_Door</defName>
+	<label>(debug) invisible door</label>
+	<thingClass>Building_Door</thingClass>
+	<category>Building</category>
+	<selectable>true</selectable>
+	
+	<graphicData>
+	  <texPath>Carnivale/Building/Invisible</texPath>
+	  <graphicClass>Graphic_Single</graphicClass>
+	</graphicData>
+	<size>(1,1)</size>
+	<altitudeLayer>DoorMoveable</altitudeLayer>
+	<passability>Standable</passability>
+	<blockLight>false</blockLight>
+	
+	<tickerType>Normal</tickerType>
+	
+	<building>
+	  <isEdifice>false</isEdifice>
+	  <isInert>true</isInert>
+	  <deconstructible>false</deconstructible>
+	  <claimable>false</claimable>
+	  <ignoreNeedsPower>true</ignoreNeedsPower>
+	  <soundDoorOpenManual>DoorOpenManual</soundDoorOpenManual>
+      <soundDoorCloseManual>DoorCloseManual</soundDoorCloseManual>
+	</building>
+	
+	<designationCategory>Structure</designationCategory>
+	
+  </ThingDef>
+  
+</Defs>

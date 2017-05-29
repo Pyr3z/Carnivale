@@ -11,7 +11,7 @@ namespace Carnivale.AI
     {
         private Dictionary<Pawn, DutyDef> rememberedDuties = new Dictionary<Pawn, DutyDef>();
 
-        private LordToilData_Carnival Data
+        public LordToilData_Carnival Data
         { get { return (LordToilData_Carnival)this.data; } }
 
         private IEnumerable<Frame> Frames
@@ -29,12 +29,12 @@ namespace Carnivale.AI
         }
 
 
-        public LordToil_SetupCarnival(IntVec3 setupSpot, float blueprintPoints)
+        public LordToil_SetupCarnival(IntVec3 setupSpot, IEnumerable<Thing> buildings)
         {
             this.data = new LordToilData_Carnival()
             {
                 setupSpot = setupSpot,
-                blueprintPoints = blueprintPoints
+                baseRadius = 25f
             };
         }
 

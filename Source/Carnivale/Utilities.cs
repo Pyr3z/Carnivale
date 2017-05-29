@@ -64,5 +64,19 @@ namespace Carnivale
 
             return role;
         }
+
+
+        public static void SetRoofFor(CellRect rect, Map map, RoofDef roof)
+        {
+            // pass a null RoofDef to clear a roof
+            for (int i = rect.minZ; i <= rect.maxZ; i++)
+            {
+                for (int j = rect.minX; j <= rect.maxX; j++)
+                {
+                    IntVec3 cell = new IntVec3(j, 0, i);
+                    map.roofGrid.SetRoof(cell, roof);
+                }
+            }
+        }
     }
 }

@@ -15,33 +15,42 @@
   </ThingDef>
   
   
+  
   <!-- Tent small -->
-  <ThingDef ParentName="CarnBuilding">
+  <ThingDef ParentName="CarnBuilding" Name="TentSmall">
     <defName>Carn_TentSmall</defName>
 	<thingClass>Carnivale.Building_Tent</thingClass>
 	<label>carnival tent (small)</label>
-	<description>A small carnival tent containing a one-person-at-a-time attraction.</description>
+	<description>A small carnival tent.</description>
 	
 	<graphicData>
-	  <texPath>Carnivale/Building/TentSmall</texPath>
+	  <texPath>Carnivale/Building/Tent</texPath>
 	  <graphicClass>Graphic_Multi</graphicClass>
 	  <shaderType>CutoutComplex</shaderType>
-	  <drawSize>(3,3)</drawSize>
+	  <drawSize>(5.15,5.15)</drawSize>
+	  <allowFlip>false</allowFlip> <!-- This doesn't seem to have effect? -->
+	  
+	  <shadowData>
+        <volume>(0.25, 0.5, 0.25)</volume>
+        <offset>(0,0,-0.1)</offset>
+      </shadowData>
+	  
 	  <damageData>
-	    <!-->
-	    <scratches>
-		  <li>Damage/Scratch1</li>
-		  <li>Damage/Scratch2</li>
-		  <li>Damage/Scratch3</li>
-		</scratches>
-		<rect>(0.1,0.1,2.9,2.9)</rect>
-		<-->
+	    <rect>(0.1,0.1,4.9,4.9)</rect>
 	  </damageData>
 	</graphicData>
-	<size>(3,3)</size>
+	
+	<size>(5,5)</size>
 	<altitudeLayer>PawnUnused</altitudeLayer>
-	<pathCost>60</pathCost>
-	<passability>PassThroughOnly</passability>
+	<pathCost>0</pathCost>
+	<passability>Standable</passability>
+	
+	<rotatable>true</rotatable>
+	<hasInteractionCell>true</hasInteractionCell>
+	<interactionCellOffset>(0,0,-3)</interactionCellOffset>
+	
+	<blockWind>true</blockWind>
+	<holdsRoof>true</holdsRoof>
 	
 	<stuffCategories>
 	  <li>Fabric</li>
@@ -60,20 +69,22 @@
 	  <Beauty>6</Beauty>
 	</statBases>
 	
+	<damageMultipliers>
+      <li>
+        <damageDef>Bomb</damageDef>
+        <multiplier>2</multiplier>
+      </li>
+    </damageMultipliers>
+	
 	<building>
-	  <claimable>false</claimable>
-	  <deconstructible>false</deconstructible>
+	  <ignoreNeedsPower>true</ignoreNeedsPower>
 	</building>
 	
-	<comps>
-	  <li Class="Xnope.CompProperties_Colorable" />
-	</comps>
-	
 	<placeWorkers>
-	  <li>PlaceWorker_NotUnderRoof</li>
+	  <li>Carnivale.PlaceWorker_Tent</li>
 	</placeWorkers>
 	
-	<designationCategory>Joy</designationCategory>
+	<designationCategory>Misc</designationCategory>
 	
   </ThingDef>
   
