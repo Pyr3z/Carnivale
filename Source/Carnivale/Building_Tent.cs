@@ -28,7 +28,7 @@ namespace Carnivale
             get
             {
                 // Draw flag colour as faction colour
-                // Q: Do tent function instead?
+                // Q: Colour by tent function instead?
                 return this.Faction.Color;
             }
         }
@@ -70,9 +70,6 @@ namespace Carnivale
                 GenSpawn.Spawn(wall, cell, map);
                 this.walls.Add(wall);
             }
-
-            
-            
 
         }
 

@@ -17,6 +17,12 @@ namespace Carnivale
             
         }
 
+
+        public override void DefsLoaded()
+        {
+            TheOne.Instantiate();
+        }
+
     }
 
 }
