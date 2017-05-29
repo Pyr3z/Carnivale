@@ -20,7 +20,7 @@
 	<label>(debug) invisible wall</label>
 	<thingClass>Building</thingClass>
 	<category>Building</category>
-	<selectable>true</selectable>
+	<selectable>false</selectable>
 	
 	<graphicData>
 	  <texPath>Carnivale/Building/Invisible</texPath>
@@ -40,8 +40,6 @@
 	  <ignoreNeedsPower>true</ignoreNeedsPower>
 	</building>
 	
-	<designationCategory>Structure</designationCategory>
-	
   </ThingDef>
   
   
@@ -51,7 +49,7 @@
 	<label>(debug) invisible door</label>
 	<thingClass>Building_Door</thingClass>
 	<category>Building</category>
-	<selectable>true</selectable>
+	<selectable>false</selectable>
 	
 	<graphicData>
 	  <texPath>Carnivale/Building/Invisible</texPath>
@@ -73,8 +71,6 @@
 	  <soundDoorOpenManual>DoorOpenManual</soundDoorOpenManual>
       <soundDoorCloseManual>DoorCloseManual</soundDoorCloseManual>
 	</building>
-	
-	<designationCategory>Structure</designationCategory>
 	
   </ThingDef>
   

@@ -78,5 +78,30 @@ namespace Carnivale
                 }
             }
         }
+
+
+
+        public static IEnumerable<IntVec3> CornerlessEdgeCells(CellRect rect)
+        {
+            int x = rect.minX + 1;
+            int z = rect.minZ;
+            while (x < rect.maxX)
+            {
+                yield return new IntVec3(x, 0, z);
+                x++;
+            }
+            for (z++; z < rect.maxZ; z++)
+            {
+                yield return new IntVec3(x, 0, z);
+            }
+            for (x--; x > rect.minX; x--)
+            {
+                yield return new IntVec3(x, 0, z);
+            }
+            for (z--; z > rect.minZ; z--)
+            {
+                yield return new IntVec3(x, 0, z);
+            }
+        }
     }
 }

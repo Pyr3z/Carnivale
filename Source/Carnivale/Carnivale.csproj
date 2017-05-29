@@ -68,6 +68,7 @@
     <Compile Include="Enums\CarnivalRole.cs" />
     <Compile Include="Enums\_DefOf.cs" />
     <Compile Include="AI\LordJob_EntertainColony.cs" />
+    <Compile Include="One\TheOne.cs" />
     <Compile Include="PlaceWorker_Tent.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="IncidentWorkers\CarnivalArrives.cs" />

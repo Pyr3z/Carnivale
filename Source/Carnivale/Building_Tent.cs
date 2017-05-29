@@ -34,6 +34,7 @@ namespace Carnivale
         }
 
 
+        
 
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
@@ -61,7 +62,7 @@ namespace Carnivale
             GenSpawn.Spawn(door, doorCell, map);
 
             // Build invisible walls
-            IEnumerable<IntVec3> edges = OccupiedRect.EdgeCells;
+            IEnumerable<IntVec3> edges = Utilities.CornerlessEdgeCells(OccupiedRect);
             foreach (var cell in edges)
             {
                 if (cell == doorCell) continue;
@@ -93,5 +94,7 @@ namespace Carnivale
             Scribe_Collections.Look(ref this.walls, "walls", LookMode.Reference);
             Scribe_References.Look(ref this.door, "door", false);
         }
+
+
     }
 }
