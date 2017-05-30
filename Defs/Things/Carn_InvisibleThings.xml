@@ -17,7 +17,7 @@
   
   <ThingDef>
     <defName>Invisible_Wall</defName>
-	<label>(debug) invisible wall</label>
+	<label>tent wall</label>
 	<thingClass>Building</thingClass>
 	<category>Building</category>
 	<selectable>false</selectable>
@@ -26,9 +26,10 @@
 	  <texPath>Carnivale/Building/Invisible</texPath>
 	  <graphicClass>Graphic_Single</graphicClass>
 	</graphicData>
-	<size>(1,1)</size>
 	<altitudeLayer>Building</altitudeLayer>
 	<passability>Impassable</passability>
+	
+	<blockLight>false</blockLight>
 	
 	<tickerType>Never</tickerType>
 	
@@ -46,7 +47,7 @@
   
   <ThingDef>
     <defName>Invisible_Door</defName>
-	<label>(debug) invisible door</label>
+	<label>tent flap</label>
 	<thingClass>Building_Door</thingClass>
 	<category>Building</category>
 	<selectable>false</selectable>
@@ -55,7 +56,6 @@
 	  <texPath>Carnivale/Building/Invisible</texPath>
 	  <graphicClass>Graphic_Single</graphicClass>
 	</graphicData>
-	<size>(1,1)</size>
 	<altitudeLayer>DoorMoveable</altitudeLayer>
 	<passability>Standable</passability>
 	<blockLight>false</blockLight>

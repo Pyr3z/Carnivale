@@ -13,8 +13,8 @@
 		<description>"If only they knew how important I am, how much I have to offer..." - NAME</description>
 		<socialFightChanceFactor>1.25</socialFightChanceFactor>
 		<statOffsets>
-          <GlobalLearningFactor>0.25</GlobalLearningFactor>
-          <MentalBreakThreshold>0.06</MentalBreakThreshold>
+          <GlobalLearningFactor>0.2</GlobalLearningFactor>
+          <MentalBreakThreshold>0.08</MentalBreakThreshold>
         </statOffsets>
 	  </li>
 	</degreeDatas>
@@ -30,7 +30,7 @@
 	  <li>
 	    <label>sweet talker</label>
 		<description>NAME instinctually seems to know what people need to hear. HISCAP words carry more impact, and HE generally spins conversations (and altercations) in HIS favour.</description>
-		<socialFightChanceFactor>0.66</socialFightChanceFactor>
+		<socialFightChanceFactor>0.8</socialFightChanceFactor>
 		<statOffsets>
 		  <RecruitPrisonerChance>0.055</RecruitPrisonerChance>
           <SocialImpact>0.06</SocialImpact>

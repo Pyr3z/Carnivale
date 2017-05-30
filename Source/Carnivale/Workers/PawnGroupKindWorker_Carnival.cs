@@ -50,14 +50,15 @@ namespace Carnivale
                 existingPawns = new HashSet<Pawn>();
 
 
-            // Generate vendors (costless)
+            // Generate vendors (first one is costless)
             for (int i = 0; i < groupMaker.traders.First().selectionWeight; i++)
             {
                 // Get a traderkind by commonality:
                 TraderKindDef traderKind = parms.faction.def.caravanTraderKinds.RandomElementByWeight(k => k.commonality);
 
                 // Generate vendor
-                GenerateVendor(parms, groupMaker, traderKind, outPawns, existingPawns);
+                if (i == 0) parms.points += _DefOf.CarnyTrader.combatPower;
+                GenerateVendor(parms, groupMaker, traderKind, outPawns, existingPawns, true);
 
                 // Generate wares
                 ItemCollectionGeneratorParams waresParms = default(ItemCollectionGeneratorParams);
@@ -76,8 +77,11 @@ namespace Carnivale
 
             // Generate options
             GenerateGroup(parms, groupMaker.options, outPawns, existingPawns, true);
-            // Generate guards (costless)
-            GenerateGroup(parms, groupMaker.guards, outPawns, existingPawns);
+
+            // Generate guards (first one is costless)
+            parms.points += _DefOf.CarnyGuard.combatPower;
+            GenerateGroup(parms, groupMaker.guards, outPawns, existingPawns, true);
+
             // Generate manager (costless)
             GenerateLeader(parms, outPawns);
         }
@@ -86,11 +90,17 @@ namespace Carnivale
         /* Private Methods */
 
 
-        private void GenerateVendor(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, TraderKindDef traderKind, List<Pawn> outPawns, IEnumerable<Pawn> existingPawns)
+        private void GenerateVendor(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, TraderKindDef traderKind, List<Pawn> outPawns, IEnumerable<Pawn> existingPawns, bool subtractPoints = false)
         {
-            Pawn vendor = existingPawns.FirstOrDefault(p => traderKind == p.TraderKind);
+            if (subtractPoints)
+                if (parms.points < _DefOf.CarnyTrader.combatPower)
+                    return;
+                else
+                    parms.points -= _DefOf.CarnyTrader.combatPower;
 
             // Tries to get existing vendor:
+            Pawn vendor = existingPawns.FirstOrDefault(p => traderKind == p.TraderKind);
+
             if (vendor == null)
             {
                 // Generate new vendor if no existing vendor

@@ -84,7 +84,7 @@
 		</options>
 		
 		<traders>
-		  <!-- Treated as costless -->
+		  <!-- First is treated as costless -->
 		  <CarnyTrader>3</CarnyTrader>
 		</traders>
 		
@@ -95,7 +95,7 @@
 		</carriers>
 		
 		<guards>
-		  <!-- Treated as costless -->
+		  <!-- First is treated as costless -->
 		  <CarnyGuard>2</CarnyGuard>
 		</guards>
 	  </li>

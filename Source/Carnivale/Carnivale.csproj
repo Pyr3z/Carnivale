@@ -62,20 +62,23 @@
     <Compile Include="AI\LordToilData_Carnival.cs" />
     <Compile Include="AI\LordToil_DefendCarnival.cs" />
     <Compile Include="AI\LordToil_SetupCarnival.cs" />
-    <Compile Include="Building_Tent.cs" />
-    <Compile Include="CarnivalBlueprintPlacer.cs" />
+    <Compile Include="Buildings\Building_Tent.cs" />
+    <Compile Include="Buildings\CarnivalBlueprintPlacer.cs" />
+    <Compile Include="Buildings\CompCarnBuilding.cs" />
+    <Compile Include="Buildings\CompProperties_CarnBuilding.cs" />
     <Compile Include="CarnivaleMod.cs" />
+    <Compile Include="Enums\CarnBuildingType.cs" />
     <Compile Include="Enums\CarnivalRole.cs" />
     <Compile Include="Enums\_DefOf.cs" />
     <Compile Include="AI\LordJob_EntertainColony.cs" />
     <Compile Include="One\TheOne.cs" />
-    <Compile Include="PlaceWorker_Tent.cs" />
+    <Compile Include="Buildings\PlaceWorker_Tent.cs" />
     <Compile Include="Utilities.cs" />
-    <Compile Include="IncidentWorkers\CarnivalArrives.cs" />
-    <Compile Include="IncidentWorkers\CarnivalFireball.cs" />
-    <Compile Include="IncidentWorkers\CarnivalJustice.cs" />
-    <Compile Include="IncidentWorkers\CarnivalApproaches.cs" />
-    <Compile Include="PawnGroupKindWorker_Carnival.cs" />
+    <Compile Include="Workers\CarnivalArrives.cs" />
+    <Compile Include="Workers\CarnivalFireball.cs" />
+    <Compile Include="Workers\CarnivalJustice.cs" />
+    <Compile Include="Workers\CarnivalApproaches.cs" />
+    <Compile Include="Workers\PawnGroupKindWorker_Carnival.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

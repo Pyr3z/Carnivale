@@ -1,7 +1,8 @@
-﻿
+﻿using System;
 
 namespace Carnivale
 {
+    [Flags]
     public enum CarnivalRole : byte
     {
         // Assigning power-of-2 byte values allows stacking

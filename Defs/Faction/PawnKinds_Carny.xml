@@ -207,7 +207,7 @@
 	<trader>true</trader>
 	
 	<!-- from Outlander villager -->
-	<combatPower>35</combatPower>
+	<combatPower>50</combatPower>
     <itemQuality>Normal</itemQuality>
     <gearHealthRange>
       <min>0.5</min>

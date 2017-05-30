@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
+using UnityEngine;
 using Verse;
 using Verse.AI.Group;
 
@@ -103,5 +104,94 @@ namespace Carnivale
                 yield return new IntVec3(x, 0, z);
             }
         }
+
+
+        public static Thing SpawnThingNoWipe(Thing thing, IntVec3 loc, Map map, Rot4 rot, bool respawningAfterLoad = false)
+        {
+            if (map == null)
+            {
+                Log.Error("Tried to spawn " + thing + " in a null map.");
+                return null;
+            }
+            if (!loc.InBounds(map))
+            {
+                Log.Error(string.Concat(new object[]
+                {
+                    "Tried to spawn ",
+                    thing,
+                    " out of bounds at ",
+                    loc,
+                    "."
+                }));
+                return null;
+            }
+            if (thing.Spawned)
+            {
+                Log.Error("Tried to spawn " + thing + " but it's already spawned.");
+                return thing;
+            }
+
+            //GenSpawn.WipeExistingThings(loc, rot, thing.def, map, DestroyMode.Vanish);
+
+            if (thing.def.randomizeRotationOnSpawn)
+            {
+                thing.Rotation = Rot4.Random;
+            }
+            else
+            {
+                thing.Rotation = rot;
+            }
+            thing.Position = loc;
+            if (thing.holdingOwner != null)
+            {
+                thing.holdingOwner.Remove(thing);
+            }
+            thing.SpawnSetup(map, respawningAfterLoad);
+            if (thing.Spawned && thing.stackCount == 0)
+            {
+                Log.Error("Spawned thing with 0 stackCount: " + thing);
+                thing.Destroy(DestroyMode.Vanish);
+                return null;
+            }
+            return thing;
+        }
+
+
+        //public static IntVec3 GetInteriorCorner(IntVec3 original, IntVec2 size, byte corner)
+        //{
+        //    // corner = 0 : top left
+        //    // corner = 1 : top right
+        //    // corner = 2 : bottom left
+        //    // corner = 3 : bottom right
+
+        //    IntVec3 result = new IntVec3(original.x, original.y, original.z);
+
+        //    int xOffset = Mathf.RoundToInt(size.x / 2f - 1.5f);
+        //    int zOffset = Mathf.RoundToInt(size.z / 2f - 1.5f);
+
+        //    switch (corner)
+        //    {
+        //        case 0:
+        //            result.x -= xOffset;
+        //            result.z += zOffset;
+        //            break;
+        //        case 1:
+        //            result.x += xOffset;
+        //            result.z += zOffset;
+        //            break;
+        //        case 2:
+        //            result.x -= xOffset;
+        //            result.z -= zOffset;
+        //            break;
+        //        case 3:
+        //            result.x += xOffset;
+        //            result.z -= zOffset;
+        //            break;
+        //        default:
+        //            return IntVec3.Invalid;
+        //    }
+
+        //    return result;
+        //}
     }
 }
