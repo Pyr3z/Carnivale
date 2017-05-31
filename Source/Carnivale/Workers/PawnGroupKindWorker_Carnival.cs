@@ -51,13 +51,15 @@ namespace Carnivale
 
 
             // Generate vendors (first one is costless)
-            for (int i = 0; i < groupMaker.traders.First().selectionWeight; i++)
+            for (int i = 0;  i < groupMaker.traders.First().selectionWeight; i++)
             {
                 // Get a traderkind by commonality:
                 TraderKindDef traderKind = parms.faction.def.caravanTraderKinds.RandomElementByWeight(k => k.commonality);
 
                 // Generate vendor
                 if (i == 0) parms.points += _DefOf.CarnyTrader.combatPower;
+                else if (parms.points < _DefOf.CarnyTrader.combatPower) break;
+
                 GenerateVendor(parms, groupMaker, traderKind, outPawns, existingPawns, true);
 
                 // Generate wares
@@ -84,6 +86,13 @@ namespace Carnivale
 
             // Generate manager (costless)
             GenerateLeader(parms, outPawns);
+
+            // Supply them with tents
+            List<Pawn> rousties = (from p in outPawns
+                                  where (p.GetCarnivalRole() & CarnivalRole.Worker) == CarnivalRole.Worker
+                                  select p).ToList();
+
+
         }
 
 

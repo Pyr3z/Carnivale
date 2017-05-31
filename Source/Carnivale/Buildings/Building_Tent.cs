@@ -24,6 +24,14 @@ namespace Carnivale
             }
         }
 
+        public CarnBuildingType Type
+        {
+            get
+            {
+                return Props.type;
+            }
+        }
+
         [Unsaved]
         private CellRect occupiedRectInt;
 
@@ -47,7 +55,7 @@ namespace Carnivale
             }
         }
 
-        
+
 
 
         public override void SpawnSetup(Map map, bool respawnAfterLoad)
@@ -85,18 +93,7 @@ namespace Carnivale
             }
 
             // Build interior
-            switch (Props.type ^ CarnBuildingType.Tent)
-            {
-                case CarnBuildingType.Bedroom:
-                    BuildBeds(map, respawnAfterLoad);
-                    break;
-                case CarnBuildingType.Attraction:
-                    BuildAttractions();
-                    break;
-                case CarnBuildingType.Kitchen:
-                    BuildKitchen();
-                    break;
-            }
+            BuildInterior(map, respawnAfterLoad);
         }
 
         public override void DeSpawn()
@@ -104,6 +101,7 @@ namespace Carnivale
             Utilities.SetRoofFor(OccupiedRect, this.Map, null);
             foreach (var child in childBuildings)
             {
+                // Potential null-pointer if child is destroyed elsewhere?
                 child.Destroy();
             }
             childBuildings = null;
@@ -120,28 +118,23 @@ namespace Carnivale
 
         // Interior building methods
 
-        private void BuildBeds(Map map, bool respawnAfterLoad)
+        private void BuildInterior(Map map, bool respawnAfterLoad)
         {
-            foreach (IntVec3 offset in Props.interiorBuildingOffsets)
+            foreach (ThingPlacement tp in Props.interiorThings)
             {
-                IntVec3 cell = Position + offset.RotatedBy(Rotation);
+                foreach (IntVec3 offset in tp.placementOffsets)
+                {
+                    IntVec3 cell = Position + offset.RotatedBy(Rotation);
+                    ThingDef stuff = tp.thingDef.MadeFromStuff ? GenStuff.DefaultStuffFor(tp.thingDef) : null;
 
-                Building bed = ThingMaker.MakeThing(ThingDefOf.Bed, ThingDefOf.WoodLog) as Building;
-                bed.SetFaction(this.Faction);
-                Utilities.SpawnThingNoWipe(bed, cell, map, Rotation.Opposite, respawnAfterLoad);
-                childBuildings.Add(bed);
+                    Building building = ThingMaker.MakeThing(tp.thingDef, stuff) as Building;
+                    building.SetFaction(this.Faction);
+
+                    Utilities.SpawnThingNoWipe(building, cell, map, Rotation.Opposite, respawnAfterLoad);
+                    childBuildings.Add(building);
+                }
             }
-
         }
 
-        private void BuildKitchen()
-        {
-
-        }
-
-        private void BuildAttractions()
-        {
-
-        }
     }
 }

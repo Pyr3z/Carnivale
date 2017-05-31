@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <!-- BASES -->
+  
+  <!-- Trade goods base -->
+  <ThingDef Name="TradeGoodsBase" Abstract="True">
+    <thingClass>ThingWithComps</thingClass>
+    <category>Item</category>
+    <resourceReadoutPriority>Middle</resourceReadoutPriority>
+    <useHitPoints>true</useHitPoints>
+    <selectable>true</selectable>
+    <altitudeLayer>Item</altitudeLayer>
+    <stackLimit>1</stackLimit>
+    <alwaysHaulable>true</alwaysHaulable>
+    <drawGUIOverlay>true</drawGUIOverlay>
+    <rotatable>false</rotatable>
+    <pathCost>15</pathCost>
+    <intricate>true</intricate>	
+    <tickerType>Never</tickerType>
+    <soundInteract>Standard_Drop</soundInteract>
+    <soundDrop>Standard_Drop</soundDrop>
+    <tradeability>Sellable</tradeability>	
+    <statBases>
+      <MaxHitPoints>100</MaxHitPoints>
+      <Flammability>1.0</Flammability>
+      <DeteriorationRate>2</DeteriorationRate>
+      <SellPriceFactor>1.2</SellPriceFactor>
+      <Mass>0.25</Mass>	  
+    </statBases>	
+    <comps>
+      <li Class="CompProperties_Forbiddable"/>
+    </comps>	
+    <thingCategories>
+      <li>Manufactured</li>
+    </thingCategories>		
+  </ThingDef>
+  
+  <!-- Tent Crate Base -->
+  <ThingDef Name="TentCrateBase" ParentName="TradeGoodsBase" Abstract="True">
+    <recipeMaker>
+      <workSpeedStat>TailoringSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Tailor</effectWorking>
+      <soundWorking>Recipe_Tailor</soundWorking>
+      <unfinishedThingDef>UnfinishedApparel</unfinishedThingDef>	  
+      
+	  <recipeUsers>
+	    <li>ElectricTailoringBench</li>
+	  </recipeUsers>
+    </recipeMaker>	
+	
+	<stuffProps>
+	  <categories>
+	    <li>Dummy</li>
+	  </categories>
+	</stuffProps>
+	  
+  </ThingDef>
+  
+  <!-- END BASES -->
+  
+  
+  <!-- Tent Crate: furnished -->
+  <ThingDef ParentName="TentCrateBase">
+    <defName>Carn_Crate_TentMedFurn</defName>
+	<label>tent crate, furnished</label>
+	<description>A crate filled with enough stakes, textile, rods, etcetera to construct a furnished tent.</description>
+	<graphicData>
+	  <texPath>Carnivale/Items/TentCrate</texPath>
+	  <graphicClass>Graphic_Single</graphicClass>
+	  <shaderType>CutoutComplex</shaderType>
+	  <drawSize>(0.8,0.8)</drawSize>
+	</graphicData>
+	
+	<stuffCategories>
+	  <li>Fabric</li>
+	</stuffCategories>
+	
+	<costStuffCount>400</costStuffCount>
+	<costList>
+	  <WoodLog>50</WoodLog>
+	  <Plasteel>5</Plasteel>
+	</costList>
+	
+	<statBases>
+	  <MaxHitPoints>250</MaxHitPoints>
+	  <Flammability>1.5</Flammability>
+	  <WorkToMake>8000</WorkToMake>
+	  <Mass>10</Mass>
+	  <MarketValue>800</MarketValue>
+	</statBases>
+	
+  </ThingDef>
+  
+</Defs>

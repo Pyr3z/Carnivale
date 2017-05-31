@@ -22,21 +22,26 @@
 		<li>name2->[group]</li>
 		<li>name2->[group]</li>
 		
-		<li>carnival->Carnival</li> <!-- consider other names here -->
+		<li>carnival->Carnival</li>
+		<li>carnival->Carnival</li>
+		<li>carnival->Carnival</li>
 		<li>carnival->Circus</li>
 		<li>carnival->Roadshow</li>
 		<li>carnival->Vaudeville</li>
+		<li>carnival->Company</li>
+		<li>carnival->Outfit</li>
 		
-		<li>leadername->[exciting] LNAME</li>
-		<li>leadername->[strange] LNAME</li>
 		<li>leadername->LNAME</li>
 		
 		<li>group->[collective]</li>
 		<li>group->[collective]</li>
+		<li>group->[collective]</li>
+		<li>group->[collective]</li>
+		<li>group->[collective]</li>
 		<li>group->[strange] [collective]</li>
 		<li>group->[strange] [collective]</li>
 		<li>group->[strange] [collective]</li>
-		<li>group->[colour] [collective]</li>
+		<li>group->[exciting] [collective]</li>
 		<li>group->[colour] [collective]</li>
 	  </rulesStrings>
 	  

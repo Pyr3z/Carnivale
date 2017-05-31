@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<FrameDefs>
+  
+  <!-- Base -->
+  <ThingDef Name="TentFrameBase" Abstract="True">
+    <isFrame>true</isFrame>
+	<category>Building</category>
+	<thingClass>Carnivale.Frame_Tent</thingClass>
+	<altitudeLayer>Building</altitudeLayer>
+	<useHitPoints>true</useHitPoints>
+	<selectable>true</selectable>
+	
+	<comps>
+	  <li Class="CompProperties_Forbiddable">
+	    
+	  </li>
+	</comps>
+	
+	<scatterableOnMapGen>false</scatterableOnMapGen>
+	<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+	
+  </ThingDef>
+  
+  
+  <!-- Tent medium (bedroom) -->
+  
+  
+  
+  
+</FrameDefs>

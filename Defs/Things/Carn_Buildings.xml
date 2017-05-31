@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ThingDefs>
   
+  <!-- BASES -->
+  
   <!-- Buildings base -->
   <ThingDef Name="CarnBuilding" Abstract="True">
     <category>Building</category>
@@ -17,6 +19,7 @@
   <!-- Tent base -->
   <ThingDef Name="CarnTent" ParentName="CarnBuilding" Abstract="True">
     <thingClass>Carnivale.Building_Tent</thingClass>
+	<blueprintClass>Carnivale.Blueprint_Tent</blueprintClass>
 	
 	<altitudeLayer>PawnUnused</altitudeLayer>
 	<pathCost>0</pathCost>
@@ -27,10 +30,9 @@
 	
 	<blockWind>true</blockWind>
 	<holdsRoof>true</holdsRoof>
+	<castEdgeShadows>true</castEdgeShadows>
 	
-	<stuffCategories>
-	  <li>Fabric</li>
-	</stuffCategories>
+	<repairEffect>Sow</repairEffect>
 	
 	<damageMultipliers>
       <li>
@@ -47,8 +49,12 @@
 	  <li>Carnivale.PlaceWorker_Tent</li>
 	</placeWorkers>
 	
+	<!-- TODO: Remove designation category after testing -->
 	<designationCategory>Structure</designationCategory>
   </ThingDef>
+  
+  
+  <!-- END BASES -->
   
   
   <!-- Tent small -->
@@ -59,16 +65,11 @@
 	<description>A small carnival tent.</description>
 	
 	<graphicData>
-	  <texPath>Carnivale/Building/Tent</texPath>
+	  <texPath>Carnivale/Building/TentSquare</texPath>
 	  <graphicClass>Graphic_Multi</graphicClass>
 	  <shaderType>CutoutComplex</shaderType>
 	  <drawSize>(5.15,5.15)</drawSize>
 	  <allowFlip>false</allowFlip>
-	  
-	  <shadowData>
-        <volume>(0.25, 0.5, 0.25)</volume>
-        <offset>(0,0,-0.1)</offset>
-      </shadowData>
 	  
 	  <damageData>
 	    <rect>(1,1,4,4)</rect>
@@ -78,10 +79,53 @@
 	<size>(5,5)</size>
 	<interactionCellOffset>(0,0,-3)</interactionCellOffset>
 	
+	<stuffCategories>
+	  <li>Fabric</li>
+	</stuffCategories>
+	
 	<costStuffCount>150</costStuffCount>
 	<costList>
-	  <WoodLog>25</WoodLog>
+	  <WoodLog>50</WoodLog>
 	</costList>
+	
+	<statBases>
+	  <MaxHitPoints>150</MaxHitPoints>
+	  <Flammability>1.5</Flammability>
+	  <WorkToBuild>1800</WorkToBuild>
+	  <Mass>25</Mass> <!-- 5 * 5 -->
+	  <Beauty>6</Beauty>
+	</statBases>
+	
+	<comps>
+	  <li Class="Carnivale.CompProperties_CarnBuilding">
+	    <type>1</type>
+	  </li>
+	</comps>
+
+  </ThingDef>
+  
+  
+  <!-- Tent small (manager tent) -->
+  <ThingDef ParentName="CarnTent">
+    <defName>Carn_TentSmall_Manager</defName>
+	
+	<label>manager's tent</label>
+	<description>The tent where the manager sleeps.</description>
+	
+	<graphicData>
+	  <texPath>Carnivale/Building/TentSquare</texPath>
+	  <graphicClass>Graphic_Multi</graphicClass>
+	  <shaderType>CutoutComplex</shaderType>
+	  <drawSize>(5.25,5.25)</drawSize>
+	  <allowFlip>false</allowFlip>
+	  
+	  <damageData>
+	    <rect>(1,1,4,4)</rect>
+	  </damageData>
+	</graphicData>
+	
+	<size>(5,5)</size>
+	<interactionCellOffset>(0,0,-3)</interactionCellOffset>
 	
 	<statBases>
 	  <MaxHitPoints>150</MaxHitPoints>
@@ -93,67 +137,100 @@
 	
 	<comps>
 	  <li Class="Carnivale.CompProperties_CarnBuilding">
-	    <type>1</type>
+	    <type>5</type>
+		<interiorThings>
+		  <li>
+		    <thingDef>DoubleBed</thingDef>
+			<placementOffsets>
+			  <li>(-1,0,1)</li>
+			</placementOffsets>
+		  </li>
+		  <li>
+		    <thingDef>TorchLamp</thingDef>
+			<placementOffsets>
+			  <li>(-1,0,-1)</li>
+			</placementOffsets>
+		  </li>
+		</interiorThings>
 	  </li>
 	</comps>
-	
+
   </ThingDef>
   
   
   <!-- Tent medium (beds) -->
-  <ThingDef ParentName="CarnTent" Name="TentMedBeds">
-    <defName>Carn_TentMedBeds</defName>
+  <ThingDef ParentName="CarnTent" Name="TentMedBed">
+    <defName>Carn_TentMedBed</defName>
 	
-	<label>carnival lodging tent (medium)</label>
-	<description>A medium tent with beds to accomodate sleeping.</description>
+	<label>lodging tent</label>
+	<description>A medium tent for carnies to sleep in.</description>
 	
 	<graphicData>
-	  <texPath>Carnivale/Building/Tent</texPath>
+	  <texPath>Carnivale/Building/TentSquare</texPath>
 	  <graphicClass>Graphic_Multi</graphicClass>
 	  <shaderType>CutoutComplex</shaderType>
 	  <drawSize>(7.15,7.15)</drawSize>
 	  <allowFlip>false</allowFlip>
 	  
-	  <shadowData>
-        <volume>(0.25, 0.5, 0.25)</volume>
-        <offset>(0,0,-0.1)</offset>
-      </shadowData>
-	  
 	  <damageData>
-	    <rect>(0.1,0.1,4.9,4.9)</rect>
+	    <rect>(1,1,6,6)</rect>
 	  </damageData>
 	</graphicData>
 	
 	<size>(7,7)</size>
 	<interactionCellOffset>(0,0,-4)</interactionCellOffset>
 	
-	<costStuffCount>200</costStuffCount>
+	<stuffCategories>
+	  <li>Dummy</li>
+	</stuffCategories>
+	
 	<costList>
-	  <WoodLog>50</WoodLog>
+	  <Carn_Crate_TentMedFurn>1</Carn_Crate_TentMedFurn>
 	</costList>
+	<resourcesFractionWhenDeconstructed>1.0</resourcesFractionWhenDeconstructed>
 	
 	<statBases>
 	  <MaxHitPoints>250</MaxHitPoints>
 	  <Flammability>1.5</Flammability>
-	  <WorkToBuild>3900</WorkToBuild>
+	  <WorkToBuild>2500</WorkToBuild>
 	  <Mass>49</Mass> <!-- 7 * 7 -->
-	  <Beauty>6</Beauty>
+	  <Beauty>75</Beauty>
 	</statBases>
 	
 	<comps>
 	  <li Class="Carnivale.CompProperties_CarnBuilding">
-	    <type>5</type> <!-- Tent | Bedroom = 5 -->
-		<interiorBuildingOffsets>
-		  <li>(-2,0,2)</li>
-		  <li>(0,0,2)</li>
-		  <li>(2,0,2)</li>
-		  <li>(-2,0,0)</li>
-		  <li>(0,0,0)</li>
-		  <li>(2,0,0)</li>
-		</interiorBuildingOffsets>
+	    <type>5</type> <!-- Tent | Bedroom == 5 -->
+		<interiorThings>
+		  <li>
+		    <thingDef>SleepingSpot</thingDef>
+			<placementOffsets>
+			  <li>(-2,0,2)</li>
+		      <li>(-1,0,2)</li>
+		      <li>(1,0,2)</li>
+		      <li>(2,0,2)</li>
+		      <li>(-2,0,-1)</li>
+		      <li>(-1,0,-1)</li>
+		      <li>(1,0,-1)</li>
+		      <li>(2,0,-1)</li>
+			</placementOffsets>
+		  </li>
+		  <li>
+		    <thingDef>TorchLamp</thingDef>
+			<placementOffsets>
+			  <li>(0,0,0)</li>
+			</placementOffsets>
+		  </li>
+		</interiorThings>
 	  </li>
 	</comps>
 	
   </ThingDef>
+  
+  
+  
+  
+  <!-- Custom frames -->
+  
+  
   
 </ThingDefs>

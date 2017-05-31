@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using Carnivale.Enums;
+using RimWorld;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -43,6 +44,8 @@ namespace Carnivale
             switch (p.kindDef.defName)
             {
                 case "Carny":
+                    role = CarnivalRole.Entertainer | CarnivalRole.Worker;
+                    break;
                 case "CarnyRare":
                     role = CarnivalRole.Entertainer;
                     break;
@@ -50,13 +53,13 @@ namespace Carnivale
                     role = CarnivalRole.Worker;
                     break;
                 case "CarnyTrader":
-                    role = CarnivalRole.Vendor;
+                    role = CarnivalRole.Vendor | CarnivalRole.Entertainer;
                     break;
                 case "CarnyGuard":
-                    role = CarnivalRole.Guard;
+                    role = CarnivalRole.Guard | CarnivalRole.Worker;
                     break;
                 case "CarnyManager":
-                    role = CarnivalRole.Manager;
+                    role = CarnivalRole.Manager | CarnivalRole.Guard;
                     break;
                 default:
                     role = CarnivalRole.Chattel;
@@ -157,41 +160,9 @@ namespace Carnivale
         }
 
 
-        //public static IntVec3 GetInteriorCorner(IntVec3 original, IntVec2 size, byte corner)
-        //{
-        //    // corner = 0 : top left
-        //    // corner = 1 : top right
-        //    // corner = 2 : bottom left
-        //    // corner = 3 : bottom right
-
-        //    IntVec3 result = new IntVec3(original.x, original.y, original.z);
-
-        //    int xOffset = Mathf.RoundToInt(size.x / 2f - 1.5f);
-        //    int zOffset = Mathf.RoundToInt(size.z / 2f - 1.5f);
-
-        //    switch (corner)
-        //    {
-        //        case 0:
-        //            result.x -= xOffset;
-        //            result.z += zOffset;
-        //            break;
-        //        case 1:
-        //            result.x += xOffset;
-        //            result.z += zOffset;
-        //            break;
-        //        case 2:
-        //            result.x -= xOffset;
-        //            result.z -= zOffset;
-        //            break;
-        //        case 3:
-        //            result.x += xOffset;
-        //            result.z -= zOffset;
-        //            break;
-        //        default:
-        //            return IntVec3.Invalid;
-        //    }
-
-        //    return result;
-        //}
+        public static bool Is(this CarnBuildingType type, CarnBuildingType other)
+        {
+            return (type & other) == other;
+        }
     }
 }

@@ -62,11 +62,15 @@
     <Compile Include="AI\LordToilData_Carnival.cs" />
     <Compile Include="AI\LordToil_DefendCarnival.cs" />
     <Compile Include="AI\LordToil_SetupCarnival.cs" />
+    <Compile Include="Buildings\Blueprint_Tent.cs" />
     <Compile Include="Buildings\Building_Tent.cs" />
     <Compile Include="Buildings\CarnivalBlueprintPlacer.cs" />
     <Compile Include="Buildings\CompCarnBuilding.cs" />
     <Compile Include="Buildings\CompProperties_CarnBuilding.cs" />
+    <Compile Include="Buildings\Frame_Tent.cs" />
     <Compile Include="CarnivaleMod.cs" />
+    <Compile Include="Patches\CostListCalculator_CostListAdjusted.cs" />
+    <Compile Include="Patches\BuildableDef_MadeFromStuff.cs" />
     <Compile Include="Enums\CarnBuildingType.cs" />
     <Compile Include="Enums\CarnivalRole.cs" />
     <Compile Include="Enums\_DefOf.cs" />

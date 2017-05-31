@@ -68,6 +68,7 @@
 	  <deconstructible>false</deconstructible>
 	  <claimable>false</claimable>
 	  <ignoreNeedsPower>true</ignoreNeedsPower>
+	  <!-- TODO: either empty sound defs or open flap sound defs. -->
 	  <soundDoorOpenManual>DoorOpenManual</soundDoorOpenManual>
       <soundDoorCloseManual>DoorCloseManual</soundDoorCloseManual>
 	</building>
