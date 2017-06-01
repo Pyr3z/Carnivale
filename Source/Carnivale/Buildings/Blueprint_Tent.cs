@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using RimWorld;
 using Verse;
-using System.Diagnostics;
-using System.Text;
 
 namespace Carnivale
 {
     public class Blueprint_Tent : Blueprint_Build
     {
+        // Should only be used for stuffed tents.
 
         protected override Thing MakeSolidThing()
         {
-            // A copy of ThingMaker.MakeThing() without validation checks
+            // A copy of ThingMaker.MakeThing() without validation checks,
+            // to allow for hacky frame stuffing.
             ThingDef frameDef = this.def.entityDefToBuild.frameDef;
             Thing thing = (Thing)Activator.CreateInstance(frameDef.thingClass);
             thing.def = frameDef;

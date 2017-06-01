@@ -1,5 +1,4 @@
 ﻿using RimWorld;
-using System.Collections.Generic;
 using Verse;
 
 namespace Carnivale
@@ -11,6 +10,10 @@ namespace Carnivale
 
         public override void Tick()
         {
+            // Shouldn't cause performance issues;
+            // frames will not typically exist long.
+            // This is super hacky nevertheless.
+
             if (ticked) return;
 
             this.SetStuffDirect(resourceContainer[0].Stuff);

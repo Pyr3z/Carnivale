@@ -39,6 +39,9 @@
         </statOffsets>
 	  </li>
 	</degreeDatas>
+	<requiredWorkTags>
+	  <li>Social</li>
+	</requiredWorkTags>
   </TraitDef>
   
   <!-- Spectrum -->

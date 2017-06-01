@@ -45,15 +45,24 @@ namespace Carnivale
             {
                 case "Carny":
                     role = CarnivalRole.Entertainer | CarnivalRole.Worker;
+
+                    if (p.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
+                        role |= CarnivalRole.Cook;
                     break;
                 case "CarnyRare":
                     role = CarnivalRole.Entertainer;
+
+                    if (p.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
+                        role |= CarnivalRole.Cook;
                     break;
                 case "CarnyRoustabout":
                     role = CarnivalRole.Worker;
+
+                    if (p.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
+                        role |= CarnivalRole.Cook;
                     break;
                 case "CarnyTrader":
-                    role = CarnivalRole.Vendor | CarnivalRole.Entertainer;
+                    role = CarnivalRole.Vendor;
                     break;
                 case "CarnyGuard":
                     role = CarnivalRole.Guard | CarnivalRole.Worker;
@@ -62,11 +71,40 @@ namespace Carnivale
                     role = CarnivalRole.Manager | CarnivalRole.Guard;
                     break;
                 default:
-                    role = CarnivalRole.Chattel;
+                    role = CarnivalRole.None;
                     break;
             }
 
             return role;
+        }
+
+        public static bool Is(this Pawn pawn, CarnivalRole role)
+        {
+            return pawn.GetCarnivalRole().Is(role);
+        }
+
+        public static bool Is(this CarnivalRole roles, CarnivalRole role)
+        {
+            return (roles & role) == role;
+        }
+
+
+
+
+        public static bool Is(this ThingDef def, CarnBuildingType type)
+        {
+            CompProperties_CarnBuilding props = def.GetCompProperties<CompProperties_CarnBuilding>();
+            if (props == null)
+            {
+                return false;
+            }
+
+            return props.type.Is(type);
+        }
+
+        public static bool Is(this CarnBuildingType type, CarnBuildingType other)
+        {
+            return (type & other) == other;
         }
 
 
@@ -159,10 +197,6 @@ namespace Carnivale
             return thing;
         }
 
-
-        public static bool Is(this CarnBuildingType type, CarnBuildingType other)
-        {
-            return (type & other) == other;
-        }
+        
     }
 }

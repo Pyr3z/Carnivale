@@ -42,6 +42,12 @@ namespace Carnivale
 
 
 
+        public static StuffCategoryDef StuffedCrate;
+
+
+
+        public static ThingDef Carn_Crate_TentMedFurn;
+
         public static ThingDef Invisible_Door;
 
         public static ThingDef Invisible_Wall;

@@ -7,12 +7,13 @@ namespace Carnivale
     {
         // Assigning power-of-2 byte values allows stacking
         None = 0,
-        Entertainer = 1,
-        Vendor = 2,
-        Worker = 4,
-        Guard = 8,
-        Carrier = 16,
-        Manager = 32,
-        Chattel = 64
+        Worker = 1,
+        Entertainer = 2,
+        Cook = 4,
+        Vendor = 8,
+        Guard = 16,
+        Carrier = 32,
+        Manager = 64
     }
+
 }

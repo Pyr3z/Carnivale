@@ -12,7 +12,7 @@ namespace Carnivale
     {
         public override string ModIdentifier { get { return "Carnivale"; } }
 
-        protected override bool HarmonyAutoPatch { get { return true; } }
+        protected override bool HarmonyAutoPatch { get { return false; } }
 
 
         static CarnivaleMod()
@@ -25,10 +25,13 @@ namespace Carnivale
         {
             // Inject implied Frame defs with Frame_Tent
             foreach (ThingDef def in from d in DefDatabase<ThingDef>.AllDefs
-                                     where d.defName.StartsWith("Carn")
-                                        && d.defName.EndsWith("_Frame")
+                                     where d.isFrame
+                                        && d.entityDefToBuild.stuffCategories != null
+                                        && d.entityDefToBuild.stuffCategories.Contains(_DefOf.StuffedCrate)
                                      select d)
             {
+                if (Prefs.DevMode)
+                    Log.Message("Successfully injected Frame_Tent type to implied FrameDef " + def.defName);
                 def.thingClass = typeof(Frame_Tent);
                 def.tickerType = TickerType.Normal;
             }

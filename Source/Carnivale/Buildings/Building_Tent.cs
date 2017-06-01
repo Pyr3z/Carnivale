@@ -10,6 +10,7 @@ namespace Carnivale
     {
         private List<Building> childBuildings = new List<Building>();
 
+        [Unsaved]
         private CompProperties_CarnBuilding propsInt = null;
 
         public CompProperties_CarnBuilding Props
