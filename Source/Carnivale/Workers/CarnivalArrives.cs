@@ -104,11 +104,11 @@ namespace Carnivale
             PawnRelationUtility.Notify_PawnsSeenByPlayer(pawns, ref label, ref text, "LetterRelatedPawnsNeutralGroup".Translate(), true);
             Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.Good, pawns[0], null);
 
-            IntVec3 setupSpot;
-            RCellFinder.TryFindRandomSpotJustOutsideColony(pawns[0], out setupSpot);
+            //IntVec3 setupSpot;
+            //RCellFinder.TryFindRandomSpotJustOutsideColony(pawns[0], out setupSpot);
+            IntVec3 setupSpot = Utilities.FindCarnivalSetupPositionFrom(parms.spawnCenter, map);
 
             LordJob_EntertainColony lordJob = new LordJob_EntertainColony(parms.faction, setupSpot, durationDays);
-            //LordJob_TradeWithColony lordJob = new LordJob_TradeWithColony(parms.faction, setupSpot);
             LordMaker.MakeNewLord(parms.faction, lordJob, map, pawns);
 
             return true;

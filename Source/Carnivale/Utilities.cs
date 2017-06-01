@@ -1,8 +1,8 @@
 ﻿using Carnivale.Enums;
 using RimWorld;
 using System.Collections.Generic;
-using UnityEngine;
 using Verse;
+using Verse.AI;
 using Verse.AI.Group;
 
 namespace Carnivale
@@ -198,5 +198,87 @@ namespace Carnivale
         }
 
         
+
+        public static IntVec3 FindCarnivalSetupPositionFrom(IntVec3 entrySpot, Map map)
+        {
+            // Copy of internal methods from RCellFinder (why the feck are they internal??)
+            for (int i = 70; i >= 20; i -= 10)
+            {
+                IntVec3 result;
+                if (TryFindCarnivalSetupPosition(entrySpot, (float)i, map, out result))
+                {
+                    return result;
+                }
+            }
+            Log.Error(string.Concat(new object[]
+            {
+                "Could not find carnival setup spot from ",
+                entrySpot,
+                ", using ",
+                entrySpot
+            }));
+            return entrySpot;
+        }
+
+        private static bool TryFindCarnivalSetupPosition(IntVec3 entrySpot, float minDistToColony, Map map, out IntVec3 result)
+        {
+            CellRect cellRect = CellRect.CenteredOn(entrySpot, 60);
+            cellRect.ClipInsideMap(map);
+            cellRect = cellRect.ContractedBy(14);
+            List<IntVec3> colonistThingsList = new List<IntVec3>();
+            foreach (Pawn current in map.mapPawns.FreeColonistsSpawned)
+            {
+                colonistThingsList.Add(current.Position);
+            }
+            foreach (Building current2 in map.listerBuildings.allBuildingsColonistCombatTargets)
+            {
+                colonistThingsList.Add(current2.Position);
+            }
+            float num = minDistToColony * minDistToColony;
+            int num2 = 0;
+            IntVec3 randomCell;
+            while (true)
+            {
+                num2++;
+                if (num2 > 200)
+                {
+                    break;
+                }
+                randomCell = cellRect.RandomCell;
+                if (randomCell.Standable(map))
+                {
+                    if (randomCell.SupportsStructureType(map, TerrainAffordance.Light))
+                    {
+                        if (map.reachability.CanReach(randomCell, entrySpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some))
+                        {
+                            if (map.reachability.CanReachColony(randomCell))
+                            {
+                                bool flag = false;
+                                for (int i = 0; i < colonistThingsList.Count; i++)
+                                {
+                                    if ((float)(colonistThingsList[i] - randomCell).LengthHorizontalSquared < num)
+                                    {
+                                        flag = true;
+                                        break;
+                                    }
+                                }
+                                if (!flag)
+                                {
+                                    if (!randomCell.Roofed(map))
+                                    {
+                                        goto foundGoodSpot;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            result = IntVec3.Invalid;
+            return false;
+            foundGoodSpot:
+            result = randomCell;
+            return true;
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using Verse.AI.Group;
+﻿using Verse.AI.Group;
 using RimWorld;
 using Verse;
 using Verse.AI;

@@ -69,7 +69,6 @@
     <Compile Include="Buildings\CompProperties_CarnBuilding.cs" />
     <Compile Include="Buildings\Frame_Tent.cs" />
     <Compile Include="CarnivaleMod.cs" />
-    <Compile Include="Patches\CostListCalculator_CostListAdjusted.cs" />
     <Compile Include="Enums\CarnBuildingType.cs" />
     <Compile Include="Enums\CarnivalRole.cs" />
     <Compile Include="Enums\_DefOf.cs" />
