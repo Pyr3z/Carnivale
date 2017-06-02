@@ -1,5 +1,4 @@
-﻿using Carnivale.Enums;
-using HugsLib;
+﻿using HugsLib;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;

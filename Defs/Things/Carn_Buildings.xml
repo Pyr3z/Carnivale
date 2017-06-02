@@ -131,7 +131,7 @@
 	</stuffCategories>
 	
 	<costList>
-	  <Carn_Crate_TentMedFurn>1</Carn_Crate_TentMedFurn>
+	  <Carn_Crate_TentFurn>1</Carn_Crate_TentFurn>
 	</costList>
 	<resourcesFractionWhenDeconstructed>1.0</resourcesFractionWhenDeconstructed>
 	
@@ -193,7 +193,7 @@
 	</stuffCategories>
 	
 	<costList>
-	  <Carn_Crate_TentMedFurn>2</Carn_Crate_TentMedFurn>
+	  <Carn_Crate_TentFurn>2</Carn_Crate_TentFurn>
 	</costList>
 	<resourcesFractionWhenDeconstructed>1.0</resourcesFractionWhenDeconstructed>
 	

@@ -1,5 +1,4 @@
 ﻿using Carnivale.AI;
-using Carnivale.Enums;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;

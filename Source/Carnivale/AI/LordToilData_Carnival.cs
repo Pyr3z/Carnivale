@@ -32,25 +32,31 @@ namespace Carnivale.AI
         public bool TryGiveRandomWorker(Thing thing)
         {
             Pawn worker;
-            // Try give pre-designated worker a thing
-            if (pawnsWithRoles[CarnivalRole.Worker].TryRandomElement(out worker))
+            // Try give pre-designated worker a thing, 6 attempts
+            for (int i = 0; i < 6; i++)
             {
-                if (worker.carryTracker.TryStartCarry(thing))
-                {
-                    availableCrates.Add(thing);
-                    return true;
-                }
-            }
-
-            // Failing that, try giving a guard a thing
-            if (pawnsWithRoles[CarnivalRole.Vendor].TryRandomElement(out worker))
-            {
-                if (!worker.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
+                if (pawnsWithRoles[CarnivalRole.Worker].TryRandomElement(out worker))
                 {
                     if (worker.carryTracker.TryStartCarry(thing))
                     {
                         availableCrates.Add(thing);
                         return true;
+                    }
+                }
+            }
+
+            // Failing that, try giving a guard a thing, 2 attempts
+            for (int i = 0; i < 2; i++)
+            {
+                if (pawnsWithRoles[CarnivalRole.Vendor].TryRandomElement(out worker))
+                {
+                    if (!worker.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
+                    {
+                        if (worker.carryTracker.TryStartCarry(thing))
+                        {
+                            availableCrates.Add(thing);
+                            return true;
+                        }
                     }
                 }
             }

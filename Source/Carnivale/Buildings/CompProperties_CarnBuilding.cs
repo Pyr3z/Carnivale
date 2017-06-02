@@ -1,5 +1,4 @@
-﻿using Carnivale.Enums;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Verse;
 
 namespace Carnivale

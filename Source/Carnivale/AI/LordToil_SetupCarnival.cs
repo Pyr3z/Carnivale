@@ -70,18 +70,13 @@ namespace Carnivale.AI
             int numBedTents = numCarnies > 8 ? Mathf.CeilToInt(numCarnies / 8f) : 1;
 
             Thing tentCrate;
-            for (int i = 0; i < numBedTents; i++)
+            // one extra for manager
+            for (int i = 0; i < numBedTents * _DefOf.Carn_TentMedBed.costList[0].count + 1; i++)
             {
                 tentCrate = ThingMaker.MakeThing(_DefOf.Carn_Crate_TentFurn, GenStuff.RandomStuffFor(_DefOf.Carn_Crate_TentFurn));
                 // Makes them carry them instead of just having them in inventory
                 data.TryGiveRandomWorker(tentCrate);
             }
-
-            // Give a worker a manager tent
-            tentCrate = ThingMaker.MakeThing(_DefOf.Carn_Crate_TentFurn, GenStuff.RandomStuffFor(_DefOf.Carn_Crate_TentFurn));
-
-
-
 
             // Place blueprints
             BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, base.Map, this.lord.faction, data.availableCrates);

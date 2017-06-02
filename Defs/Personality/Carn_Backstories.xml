@@ -645,7 +645,7 @@
 	</skillGains>
 	
 	<disallowedTraits>
-	  <li><defName>DrugsDesire</defName><degree>-1</degree></li>
+	  <li><defName>DrugDesire</defName><degree>-1</degree></li>
 	</disallowedTraits>
 	
 	<spawnCategories>
