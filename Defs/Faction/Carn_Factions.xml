@@ -78,7 +78,7 @@
 		<!-- These values are not treated as selection weights by the code, but as maximum counts. -->
 		<options>
 		  <Carny>4</Carny> <!-- Cost: 33 * 4 = 132 -->
-		  <CarnyRoustabout>3</CarnyRoustabout> <!-- Cost: 45 * 3 = 135 -->
+		  <CarnyWorker>3</CarnyWorker> <!-- Cost: 45 * 3 = 135 -->
 		  <CarnyRare>2</CarnyRare> <!-- Cost: 45 * 2 = 90 -->
 		  <!-- Cost for full group: 357 -->
 		</options>

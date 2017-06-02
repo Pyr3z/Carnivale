@@ -14,21 +14,16 @@ namespace Carnivale.AI
 
         private int durationTicks;
 
-        private HashSet<Pawn> workersWithCrates;
-
-        private HashSet<Thing> availableCrates;
-
 
 
         private LordJob_EntertainColony() { }
 
-        public LordJob_EntertainColony(Faction faction, IntVec3 setupSpot, int durationDays, HashSet<Pawn> workersWithCrates, HashSet<Thing> availableCrates)
+        public LordJob_EntertainColony(Faction faction, IntVec3 setupSpot, int durationDays)
         {
             this.faction = faction;
             this.setupSpot = setupSpot;
             this.durationTicks = durationDays * GenDate.TicksPerDay;
-            this.workersWithCrates = workersWithCrates;
-            this.availableCrates = availableCrates;
+
         }
 
 
@@ -148,9 +143,9 @@ namespace Carnivale.AI
 
             Scribe_Values.Look(ref this.durationTicks, "durationTicks", default(int), false);
 
-            Scribe_Collections.Look(ref this.workersWithCrates, false, "workersWithCrates", LookMode.Reference);
+            //Scribe_Collections.Look(ref this.workersWithCrates, false, "workersWithCrates", LookMode.Reference);
 
-            Scribe_Collections.Look(ref this.availableCrates, false, "availableCrates", LookMode.Reference);
+            //Scribe_Collections.Look(ref this.availableCrates, false, "availableCrates", LookMode.Reference);
         }
     }
 }

@@ -23,26 +23,26 @@
     <race>Human</race>
 	<defaultFactionType>Carn_Faction_Roaming</defaultFactionType>
 	<chemicalAddictionChance>0.06</chemicalAddictionChance>
-	<baseRecruitDifficulty>0.6</baseRecruitDifficulty>
+	<baseRecruitDifficulty>0.7</baseRecruitDifficulty>
 	<backstoryCategory>CarnivaleTrader</backstoryCategory>
   </PawnKindDef>
   
   <PawnKindDef Name="PawnKinds_Fighter" Abstract="True">
     <race>Human</race>
 	<defaultFactionType>Carn_Faction_Roaming</defaultFactionType>
-	<chemicalAddictionChance>0.1</chemicalAddictionChance>
-	<baseRecruitDifficulty>0.65</baseRecruitDifficulty>
+	<chemicalAddictionChance>0.15</chemicalAddictionChance>
+	<baseRecruitDifficulty>0.5</baseRecruitDifficulty>
 	<backstoryCategory>CarnivaleFighter</backstoryCategory>
 	
 	<isFighter>true</isFighter>
   </PawnKindDef>
   
-  <PawnKindDef Name="PawnKinds_Roustabout" Abstract="True">
+  <PawnKindDef Name="PawnKinds_Worker" Abstract="True">
     <race>Human</race>
 	<defaultFactionType>Carn_Faction_Roaming</defaultFactionType>
-	<chemicalAddictionChance>0.1</chemicalAddictionChance>
-	<baseRecruitDifficulty>0.65</baseRecruitDifficulty>
-	<backstoryCategory>CarnivaleRoustabout</backstoryCategory>
+	<chemicalAddictionChance>0.15</chemicalAddictionChance>
+	<baseRecruitDifficulty>0.5</baseRecruitDifficulty>
+	<backstoryCategory>CarnivaleWorker</backstoryCategory>
 	
 	<isFighter>true</isFighter>
   </PawnKindDef>
@@ -294,9 +294,9 @@
   
   <!-- =============== Razorback -->
   
-  <PawnKindDef ParentName="PawnKinds_Roustabout">
-    <defName>CarnyRoustabout</defName>
-	<label>roustabout</label>
+  <PawnKindDef ParentName="PawnKinds_Worker">
+    <defName>CarnyWorker</defName>
+	<label>worker</label>
 	
 	<!-- from Outlander TownGuard -->
 	<combatPower>45</combatPower>

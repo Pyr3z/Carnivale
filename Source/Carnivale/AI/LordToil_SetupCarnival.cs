@@ -15,9 +15,7 @@ namespace Carnivale.AI
 
         private const float RADIUS_MAX = 25f;
 
-
         private Dictionary<Pawn, DutyDef> rememberedDuties = new Dictionary<Pawn, DutyDef>();
-
 
         public LordToilData_Carnival Data
         { get { return (LordToilData_Carnival)this.data; } }
@@ -37,14 +35,11 @@ namespace Carnivale.AI
         }
 
 
-        public LordToil_SetupCarnival(IntVec3 setupSpot, HashSet<Pawn> workersWithCrates, HashSet<Thing> availableCrates)
+        public LordToil_SetupCarnival(IntVec3 setupSpot)
         {
-            this.data = new LordToilData_Carnival()
-            {
-                setupSpot = setupSpot,
-                workersWithCrates = workersWithCrates,
-                availableCrates = availableCrates
-            };
+            LordToilData_Carnival dat = new LordToilData_Carnival(setupSpot);
+
+            this.data = dat;
         }
 
 
@@ -55,15 +50,41 @@ namespace Carnivale.AI
 
             LordToilData_Carnival data = Data; // more efficient to cast once
 
+            // Set radius for carnies to stick to
             data.baseRadius = Mathf.InverseLerp(RADIUS_MIN, RADIUS_MAX, this.lord.ownedPawns.Count / 50f);
             data.baseRadius = Mathf.Clamp(data.baseRadius, RADIUS_MIN, RADIUS_MAX);
 
-            IEnumerable<Blueprint_Build> blueprints = BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, base.Map, this.lord.faction, data.availableCrates);
-
-            foreach (var bp in blueprints)
+            // Cache pawn roles (somewhat inefficient memory use, I know...)
+            foreach (CarnivalRole role in Enum.GetValues(typeof(CarnivalRole)))
             {
-
+                List<Pawn> pawns = (from p in this.lord.ownedPawns
+                                    where p.Is(role)
+                                    select p).ToList();
+                data.pawnsWithRoles.Add(role, pawns);
             }
+
+
+            int numCarnies = this.lord.ownedPawns.Count - data.pawnsWithRoles[CarnivalRole.Carrier].Count;
+            
+            // Give workers tents (currently 8 carnies per tent)
+            int numBedTents = numCarnies > 8 ? Mathf.CeilToInt(numCarnies / 8f) : 1;
+
+            Thing tentCrate;
+            for (int i = 0; i < numBedTents; i++)
+            {
+                tentCrate = ThingMaker.MakeThing(_DefOf.Carn_Crate_TentFurn, GenStuff.RandomStuffFor(_DefOf.Carn_Crate_TentFurn));
+                // Makes them carry them instead of just having them in inventory
+                data.TryGiveRandomWorker(tentCrate);
+            }
+
+            // Give a worker a manager tent
+            tentCrate = ThingMaker.MakeThing(_DefOf.Carn_Crate_TentFurn, GenStuff.RandomStuffFor(_DefOf.Carn_Crate_TentFurn));
+
+
+
+
+            // Place blueprints
+            BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, base.Map, this.lord.faction, data.availableCrates);
 
         }
 
@@ -82,10 +103,25 @@ namespace Carnivale.AI
         }
 
 
-
         public override void Cleanup()
         {
             throw new NotImplementedException();
         }
+
+
+
+        private void SetAsBuilder(Pawn p)
+        {
+            p.mindState.duty = new PawnDuty(DutyDefOf.Build, Data.setupSpot, Data.baseRadius);
+
+            p.workSettings.EnableAndInitialize();
+            p.workSettings.SetPriority(WorkTypeDefOf.Construction, 1);
+        }
+
+        private void SetAsIdler(Pawn p)
+        {
+
+        }
+
     }
 }

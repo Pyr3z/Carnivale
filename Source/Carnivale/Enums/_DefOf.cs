@@ -34,7 +34,7 @@ namespace Carnivale
 
         public static PawnKindDef CarnyGuard;
 
-        public static PawnKindDef CarnyRoustabout;
+        public static PawnKindDef CarnyWorker;
 
 
 
@@ -46,13 +46,13 @@ namespace Carnivale
 
 
 
-        public static ThingDef Carn_Crate_TentMedFurn;
+        public static ThingDef Carn_Crate_TentFurn;
+
+        public static ThingDef Carn_TentMedBed;
 
         public static ThingDef Carn_TentSmall;
 
         public static ThingDef Carn_TentSmallMan;
-
-        public static ThingDef Carn_TentMedBed;
 
         public static ThingDef Invisible_Door;
 

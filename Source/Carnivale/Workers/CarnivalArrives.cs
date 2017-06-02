@@ -109,23 +109,23 @@ namespace Carnivale
             //RCellFinder.TryFindRandomSpotJustOutsideColony(pawns[0], out setupSpot);
             IntVec3 setupSpot = Utilities.FindCarnivalSetupPositionFrom(parms.spawnCenter, map);
 
-            HashSet<Pawn> workersWithCrates = new HashSet<Pawn>();
-            HashSet<Thing> availableCrates = new HashSet<Thing>();
+            //List<Pawn> workersWithCrates = new List<Pawn>();
+            //List<Thing> availableCrates = new List<Thing>();
 
-            foreach (Pawn p in pawns)
-            {
-                foreach (Thing crate in from c in p.inventory.innerContainer
-                                        where p.inventory.NotForSale(c)
-                                            && c.def.tradeTags.Contains("Carn_Crate")
-                                        select c)
-                {
-                    workersWithCrates.Add(p);
-                    availableCrates.Add(crate);
-                }
-            }
+            //foreach (Pawn p in pawns)
+            //{
+            //    foreach (Thing crate in from c in p.inventory.innerContainer
+            //                            where p.inventory.NotForSale(c)
+            //                                && c.def.tradeTags.Contains("Carn_Crate")
+            //                            select c)
+            //    {
+            //        workersWithCrates.Add(p);
+            //        availableCrates.Add(crate);
+            //    }
+            //}
 
 
-            LordJob_EntertainColony lordJob = new LordJob_EntertainColony(parms.faction, setupSpot, durationDays, workersWithCrates, availableCrates);
+            LordJob_EntertainColony lordJob = new LordJob_EntertainColony(parms.faction, setupSpot, durationDays);
             LordMaker.MakeNewLord(parms.faction, lordJob, map, pawns);
 
             return true;

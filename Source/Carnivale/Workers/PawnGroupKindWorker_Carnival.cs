@@ -88,16 +88,17 @@ namespace Carnivale
             GenerateLeader(parms, outPawns);
 
             // Supply them with tents
-            List<Pawn> builders = (from p in outPawns
-                                  where p.Is(CarnivalRole.Worker)
-                                  select p).ToList();
-            int numBedTents = outPawns.Count() > 9 ? Mathf.RoundToInt(outPawns.Count() / 8f) : 1;
+            // Actually no don't do this here
+            //List<Pawn> builders = (from p in outPawns
+            //                      where p.Is(CarnivalRole.Worker)
+            //                      select p).ToList();
+            //int numBedTents = outPawns.Count() > 9 ? Mathf.RoundToInt(outPawns.Count() / 8f) : 1;
 
-            for (int i = 0; i < numBedTents; i++)
-            {
-                Thing newTentCrate = ThingMaker.MakeThing(_DefOf.Carn_Crate_TentMedFurn, GenStuff.RandomStuffFor(_DefOf.Carn_Crate_TentMedFurn));
-                builders.RandomElement().inventory.TryAddItemNotForSale(newTentCrate);
-            }
+            //for (int i = 0; i < numBedTents; i++)
+            //{
+            //    Thing newTentCrate = ThingMaker.MakeThing(_DefOf.Carn_Crate_TentMedFurn, GenStuff.RandomStuffFor(_DefOf.Carn_Crate_TentMedFurn));
+            //    builders.RandomElement().inventory.TryAddItemNotForSale(newTentCrate);
+            //}
 
         }
 

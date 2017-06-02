@@ -59,12 +59,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\BlueprintPlacer.cs" />
     <Compile Include="AI\LordToilData_Carnival.cs" />
     <Compile Include="AI\LordToil_DefendCarnival.cs" />
     <Compile Include="AI\LordToil_SetupCarnival.cs" />
     <Compile Include="Buildings\Blueprint_Tent.cs" />
     <Compile Include="Buildings\Building_Tent.cs" />
-    <Compile Include="Buildings\CarnivalBlueprintPlacer.cs" />
     <Compile Include="Buildings\CompCarnBuilding.cs" />
     <Compile Include="Buildings\CompProperties_CarnBuilding.cs" />
     <Compile Include="Buildings\Frame_Tent.cs" />
@@ -74,7 +74,6 @@
     <Compile Include="Enums\_DefOf.cs" />
     <Compile Include="AI\LordJob_EntertainColony.cs" />
     <Compile Include="One\TheOne.cs" />
-    <Compile Include="Buildings\PlaceWorker_Tent.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Workers\CarnivalArrives.cs" />
     <Compile Include="Workers\CarnivalFireball.cs" />

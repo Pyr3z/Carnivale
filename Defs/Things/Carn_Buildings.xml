@@ -126,6 +126,15 @@
 	<size>(5,5)</size>
 	<interactionCellOffset>(0,0,-3)</interactionCellOffset>
 	
+	<stuffCategories>
+	  <li>StuffedCrate</li>
+	</stuffCategories>
+	
+	<costList>
+	  <Carn_Crate_TentMedFurn>1</Carn_Crate_TentMedFurn>
+	</costList>
+	<resourcesFractionWhenDeconstructed>1.0</resourcesFractionWhenDeconstructed>
+	
 	<statBases>
 	  <MaxHitPoints>150</MaxHitPoints>
 	  <Flammability>1.5</Flammability>
@@ -184,7 +193,7 @@
 	</stuffCategories>
 	
 	<costList>
-	  <Carn_Crate_TentMedFurn>1</Carn_Crate_TentMedFurn>
+	  <Carn_Crate_TentMedFurn>2</Carn_Crate_TentMedFurn>
 	</costList>
 	<resourcesFractionWhenDeconstructed>1.0</resourcesFractionWhenDeconstructed>
 	

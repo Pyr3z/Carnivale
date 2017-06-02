@@ -13,7 +13,8 @@ namespace Carnivale
         Vendor = 8,
         Guard = 16,
         Carrier = 32,
-        Manager = 64
+        Manager = 64,
+        Any = 255
     }
 
 }

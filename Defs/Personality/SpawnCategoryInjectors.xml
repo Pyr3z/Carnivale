@@ -83,9 +83,9 @@
   </Xnope.Defs.SpawnCategoryInjectorDef>
   
   <Xnope.Defs.SpawnCategoryInjectorDef>
-    <defName>SCI_CarnivaleRoustabout</defName>
+    <defName>SCI_CarnivaleWorker</defName>
     
-    <newCategory>CarnivaleRoustabout</newCategory>
+    <newCategory>CarnivaleWorker</newCategory>
 	<ignoreAdulthoods>true</ignoreAdulthoods>
 	<injectToCategories>
 	  <li>Civil</li>

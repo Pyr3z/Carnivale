@@ -62,8 +62,8 @@
   
   
   <!-- Tent Crate: medium furnished -->
-  <ThingDef ParentName="TentCrateBase">
-    <defName>Carn_Crate_TentMedFurn</defName>
+  <ThingDef ParentName="TentCrateBase" Name="TentCrateFurn">
+    <defName>Carn_Crate_TentFurn</defName>
 	<label>tent crate, furnished</label>
 	<description>A crate filled with enough stakes, textile, rods, etcetera to construct a furnished tent.</description>
 	<graphicData>
@@ -92,5 +92,6 @@
 	</statBases>
 	
   </ThingDef>
+  
   
 </Defs>

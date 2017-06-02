@@ -346,6 +346,7 @@
 	
 	<requiredWorkTags>
 	  <li>Hauling</li>
+	  <li>ManualSkilled</li>
 	</requiredWorkTags>
 	
 	<bodyTypeMale>Hulk</bodyTypeMale>
@@ -353,7 +354,7 @@
 	
 	<spawnCategories>
 	  <li>Carnivale</li>
-	  <li>CarnivaleRoustabout</li>
+	  <li>CarnivaleWorker</li>
 	  <li>CarnivaleFigher</li>
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>
@@ -374,6 +375,7 @@
 	
 	<requiredWorkTags>
 	  <li>Hauling</li>
+	  <li>ManualSkilled</li>
 	</requiredWorkTags>
 	
 	<bodyTypeMale>Hulk</bodyTypeMale>
@@ -381,15 +383,12 @@
 	
 	<spawnCategories>
 	  <li>Carnivale</li>
-	  <li>CarnivaleRoustabout</li>
+	  <li>CarnivaleWorker</li>
 	  <li>CarnivaleFighter</li>
 	  <li>Slave</li>
 	  <li>Civil</li>
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>
-  
-  
-  <!-- Tentperson -->
   
   
   
@@ -428,7 +427,7 @@
   <Xnope.Defs.BackstoryDef>
     <defName>XnopeBS_GypsyRare</defName>
 	<slot>Adulthood</slot>
-	<title>Rim world gypsy</title>
+	<title>Rimworld gypsy</title>
 	<titleShort>Gypsy</titleShort>
 	<baseDescription>Folks used to say that gypsies are an ancient human culture often gifted with powers of foresight, and that is why they have been fortunate enough in their wanderlust to have survived the eons since their genesis on Earth. NAME identifies as a gypsy, and most people believe HIM as HE seems to give off an aura of psychic awareness.</baseDescription>
 	
@@ -585,12 +584,11 @@
 	</forcedTraits>
 	
 	<spawnCategories>
-	  <li>Carnivale</li>
+	  <li>CarnivaleWorker</li>
 	  <li>CarnivaleFighter</li>
 	  <li>Slave</li>
 	  <li>Traveler</li>
 	  <li>Civil</li>
-	  <li>Raider</li>
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>
   
@@ -604,7 +602,7 @@
 	<baseDescription>NAME took to tinkering with rotors, cams, levers, pulleys, and the like in HIS early teens. It wasn't long before HE found a job in it; everywhere HE found HIMself in the civilised (and a few uncivilised) systems, there were engines that needed repairing, axles that needed greasing, and even carnival rides that needed kicking.</baseDescription>
 	
 	<requiredWorkTags>
-	  <li>ManualDumb</li>
+	  <li>Hauling</li>
 	  <li>ManualSkilled</li>
 	  <li>Intellectual</li>
 	</requiredWorkTags>
@@ -618,13 +616,9 @@
 	  <li><defName>Intellectual</defName><degree>2</degree></li>
 	</skillGains>
 	
-	<forcedTraits>
-	  <li><defName>Carn_LuckinessTrait</defName><degree>-1</degree></li>
-	</forcedTraits>
-	
 	<spawnCategories>
 	  <li>CarnivaleRare</li>
-	  <li>CarnivaleRoustabout</li>
+	  <li>CarnivaleWorker</li>
 	  <li>Slave</li>
 	  <li>Traveler</li>
 	  <li>Civil</li>
@@ -632,5 +626,61 @@
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>
   
+  
+  <!-- Roustabout -->
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_Roustabout</defName>
+	<slot>Adulthood</slot>
+	<title>Carnival roustabout</title>
+	<titleShort>Rousty</titleShort>
+	<baseDescription>Also referred to lovingly as a 'Tentperson', NAME had the single job of taking packed tents from razorbacks (the less nuanced cousin of the rousty), and constructing them into sound textile structures. NAME spends HIS off-time enjoying long walks on the beach, reading what few books can be found on the rimworlds, and of course, beer.</baseDescription>
+	
+	<requiredWorkTags>
+	  <li>Hauling</li>
+	  <li>ManualSkilled</li>
+	</requiredWorkTags>
+	
+	<skillGains>
+	  <li><defName>Construction</defName><degree>6</degree></li>
+	</skillGains>
+	
+	<disallowedTraits>
+	  <li><defName>DrugsDesire</defName><degree>-1</degree></li>
+	</disallowedTraits>
+	
+	<spawnCategories>
+	  <li>CarnivaleWorker</li>
+	  <li>Slave</li>
+	</spawnCategories>
+  </Xnope.Defs.BackstoryDef>
+  
+  
+  <!-- Cookie -->
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_Cookie</defName>
+	<slot>Adulthood</slot>
+	<title>Tough cookie</title>
+	<titleShort>Cookie</titleShort>
+	<baseDescription>NAME was a seasoned veteran when it came to feeding large numbers of starving stomachs. Don't let the job title fool you; NAME is a force of nature with a frying pan.</baseDescription>
+	
+	<requiredWorkTags>
+	  <li>Cooking</li>
+	  <li>Social</li>
+	</requiredWorkTags>
+	
+	<workDisables>
+	  <li>Artistic</li>
+	</workDisables>
+	
+	<skillGains>
+	  <li><defName>Cooking</defName><degree>6</degree></li>
+	  <li><defName>Melee</defName><degree>4</degree></li>
+	</skillGains>
+	
+	<spawnCategories>
+	  <li>Carnivale</li>
+	  <li>Slave</li>
+	</spawnCategories>
+  </Xnope.Defs.BackstoryDef>
   
 </BackstoryDefs>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Carnivale.Enums
+namespace Carnivale
 {
     [Flags]
     public enum CarnBuildingType : byte

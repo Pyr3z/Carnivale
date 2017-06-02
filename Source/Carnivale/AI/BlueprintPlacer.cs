@@ -11,11 +11,11 @@ namespace Carnivale.AI
 
         private static Faction faction;
 
-        private static HashSet<Thing> availableCrates;
+        private static List<Thing> availableCrates;
 
         // The only public method; use this
         [DebuggerHidden]
-        public static IEnumerable<Blueprint_Build> PlaceCarnivalBlueprints(IntVec3 centre, Map map, Faction faction, HashSet<Thing> availableCrates)
+        public static IEnumerable<Blueprint_Build> PlaceCarnivalBlueprints(IntVec3 centre, Map map, Faction faction, List<Thing> availableCrates)
         {
             BlueprintPlacer.centre = centre;
             BlueprintPlacer.faction = faction;
@@ -26,10 +26,10 @@ namespace Carnivale.AI
                 yield return tent;
             }
 
-            foreach (Blueprint_Build stall in PlaceStallBlueprints(map))
-            {
-                yield return stall;
-            }
+            //foreach (Blueprint_Build stall in PlaceStallBlueprints(map))
+            //{
+            //    yield return stall;
+            //}
 
             //yield return PlaceEntranceBlueprint(map);
         }
@@ -37,23 +37,37 @@ namespace Carnivale.AI
 
         private static IEnumerable<Blueprint_Tent> PlaceTentBlueprints(Map map)
         {
-            int numBedTents = 0;
+            int numTents = 0;
             foreach (Thing crate in availableCrates)
             {
-                if (crate.def == _DefOf.Carn_Crate_TentMedFurn)
-                    numBedTents++;
+                if (crate.def == _DefOf.Carn_Crate_TentFurn)
+                    numTents++;
             }
 
-            for (int i = 0; i < numBedTents; i++)
+            ThingDef tentDef = _DefOf.Carn_TentMedBed;
+            numTents = (numTents - 1) / tentDef.costList[0].count;
+
+            Rot4 rot;
+            IntVec3 tentSpot;
+
+            // Place lodging tents (8 pawns per medium sized tent)
+            for (int i = 0; i < numTents; i++)
             {
-                Rot4 rot = Rot4.Random;
-                ThingDef tentDef = _DefOf.Carn_TentMedBed;
-                IntVec3 tentSpot = FindPlacementFor(tentDef, rot, map);
+                rot = Rot4.Random;
+                tentSpot = FindPlacementFor(tentDef, rot, map);
 
-                if (!tentSpot.IsValid) break;
-
-                yield return (Blueprint_Tent)GenConstruct.PlaceBlueprintForBuild(tentDef, tentSpot, map, rot, faction, null);
+                if (tentSpot.IsValid)
+                    yield return (Blueprint_Tent)GenConstruct.PlaceBlueprintForBuild(tentDef, tentSpot, map, rot, faction, null);
             }
+
+            // Place manager tent
+            rot = Rot4.Random;
+            tentDef = _DefOf.Carn_TentSmallMan;
+            tentSpot = FindPlacementFor(tentDef, rot, map);
+
+            if (tentSpot.IsValid)
+                yield return (Blueprint_Tent)GenConstruct.PlaceBlueprintForBuild(tentDef, tentSpot, map, rot, faction, null);
+
         }
 
         private static IEnumerable<Blueprint_Build> PlaceStallBlueprints(Map map)

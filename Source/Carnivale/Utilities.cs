@@ -1,5 +1,4 @@
-﻿using Carnivale.Enums;
-using RimWorld;
+﻿using RimWorld;
 using System.Collections.Generic;
 using Verse;
 using Verse.AI;
@@ -33,6 +32,8 @@ namespace Carnivale
 
         public static CarnivalRole GetCarnivalRole(this Pawn p)
         {
+            // TODO: cache this somewhere so it doesn't need to be checked
+            // multiple times?
             if (!p.Faction.IsCarnival())
             {
                 Log.Error("Tried to get a CarnivalRole for " + p.NameStringShort + ", who is not in a carnival faction.");
@@ -44,13 +45,18 @@ namespace Carnivale
             switch (p.kindDef.defName)
             {
                 case "Carny":
-                    role = CarnivalRole.Entertainer;
+                    if (!p.story.WorkTagIsDisabled(WorkTags.Artistic))
+                        role = CarnivalRole.Entertainer;
 
                     if (p.skills.GetSkill(SkillDefOf.Construction).Level > 5)
                         role |= CarnivalRole.Worker;
 
                     if (p.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
                         role |= CarnivalRole.Cook;
+
+                    if (p.skills.GetSkill(SkillDefOf.Melee).Level > 4
+                        || p.skills.GetSkill(SkillDefOf.Shooting).Level > 4)
+                        role |= CarnivalRole.Guard;
 
                     break;
                 case "CarnyRare":
@@ -60,8 +66,9 @@ namespace Carnivale
                         role |= CarnivalRole.Cook;
 
                     break;
-                case "CarnyRoustabout":
-                    role = CarnivalRole.Worker;
+                case "CarnyWorker":
+                    if (!p.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
+                        role = CarnivalRole.Worker;
 
                     if (p.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
                         role |= CarnivalRole.Cook;
@@ -73,7 +80,7 @@ namespace Carnivale
                 case "CarnyGuard":
                     role = CarnivalRole.Guard;
 
-                    if (p.skills.GetSkill(SkillDefOf.Construction).Level > 5)
+                    if (!p.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
                         role |= CarnivalRole.Worker;
 
                     break;
@@ -85,7 +92,7 @@ namespace Carnivale
 
                     break;
                 default:
-                    role = CarnivalRole.None;
+                    role = CarnivalRole.Carrier;
                     break;
             }
 
