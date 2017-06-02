@@ -12,27 +12,35 @@ namespace Carnivale.AI
 
         public float baseRadius;
 
-        public List<Blueprint> blueprints = new List<Blueprint>();
+        public HashSet<Pawn> workersWithCrates;
 
-        public List<Thing> unbuiltThings = new List<Thing>();
+        public HashSet<Thing> availableCrates;
+
+        //public List<Blueprint> blueprints = new List<Blueprint>();
+
+        //public List<Thing> unbuiltThings = new List<Thing>();
 
 
         public override void ExposeData()
         {
             Scribe_Values.Look(ref this.setupSpot, "setupSpot", default(IntVec3), false);
             Scribe_Values.Look(ref this.baseRadius, "baseRadius", 0f, false);
-            
-            if (Scribe.mode == LoadSaveMode.Saving)
-            {
-                this.blueprints.RemoveAll(b => b.Destroyed);
-            }
-            Scribe_Collections.Look(ref this.blueprints, "blueprints", LookMode.Reference, new object[0]);
 
-            if (Scribe.mode == LoadSaveMode.Saving)
-            {
-                this.blueprints.RemoveAll(b => b.Destroyed);
-            }
-            Scribe_Collections.Look(ref this.unbuiltThings, "unbuiltThings", LookMode.Reference, new object[0]);
+            Scribe_Collections.Look(ref this.workersWithCrates, false, "workersWithCrates", LookMode.Reference);
+
+            Scribe_Collections.Look(ref this.availableCrates, false, "availableCrates", LookMode.Reference);
+
+            //if (Scribe.mode == LoadSaveMode.Saving)
+            //{
+            //    this.blueprints.RemoveAll(b => b.Destroyed);
+            //}
+            //Scribe_Collections.Look(ref this.blueprints, "blueprints", LookMode.Reference, new object[0]);
+
+            //if (Scribe.mode == LoadSaveMode.Saving)
+            //{
+            //    this.blueprints.RemoveAll(b => b.Destroyed);
+            //}
+            //Scribe_Collections.Look(ref this.unbuiltThings, "unbuiltThings", LookMode.Reference, new object[0]);
         }
     }
 }

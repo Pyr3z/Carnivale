@@ -1,4 +1,5 @@
 ﻿using Carnivale.AI;
+using Carnivale.Enums;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,8 +65,8 @@ namespace Carnivale
             }
 
             // Spawn pawns. Counting on you, IncidentWorker_NeutralGroup.
-            List<Pawn> pawns = this.SpawnPawns(parms, 15);
-            if (pawns.Count == 0)
+            List<Pawn> pawns = this.SpawnPawns(parms, 17);
+            if (pawns.Count < 3)
             {
                 if (Prefs.DevMode)
                     Log.Warning("Could not execute CarnivalArrives: could not generate any valid pawns.");
@@ -108,7 +109,23 @@ namespace Carnivale
             //RCellFinder.TryFindRandomSpotJustOutsideColony(pawns[0], out setupSpot);
             IntVec3 setupSpot = Utilities.FindCarnivalSetupPositionFrom(parms.spawnCenter, map);
 
-            LordJob_EntertainColony lordJob = new LordJob_EntertainColony(parms.faction, setupSpot, durationDays);
+            HashSet<Pawn> workersWithCrates = new HashSet<Pawn>();
+            HashSet<Thing> availableCrates = new HashSet<Thing>();
+
+            foreach (Pawn p in pawns)
+            {
+                foreach (Thing crate in from c in p.inventory.innerContainer
+                                        where p.inventory.NotForSale(c)
+                                            && c.def.tradeTags.Contains("Carn_Crate")
+                                        select c)
+                {
+                    workersWithCrates.Add(p);
+                    availableCrates.Add(crate);
+                }
+            }
+
+
+            LordJob_EntertainColony lordJob = new LordJob_EntertainColony(parms.faction, setupSpot, durationDays, workersWithCrates, availableCrates);
             LordMaker.MakeNewLord(parms.faction, lordJob, map, pawns);
 
             return true;

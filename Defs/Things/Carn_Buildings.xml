@@ -46,7 +46,7 @@
 	</building>
 	
 	<placeWorkers>
-	  <li>Carnivale.PlaceWorker_Tent</li>
+	  <li>PlaceWorker_NotUnderRoof</li>
 	</placeWorkers>
 	
 	<designationCategory>Structure</designationCategory>

@@ -2,6 +2,7 @@
 using RimWorld;
 using Verse;
 using Verse.AI;
+using System.Collections.Generic;
 
 namespace Carnivale.AI
 {
@@ -13,21 +14,43 @@ namespace Carnivale.AI
 
         private int durationTicks;
 
+        private HashSet<Pawn> workersWithCrates;
+
+        private HashSet<Thing> availableCrates;
+
 
 
         private LordJob_EntertainColony() { }
 
-        public LordJob_EntertainColony(Faction faction, IntVec3 setupSpot, int durationDays)
+        public LordJob_EntertainColony(Faction faction, IntVec3 setupSpot, int durationDays, HashSet<Pawn> workersWithCrates, HashSet<Thing> availableCrates)
         {
             this.faction = faction;
             this.setupSpot = setupSpot;
             this.durationTicks = durationDays * GenDate.TicksPerDay;
+            this.workersWithCrates = workersWithCrates;
+            this.availableCrates = availableCrates;
         }
 
 
 
         public override StateGraph CreateGraph()
         {
+            StateGraph mainGraph = new StateGraph();
+
+            LordToil toil_MoveToSetup = mainGraph.AttachSubgraph(new LordJob_Travel(this.setupSpot).CreateGraph()).StartingToil;
+            mainGraph.StartingToil = toil_MoveToSetup;
+
+
+
+            return mainGraph;
+        }
+
+
+        private StateGraph VisitColonyClone()
+        {
+            // Deprecated CreateGraph() method. Here for reference.
+            // Behaviour is very close to visitors.
+
             StateGraph mainGraph = new StateGraph();
 
             LordToil lordToil_MoveToSetup = mainGraph.AttachSubgraph(new LordJob_Travel(this.setupSpot).CreateGraph()).StartingToil;
@@ -124,6 +147,10 @@ namespace Carnivale.AI
             Scribe_Values.Look(ref this.setupSpot, "setupSpot", default(IntVec3), false);
 
             Scribe_Values.Look(ref this.durationTicks, "durationTicks", default(int), false);
+
+            Scribe_Collections.Look(ref this.workersWithCrates, false, "workersWithCrates", LookMode.Reference);
+
+            Scribe_Collections.Look(ref this.availableCrates, false, "availableCrates", LookMode.Reference);
         }
     }
 }

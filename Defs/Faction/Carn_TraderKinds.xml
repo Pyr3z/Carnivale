@@ -6,7 +6,7 @@
     <defName>Carn_Trader_Food</defName>
 	<label>food vendor</label>
 	
-	<commonality>5</commonality>
+	<commonality>4</commonality>
 	
 	<stockGenerators>
 	  
@@ -64,7 +64,7 @@
     <defName>Carn_Trader_Curios</defName>
 	<label>curios vendor</label>
 	
-	<commonality>1</commonality>
+	<commonality>2</commonality>
 	
 	<stockGenerators>
 	  
@@ -128,7 +128,7 @@
     <defName>Carn_Trader_Surplus</defName>
 	<label>surplus vendor</label>
 	
-	<commonality>2</commonality>
+	<commonality>3</commonality>
 	
 	<stockGenerators>
 	  
@@ -195,10 +195,22 @@
         <tradeTag>Furniture</tradeTag>
         <thingDefCountRange>
           <min>1</min>
-          <max>9</max>
+          <max>6</max>
         </thingDefCountRange>
         <countRange>
           <min>1</min>
+          <max>1</max>
+        </countRange>
+      </li>
+	  
+	  <li Class="StockGenerator_Tag">
+        <tradeTag>Carn_Crate</tradeTag>
+        <thingDefCountRange>
+          <min>0</min>
+          <max>2</max>
+        </thingDefCountRange>
+        <countRange>
+          <min>0</min>
           <max>1</max>
         </countRange>
       </li>

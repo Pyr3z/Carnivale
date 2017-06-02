@@ -44,31 +44,45 @@ namespace Carnivale
             switch (p.kindDef.defName)
             {
                 case "Carny":
-                    role = CarnivalRole.Entertainer | CarnivalRole.Worker;
+                    role = CarnivalRole.Entertainer;
+
+                    if (p.skills.GetSkill(SkillDefOf.Construction).Level > 5)
+                        role |= CarnivalRole.Worker;
 
                     if (p.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
                         role |= CarnivalRole.Cook;
+
                     break;
                 case "CarnyRare":
                     role = CarnivalRole.Entertainer;
 
                     if (p.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
                         role |= CarnivalRole.Cook;
+
                     break;
                 case "CarnyRoustabout":
                     role = CarnivalRole.Worker;
 
                     if (p.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
                         role |= CarnivalRole.Cook;
+
                     break;
                 case "CarnyTrader":
                     role = CarnivalRole.Vendor;
                     break;
                 case "CarnyGuard":
-                    role = CarnivalRole.Guard | CarnivalRole.Worker;
+                    role = CarnivalRole.Guard;
+
+                    if (p.skills.GetSkill(SkillDefOf.Construction).Level > 5)
+                        role |= CarnivalRole.Worker;
+
                     break;
                 case "CarnyManager":
-                    role = CarnivalRole.Manager | CarnivalRole.Guard;
+                    role = CarnivalRole.Manager;
+
+                    if (p.skills.GetSkill(SkillDefOf.Shooting).Level > 3)
+                        role |= CarnivalRole.Guard;
+
                     break;
                 default:
                     role = CarnivalRole.None;
@@ -205,7 +219,7 @@ namespace Carnivale
             for (int i = 70; i >= 20; i -= 10)
             {
                 IntVec3 result;
-                if (TryFindCarnivalSetupPosition(entrySpot, (float)i, map, out result))
+                if (TryFindCarnivalSetupPosition(entrySpot, i, map, out result))
                 {
                     return result;
                 }
@@ -234,16 +248,10 @@ namespace Carnivale
             {
                 colonistThingsList.Add(current2.Position);
             }
-            float num = minDistToColony * minDistToColony;
-            int num2 = 0;
+            float minDistToColonySquared = minDistToColony * minDistToColony;
             IntVec3 randomCell;
-            while (true)
+            for (int attempt = 0; attempt < 200; attempt++)
             {
-                num2++;
-                if (num2 > 200)
-                {
-                    break;
-                }
                 randomCell = cellRect.RandomCell;
                 if (randomCell.Standable(map))
                 {
@@ -256,7 +264,7 @@ namespace Carnivale
                                 bool flag = false;
                                 for (int i = 0; i < colonistThingsList.Count; i++)
                                 {
-                                    if ((float)(colonistThingsList[i] - randomCell).LengthHorizontalSquared < num)
+                                    if ((colonistThingsList[i] - randomCell).LengthHorizontalSquared < minDistToColonySquared)
                                     {
                                         flag = true;
                                         break;
@@ -266,7 +274,8 @@ namespace Carnivale
                                 {
                                     if (!randomCell.Roofed(map))
                                     {
-                                        goto foundGoodSpot;
+                                        result = randomCell;
+                                        return true;
                                     }
                                 }
                             }
@@ -276,9 +285,6 @@ namespace Carnivale
             }
             result = IntVec3.Invalid;
             return false;
-            foundGoodSpot:
-            result = randomCell;
-            return true;
         }
     }
 }
