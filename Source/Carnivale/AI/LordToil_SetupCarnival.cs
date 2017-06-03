@@ -11,14 +11,20 @@ namespace Carnivale.AI
 {
     public class LordToil_SetupCarnival : LordToil
     {
-        private const float RADIUS_MIN = 14f;
+        private const float RADIUS_MIN = 25f;
 
-        private const float RADIUS_MAX = 25f;
-
-        private Dictionary<Pawn, DutyDef> rememberedDuties = new Dictionary<Pawn, DutyDef>();
+        private const float RADIUS_MAX = 50f;
 
         public LordToilData_Carnival Data
         { get { return (LordToilData_Carnival)this.data; } }
+
+        public override IntVec3 FlagLoc
+        {
+            get
+            {
+                return Data.setupSpot;
+            }
+        }
 
         private IEnumerable<Frame> Frames
         {
@@ -118,8 +124,8 @@ namespace Carnivale.AI
 
             LordToilData_Carnival data = this.Data;
 
-            // Check if everything is setup every 450 ticks
-            if (this.lord.ticksInToil % 450 == 0)
+            // Check if everything is setup
+            if (this.lord.ticksInToil % 400 == 0)
             {
                 if (!(from frame in this.Frames
                       where !frame.Destroyed

@@ -382,7 +382,6 @@
 	<bodyTypeFemale>Female</bodyTypeFemale>
 	
 	<spawnCategories>
-	  <li>Carnivale</li>
 	  <li>CarnivaleWorker</li>
 	  <li>CarnivaleFighter</li>
 	  <li>Slave</li>

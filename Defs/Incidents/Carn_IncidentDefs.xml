@@ -14,7 +14,7 @@
 	
 	<durationDays>
 	  <min>2</min>
-	  <max>7</max>
+	  <max>4</max>
 	</durationDays>
   </IncidentDef>
   

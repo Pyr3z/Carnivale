@@ -9,7 +9,7 @@ namespace Carnivale
     {
         public static DutyDef BuildCarnival;
 
-        public static DutyDef Meander;
+        //public static DutyDef Meander;
 
 
 

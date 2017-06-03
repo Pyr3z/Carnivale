@@ -36,28 +36,29 @@
   
   
   <!-- Meander and socialise -->
-  <DutyDef>
-    <defName>Meander</defName>
-	<thinkNode Class="ThingNode_Priority">
-	  <subNodes>
+  <!-- <DutyDef> -->
+    <!-- <defName>Meander</defName> -->
+	<!-- <thinkNode Class="ThingNode_Priority"> -->
+	  <!-- <subNodes> -->
 	  
 	  
 	    <!-- Stand where you are and be socially active -->
-        <li Class="ThinkNode_ConditionalRandom">
-          <chance>0.35</chance>
-          <subNodes>
-            <li Class="JobGiver_StandAndBeSociallyActive">
-              <ticksRange>
-                <min>350</min>
-                <max>750</max>
-              </ticksRange>
-            </li>
-          </subNodes>
-        </li>
+        <!-- <li Class="ThinkNode_ConditionalRandom"> -->
+          <!-- <chance>0.35</chance> -->
+          <!-- <subNodes> -->
+            <!-- <li Class="JobGiver_StandAndBeSociallyActive"> -->
+              <!-- <ticksRange> -->
+                <!-- <min>350</min> -->
+                <!-- <max>750</max> -->
+              <!-- </ticksRange> -->
+            <!-- </li> -->
+          <!-- </subNodes> -->
+        <!-- </li> -->
 		
 		
-	  </subNodes>
-	</thinkNode>
-  </DutyDef>
+	  <!-- </subNodes> -->
+	<!-- </thinkNode> -->
+  <!-- </DutyDef> -->
+  
   
 </DutyDefs>
