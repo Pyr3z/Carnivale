@@ -15,7 +15,7 @@ namespace Carnivale.AI
 
         // The only public method; use this
         [DebuggerHidden]
-        public static IEnumerable<Blueprint_Build> PlaceCarnivalBlueprints(IntVec3 centre, Map map, Faction faction, List<Thing> availableCrates)
+        public static IEnumerable<Blueprint> PlaceCarnivalBlueprints(IntVec3 centre, Map map, Faction faction, List<Thing> availableCrates)
         {
             BlueprintPlacer.centre = centre;
             BlueprintPlacer.faction = faction;
@@ -40,13 +40,11 @@ namespace Carnivale.AI
             int numTents = 0;
             foreach (Thing crate in availableCrates)
             {
-                if (crate.def == _DefOf.Carn_Crate_TentFurn)
+                if (crate.def == _DefOf.Carn_Crate_TentLodge)
                     numTents++;
             }
 
             ThingDef tentDef = _DefOf.Carn_TentMedBed;
-            numTents = (numTents - 1) / tentDef.costList[0].count;
-
             Rot4 rot;
             IntVec3 tentSpot;
 
@@ -61,6 +59,9 @@ namespace Carnivale.AI
             }
 
             // Place manager tent
+            if (!availableCrates.Any(c => c.def == _DefOf.Carn_Crate_TentMan))
+                yield break;
+
             rot = Rot4.Random;
             tentDef = _DefOf.Carn_TentSmallMan;
             tentSpot = FindPlacementFor(tentDef, rot, map);

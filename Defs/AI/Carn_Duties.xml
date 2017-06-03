@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <DutyDefs>
   
+  <!-- Setup carnival buildings -->
   <DutyDef>
-    <defName>SetupCarnival</defName>
+    <defName>BuildCarnival</defName>
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
 	    <li Class="JobGiver_FightFiresNearPoint">
@@ -29,6 +30,32 @@
 		<li Class="JobGiver_WanderNearDutyLocation">
           <wanderRadius>8</wanderRadius>
         </li>
+	  </subNodes>
+	</thinkNode>
+  </DutyDef>
+  
+  
+  <!-- Meander and socialise -->
+  <DutyDef>
+    <defName>Meander</defName>
+	<thinkNode Class="ThingNode_Priority">
+	  <subNodes>
+	  
+	  
+	    <!-- Stand where you are and be socially active -->
+        <li Class="ThinkNode_ConditionalRandom">
+          <chance>0.35</chance>
+          <subNodes>
+            <li Class="JobGiver_StandAndBeSociallyActive">
+              <ticksRange>
+                <min>350</min>
+                <max>750</max>
+              </ticksRange>
+            </li>
+          </subNodes>
+        </li>
+		
+		
 	  </subNodes>
 	</thinkNode>
   </DutyDef>

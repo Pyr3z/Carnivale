@@ -16,7 +16,13 @@ namespace Carnivale
 
             if (ticked) return;
 
-            this.SetStuffDirect(resourceContainer[0].Stuff);
+            ThingDef stuff = resourceContainer[0].Stuff;
+
+            this.SetStuffDirect(stuff);
+
+            Thing dummyThingToSatisfyTheGods = ThingMaker.MakeThing(stuff);
+
+            this.resourceContainer.TryAdd(dummyThingToSatisfyTheGods);
 
             ticked = true;
         }

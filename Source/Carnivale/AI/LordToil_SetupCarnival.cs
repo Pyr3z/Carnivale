@@ -70,16 +70,25 @@ namespace Carnivale.AI
             int numBedTents = numCarnies > 8 ? Mathf.CeilToInt(numCarnies / 8f) : 1;
 
             Thing tentCrate;
-            // one extra for manager
-            for (int i = 0; i < numBedTents * _DefOf.Carn_TentMedBed.costList[0].count + 1; i++)
+            for (int i = 0; i < numBedTents; i++)
             {
-                tentCrate = ThingMaker.MakeThing(_DefOf.Carn_Crate_TentFurn, GenStuff.RandomStuffFor(_DefOf.Carn_Crate_TentFurn));
-                // Makes them carry them instead of just having them in inventory
-                data.TryGiveRandomWorker(tentCrate);
+                tentCrate = ThingMaker.MakeThing(_DefOf.Carn_Crate_TentLodge, GenStuff.RandomStuffFor(_DefOf.Carn_Crate_TentLodge));
+                // Makes them carry them instead of just having them in inventory:
+                data.TryHaveWorkerCarry(tentCrate);
+            }
+
+            if (data.pawnsWithRoles[CarnivalRole.Manager].Count > 0)
+            {
+                tentCrate = ThingMaker.MakeThing(_DefOf.Carn_Crate_TentMan, _DefOf.DevilstrandCloth);
+                if (!data.TryHaveWorkerCarry(tentCrate))
+                {
+                    // If no workers to carry it, force the manager to carry it
+                    data.pawnsWithRoles[CarnivalRole.Manager].First().carryTracker.TryStartCarry(tentCrate);
+                }
             }
 
             // Place blueprints
-            BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, base.Map, this.lord.faction, data.availableCrates);
+            data.blueprints = BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, base.Map, this.lord.faction, data.availableCrates).ToList();
 
         }
 
@@ -87,35 +96,131 @@ namespace Carnivale.AI
 
         public override void UpdateAllDuties()
         {
-            throw new NotImplementedException();
+            LordToilData_Carnival data = this.Data; // Single cast
+            
+            foreach (Pawn pawn in this.lord.ownedPawns)
+            {
+                if (pawn.Is(CarnivalRole.Worker) && pawn.carryTracker.CarriedThing != null)
+                {
+                    SetAsBuilder(pawn);
+                    continue;
+                }
+
+                SetAsIdler(pawn);
+            }
         }
 
 
 
         public override void LordToilTick()
         {
-            throw new NotImplementedException();
+            base.LordToilTick();
+
+            LordToilData_Carnival data = this.Data;
+
+            // Check if everything is setup every 450 ticks
+            if (this.lord.ticksInToil % 450 == 0)
+            {
+                if (!(from frame in this.Frames
+                      where !frame.Destroyed
+                      select frame).Any())
+                {
+                    if (!(from blue in data.blueprints
+                          where !blue.Destroyed
+                          select blue).Any())
+                    {
+                        if (!base.Map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial).Any(b => b.Faction == this.lord.faction))
+                        {
+                            // No frames, blueprints, OR buildings
+                            if ((from crate in data.availableCrates
+                                 where !crate.Destroyed
+                                 select crate).Any())
+                            {
+                                // Some more available crates, place new blueprints
+                                data.blueprints = BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, base.Map, this.lord.faction, data.availableCrates).ToList();
+                                this.UpdateAllDuties();
+                                return;
+                            }
+                            else
+                            {
+                                // Nothing is buildable. Was the carnival attacked?
+                                this.lord.ReceiveMemo("NothingBuildable");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            // Buildings are there. Next toil.
+                            this.lord.ReceiveMemo("SetupDone");
+                            return;
+                        }
+                    }
+                }
+            }
+            // End check
+
+        }
+
+        public override void Notify_PawnLost(Pawn victim, PawnLostCondition cond)
+        {
+            if (cond == PawnLostCondition.IncappedOrKilled
+                || cond == PawnLostCondition.MadePrisoner)
+            {
+                // Hostile actions
+                this.lord.ReceiveMemo("HostileConditions");
+                return;
+            }
+
+            // Non-hostile cause of PawnLost
+            this.UpdateAllDuties();
+        }
+
+
+        public override void Notify_ConstructionFailed(Pawn pawn, Frame frame, Blueprint_Build newBlueprint)
+        {
+            if (frame.Faction == this.lord.faction && newBlueprint != null)
+            {
+                this.Data.blueprints.Add(newBlueprint);
+            }
         }
 
 
         public override void Cleanup()
         {
-            throw new NotImplementedException();
+            // Do more cleanup here?
+            Data.blueprints.RemoveAll(blue => blue.Destroyed);
+            foreach (Blueprint b in Data.blueprints)
+            {
+                b.Destroy(DestroyMode.Cancel);
+            }
+            foreach (Frame frame in this.Frames)
+            {
+                frame.Destroy(DestroyMode.Cancel);
+            }
         }
 
 
 
         private void SetAsBuilder(Pawn p)
         {
-            p.mindState.duty = new PawnDuty(DutyDefOf.Build, Data.setupSpot, Data.baseRadius);
+            if (p != null)
+            {
+                p.mindState.duty = new PawnDuty(_DefOf.BuildCarnival, Data.setupSpot, Data.baseRadius);
 
-            p.workSettings.EnableAndInitialize();
-            p.workSettings.SetPriority(WorkTypeDefOf.Construction, 1);
+                p.workSettings.EnableAndInitialize();
+                p.workSettings.SetPriority(WorkTypeDefOf.Construction, 1);
+            }
         }
 
         private void SetAsIdler(Pawn p)
         {
-
+            Pawn random;
+            
+            if (!this.lord.ownedPawns.TryRandomElement(out random)
+                && p != null)
+            {
+                p.mindState.duty = new PawnDuty(DutyDefOf.Escort, random, 6f);
+            }
         }
 
     }

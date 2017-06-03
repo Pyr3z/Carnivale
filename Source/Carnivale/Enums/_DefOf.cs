@@ -1,11 +1,18 @@
 ﻿using RimWorld;
 using Verse;
+using Verse.AI;
 
 namespace Carnivale
 {
     [DefOf]
     public static class _DefOf
     {
+        public static DutyDef BuildCarnival;
+
+        public static DutyDef Meander;
+
+
+
         public static FactionDef Carn_Faction_Roaming;
 
 
@@ -46,13 +53,17 @@ namespace Carnivale
 
 
 
-        public static ThingDef Carn_Crate_TentFurn;
+        public static ThingDef Carn_Crate_TentLodge;
+
+        public static ThingDef Carn_Crate_TentMan;
 
         public static ThingDef Carn_TentMedBed;
 
         public static ThingDef Carn_TentSmall;
 
         public static ThingDef Carn_TentSmallMan;
+
+        public static ThingDef DevilstrandCloth; // Not in vanilla
 
         public static ThingDef Invisible_Door;
 

@@ -18,7 +18,7 @@ namespace Carnivale.AI
 
         public List<Thing> availableCrates = new List<Thing>();
 
-        //public List<Blueprint> blueprints = new List<Blueprint>();
+        public List<Blueprint> blueprints = new List<Blueprint>();
 
         //public List<Thing> unbuiltThings = new List<Thing>();
 
@@ -29,7 +29,7 @@ namespace Carnivale.AI
         }
 
 
-        public bool TryGiveRandomWorker(Thing thing)
+        public bool TryHaveWorkerCarry(Thing thing)
         {
             Pawn worker;
             // Try give pre-designated worker a thing, 6 attempts
@@ -92,11 +92,11 @@ namespace Carnivale.AI
 
             //Scribe_Collections.Look(ref this.availableCrates, false, "availableCrates", LookMode.Reference);
 
-            //if (Scribe.mode == LoadSaveMode.Saving)
-            //{
-            //    this.blueprints.RemoveAll(b => b.Destroyed);
-            //}
-            //Scribe_Collections.Look(ref this.blueprints, "blueprints", LookMode.Reference, new object[0]);
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                this.blueprints.RemoveAll(b => b.Destroyed);
+            }
+            Scribe_Collections.Look(ref this.blueprints, "blueprints", LookMode.Reference, new object[0]);
 
             //if (Scribe.mode == LoadSaveMode.Saving)
             //{

@@ -61,11 +61,11 @@
   <!-- END BASES -->
   
   
-  <!-- Tent Crate: medium furnished -->
-  <ThingDef ParentName="TentCrateBase" Name="TentCrateFurn">
-    <defName>Carn_Crate_TentFurn</defName>
-	<label>tent crate, furnished</label>
-	<description>A crate filled with enough stakes, textile, rods, etcetera to construct a furnished tent.</description>
+  <!-- Tent Crate: lodge tent -->
+  <ThingDef ParentName="TentCrateBase" Name="TentCrateLodge">
+    <defName>Carn_Crate_TentLodge</defName>
+	<label>crate, lodging tent</label>
+	<description>A crate filled with enough stakes, textile, rods, etcetera to construct a lodging tent.</description>
 	<graphicData>
 	  <texPath>Carnivale/Items/TentCrate</texPath>
 	  <graphicClass>Graphic_Single</graphicClass>
@@ -90,6 +90,21 @@
 	  <Mass>10</Mass>
 	  <MarketValue>800</MarketValue>
 	</statBases>
+	
+  </ThingDef>
+  
+  
+  <!-- Tent crate: manager -->
+  <ThingDef ParentName="TentCrateLodge">
+    <defName>Carn_Crate_TentMan</defName>
+	<label>crate, management tent</label>
+	<description>A crate filled with enough stakes, textile, rods, etcetera to construct the manager's tent.</description>
+    
+	<costStuffCount>275</costStuffCount>
+	<costList>
+	  <WoodLog>35</WoodLog>
+	  <Plasteel>5</Plasteel>
+	</costList>
 	
   </ThingDef>
   

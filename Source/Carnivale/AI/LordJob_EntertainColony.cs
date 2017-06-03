@@ -32,10 +32,39 @@ namespace Carnivale.AI
         {
             StateGraph mainGraph = new StateGraph();
 
+            // Use LordJob_Travel as starting toil for this graph:
             LordToil toil_MoveToSetup = mainGraph.AttachSubgraph(new LordJob_Travel(this.setupSpot).CreateGraph()).StartingToil;
-            mainGraph.StartingToil = toil_MoveToSetup;
 
+            // Next toil is to set up
+            LordToil toil_Setup = new LordToil_SetupCarnival(this.setupSpot);
+            mainGraph.AddToil(toil_Setup);
 
+            Transition trans_Setup = new Transition(toil_MoveToSetup, toil_Setup);
+            trans_Setup.AddTrigger(new Trigger_Memo("TravelArrived"));
+            trans_Setup.AddTrigger(new Trigger_TicksPassed(5000));
+            mainGraph.AddTransition(trans_Setup);
+
+            // Dummy toil for now, just defend after setup is done
+            LordToil toil_Defend = new LordToil_DefendCarnival(this.setupSpot, 30f);
+            mainGraph.AddToil(toil_Defend);
+
+            Transition trans_Defend = new Transition(toil_Setup, toil_Defend);
+            trans_Defend.AddTrigger(new Trigger_Memo("SetupDone"));
+            mainGraph.AddTransition(trans_Defend);
+
+            // Normal exit map toil
+            LordToil_ExitMapAndEscortCarriers toil_Exit = new LordToil_ExitMapAndEscortCarriers();
+            mainGraph.AddToil(toil_Exit);
+
+            Transition trans_Exit = new Transition(toil_Defend, toil_Exit);
+            trans_Exit.AddSources(new LordToil[]
+            {
+                toil_Setup
+            });
+            trans_Exit.AddTrigger(new Trigger_TicksPassed(this.durationTicks));
+            trans_Exit.AddTrigger(new Trigger_BecameColonyEnemy());
+            trans_Exit.AddPostAction(new TransitionAction_WakeAll());
+            mainGraph.AddTransition(trans_Exit);
 
             return mainGraph;
         }
