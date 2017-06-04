@@ -64,6 +64,7 @@
     <Compile Include="AI\LordToil_DefendCarnival.cs" />
     <Compile Include="AI\LordToil_SetupCarnival.cs" />
     <Compile Include="Buildings\Blueprint_Tent.cs" />
+    <Compile Include="Buildings\Building_Carn.cs" />
     <Compile Include="Buildings\Building_Tent.cs" />
     <Compile Include="Buildings\CompCarnBuilding.cs" />
     <Compile Include="Buildings\CompProperties_CarnBuilding.cs" />

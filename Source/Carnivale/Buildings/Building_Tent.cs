@@ -5,45 +5,11 @@ using Verse;
 
 namespace Carnivale
 {
-    public class Building_Tent : Building
+    public class Building_Tent : Building_Carn
     {
         private List<Building> childBuildings = new List<Building>();
 
-        [Unsaved]
-        private CompProperties_CarnBuilding propsInt = null;
-
-        public CompProperties_CarnBuilding Props
-        {
-            get
-            {
-                if (propsInt == null)
-                {
-                    propsInt = GetComp<CompCarnBuilding>().Props;
-                }
-                return propsInt;
-            }
-        }
-
-        public CarnBuildingType Type
-        {
-            get
-            {
-                return Props.type;
-            }
-        }
-
-        [Unsaved]
-        private CellRect occupiedRectInt;
-
-        public CellRect OccupiedRect
-        {
-            get
-            {
-                if (this.occupiedRectInt == default(CellRect))
-                    occupiedRectInt = this.OccupiedRect();
-                return occupiedRectInt;
-            }
-        }
+        
 
         public override Color DrawColorTwo
         {
@@ -63,7 +29,7 @@ namespace Carnivale
             base.SpawnSetup(map, respawnAfterLoad);
 
             // Build roof
-            Utilities.SetRoofFor(OccupiedRect, map, _DefOf.Carn_TentRoof);
+            Utilities.SetRoofFor(base.OccupiedRect, map, _DefOf.Carn_TentRoof);
 
             // Build invisible door
             IntVec3 doorCell = InteractionCell;
@@ -116,8 +82,8 @@ namespace Carnivale
             {
                 // Potential null-pointer if child is destroyed elsewhere?
                 child.Destroy();
+                childBuildings.Remove(child);
             }
-            childBuildings = null;
 
             base.DeSpawn();
         }
