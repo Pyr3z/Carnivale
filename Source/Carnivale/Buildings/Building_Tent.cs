@@ -42,7 +42,7 @@ namespace Carnivale
             else
                 doorCell.z -= 1;
 
-            Building door = ThingMaker.MakeThing(_DefOf.Invisible_Door) as Building;
+            Building door = ThingMaker.MakeThing(_DefOf.Carn_TentDoor) as Building;
             door.SetFaction(this.Faction);
             GenSpawn.Spawn(door, doorCell, map);
             childBuildings.Add(door);
@@ -52,7 +52,7 @@ namespace Carnivale
             foreach (var cell in edges)
             {
                 if (cell == doorCell) continue;
-                Building wall = ThingMaker.MakeThing(_DefOf.Invisible_Wall) as Building;
+                Building wall = ThingMaker.MakeThing(_DefOf.Carn_TentWall) as Building;
                 wall.SetFaction(this.Faction);
                 GenSpawn.Spawn(wall, cell, map);
                 childBuildings.Add(wall);

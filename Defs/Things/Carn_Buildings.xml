@@ -56,54 +56,6 @@
   <!-- END BASES -->
   
   
-  <!-- Tent small -->
-  <ThingDef ParentName="CarnTent" Name="TentSmall">
-    <defName>Carn_TentSmall</defName>
-	
-	<label>carnival tent (small)</label>
-	<description>A small carnival tent.</description>
-	
-	<graphicData>
-	  <texPath>Carnivale/Building/TentSquare</texPath>
-	  <graphicClass>Graphic_Multi</graphicClass>
-	  <shaderType>CutoutComplex</shaderType>
-	  <drawSize>(5.15,5.15)</drawSize>
-	  <allowFlip>false</allowFlip>
-	  
-	  <damageData>
-	    <rect>(1,1,4,4)</rect>
-	  </damageData>
-	</graphicData>
-	
-	<size>(5,5)</size>
-	<interactionCellOffset>(0,0,-3)</interactionCellOffset>
-	
-	<stuffCategories>
-	  <li>Fabric</li>
-	</stuffCategories>
-	
-	<costStuffCount>150</costStuffCount>
-	<costList>
-	  <WoodLog>50</WoodLog>
-	</costList>
-	
-	<statBases>
-	  <MaxHitPoints>150</MaxHitPoints>
-	  <Flammability>1.5</Flammability>
-	  <WorkToBuild>1800</WorkToBuild>
-	  <Mass>25</Mass> <!-- 5 * 5 -->
-	  <Beauty>6</Beauty>
-	</statBases>
-	
-	<comps>
-	  <li Class="Carnivale.CompProperties_CarnBuilding">
-	    <type>1</type>
-	  </li>
-	</comps>
-
-  </ThingDef>
-  
-  
   <!-- Tent small (manager tent) -->
   <ThingDef ParentName="CarnTent">
     <defName>Carn_TentSmallMan</defName>
@@ -131,7 +83,6 @@
 	</stuffCategories>
 	
 	<costList>
-	  <!-- For now, there can only be one thing here and its cost must be 1. -->
 	  <Carn_Crate_TentMan>1</Carn_Crate_TentMan>
 	</costList>
 	<resourcesFractionWhenDeconstructed>1.0</resourcesFractionWhenDeconstructed>
@@ -151,7 +102,7 @@
 		  <li>
 		    <thingDef>DoubleBed</thingDef>
 			<placementOffsets>
-			  <li>(-1,0,1)</li>
+			  <li>(0,0,0)</li>
 			</placementOffsets>
 		  </li>
 		  <li>
@@ -172,7 +123,7 @@
     <defName>Carn_TentMedBed</defName>
 	
 	<label>lodging tent</label>
-	<description>A medium tent for carnies to sleep in.</description>
+	<description>A medium tent for carnies to sleep in. Contains 8 sleeping spots.</description>
 	
 	<graphicData>
 	  <texPath>Carnivale/Building/TentSquare</texPath>
@@ -194,7 +145,6 @@
 	</stuffCategories>
 	
 	<costList>
-	  <!-- For now, there can only be one thing here and its cost must be 1. -->
 	  <Carn_Crate_TentLodge>1</Carn_Crate_TentLodge>
 	</costList>
 	<resourcesFractionWhenDeconstructed>1.0</resourcesFractionWhenDeconstructed>

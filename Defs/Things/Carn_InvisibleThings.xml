@@ -16,7 +16,7 @@
   <!-- Invisible wall / door -->
   
   <ThingDef>
-    <defName>Invisible_Wall</defName>
+    <defName>Carn_TentWall</defName>
 	<label>tent wall</label>
 	<thingClass>Building</thingClass>
 	<category>Building</category>
@@ -46,7 +46,7 @@
   
   
   <ThingDef>
-    <defName>Invisible_Door</defName>
+    <defName>Carn_TentDoor</defName>
 	<label>tent flap</label>
 	<thingClass>Building_Door</thingClass>
 	<category>Building</category>

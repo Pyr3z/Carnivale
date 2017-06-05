@@ -54,7 +54,7 @@ namespace Carnivale.AI
         {
             base.Init();
 
-            LordToilData_Carnival data = Data; // more efficient to cast once
+            LordToilData_Carnival data = Data; // more efficient to cast once?
 
             // Set radius for carnies to stick to
             data.baseRadius = Mathf.InverseLerp(RADIUS_MIN, RADIUS_MAX, this.lord.ownedPawns.Count / 50f);
@@ -72,8 +72,8 @@ namespace Carnivale.AI
 
             int numCarnies = this.lord.ownedPawns.Count - data.pawnsWithRoles[CarnivalRole.Carrier].Count;
             
-            // Give workers tents (currently 8 carnies per tent)
-            int numBedTents = numCarnies > 8 ? Mathf.CeilToInt(numCarnies / 8f) : 1;
+            // Give workers tents (currently 8 carnies per tent), manager gets own tent
+            int numBedTents = numCarnies > 9 ? Mathf.CeilToInt(numCarnies / 8f) : 1;
 
             Thing tentCrate;
             for (int i = 0; i < numBedTents; i++)
