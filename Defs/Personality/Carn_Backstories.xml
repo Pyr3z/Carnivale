@@ -566,7 +566,7 @@
 	<slot>Adulthood</slot>
 	<title>Poor sod</title>
 	<titleShort>Sod</titleShort>
-	<baseDescription>NAME feels like a burden to other people wherever HE goes, and most treat HIM as such. Things just never seemed to go HIS way... but, everday HE picks HIMself up and keeps on moving foward. If nothing else, HIS persistence in surviving in this world is a credit to his iron resolve.</baseDescription>
+	<baseDescription>NAME feels like a burden to other people wherever HE goes, and most treat HIM as such. Things just never seems to go HIS way... but, everday HE picks HIMself up and keeps on moving foward. If nothing else, HIS persistence in surviving in this world is a credit to HIS iron resolve.</baseDescription>
 	
 	<requiredWorkTags>
 	  <li>ManualDumb</li>

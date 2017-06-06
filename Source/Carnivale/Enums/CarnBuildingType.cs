@@ -11,6 +11,8 @@ namespace Carnivale
         Bedroom = 4,
         Attraction = 8,
         Kitchen = 16,
-        Vendor = 32
+        Vendor = 32,
+        ManagerOnly = 64,
+        Any = 255
     }
 }

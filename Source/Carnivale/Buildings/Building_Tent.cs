@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -68,6 +69,14 @@ namespace Carnivale
 
                     Building building = ThingMaker.MakeThing(tp.thingDef, stuff) as Building;
                     building.SetFaction(this.Faction);
+
+                    if (this.Type.Is(CarnBuildingType.Bedroom | CarnBuildingType.ManagerOnly))
+                    {
+                        if (building is Building_Bed)
+                        {
+                            this.Faction.leader.ownership.ClaimBedIfNonMedical((Building_Bed)building);
+                        }
+                    }
 
                     Utilities.SpawnThingNoWipe(building, cell, map, Rotation.Opposite, respawnAfterLoad);
                     childBuildings.Add(building);

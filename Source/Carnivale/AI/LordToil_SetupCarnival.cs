@@ -90,11 +90,12 @@ namespace Carnivale.AI
                 {
                     // If no workers to carry it, force the manager to carry it
                     data.pawnsWithRoles[CarnivalRole.Manager].First().carryTracker.TryStartCarry(tentCrate);
+                    data.availableCrates.Add(tentCrate);
                 }
             }
 
             // Place blueprints
-            data.blueprints = BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, base.Map, this.lord.faction, data.availableCrates).ToList();
+            data.blueprints = BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, (int)data.baseRadius, base.Map, this.lord.faction, data.availableCrates).ToList();
 
         }
 
@@ -143,7 +144,7 @@ namespace Carnivale.AI
                                  select crate).Any())
                             {
                                 // Some more available crates, place new blueprints
-                                data.blueprints = BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, base.Map, this.lord.faction, data.availableCrates).ToList();
+                                data.blueprints = BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, (int)data.baseRadius, base.Map, this.lord.faction, data.availableCrates).ToList();
                                 this.UpdateAllDuties();
                                 return;
                             }

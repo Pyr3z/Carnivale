@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using RimWorld;
 using Verse;
 
@@ -18,6 +19,12 @@ namespace Carnivale
             thing.SetStuffDirect(this.stuffToUse);
             thing.PostMake();
             return thing;
+        }
+
+
+        public override List<ThingCountClass> MaterialsNeeded()
+        {
+            return this.def.entityDefToBuild.CostListAdjusted(null, false);
         }
 
     }

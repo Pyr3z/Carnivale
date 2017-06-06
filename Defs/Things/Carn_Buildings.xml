@@ -97,7 +97,7 @@
 	
 	<comps>
 	  <li Class="Carnivale.CompProperties_CarnBuilding">
-	    <type>5</type>
+	    <type>69</type> <!-- Tent | Bedroom | ManagerOnly = 69 -->
 		<interiorThings>
 		  <li>
 		    <thingDef>DoubleBed</thingDef>
