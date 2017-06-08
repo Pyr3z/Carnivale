@@ -12,21 +12,22 @@ namespace Carnivale.AI
 
         public float baseRadius;
 
-        public Dictionary<CarnivalRole, List<Pawn>> pawnsWithRoles = new Dictionary<CarnivalRole, List<Pawn>>();
-
-        //public List<Pawn> workersWithCrates = new List<Thing>();
+        public Dictionary<CarnivalRole, List<Pawn>> pawnsWithRole = new Dictionary<CarnivalRole, List<Pawn>>();
 
         public List<Thing> availableCrates = new List<Thing>();
 
         public List<Blueprint> blueprints = new List<Blueprint>();
 
-        //public List<Thing> unbuiltThings = new List<Thing>();
+        public List<IntVec3> carrierSpots = new List<IntVec3>();
 
-        
+
+
         public LordToilData_Carnival(IntVec3 setupSpot)
         {
             this.setupSpot = setupSpot;
         }
+
+
 
 
         public bool TryHaveWorkerCarry(Thing thing)
@@ -35,7 +36,7 @@ namespace Carnivale.AI
             // Try give pre-designated worker a thing, 6 attempts
             for (int i = 0; i < 6; i++)
             {
-                if (pawnsWithRoles[CarnivalRole.Worker].TryRandomElement(out worker))
+                if (pawnsWithRole[CarnivalRole.Worker].TryRandomElement(out worker))
                 {
                     if (worker.carryTracker.TryStartCarry(thing))
                     {
@@ -48,7 +49,7 @@ namespace Carnivale.AI
             // Failing that, try giving a guard a thing, 2 attempts
             for (int i = 0; i < 2; i++)
             {
-                if (pawnsWithRoles[CarnivalRole.Vendor].TryRandomElement(out worker))
+                if (pawnsWithRole[CarnivalRole.Vendor].TryRandomElement(out worker))
                 {
                     if (!worker.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
                     {
@@ -73,7 +74,7 @@ namespace Carnivale.AI
             Scribe_Values.Look(ref this.setupSpot, "setupSpot", default(IntVec3), false);
             Scribe_Values.Look(ref this.baseRadius, "baseRadius", 0f, false);
 
-            Scribe_Collections.Look(ref pawnsWithRoles, "pawnsWithRoles", LookMode.Reference);
+            Scribe_Collections.Look(ref pawnsWithRole, "pawnsWithRoles", LookMode.Reference);
 
             //if (Scribe.mode == LoadSaveMode.Saving)
             //{
@@ -97,6 +98,8 @@ namespace Carnivale.AI
                 this.blueprints.RemoveAll(b => b.Destroyed);
             }
             Scribe_Collections.Look(ref this.blueprints, "blueprints", LookMode.Reference, new object[0]);
+
+            Scribe_Collections.Look(ref this.carrierSpots, "carrierSpots", LookMode.Reference, new object[0]);
 
             //if (Scribe.mode == LoadSaveMode.Saving)
             //{

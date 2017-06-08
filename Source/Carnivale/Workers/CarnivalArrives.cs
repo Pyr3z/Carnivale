@@ -68,7 +68,7 @@ namespace Carnivale
             if (pawns.Count < 3)
             {
                 if (Prefs.DevMode)
-                    Log.Warning("Could not execute CarnivalArrives: could not generate any valid pawns.");
+                    Log.Warning("Could not execute CarnivalArrives: could not generate enough valid pawns.");
                 return false;
             }
 

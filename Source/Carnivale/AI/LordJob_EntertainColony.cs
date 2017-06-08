@@ -41,7 +41,7 @@ namespace Carnivale.AI
 
             Transition trans_Setup = new Transition(toil_MoveToSetup, toil_Setup);
             trans_Setup.AddTrigger(new Trigger_Memo("TravelArrived"));
-            trans_Setup.AddTrigger(new Trigger_TicksPassed(5000));
+            trans_Setup.AddTrigger(new Trigger_TicksPassed(2500));
             mainGraph.AddTransition(trans_Setup);
 
             // Dummy toil for now, just defend after setup is done

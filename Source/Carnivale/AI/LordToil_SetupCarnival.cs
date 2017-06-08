@@ -66,11 +66,11 @@ namespace Carnivale.AI
                 List<Pawn> pawns = (from p in this.lord.ownedPawns
                                     where p.Is(role)
                                     select p).ToList();
-                data.pawnsWithRoles.Add(role, pawns);
+                data.pawnsWithRole.Add(role, pawns);
             }
 
 
-            int numCarnies = this.lord.ownedPawns.Count - data.pawnsWithRoles[CarnivalRole.Carrier].Count;
+            int numCarnies = this.lord.ownedPawns.Count - data.pawnsWithRole[CarnivalRole.Carrier].Count;
             
             // Give workers tents (currently 8 carnies per tent), manager gets own tent
             int numBedTents = numCarnies > 9 ? Mathf.CeilToInt(numCarnies / 8f) : 1;
@@ -83,19 +83,22 @@ namespace Carnivale.AI
                 data.TryHaveWorkerCarry(tentCrate);
             }
 
-            if (data.pawnsWithRoles[CarnivalRole.Manager].Count > 0)
+            if (data.pawnsWithRole[CarnivalRole.Manager].Count > 0)
             {
                 tentCrate = ThingMaker.MakeThing(_DefOf.Carn_Crate_TentMan, _DefOf.DevilstrandCloth);
                 if (!data.TryHaveWorkerCarry(tentCrate))
                 {
                     // If no workers to carry it, force the manager to carry it
-                    data.pawnsWithRoles[CarnivalRole.Manager].First().carryTracker.TryStartCarry(tentCrate);
+                    data.pawnsWithRole[CarnivalRole.Manager].First().carryTracker.TryStartCarry(tentCrate);
                     data.availableCrates.Add(tentCrate);
                 }
             }
 
             // Place blueprints
-            data.blueprints = BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, (int)data.baseRadius, base.Map, this.lord.faction, data.availableCrates).ToList();
+            data.blueprints = BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, (int)(data.baseRadius / 1.5f), base.Map, this.lord.faction, data.availableCrates).ToList();
+
+
+            // Find spots for carriers to chill
 
         }
 
@@ -107,7 +110,7 @@ namespace Carnivale.AI
             
             foreach (Pawn pawn in this.lord.ownedPawns)
             {
-                if (pawn.Is(CarnivalRole.Worker) && pawn.carryTracker.CarriedThing != null)
+                if (pawn.Is(CarnivalRole.Worker))
                 {
                     SetAsBuilder(pawn);
                     continue;
@@ -123,8 +126,6 @@ namespace Carnivale.AI
         {
             base.LordToilTick();
 
-            LordToilData_Carnival data = this.Data;
-
             // Check if everything is setup
             if (this.lord.ticksInToil % 400 == 0)
             {
@@ -132,6 +133,8 @@ namespace Carnivale.AI
                       where !frame.Destroyed
                       select frame).Any())
                 {
+                    LordToilData_Carnival data = this.Data;
+
                     if (!(from blue in data.blueprints
                           where !blue.Destroyed
                           select blue).Any())
@@ -144,7 +147,7 @@ namespace Carnivale.AI
                                  select crate).Any())
                             {
                                 // Some more available crates, place new blueprints
-                                data.blueprints = BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, (int)data.baseRadius, base.Map, this.lord.faction, data.availableCrates).ToList();
+                                data.blueprints = BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, (int)(data.baseRadius / 1.5f), base.Map, this.lord.faction, data.availableCrates).ToList();
                                 this.UpdateAllDuties();
                                 return;
                             }
@@ -207,6 +210,67 @@ namespace Carnivale.AI
         }
 
 
+        public bool TryFindCarrierSpots()
+        {
+            // Should only be called right after blueprint creation
+
+            LordToilData_Carnival data = this.Data;
+
+            int countCarriers = data.pawnsWithRole[CarnivalRole.Carrier].Count;
+            int countSpots = 0;
+            CellRect rect = CellRect.CenteredOn(data.setupSpot, (int)(data.baseRadius / 2f));
+
+            for (int i = 0; i < 50; i++)
+            {
+                // Try to find initial spot
+                IntVec3 randomCell = rect.RandomCell;
+                if (Map.reachability.CanReach(randomCell, data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
+                {
+                    data.carrierSpots.Add(randomCell);
+                    countSpots++;
+                    break;
+                }
+            }
+
+            while (countSpots < countCarriers)
+            {
+                IntVec3 lastSpot = data.carrierSpots.Last();
+                IntVec3 newSpot = new IntVec3(lastSpot.x, lastSpot.y, lastSpot.z);
+                IntVec3 offset;
+
+                switch (Rand.RangeInclusive(0, 3))
+                {
+                    case 0:
+                        offset = IntVec3.East * 2;
+                        break;
+                    case 1:
+                        offset = IntVec3.West * 2;
+                        break;
+                    case 2:
+                        offset = IntVec3.North * 2;
+                        break;
+                    case 3:
+                        offset = IntVec3.South * 2;
+                        break;
+                    default:
+                        offset = IntVec3.West * 2;
+                        break;
+                }
+
+                newSpot += offset;
+
+                if (!data.carrierSpots.Contains(newSpot)
+                    && Map.reachability.CanReach(newSpot, data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
+                {
+                    data.carrierSpots.Add(newSpot);
+                    countSpots++;
+                }
+            }
+
+            Log.Error("Found no spots for carnival carriers to chill. Idling them instead.");
+            return false;
+        }
+
 
         private void SetAsBuilder(Pawn p)
         {
@@ -226,9 +290,17 @@ namespace Carnivale.AI
             if (!this.lord.ownedPawns.TryRandomElement(out random)
                 && p != null)
             {
+                // TODO: custom duties, i.e. socialising, moving between carnival buildings
                 p.mindState.duty = new PawnDuty(DutyDefOf.Escort, random, 6f);
             }
         }
+
+        private void SetAsCarrier(Pawn p)
+        {
+
+        }
+
+
 
     }
 }
