@@ -3,7 +3,7 @@ using Verse;
 using Verse.AI;
 using Verse.AI.Group;
 
-namespace Carnivale.AI
+namespace Carnivale
 {
     public class LordToil_DefendCarnival : LordToil_DefendPoint
     {

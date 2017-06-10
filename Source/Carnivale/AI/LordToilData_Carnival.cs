@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Verse;
 using Verse.AI.Group;
 
-namespace Carnivale.AI
+namespace Carnivale
 {
     public class LordToilData_Carnival : LordToilData
     {

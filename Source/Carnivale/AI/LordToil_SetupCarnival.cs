@@ -7,7 +7,7 @@ using Verse;
 using Verse.AI;
 using Verse.AI.Group;
 
-namespace Carnivale.AI
+namespace Carnivale
 {
     public class LordToil_SetupCarnival : LordToil
     {
@@ -99,6 +99,8 @@ namespace Carnivale.AI
 
 
             // Find spots for carriers to chill
+            TryFindCarrierSpots();
+            
 
         }
 
@@ -106,17 +108,26 @@ namespace Carnivale.AI
 
         public override void UpdateAllDuties()
         {
-            LordToilData_Carnival data = this.Data; // Single cast
-            
+            LordToilData_Carnival data = this.Data;
+
+            int carrierIndex = 0;
             foreach (Pawn pawn in this.lord.ownedPawns)
             {
                 if (pawn.Is(CarnivalRole.Worker))
                 {
-                    SetAsBuilder(pawn);
+                    DutyUtility.SetAsBuilder(pawn, data.setupSpot, data.baseRadius);
                     continue;
                 }
 
-                SetAsIdler(pawn);
+                if (pawn.Is(CarnivalRole.Carrier))
+                {
+                    IntVec3 spot = data.carrierSpots[carrierIndex++];
+
+                    DutyUtility.SetAsStander(pawn, spot);
+                    continue;
+                }
+
+                DutyUtility.SetAsIdler(pawn, this.lord.ownedPawns);
             }
         }
 
@@ -224,7 +235,8 @@ namespace Carnivale.AI
             {
                 // Try to find initial spot
                 IntVec3 randomCell = rect.RandomCell;
-                if (Map.reachability.CanReach(randomCell, data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
+                if (Map.reachability.CanReach(randomCell, data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
+                    && randomCell.GetEdifice(Map) == null)
                 {
                     data.carrierSpots.Add(randomCell);
                     countSpots++;
@@ -232,13 +244,15 @@ namespace Carnivale.AI
                 }
             }
 
-            while (countSpots < countCarriers)
+            byte attempts = 0;
+            byte directionalTries = 0;
+            while (attempts < 75 && countSpots < countCarriers)
             {
                 IntVec3 lastSpot = data.carrierSpots.Last();
                 IntVec3 newSpot = new IntVec3(lastSpot.x, lastSpot.y, lastSpot.z);
                 IntVec3 offset;
 
-                switch (Rand.RangeInclusive(0, 3))
+                switch (directionalTries)
                 {
                     case 0:
                         offset = IntVec3.East * 2;
@@ -262,44 +276,46 @@ namespace Carnivale.AI
                 if (!data.carrierSpots.Contains(newSpot)
                     && Map.reachability.CanReach(newSpot, data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
                 {
+                    // Spot found
                     data.carrierSpots.Add(newSpot);
                     countSpots++;
                 }
+                else if (directionalTries < 3)
+                {
+                    // No spot, increment direction to try
+                    directionalTries++;
+                }
+                else
+                {
+                    // No spot, reset direction to try and find new starting spot
+                    for (int i = 0; i < 50; i++)
+                    {
+                        IntVec3 randomCell = rect.RandomCell;
+                        if (Map.reachability.CanReach(randomCell, data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
+                            && randomCell.GetEdifice(Map) == null)
+                        {
+                            data.carrierSpots.Add(randomCell);
+                            countSpots++;
+                            break;
+                        }
+                    }
+                    directionalTries = 0;
+                }
+
+                // Whether or not a spot was found, increment attempts to avoid infinite looping
+                attempts++;
             }
 
-            Log.Error("Found no spots for carnival carriers to chill. Idling them instead.");
-            return false;
-        }
-
-
-        private void SetAsBuilder(Pawn p)
-        {
-            if (p != null)
+            if (countSpots == countCarriers)
             {
-                p.mindState.duty = new PawnDuty(_DefOf.BuildCarnival, Data.setupSpot, Data.baseRadius);
-
-                p.workSettings.EnableAndInitialize();
-                p.workSettings.SetPriority(WorkTypeDefOf.Construction, 1);
+                return true;
             }
-        }
-
-        private void SetAsIdler(Pawn p)
-        {
-            Pawn random;
-            
-            if (!this.lord.ownedPawns.TryRandomElement(out random)
-                && p != null)
+            else
             {
-                // TODO: custom duties, i.e. socialising, moving between carnival buildings
-                p.mindState.duty = new PawnDuty(DutyDefOf.Escort, random, 6f);
+                Log.Error("Found no spots for carnival carriers to chill. Idling them instead.");
+                return false;
             }
         }
-
-        private void SetAsCarrier(Pawn p)
-        {
-
-        }
-
 
 
     }

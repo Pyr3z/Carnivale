@@ -3,7 +3,7 @@
   
   <!-- Setup carnival buildings -->
   <DutyDef>
-    <defName>BuildCarnival</defName>
+    <defName>Duty_BuildCarnival</defName>
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
 	    <li Class="JobGiver_FightFiresNearPoint">
@@ -35,9 +35,22 @@
   </DutyDef>
   
   
+  <!-- Stand at spot -->
+  <DutyDef>
+    <defName>Duty_Stand</defName>
+	<thinkNode Class="ThinkNode_Priority">
+	  <subNodes>
+	    <li Class="Carnivale.JobGiver_AIStand">
+		  
+		</li>
+	  </subNodes>
+	</thinkNode>
+  </DutyDef>
+  
+  
   <!-- Meander and socialise -->
   <!-- <DutyDef> -->
-    <!-- <defName>Meander</defName> -->
+    <!-- <defName>Duty_Meander</defName> -->
 	<!-- <thinkNode Class="ThingNode_Priority"> -->
 	  <!-- <subNodes> -->
 	  

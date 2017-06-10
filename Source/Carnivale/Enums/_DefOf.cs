@@ -7,9 +7,11 @@ namespace Carnivale
     [DefOf]
     public static class _DefOf
     {
-        public static DutyDef BuildCarnival;
+        public static DutyDef Duty_BuildCarnival;
 
-        //public static DutyDef Meander;
+        //public static DutyDef Duty_Meander;
+
+        public static DutyDef Duty_Stand;
 
 
 
@@ -24,6 +26,10 @@ namespace Carnivale
         public static IncidentDef CarnivalFireball;
 
         public static IncidentDef CarnivalJustice;
+
+
+
+        public static JobDef Job_Stand;
 
 
 

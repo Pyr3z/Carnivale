@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Verse;
 
-namespace Carnivale.AI
+namespace Carnivale
 {
     public static class BlueprintPlacer
     {

@@ -4,7 +4,7 @@ using Verse;
 using Verse.AI;
 using System.Collections.Generic;
 
-namespace Carnivale.AI
+namespace Carnivale
 {
     public class LordJob_EntertainColony : LordJob
     {
