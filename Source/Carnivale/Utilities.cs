@@ -106,6 +106,11 @@ namespace Carnivale
 
         public static bool Is(this CarnivalRole roles, CarnivalRole role)
         {
+            if (role == CarnivalRole.None)
+                return roles == 0;
+            if (role == CarnivalRole.Any)
+                return roles != 0;
+
             return (roles & role) == role;
         }
 

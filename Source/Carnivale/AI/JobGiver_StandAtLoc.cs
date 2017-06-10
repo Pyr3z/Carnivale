@@ -1,21 +1,20 @@
-﻿using System;
-using Verse;
+﻿using Verse;
 using Verse.AI;
 
 namespace Carnivale
 {
-    public class JobGiver_Stand : ThinkNode_JobGiver
+    public class JobGiver_StandAtLoc : ThinkNode_JobGiver
     {
         protected override Job TryGiveJob(Pawn pawn)
         {
             PawnDuty duty = pawn.mindState.duty;
 
-            if (duty == null || duty.def != _DefOf.Duty_Stand)
+            if (duty == null)
             {
                 return null;
             }
 
-            return null;
+            return new Job(_DefOf.Job_StandAtLoc, duty.focus);
         }
     }
 }

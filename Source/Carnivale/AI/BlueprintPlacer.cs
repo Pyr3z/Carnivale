@@ -49,7 +49,7 @@ namespace Carnivale
 
             ThingDef tentDef = _DefOf.Carn_TentMedBed;
             Rot4 rot = Rot4.Random;
-            IntVec3 tentSpot = FindPlacementFor(tentDef, rot, map);
+            IntVec3 tentSpot = FindPlacementFor(tentDef, rot, map, 0.6f);
 
             IntVec3 lineDirection;
 
@@ -84,7 +84,7 @@ namespace Carnivale
                 if (CanPlaceBlueprintAt(tentSpot, rot, tentDef, map))
                 {
                     // Insta-cut plants (potentially OP?)
-                    RemovePlantsFor(tentSpot, (tentDef.size.x - 1) / 2, map);
+                    RemovePlantsFor(tentSpot, tentDef, rot, map);
                     yield return (Blueprint_Tent)GenConstruct.PlaceBlueprintForBuild(tentDef, tentSpot, map, rot, faction, null);
                 }
                 else
@@ -101,12 +101,12 @@ namespace Carnivale
 
             rot = Rot4.Random;
             tentDef = _DefOf.Carn_TentSmallMan;
-            tentSpot = FindPlacementFor(tentDef, rot, map);
+            tentSpot = FindPlacementFor(tentDef, rot, map, 0.5f);
 
             if (tentSpot.IsValid)
             {
                 // Insta-cut plants (potentially OP?)
-                RemovePlantsFor(tentSpot, ((tentDef.size.x - 1) / 2) + 1, map);
+                RemovePlantsFor(tentSpot, tentDef, rot, map);
                 yield return (Blueprint_Tent)GenConstruct.PlaceBlueprintForBuild(tentDef, tentSpot, map, rot, faction, null);
             }
 
@@ -134,9 +134,9 @@ namespace Carnivale
         }
 
 
-        private static IntVec3 FindPlacementFor(ThingDef def, Rot4 rot, Map map)
+        private static IntVec3 FindPlacementFor(ThingDef def, Rot4 rot, Map map, float radiusFraction = 1f)
         {
-            CellRect cellRect = CellRect.CenteredOn(centre, radius);
+            CellRect cellRect = CellRect.CenteredOn(centre, (int)(radius * radiusFraction));
             cellRect.ClipInsideMap(map);
             for (int i = 0; i < 200; i++)
             {
@@ -156,9 +156,9 @@ namespace Carnivale
         }
 
 
-        private static void RemovePlantsFor(IntVec3 spot, int radius, Map map)
+        private static void RemovePlantsFor(IntVec3 spot, ThingDef def, Rot4 rot, Map map)
         {
-            CellRect cutCells = CellRect.CenteredOn(spot, radius);
+            CellRect cutCells = GenAdj.OccupiedRect(spot, rot, def.size);
             foreach (IntVec3 cell in cutCells)
             {
                 Plant p = cell.GetPlant(map);

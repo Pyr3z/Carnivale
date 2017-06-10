@@ -60,6 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI\BlueprintPlacer.cs" />
+    <Compile Include="AI\DutyUtility.cs" />
+    <Compile Include="AI\JobDriver_StandAtLoc.cs" />
+    <Compile Include="AI\JobGiver_StandAtLoc.cs" />
     <Compile Include="AI\LordToilData_Carnival.cs" />
     <Compile Include="AI\LordToil_DefendCarnival.cs" />
     <Compile Include="AI\LordToil_SetupCarnival.cs" />
@@ -70,6 +73,7 @@
     <Compile Include="Buildings\CompProperties_CarnBuilding.cs" />
     <Compile Include="Buildings\Frame_Tent.cs" />
     <Compile Include="CarnivaleMod.cs" />
+    <Compile Include="DeepPawnList.cs" />
     <Compile Include="Enums\CarnBuildingType.cs" />
     <Compile Include="Enums\CarnivalRole.cs" />
     <Compile Include="Enums\_DefOf.cs" />

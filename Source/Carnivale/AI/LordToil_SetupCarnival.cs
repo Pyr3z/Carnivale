@@ -123,11 +123,11 @@ namespace Carnivale
                 {
                     IntVec3 spot = data.carrierSpots[carrierIndex++];
 
-                    DutyUtility.SetAsStander(pawn, spot);
+                    DutyUtility.SetAsCarrier(pawn, spot);
                     continue;
                 }
 
-                DutyUtility.SetAsIdler(pawn, this.lord.ownedPawns);
+                DutyUtility.SetAsIdler(pawn, data.setupSpot);
             }
         }
 
@@ -236,7 +236,7 @@ namespace Carnivale
                 // Try to find initial spot
                 IntVec3 randomCell = rect.RandomCell;
                 if (Map.reachability.CanReach(randomCell, data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
-                    && randomCell.GetEdifice(Map) == null)
+                    && !randomCell.GetThingList(this.Map).Any(t => t is Blueprint))
                 {
                     data.carrierSpots.Add(randomCell);
                     countSpots++;
@@ -255,26 +255,28 @@ namespace Carnivale
                 switch (directionalTries)
                 {
                     case 0:
-                        offset = IntVec3.East * 2;
+                        offset = IntVec3.East * 3;
                         break;
                     case 1:
-                        offset = IntVec3.West * 2;
+                        offset = IntVec3.North * 3;
                         break;
                     case 2:
-                        offset = IntVec3.North * 2;
+                        offset = IntVec3.West * 3;
                         break;
                     case 3:
-                        offset = IntVec3.South * 2;
+                        offset = IntVec3.South * 3;
                         break;
                     default:
-                        offset = IntVec3.West * 2;
+                        directionalTries = 1;
+                        offset = IntVec3.East * 3;
                         break;
                 }
 
                 newSpot += offset;
 
                 if (!data.carrierSpots.Contains(newSpot)
-                    && Map.reachability.CanReach(newSpot, data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
+                    && Map.reachability.CanReach(newSpot, data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
+                    && !newSpot.GetThingList(this.Map).Any(t => t is Blueprint))
                 {
                     // Spot found
                     data.carrierSpots.Add(newSpot);
@@ -292,7 +294,7 @@ namespace Carnivale
                     {
                         IntVec3 randomCell = rect.RandomCell;
                         if (Map.reachability.CanReach(randomCell, data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
-                            && randomCell.GetEdifice(Map) == null)
+                            && !randomCell.GetThingList(this.Map).Any(t => t is Blueprint))
                         {
                             data.carrierSpots.Add(randomCell);
                             countSpots++;

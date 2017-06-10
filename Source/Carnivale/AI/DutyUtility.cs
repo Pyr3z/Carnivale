@@ -1,5 +1,4 @@
 ﻿using RimWorld;
-using System.Collections.Generic;
 using Verse;
 using Verse.AI;
 
@@ -18,21 +17,20 @@ namespace Carnivale
             }
         }
 
-        public static void SetAsIdler(Pawn pawn, List<Pawn> totalPawns)
+        public static void SetAsIdler(Pawn pawn, IntVec3 centre)
         {
-            Pawn random;
-
-            if (totalPawns.TryRandomElement(out random)
-                && pawn != null)
+            if (pawn != null)
             {
-                // TODO: custom duties, i.e. socialising, moving between carnival buildings
-                pawn.mindState.duty = new PawnDuty(DutyDefOf.Escort, random, 6f);
+                pawn.mindState.duty = new PawnDuty(_DefOf.Duty_Meander, centre); 
             }
         }
 
-        public static void SetAsStander(Pawn pawn, IntVec3 spot)
+        public static void SetAsCarrier(Pawn pawn, IntVec3 spot)
         {
-
+            if (pawn != null)
+            {
+                pawn.mindState.duty = new PawnDuty(_DefOf.Duty_SlightWander, spot);
+            }
         }
     }
 }

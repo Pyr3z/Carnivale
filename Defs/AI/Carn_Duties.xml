@@ -6,72 +6,72 @@
     <defName>Duty_BuildCarnival</defName>
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
+	  
 	    <li Class="JobGiver_FightFiresNearPoint">
 		  <maxDistFromPoint>25</maxDistFromPoint>
 		</li>
-		<li Class="ThinkNode_ForbidOutsideFlagRadius">
-		  <maxDistToSquadFlag>32</maxDistToSquadFlag>
-		  <subNodes>
-		    <li Class="JobGiver_Work" />
-		  </subNodes>
-		</li>
-		<li Class="JobGiver_AIDefendPoint">
-		  <targetAcquireRadius>42</targetAcquireRadius>
-		  <targetKeepRadius>47</targetKeepRadius>
-		</li>
-		<li Class="ThinkNode_ForbidOutsideFlagRadius">
-          <maxDistToSquadFlag>25</maxDistToSquadFlag>
-          <subNodes>
-            <li Class="ThinkNode_Subtree">
-              <treeDef>SatisfyBasicNeedsAndWork</treeDef>
-            </li>
-          </subNodes>
+		
+		<li Class="ThinkNode_Subtree">
+          <treeDef>SatisfyBasicNeedsAndWork</treeDef>
         </li>
+		
 		<li Class="JobGiver_WanderNearDutyLocation">
-          <wanderRadius>8</wanderRadius>
+          <wanderRadius>12</wanderRadius>
         </li>
+		
 	  </subNodes>
 	</thinkNode>
   </DutyDef>
   
   
-  <!-- Stand at spot -->
+  <!-- Goto and wander slightly at location -->
   <DutyDef>
-    <defName>Duty_Stand</defName>
+    <defName>Duty_SlightWander</defName>
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
-	    <li Class="Carnivale.JobGiver_AIStand">
-		  
+	  
+	    <li Class="Carnivale.JobGiver_StandAtLoc">
+		  <subNodes>
+		    <li Class="ThinkNode_Subtree">
+		      <treeDef>SatisfyBasicNeeds</treeDef>
+		    </li>
+		  </subNodes>
 		</li>
+		
 	  </subNodes>
 	</thinkNode>
   </DutyDef>
   
   
   <!-- Meander and socialise -->
-  <!-- <DutyDef> -->
-    <!-- <defName>Duty_Meander</defName> -->
-	<!-- <thinkNode Class="ThingNode_Priority"> -->
-	  <!-- <subNodes> -->
-	  
-	  
-	    <!-- Stand where you are and be socially active -->
-        <!-- <li Class="ThinkNode_ConditionalRandom"> -->
-          <!-- <chance>0.35</chance> -->
-          <!-- <subNodes> -->
-            <!-- <li Class="JobGiver_StandAndBeSociallyActive"> -->
-              <!-- <ticksRange> -->
-                <!-- <min>350</min> -->
-                <!-- <max>750</max> -->
-              <!-- </ticksRange> -->
-            <!-- </li> -->
-          <!-- </subNodes> -->
-        <!-- </li> -->
+  <DutyDef>
+    <defName>Duty_Meander</defName>
+	<thinkNode Class="ThinkNode_Priority">
+	  <subNodes>
+	    
+		<li Class="ThinkNode_Subtree">
+		  <treeDef>SatisfyBasicNeeds</treeDef>
+		</li>
 		
+		<li Class="JobGiver_WanderNearDutyLocation">
+		  <wanderRadius>12</wanderRadius>
+		</li>
 		
-	  <!-- </subNodes> -->
-	<!-- </thinkNode> -->
-  <!-- </DutyDef> -->
+		<li Class="ThinkNode_ConditionalRandom">
+          <chance>0.5</chance>
+          <subNodes>
+            <li Class="JobGiver_StandAndBeSociallyActive">
+              <ticksRange>
+                <min>350</min>
+                <max>750</max>
+              </ticksRange>
+            </li>
+          </subNodes>
+        </li>
+		
+	  </subNodes>
+	</thinkNode>
+  </DutyDef>
   
   
 </DutyDefs>

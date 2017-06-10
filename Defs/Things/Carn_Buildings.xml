@@ -102,7 +102,7 @@
 		  <li>
 		    <thingDef>DoubleBed</thingDef>
 			<placementOffsets>
-			  <li>(0,0,0)</li>
+			  <li>(0,0,1)</li>
 			</placementOffsets>
 		  </li>
 		  <li>

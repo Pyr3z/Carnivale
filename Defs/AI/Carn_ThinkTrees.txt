@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <ThinkTreeDef>
+    <defName>ThinkTree_Carnies</defName>
+	<thinkRoot Class="ThinkNode_Tagger">
+	  <tagToGive>SatisfyingNeeds</tagToGive>
+	  <subNodes>
+	    <li Class="ThinkNode_Priority">
+		  <subNodes>
+		    
+		  </subNodes>
+		</li>
+	  </subNodes>
+	</thinkRoot>
+	
+  </ThinkTreeDef>
+  
+</Defs>

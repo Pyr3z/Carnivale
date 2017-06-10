@@ -12,7 +12,7 @@ namespace Carnivale
 
         public float baseRadius;
 
-        public Dictionary<CarnivalRole, List<Pawn>> pawnsWithRole = new Dictionary<CarnivalRole, List<Pawn>>();
+        public Dictionary<CarnivalRole, DeepPawnList> pawnsWithRole = new Dictionary<CarnivalRole, DeepPawnList>();
 
         public List<Thing> availableCrates = new List<Thing>();
 
@@ -22,7 +22,9 @@ namespace Carnivale
 
 
 
-        public LordToilData_Carnival(IntVec3 setupSpot)
+        public LordToilData_Carnival() : base() { }
+
+        public LordToilData_Carnival(IntVec3 setupSpot) : this()
         {
             this.setupSpot = setupSpot;
         }
@@ -74,7 +76,7 @@ namespace Carnivale
             Scribe_Values.Look(ref this.setupSpot, "setupSpot", default(IntVec3), false);
             Scribe_Values.Look(ref this.baseRadius, "baseRadius", 0f, false);
 
-            Scribe_Collections.Look(ref pawnsWithRole, "pawnsWithRoles", LookMode.Reference);
+            Scribe_Collections.Look(ref pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
 
             //if (Scribe.mode == LoadSaveMode.Saving)
             //{
@@ -99,7 +101,7 @@ namespace Carnivale
             }
             Scribe_Collections.Look(ref this.blueprints, "blueprints", LookMode.Reference, new object[0]);
 
-            Scribe_Collections.Look(ref this.carrierSpots, "carrierSpots", LookMode.Reference, new object[0]);
+            Scribe_Collections.Look(ref this.carrierSpots, "carrierSpots", LookMode.Value, new object[0]);
 
             //if (Scribe.mode == LoadSaveMode.Saving)
             //{

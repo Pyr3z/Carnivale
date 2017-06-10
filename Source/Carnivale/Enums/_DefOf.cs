@@ -9,9 +9,9 @@ namespace Carnivale
     {
         public static DutyDef Duty_BuildCarnival;
 
-        //public static DutyDef Duty_Meander;
+        public static DutyDef Duty_Meander;
 
-        public static DutyDef Duty_Stand;
+        public static DutyDef Duty_SlightWander;
 
 
 
@@ -29,7 +29,7 @@ namespace Carnivale
 
 
 
-        public static JobDef Job_Stand;
+        public static JobDef Job_StandAtLoc;
 
 
 

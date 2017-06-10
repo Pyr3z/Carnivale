@@ -27,10 +27,6 @@ namespace Carnivale
                 {
                     switch (p.GetCarnivalRole())
                     {
-                        case CarnivalRole.Carrier:
-                            p.mindState.duty = new PawnDuty(DutyDefOf.Follow, leader, 10f);
-                            p.mindState.duty.locomotion = LocomotionUrgency.Walk;
-                            break;
                         default:
                             p.mindState.duty = new PawnDuty(DutyDefOf.Defend, data.defendPoint, data.defendRadius);
                             break;

@@ -15,15 +15,16 @@ namespace Carnivale
         private int durationTicks;
 
 
-
-        private LordJob_EntertainColony() { }
+        public LordJob_EntertainColony()
+        {
+            // Required for loading from save
+        }
 
         public LordJob_EntertainColony(Faction faction, IntVec3 setupSpot, int durationDays)
         {
             this.faction = faction;
             this.setupSpot = setupSpot;
             this.durationTicks = durationDays * GenDate.TicksPerDay;
-
         }
 
 
@@ -49,7 +50,7 @@ namespace Carnivale
             mainGraph.AddToil(toil_Defend);
 
             Transition trans_Defend = new Transition(toil_Setup, toil_Defend);
-            trans_Defend.AddTrigger(new Trigger_Memo("SetupDone"));
+            trans_Defend.AddTrigger(new Trigger_BecameColonyEnemy());
             mainGraph.AddTransition(trans_Defend);
 
             // Normal exit map toil
@@ -63,6 +64,7 @@ namespace Carnivale
             });
             trans_Exit.AddTrigger(new Trigger_TicksPassed(this.durationTicks));
             trans_Exit.AddTrigger(new Trigger_BecameColonyEnemy());
+            trans_Exit.AddTrigger(new Trigger_PawnLost());
             trans_Exit.AddPostAction(new TransitionAction_WakeAll());
             mainGraph.AddTransition(trans_Exit);
 

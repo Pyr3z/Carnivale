@@ -16,17 +16,18 @@
 	<titleShort>Brat</titleShort>
 	<baseDescription>NAME was raised on the road by HIS caretakers, who happened to roll with a roaming carnival on an outer rimworld. On the road, NAME learned a well-rounded balance of skills in order to maintain HIS place in the caravan. Times weren't always great, but at least there was no shortage of the interesting and the new.</baseDescription>
 	
-	
+	<requiredWorkTags>
+	  <li>Caring</li>
+	</requiredWorkTags>
 	
 	<skillGains>
-	  <li><defName>Social</defName><degree>4</degree></li>
-	  <li><defName>Construction</defName><degree>3</degree></li>
-	  <li><defName>Shooting</defName><degree>2</degree></li>
+	  <li><defName>Social</defName><degree>1</degree></li>
+	  <li><defName>Construction</defName><degree>1</degree></li>
+	  <li><defName>Shooting</defName><degree>1</degree></li>
 	  <li><defName>Melee</defName><degree>1</degree></li>
-	  <li><defName>Medicine</defName><degree>1</degree></li>
-	  <li><defName>Intellectual</defName><degree>-4</degree></li>
-	  <li><defName>Mining</defName><degree>-4</degree></li>
-	  <li><defName>Growing</defName><degree>-4</degree></li>
+	  <li><defName>Intellectual</defName><degree>-5</degree></li>
+	  <li><defName>Mining</defName><degree>-5</degree></li>
+	  <li><defName>Growing</defName><degree>-5</degree></li>
 	</skillGains>
 	
 	<spawnCategories>
@@ -51,9 +52,9 @@
 	<baseDescription>When NAME was born, everyone knew HE was special. Raised by carnies and naturally gifted in all that HE attempted, NAME made a name for HIMself as one of the youngest and most brilliant acts in the show. This early fame has led to a few... narcissistic tendencies, however.</baseDescription>
 	
 	<skillGains>
-	  <li><defName>Animals</defName><degree>4</degree></li>
-	  <li><defName>Intellectual</defName><degree>2</degree></li>
-	  <li><defName>Artistic</defName><degree>6</degree></li>
+	  <li><defName>Animals</defName><degree>2</degree></li>
+	  <li><defName>Intellectual</defName><degree>1</degree></li>
+	  <li><defName>Artistic</defName><degree>4</degree></li>
 	</skillGains>
 	
 	<workDisables>

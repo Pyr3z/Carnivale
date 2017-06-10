@@ -2,8 +2,8 @@
 <Defs>
   
   <JobDef>
-    <defName>Job_Stand</defName>
-	<driverClass>Carnivale.JobDriver_Stand</driverClass>
+    <defName>Job_StandAtLoc</defName>
+	<driverClass>Carnivale.JobDriver_StandAtLoc</driverClass>
   </JobDef>
   
 </Defs>
