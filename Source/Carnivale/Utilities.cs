@@ -8,6 +8,24 @@ namespace Carnivale
 {
     public static class Utilities
     {
+        // Remember to flush this whenever a carnival exits the map
+        public static Dictionary<Pawn, CarnivalRole> cachedRoles = new Dictionary<Pawn, CarnivalRole>();
+
+        public static ThingDef[] simpleFabricStuffs = new ThingDef[]
+        {
+            _DefOf.Cloth,
+            _DefOf.WoolAlpaca,
+            _DefOf.WoolCamel,
+            _DefOf.WoolMegasloth,
+            _DefOf.WoolMuffalo
+        };
+
+        public static ThingDef RandomSimplFabric()
+        {
+            return simpleFabricStuffs.RandomElement();
+        }
+
+
         public static bool IsCarnival(this Faction faction)
         {
             //return faction.def == _FactionDefOf.Carn_Faction_Roaming;
@@ -30,47 +48,50 @@ namespace Carnivale
             }
         }
 
-        public static CarnivalRole GetCarnivalRole(this Pawn p)
+        public static CarnivalRole GetCarnivalRole(this Pawn pawn)
         {
-            // TODO: cache this somewhere so it doesn't need to be checked
-            // multiple times?
-            if (!p.Faction.IsCarnival())
+            if (!pawn.Faction.IsCarnival())
             {
-                Log.Error("Tried to get a CarnivalRole for " + p.NameStringShort + ", who is not in a carnival faction.");
+                Log.Error("Tried to get a CarnivalRole for " + pawn.NameStringShort + ", who is not in a carnival faction.");
                 return CarnivalRole.None;
+            }
+
+            if (cachedRoles.ContainsKey(pawn))
+            {
+                return cachedRoles[pawn];
             }
 
             CarnivalRole role = 0;
 
-            switch (p.kindDef.defName)
+            switch (pawn.kindDef.defName)
             {
                 case "Carny":
-                    if (!p.story.WorkTagIsDisabled(WorkTags.Artistic))
+                    if (!pawn.story.WorkTagIsDisabled(WorkTags.Artistic))
                         role = CarnivalRole.Entertainer;
 
-                    if (p.skills.GetSkill(SkillDefOf.Construction).Level > 5)
+                    if (pawn.skills.GetSkill(SkillDefOf.Construction).Level > 5)
                         role |= CarnivalRole.Worker;
 
-                    if (p.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
+                    if (pawn.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
                         role |= CarnivalRole.Cook;
 
-                    if (p.skills.GetSkill(SkillDefOf.Melee).Level > 4
-                        || p.skills.GetSkill(SkillDefOf.Shooting).Level > 4)
+                    if (pawn.skills.GetSkill(SkillDefOf.Melee).Level > 6
+                        || pawn.skills.GetSkill(SkillDefOf.Shooting).Level > 6)
                         role |= CarnivalRole.Guard;
 
                     break;
                 case "CarnyRare":
                     role = CarnivalRole.Entertainer;
 
-                    if (p.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
+                    if (pawn.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
                         role |= CarnivalRole.Cook;
 
                     break;
                 case "CarnyWorker":
-                    if (!p.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
+                    if (!pawn.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
                         role = CarnivalRole.Worker;
 
-                    if (p.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
+                    if (pawn.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
                         role |= CarnivalRole.Cook;
 
                     break;
@@ -80,14 +101,14 @@ namespace Carnivale
                 case "CarnyGuard":
                     role = CarnivalRole.Guard;
 
-                    if (!p.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
+                    if (!pawn.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
                         role |= CarnivalRole.Worker;
 
                     break;
                 case "CarnyManager":
                     role = CarnivalRole.Manager;
 
-                    if (p.skills.GetSkill(SkillDefOf.Shooting).Level > 3)
+                    if (pawn.skills.GetSkill(SkillDefOf.Shooting).Level > 3)
                         role |= CarnivalRole.Guard;
 
                     break;
@@ -96,6 +117,7 @@ namespace Carnivale
                     break;
             }
 
+            cachedRoles.Add(pawn, role);
             return role;
         }
 

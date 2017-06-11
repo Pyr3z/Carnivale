@@ -33,11 +33,13 @@ namespace Carnivale
         {
             StateGraph mainGraph = new StateGraph();
 
+            LordToilData_Carnival data = new LordToilData_Carnival(setupSpot);
+
             // Use LordJob_Travel as starting toil for this graph:
             LordToil toil_MoveToSetup = mainGraph.AttachSubgraph(new LordJob_Travel(this.setupSpot).CreateGraph()).StartingToil;
 
             // Next toil is to set up
-            LordToil toil_Setup = new LordToil_SetupCarnival(this.setupSpot);
+            LordToil toil_Setup = new LordToil_SetupCarnival(data);
             mainGraph.AddToil(toil_Setup);
 
             Transition trans_Setup = new Transition(toil_MoveToSetup, toil_Setup);
@@ -45,26 +47,51 @@ namespace Carnivale
             trans_Setup.AddTrigger(new Trigger_TicksPassed(2500));
             mainGraph.AddTransition(trans_Setup);
 
-            // Dummy toil for now, just defend after setup is done
+            // Meat of the event: entertaining the colony
+            LordToil toil_Entertain = new LordToil_EntertainColony(data);
+            mainGraph.AddToil(toil_Entertain);
+
+            Transition trans_Entertain = new Transition(toil_Setup, toil_Entertain);
+            trans_Entertain.AddTrigger(new Trigger_Memo("SetupDone"));
+            mainGraph.AddTransition(trans_Entertain);
+
+            // Rest the carnival for 16 hours after 8 hours of entertaining
+            LordToil toil_Rest = new LordToil_RestCarnival(data);
+            mainGraph.AddToil(toil_Rest);
+
+            Transition trans_ToRest = new Transition(toil_Entertain, toil_Rest);
+            trans_ToRest.AddTrigger(new Trigger_TicksPassed(GenDate.TicksPerHour * 8));
+            trans_ToRest.AddPostAction(new TransitionAction_EndAllJobs());
+            mainGraph.AddTransition(trans_ToRest);
+
+            Transition trans_FromRest = new Transition(toil_Rest, toil_Entertain);
+            trans_FromRest.AddTrigger(new Trigger_TicksPassed(GenDate.TicksPerHour * 16));
+            trans_ToRest.AddPostAction(new TransitionAction_EndAllJobs());
+            mainGraph.AddTransition(trans_FromRest);
+
+            // Defend if attacked
             LordToil toil_Defend = new LordToil_DefendCarnival(this.setupSpot, 30f);
             mainGraph.AddToil(toil_Defend);
 
             Transition trans_Defend = new Transition(toil_Setup, toil_Defend);
+            trans_Defend.AddSources(new LordToil[] {
+                toil_Entertain
+            });
             trans_Defend.AddTrigger(new Trigger_BecameColonyEnemy());
+            trans_Defend.AddTrigger(new Trigger_Memo("HostileConditions")); // TODO: make carnies actively attack
             mainGraph.AddTransition(trans_Defend);
 
             // Normal exit map toil
             LordToil_ExitMapAndEscortCarriers toil_Exit = new LordToil_ExitMapAndEscortCarriers();
             mainGraph.AddToil(toil_Exit);
 
-            Transition trans_Exit = new Transition(toil_Defend, toil_Exit);
+            Transition trans_Exit = new Transition(toil_Entertain, toil_Exit);
             trans_Exit.AddSources(new LordToil[]
             {
-                toil_Setup
+                toil_Setup,
+                toil_Defend
             });
             trans_Exit.AddTrigger(new Trigger_TicksPassed(this.durationTicks));
-            trans_Exit.AddTrigger(new Trigger_BecameColonyEnemy());
-            trans_Exit.AddTrigger(new Trigger_PawnLost());
             trans_Exit.AddPostAction(new TransitionAction_WakeAll());
             mainGraph.AddTransition(trans_Exit);
 

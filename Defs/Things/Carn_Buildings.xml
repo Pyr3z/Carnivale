@@ -187,10 +187,60 @@
   </ThingDef>
   
   
-  
-  
-  <!-- Custom frames -->
-  
+  <!-- Tent huge -->
+  <ThingDef ParentName="CarnTent" Name="TentMedBed">
+    <defName>Carn_TentHuge</defName>
+	
+	<label>prime tent</label>
+	<description>A gigantic tent intended to house the main event.</description>
+	
+	<graphicData>
+	  <texPath>Carnivale/Building/TentHuge</texPath>
+	  <graphicClass>Graphic_Multi</graphicClass>
+	  <shaderType>CutoutComplex</shaderType>
+	  <drawSize>(7.15,7.15)</drawSize>
+	  <allowFlip>false</allowFlip>
+	  
+	  <damageData>
+	    <rect>(1,1,6,6)</rect>
+	  </damageData>
+	</graphicData>
+	
+	<size>(11,11)</size>
+	<interactionCellOffset>(0,0,-4)</interactionCellOffset>
+	
+	<stuffCategories>
+	  <li>StuffedCrate</li>
+	</stuffCategories>
+	
+	<costList>
+	  <Carn_Crate_TentLodge>1</Carn_Crate_TentLodge>
+	</costList>
+	<resourcesFractionWhenDeconstructed>1.0</resourcesFractionWhenDeconstructed>
+	
+	<statBases>
+	  <MaxHitPoints>250</MaxHitPoints>
+	  <Flammability>1.5</Flammability>
+	  <WorkToBuild>2500</WorkToBuild>
+	  <Mass>49</Mass> <!-- 7 * 7 -->
+	  <Beauty>75</Beauty>
+	</statBases>
+	
+	<comps>
+	  <li Class="Carnivale.CompProperties_CarnBuilding">
+	    <type>9</type> <!-- Tent | Attraction = 9 -->
+		<interiorThings>
+		  <li>
+		    <thingDef>TorchLamp</thingDef>
+			<placementOffsets>
+			  <li>(0,0,0)</li>
+			</placementOffsets>
+		  </li>
+		</interiorThings>
+	  </li>
+	</comps>
+	
+  </ThingDef>
   
   
 </ThingDefs>

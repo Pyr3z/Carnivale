@@ -9,22 +9,14 @@ using Verse.AI.Group;
 
 namespace Carnivale
 {
-    public class LordToil_SetupCarnival : LordToil
+    public class LordToil_SetupCarnival : LordToil_Carn
     {
+        // FIELDS + PROPERTIES //
+
         private const float RADIUS_MIN = 25f;
 
         private const float RADIUS_MAX = 50f;
 
-        public LordToilData_Carnival Data
-        { get { return (LordToilData_Carnival)this.data; } }
-
-        public override IntVec3 FlagLoc
-        {
-            get
-            {
-                return Data.setupSpot;
-            }
-        }
 
         private IEnumerable<Frame> Frames
         {
@@ -41,14 +33,17 @@ namespace Carnivale
         }
 
 
-        public LordToil_SetupCarnival(IntVec3 setupSpot)
-        {
-            LordToilData_Carnival dat = new LordToilData_Carnival(setupSpot);
+        // CONSTRUCTORS //
 
-            this.data = dat;
+        public LordToil_SetupCarnival() { }
+
+        public LordToil_SetupCarnival(LordToilData_Carnival data)
+        {
+            this.data = data;
         }
 
 
+        // OVERRIDE METHODS //
 
         public override void Init()
         {
@@ -78,7 +73,7 @@ namespace Carnivale
             Thing tentCrate;
             for (int i = 0; i < numBedTents; i++)
             {
-                tentCrate = ThingMaker.MakeThing(_DefOf.Carn_Crate_TentLodge, GenStuff.RandomStuffFor(_DefOf.Carn_Crate_TentLodge));
+                tentCrate = ThingMaker.MakeThing(_DefOf.Carn_Crate_TentLodge, Utilities.RandomSimplFabric());
                 // Makes them carry them instead of just having them in inventory:
                 data.TryHaveWorkerCarry(tentCrate);
             }
@@ -108,26 +103,24 @@ namespace Carnivale
 
         public override void UpdateAllDuties()
         {
-            LordToilData_Carnival data = this.Data;
-
             int carrierIndex = 0;
             foreach (Pawn pawn in this.lord.ownedPawns)
             {
                 if (pawn.Is(CarnivalRole.Worker))
                 {
-                    DutyUtility.SetAsBuilder(pawn, data.setupSpot, data.baseRadius);
+                    DutyUtility.BuildCarnival(pawn, Data.setupSpot, Data.baseRadius);
                     continue;
                 }
 
                 if (pawn.Is(CarnivalRole.Carrier))
                 {
-                    IntVec3 spot = data.carrierSpots[carrierIndex++];
+                    IntVec3 spot = Data.carrierSpots[carrierIndex++];
 
-                    DutyUtility.SetAsCarrier(pawn, spot);
+                    DutyUtility.HitchToSpot(pawn, spot);
                     continue;
                 }
 
-                DutyUtility.SetAsIdler(pawn, data.setupSpot);
+                DutyUtility.Meander(pawn, Data.setupSpot);
             }
         }
 
@@ -138,36 +131,22 @@ namespace Carnivale
             base.LordToilTick();
 
             // Check if everything is setup
-            if (this.lord.ticksInToil % 400 == 0)
+            if (this.lord.ticksInToil % 700 == 0)
             {
                 if (!(from frame in this.Frames
                       where !frame.Destroyed
                       select frame).Any())
                 {
-                    LordToilData_Carnival data = this.Data;
-
-                    if (!(from blue in data.blueprints
+                    if (!(from blue in Data.blueprints
                           where !blue.Destroyed
                           select blue).Any())
                     {
                         if (!base.Map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial).Any(b => b.Faction == this.lord.faction))
                         {
                             // No frames, blueprints, OR buildings
-                            if ((from crate in data.availableCrates
-                                 where !crate.Destroyed
-                                 select crate).Any())
-                            {
-                                // Some more available crates, place new blueprints
-                                data.blueprints = BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, (int)(data.baseRadius / 1.5f), base.Map, this.lord.faction, data.availableCrates).ToList();
-                                this.UpdateAllDuties();
-                                return;
-                            }
-                            else
-                            {
-                                // Nothing is buildable. Was the carnival attacked?
-                                this.lord.ReceiveMemo("NothingBuildable");
-                                return;
-                            }
+                            // Nothing is buildable. Was the carnival attacked?
+                            this.lord.ReceiveMemo("NoBuildings");
+                            return;
                         }
                         else
                         {
@@ -221,24 +200,22 @@ namespace Carnivale
         }
 
 
-        public bool TryFindCarrierSpots()
+        private bool TryFindCarrierSpots()
         {
             // Should only be called right after blueprint creation
 
-            LordToilData_Carnival data = this.Data;
-
-            int countCarriers = data.pawnsWithRole[CarnivalRole.Carrier].Count;
+            int countCarriers = Data.pawnsWithRole[CarnivalRole.Carrier].Count;
             int countSpots = 0;
-            CellRect rect = CellRect.CenteredOn(data.setupSpot, (int)(data.baseRadius / 2f));
+            CellRect rect = CellRect.CenteredOn(Data.setupSpot, (int)(Data.baseRadius / 2f));
 
             for (int i = 0; i < 50; i++)
             {
                 // Try to find initial spot
                 IntVec3 randomCell = rect.RandomCell;
-                if (Map.reachability.CanReach(randomCell, data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
+                if (Map.reachability.CanReach(randomCell, Data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
                     && !randomCell.GetThingList(this.Map).Any(t => t is Blueprint))
                 {
-                    data.carrierSpots.Add(randomCell);
+                    Data.carrierSpots.Add(randomCell);
                     countSpots++;
                     break;
                 }
@@ -248,9 +225,15 @@ namespace Carnivale
             byte directionalTries = 0;
             while (attempts < 75 && countSpots < countCarriers)
             {
-                IntVec3 lastSpot = data.carrierSpots.Last();
+                IntVec3 lastSpot = Data.carrierSpots.Last();
                 IntVec3 newSpot = new IntVec3(lastSpot.x, lastSpot.y, lastSpot.z);
                 IntVec3 offset;
+
+                if (countSpots % 4 == 0)
+                {
+                    // New row
+                    directionalTries++;
+                }
 
                 switch (directionalTries)
                 {
@@ -274,12 +257,17 @@ namespace Carnivale
 
                 newSpot += offset;
 
-                if (!data.carrierSpots.Contains(newSpot)
-                    && Map.reachability.CanReach(newSpot, data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
+                if (!Data.carrierSpots.Contains(newSpot)
+                    && Map.reachability.CanReach(newSpot, Data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
                     && !newSpot.GetThingList(this.Map).Any(t => t is Blueprint))
                 {
                     // Spot found
-                    data.carrierSpots.Add(newSpot);
+                    Data.carrierSpots.Add(newSpot);
+                    if (countSpots % 4 == 0)
+                    {
+                        // New row
+                        directionalTries++;
+                    }
                     countSpots++;
                 }
                 else if (directionalTries < 3)
@@ -293,10 +281,10 @@ namespace Carnivale
                     for (int i = 0; i < 50; i++)
                     {
                         IntVec3 randomCell = rect.RandomCell;
-                        if (Map.reachability.CanReach(randomCell, data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
+                        if (Map.reachability.CanReach(randomCell, Data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
                             && !randomCell.GetThingList(this.Map).Any(t => t is Blueprint))
                         {
-                            data.carrierSpots.Add(randomCell);
+                            Data.carrierSpots.Add(randomCell);
                             countSpots++;
                             break;
                         }

@@ -70,9 +70,10 @@ namespace Carnivale
                     Building building = ThingMaker.MakeThing(tp.thingDef, stuff) as Building;
                     building.SetFaction(this.Faction);
 
+                    // Give manager a specific bed:
                     if (this.Type.Is(CarnBuildingType.Bedroom | CarnBuildingType.ManagerOnly))
                     {
-                        if (building is Building_Bed)
+                        if (building is Building_Bed && this.Faction != Faction.OfPlayer)
                         {
                             this.Faction.leader.ownership.ClaimBedIfNonMedical((Building_Bed)building);
                         }
@@ -100,6 +101,10 @@ namespace Carnivale
         public override void ExposeData()
         {
             base.ExposeData();
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                this.childBuildings.RemoveAll(c => c.Destroyed);
+            }
             Scribe_Collections.Look(ref this.childBuildings, "childBuildings", LookMode.Reference);
         }
 

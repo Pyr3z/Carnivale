@@ -6,7 +6,7 @@ namespace Carnivale
 {
     public static class DutyUtility
     {
-        public static void SetAsBuilder(Pawn pawn, IntVec3 centre, float radius)
+        public static void BuildCarnival(Pawn pawn, IntVec3 centre, float radius)
         {
             if (pawn != null)
             {
@@ -17,7 +17,7 @@ namespace Carnivale
             }
         }
 
-        public static void SetAsIdler(Pawn pawn, IntVec3 centre)
+        public static void Meander(Pawn pawn, IntVec3 centre)
         {
             if (pawn != null)
             {
@@ -25,11 +25,11 @@ namespace Carnivale
             }
         }
 
-        public static void SetAsCarrier(Pawn pawn, IntVec3 spot)
+        public static void HitchToSpot(Pawn pawn, IntVec3 spot)
         {
             if (pawn != null)
             {
-                pawn.mindState.duty = new PawnDuty(_DefOf.Duty_SlightWander, spot);
+                pawn.mindState.duty = new PawnDuty(_DefOf.Duty_HitchToSpot, spot);
             }
         }
     }

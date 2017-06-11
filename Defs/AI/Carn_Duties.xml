@@ -24,19 +24,19 @@
   </DutyDef>
   
   
-  <!-- Goto and wander slightly at location -->
+  <!-- Goto hitch position and stay -->
   <DutyDef>
-    <defName>Duty_SlightWander</defName>
+    <defName>Duty_HitchToSpot</defName>
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
 	  
 	    <li Class="Carnivale.JobGiver_StandAtLoc">
-		  <subNodes>
-		    <li Class="ThinkNode_Subtree">
-		      <treeDef>SatisfyBasicNeeds</treeDef>
-		    </li>
-		  </subNodes>
+		  
 		</li>
+		
+		<li Class="ThinkNode_Subtree">
+		  <treeDef>SatisfyBasicNeeds</treeDef>
+	    </li>
 		
 	  </subNodes>
 	</thinkNode>
@@ -72,6 +72,9 @@
 	  </subNodes>
 	</thinkNode>
   </DutyDef>
+  
+  
+  <!--  -->
   
   
 </DutyDefs>

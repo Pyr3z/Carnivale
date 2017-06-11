@@ -64,8 +64,12 @@
     <Compile Include="AI\JobDriver_StandAtLoc.cs" />
     <Compile Include="AI\JobGiver_StandAtLoc.cs" />
     <Compile Include="AI\LordToilData_Carnival.cs" />
+    <Compile Include="AI\LordToil_Carn.cs" />
     <Compile Include="AI\LordToil_DefendCarnival.cs" />
+    <Compile Include="AI\LordToil_EntertainColony.cs" />
+    <Compile Include="AI\LordToil_RestCarnival.cs" />
     <Compile Include="AI\LordToil_SetupCarnival.cs" />
+    <Compile Include="AI\LordToil_StrikeCarnival.cs" />
     <Compile Include="Buildings\Blueprint_Tent.cs" />
     <Compile Include="Buildings\Building_Carn.cs" />
     <Compile Include="Buildings\Building_Tent.cs" />

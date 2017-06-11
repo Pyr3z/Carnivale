@@ -9,9 +9,11 @@ namespace Carnivale
     {
         public static DutyDef Duty_BuildCarnival;
 
+        public static DutyDef Duty_HitchToSpot;
+
         public static DutyDef Duty_Meander;
 
-        public static DutyDef Duty_SlightWander;
+        //public static DutyDef Duty_RestETC;
 
 
 
@@ -71,8 +73,18 @@ namespace Carnivale
 
         public static ThingDef Carn_TentWall;
 
-        public static ThingDef DevilstrandCloth; // Not in vanilla
+        // Not in vanilla
+        public static ThingDef Cloth;
 
+        public static ThingDef DevilstrandCloth;
+
+        public static ThingDef WoolMegasloth;
+
+        public static ThingDef WoolMuffalo;
+
+        public static ThingDef WoolCamel;
+
+        public static ThingDef WoolAlpaca;
 
 
         public static TraderKindDef Carn_Trader_Food;

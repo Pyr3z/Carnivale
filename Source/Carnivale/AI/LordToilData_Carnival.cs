@@ -22,11 +22,34 @@ namespace Carnivale
 
 
 
-        public LordToilData_Carnival() : base() { }
+        public LordToilData_Carnival() { }
 
-        public LordToilData_Carnival(IntVec3 setupSpot) : this()
+        public LordToilData_Carnival(IntVec3 setupSpot)
         {
             this.setupSpot = setupSpot;
+        }
+
+        public LordToilData_Carnival Clone()
+        {
+            // Cloning might be necessary due to the way that
+            // LordToilData is saved, and I want to be able to be
+            // able to use the same data structure for each toil.
+            // Shrug. Maybe it's not necessary.
+
+            // Also, no need to worry about not deep-cloning each field
+            // (especally data structures like lists), because if they
+            // are changed by one toil, the change should be the same in
+            // the next toil.
+
+            LordToilData_Carnival clone = new LordToilData_Carnival();
+            clone.setupSpot = this.setupSpot;
+            clone.baseRadius = this.baseRadius;
+            clone.pawnsWithRole = this.pawnsWithRole;
+            clone.availableCrates = this.availableCrates;
+            clone.blueprints = this.blueprints;
+            clone.carrierSpots = this.carrierSpots;
+
+            return clone;
         }
 
 

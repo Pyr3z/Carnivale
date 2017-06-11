@@ -69,8 +69,8 @@
 	<graphicData>
 	  <texPath>Carnivale/Items/TentCrate</texPath>
 	  <graphicClass>Graphic_Single</graphicClass>
-	  <shaderType>CutoutComplex</shaderType>
-	  <drawSize>(0.8,0.8)</drawSize>
+	  <!-- <shaderType>CutoutComplex</shaderType> -->
+	  <drawSize>(0.7,0.7)</drawSize>
 	</graphicData>
 	
 	<stuffCategories>
