@@ -1,15 +1,18 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Verse;
 
 namespace Carnivale
 {
     public static class CarnivalBlueprints
     {
+        private static LordToilData_Carnival toilData;
+
         private static CellRect area;
 
-        private static IntVec3 entryCell;
+        private static IntVec3 bannerCell;
 
         private static List<Thing> availableCrates;
 
@@ -21,15 +24,48 @@ namespace Carnivale
         [DebuggerHidden]
         public static IEnumerable<Blueprint> PlaceCarnivalBlueprints(LordToilData_Carnival data, Map map, Faction faction)
         {
+            // Assign necessary values to this singleton (is this technically a singleton?)
+            toilData = data;
             area = CellRect.CenteredOn(data.setupSpot, (int)data.baseRadius).ClipInsideMap(map);
 
+            // Calculate banner cell
             IntVec3 colonistPos = map.listerBuildings.allBuildingsColonist.NullOrEmpty() ?
                 map.mapPawns.FreeColonistsSpawned.RandomElement().Position : map.listerBuildings.allBuildingsColonist.RandomElement().Position;
 
-            entryCell = area.ClosestCellTo(colonistPos);
+            bannerCell = area.ClosestCellTo(colonistPos);
+
+            if (map.roadInfo.roadEdgeTiles.Any())
+            {
+                // Prefer to place banner on nearest road
+                CellRect searchArea = CellRect.CenteredOn(bannerCell, 40);
+                float distance = 999999;
+                IntVec3 tempCell = IntVec3.Invalid;
+
+                foreach (var cell in searchArea)
+                {
+                    if (cell.GetTerrain(map).HasTag("Road"))
+                    {
+                        float tempDist = bannerCell.DistanceTo(cell);
+                        if (tempDist < distance)
+                        {
+                            distance = tempDist;
+                            tempCell = cell;
+                        }
+                    }
+                }
+
+                if (tempCell.IsValid)
+                    bannerCell = tempCell;
+            }
+
+
             availableCrates = data.availableCrates;
             stallUsers = ((List<Pawn>)data.pawnsWithRole[CarnivalRole.Vendor]).ListFullCopyOrNull();
             CarnivalBlueprints.faction = faction;
+
+
+
+            // Do the blueprint thing
 
             foreach (Blueprint tent in PlaceTentBlueprints(map))
             {
@@ -127,28 +163,32 @@ namespace Carnivale
             Rot4 rot = default(Rot4);
             CellRect stallArea = area;
 
-            foreach (Pawn pawn in stallUsers)
+            foreach (Pawn stallUser in stallUsers)
             {
-                if (pawn.TraderKind != null)
+                if (stallUser.TraderKind != null)
                 {
-                    if (pawn.TraderKind == _DefOf.Carn_Trader_Food)
+                    // Handle vendor stalls
+
+                    if (stallUser.TraderKind == _DefOf.Carn_Trader_Food)
                     {
                         stallDef = _DefOf.Carn_StallFood;
                     }
-                    else if (pawn.TraderKind == _DefOf.Carn_Trader_Surplus)
+                    else if (stallUser.TraderKind == _DefOf.Carn_Trader_Surplus)
                     {
                         stallDef = _DefOf.Carn_StallSurplus;
                     }
-                    else if (pawn.TraderKind == _DefOf.Carn_Trader_Curios)
+                    else if (stallUser.TraderKind == _DefOf.Carn_Trader_Curios)
                     {
                         stallDef = _DefOf.Carn_StallCurios;
                     }
                     else
                     {
-                        Log.Error("Trader " + pawn.NameStringShort + " is not a carnival trader and will get no stall.");
+                        Log.Error("Trader " + stallUser.NameStringShort + " is not a carnival vendor and will get no stall.");
                         continue;
                     }
                 }
+
+
 
                 if (stallSpot.IsValid)
                 {
@@ -167,6 +207,8 @@ namespace Carnivale
                 if (stallSpot.IsValid)
                 {
                     RemovePlantsFor(stallSpot, stallDef.size, rot, map);
+                    // Add spot to stall user's spot
+                    toilData.rememberedPositions.Add(stallUser, stallSpot);
                     yield return GenConstruct.PlaceBlueprintForBuild(stallDef, stallSpot, map, rot, faction, null);
                 }
             }
@@ -174,22 +216,22 @@ namespace Carnivale
 
         private static Blueprint PlaceEntranceBlueprint(Map map)
         {
-            ThingDef entryDef = _DefOf.Carn_SignEntry;
+            ThingDef bannerDef = _DefOf.Carn_SignEntry;
             Rot4 rot = default(Rot4);
 
-            if (CanPlaceBlueprintAt(entryCell, rot, entryDef, map))
+            if (CanPlaceBlueprintAt(bannerCell, rot, bannerDef, map))
             {
-                RemovePlantsFor(entryCell, entryDef.size, rot, map);
-                return GenConstruct.PlaceBlueprintForBuild(entryDef, entryCell, map, rot, faction, null);
+                RemovePlantsFor(bannerCell, bannerDef.size, rot, map);
+                return GenConstruct.PlaceBlueprintForBuild(bannerDef, bannerCell, map, rot, faction, null);
             }
 
-            CellRect tryArea = CellRect.CenteredOn(entryCell, 8).ClipInsideRect(area);
-            IntVec3 entrySpot = FindRandomPlacementFor(entryDef, rot, map, tryArea);
+            CellRect tryArea = CellRect.CenteredOn(bannerCell, 8).ClipInsideRect(area);
+            IntVec3 entrySpot = FindRandomPlacementFor(bannerDef, rot, map, tryArea);
 
             if (entrySpot.IsValid)
             {
-                RemovePlantsFor(entrySpot, entryDef.size, rot, map);
-                return GenConstruct.PlaceBlueprintForBuild(entryDef, entrySpot, map, rot, faction, null);
+                RemovePlantsFor(entrySpot, bannerDef.size, rot, map);
+                return GenConstruct.PlaceBlueprintForBuild(bannerDef, entrySpot, map, rot, faction, null);
             }
 
             return null;
@@ -207,7 +249,7 @@ namespace Carnivale
 
         private static IntVec3 FindRandomPlacementFor(ThingDef def, Rot4 rot, Map map, bool preferFarFromColony = false, int contractedBy = 0)
         {
-            CellRect noGo = CellRect.CenteredOn(entryCell, area.Width / 2);
+            CellRect noGo = CellRect.CenteredOn(bannerCell, area.Width / 2);
 
             CellRect adjustedArea = area.ContractedBy(contractedBy);
 

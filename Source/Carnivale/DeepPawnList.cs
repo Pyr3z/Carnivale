@@ -54,6 +54,18 @@ namespace Carnivale
             return ((IEnumerable<Pawn>)pawnsList).GetEnumerator();
         }
 
+        public Pawn this[int index]
+        {
+            get
+            {
+                return this.pawnsList[index];
+            }
+            set
+            {
+                this.pawnsList[index] = value;
+            }
+        }
+
         public static implicit operator List<Pawn>(DeepPawnList dpl)
         {
             return dpl.pawnsList;

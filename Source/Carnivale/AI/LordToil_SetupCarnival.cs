@@ -39,7 +39,7 @@ namespace Carnivale
 
         public LordToil_SetupCarnival(LordToilData_Carnival data)
         {
-            this.data = data;
+            this.data = data.SetCurrentLordToil(this);
         }
 
 
@@ -85,7 +85,7 @@ namespace Carnivale
 
             if (errorFlag)
             {
-                Log.Error("Could not give enough tent crates to workers of " + this.lord.faction);
+                Log.Warning("Could not give enough tent crates to workers of " + this.lord.faction);
             }
 
 
@@ -95,7 +95,6 @@ namespace Carnivale
 
             int numStallCrates = Data.pawnsWithRole[CarnivalRole.Vendor].Count + _DefOf.Carn_SignEntry.costList.First().count;
             Data.TryHaveWorkerCarry(_DefOf.Carn_Crate_Stall, numStallCrates, ThingDefOf.WoodLog);
-
 
 
 
@@ -117,7 +116,6 @@ namespace Carnivale
 
         public override void UpdateAllDuties()
         {
-            int carrierIndex = 0;
             foreach (Pawn pawn in this.lord.ownedPawns)
             {
                 if (pawn.Is(CarnivalRole.Worker))
@@ -128,9 +126,17 @@ namespace Carnivale
 
                 if (pawn.Is(CarnivalRole.Carrier))
                 {
-                    IntVec3 spot = Data.carrierSpots[carrierIndex++];
+                    IntVec3 pos = Data.rememberedPositions[pawn];
 
-                    DutyUtility.HitchToSpot(pawn, spot);
+                    if (pos.IsValid)
+                    {
+                        DutyUtility.HitchToSpot(pawn, pos);
+                    }
+                    else
+                    {
+                        DutyUtility.HitchToSpot(pawn, pawn.Position);
+                    }
+                    
                     continue;
                 }
 
@@ -203,14 +209,14 @@ namespace Carnivale
         {
             // Do more cleanup here?
             Data.blueprints.RemoveAll(blue => blue.Destroyed);
-            foreach (Blueprint b in Data.blueprints)
-            {
-                b.Destroy(DestroyMode.Cancel);
-            }
-            foreach (Frame frame in this.Frames)
-            {
-                frame.Destroy(DestroyMode.Cancel);
-            }
+            //foreach (Blueprint b in Data.blueprints)
+            //{
+            //    b.Destroy(DestroyMode.Cancel);
+            //}
+            //foreach (Frame frame in this.Frames)
+            //{
+            //    frame.Destroy(DestroyMode.Cancel);
+            //}
         }
 
 
@@ -220,6 +226,7 @@ namespace Carnivale
 
             int countCarriers = Data.pawnsWithRole[CarnivalRole.Carrier].Count;
             int countSpots = 0;
+            List<IntVec3> spots = new List<IntVec3>();
             CellRect rect = CellRect.CenteredOn(Data.setupSpot, (int)(Data.baseRadius / 2f));
 
             for (int i = 0; i < 50; i++)
@@ -229,17 +236,23 @@ namespace Carnivale
                 if (Map.reachability.CanReach(randomCell, Data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
                     && !randomCell.GetThingList(this.Map).Any(t => t is Blueprint))
                 {
-                    Data.carrierSpots.Add(randomCell);
+                    //Data.carrierSpots.Add(randomCell); // Got rid of this field in favour of Data.rememberedPositions
+                    spots.Add(randomCell);
                     countSpots++;
                     break;
                 }
+            }
+
+            if (countSpots == 0)
+            {
+                goto Error;
             }
 
             byte attempts = 0;
             byte directionalTries = 0;
             while (attempts < 75 && countSpots < countCarriers)
             {
-                IntVec3 lastSpot = Data.carrierSpots.Last();
+                IntVec3 lastSpot = spots.Last();
                 IntVec3 newSpot = new IntVec3(lastSpot.x, lastSpot.y, lastSpot.z);
                 IntVec3 offset;
 
@@ -271,12 +284,13 @@ namespace Carnivale
 
                 newSpot += offset;
 
-                if (!Data.carrierSpots.Contains(newSpot)
+                if (!spots.Contains(newSpot)
                     && Map.reachability.CanReach(newSpot, Data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
                     && !newSpot.GetThingList(this.Map).Any(t => t is Blueprint))
                 {
                     // Spot found
-                    Data.carrierSpots.Add(newSpot);
+                    //Data.carrierSpots.Add(newSpot);
+                    spots.Add(newSpot);
                     if (countSpots % 4 == 0)
                     {
                         // New row
@@ -292,13 +306,21 @@ namespace Carnivale
                 else
                 {
                     // No spot, reset direction to try and find new starting spot
+
+                    if (spots.Any())
+                    {
+                        // Try to find next spots close to other spots
+                        rect = CellRect.CenteredOn(spots.Average(), 6);
+                    }
+
                     for (int i = 0; i < 50; i++)
                     {
                         IntVec3 randomCell = rect.RandomCell;
                         if (Map.reachability.CanReach(randomCell, Data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
                             && !randomCell.GetThingList(this.Map).Any(t => t is Blueprint))
                         {
-                            Data.carrierSpots.Add(randomCell);
+                            //Data.carrierSpots.Add(randomCell);
+                            spots.Add(randomCell);
                             countSpots++;
                             break;
                         }
@@ -312,13 +334,18 @@ namespace Carnivale
 
             if (countSpots == countCarriers)
             {
+                for (int i = 0; i < countSpots; i++)
+                {
+                    // Add calculated spots to rememberedPositions
+                    Data.rememberedPositions.Add(Data.pawnsWithRole[CarnivalRole.Carrier][i], spots[i]);
+                }
                 return true;
             }
-            else
-            {
-                Log.Error("Found no spots for carnival carriers to chill. Idling them instead.");
-                return false;
-            }
+
+
+            Error:
+            Log.Error("Not enough spots found for carnival carriers to chill.");
+            return false;
         }
 
         

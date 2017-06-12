@@ -325,5 +325,24 @@ namespace Carnivale
             result = IntVec3.Invalid;
             return false;
         }
+
+
+        public static IntVec3 Average(this IEnumerable<IntVec3> vecs)
+        {
+            int totalX = 0;
+            int totalZ = 0;
+            int count = 0;
+
+            foreach (IntVec3 vec in vecs)
+            {
+                totalX += vec.x;
+                totalZ += vec.z;
+                count++;
+            }
+
+            return new IntVec3(totalX / count, 0, totalZ / count);
+        }
+        
+
     }
 }

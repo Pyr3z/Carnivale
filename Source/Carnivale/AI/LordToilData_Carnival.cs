@@ -8,17 +8,19 @@ namespace Carnivale
 {
     public class LordToilData_Carnival : LordToilData
     {
+        public LordToil currentLordToil;
+
         public IntVec3 setupSpot;
 
         public float baseRadius;
 
         public Dictionary<CarnivalRole, DeepPawnList> pawnsWithRole = new Dictionary<CarnivalRole, DeepPawnList>();
 
+        public Dictionary<Pawn, IntVec3> rememberedPositions = new Dictionary<Pawn, IntVec3>();
+
         public List<Thing> availableCrates = new List<Thing>();
 
         public List<Blueprint> blueprints = new List<Blueprint>();
-
-        public List<IntVec3> carrierSpots = new List<IntVec3>();
 
 
 
@@ -32,8 +34,8 @@ namespace Carnivale
         public LordToilData_Carnival Clone()
         {
             // Cloning might be necessary due to the way that
-            // LordToilData is saved, and I want to be able to be
-            // able to use the same data structure for each toil.
+            // LordToilData is saved, and I want to be able to
+            // use the same data structure for each toil.
             // Shrug. Maybe it's not necessary.
 
             // Also, no need to worry about not deep-cloning each field
@@ -42,14 +44,22 @@ namespace Carnivale
             // the next toil.
 
             LordToilData_Carnival clone = new LordToilData_Carnival();
+            clone.currentLordToil = this.currentLordToil;
             clone.setupSpot = this.setupSpot;
             clone.baseRadius = this.baseRadius;
             clone.pawnsWithRole = this.pawnsWithRole;
+            clone.rememberedPositions = this.rememberedPositions;
             clone.availableCrates = this.availableCrates;
             clone.blueprints = this.blueprints;
-            clone.carrierSpots = this.carrierSpots;
 
             return clone;
+        }
+
+
+        public LordToilData_Carnival SetCurrentLordToil(LordToil cur)
+        {
+            this.currentLordToil = cur;
+            return this;
         }
 
 
@@ -88,8 +98,15 @@ namespace Carnivale
                 }
             }
 
+            // Failing that, try spawning the thing in the centre of the setup area
+            if (GenPlace.TryPlaceThing(thing, setupSpot, currentLordToil.Map, ThingPlaceMode.Near, null))
+            {
+                availableCrates.Add(thing);
+                return true;
+            }
+
             // You failed me.
-            Log.Error("Found no suitable pawn to give " + thing + " to.");
+            Log.Warning("Found no suitable pawn or place to drop " + thing + ". Construction may halt.");
 
             return false;
         }
@@ -114,10 +131,14 @@ namespace Carnivale
 
         public override void ExposeData()
         {
+            Scribe_Values.Look(ref this.currentLordToil, "currentLordToil", default(LordToil), false);
+
             Scribe_Values.Look(ref this.setupSpot, "setupSpot", default(IntVec3), false);
             Scribe_Values.Look(ref this.baseRadius, "baseRadius", 0f, false);
 
-            Scribe_Collections.Look(ref pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
+            Scribe_Collections.Look(ref this.pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
+            Scribe_Collections.Look(ref this.rememberedPositions, "rememberedPositions", LookMode.Reference, LookMode.Value);
+
 
             //if (Scribe.mode == LoadSaveMode.Saving)
             //{
@@ -142,7 +163,7 @@ namespace Carnivale
             }
             Scribe_Collections.Look(ref this.blueprints, "blueprints", LookMode.Reference, new object[0]);
 
-            Scribe_Collections.Look(ref this.carrierSpots, "carrierSpots", LookMode.Value, new object[0]);
+            //Scribe_Collections.Look(ref this.carrierSpots, "carrierSpots", LookMode.Value, new object[0]);
 
             //if (Scribe.mode == LoadSaveMode.Saving)
             //{

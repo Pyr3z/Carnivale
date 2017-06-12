@@ -40,16 +40,16 @@ namespace Carnivale
             Toil gotoCell = Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.OnCell);
             yield return gotoCell;
 
-            // Stand until interrupted
+            // Stand
             Toil stand = new Toil();
             stand.initAction = delegate
             {
                 stand.actor.pather.StopDead();
-                stand.actor.Rotation = Rot4.North;
+                stand.actor.Rotation = Rot4.South;
             };
             stand.tickAction = delegate
             {
-                // Rotate randomly
+                // Rotate randomly if carrier
                 if (Find.TickManager.TicksGame % 300 == 0
                     && Type.Is(CarnivalRole.Carrier)
                     && Rand.Chance(0.6f))
