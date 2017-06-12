@@ -1,12 +1,19 @@
 Requires [XnopeCore](https://github.com/Xnope/XnopeCore)
 
-# Carnivale
+# CARNIVÀLE
+![banner](About/Preview.png)
+
 My first content mod for Rimworld. Adds a new unique faction type: carnivals. My goal for this mod is for the end product to fit very nicely in the space-cowboy / wild-west aesthetic of vanilla RimWorld. It was inspired by the long-cancelled HBO show by the same name.
 
 The shear variety of content this mod seeks to add (and partially already has added) to the vanilla game makes it one of the most expansive kinds of mods out there. Feel free to peruse the source if you want to see how this or that is accomplished; I make this available entirely because of how grateful I am to other modders who have made their mods open-source and thus allowed me to learn from their examples.
 
 ## Texture artists welcomed!
 I'm a bit stronger on the coding side of things than the texturing side, so if you have a desire to help the mod along by drawing up textures of anything you think works with *Carnivale*'s goals, please do and contact me.
+
+## Some example textures
+![food stall](Textures/Carnivale/Building/Stall_Food.png)
+![lodging tent](Textures/Carnivale/Building/TentSquare_back.png)
+![entrance sign](Textures/Carnivale/Building/EntrySign_back.png)
 
 # Features, both Planned and Done:
 * Extended from XnopeCore:
@@ -15,6 +22,7 @@ I'm a bit stronger on the coding side of things than the texturing side, so if y
   * Dynamic faction naming: Carnivals' names often reflect their leaders', and update upon change of leadership [DONE]
 * New buildings
   * Tents: lodging tents for carnies to sleep [DONE], chapiteau tent [DONE], kitchen tents?
+    * YES! BUILDINGS YOU CAN GO INSIDE OF!
   * Stalls: vendor stalls [DONE], game stalls
   * "CARNIVALE" Entrance Banner [DONE]
 * New apparel, and maybe a few new weapons (baseball bats, anyone?)
