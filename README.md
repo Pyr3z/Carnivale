@@ -14,16 +14,17 @@ I'm a bit stronger on the coding side of things than the texturing side, so if y
   * MANY new backstories reflecting carny lifestyles [DONE]
   * Dynamic faction naming: Carnivals' names often reflect their leaders', and update upon change of leadership [DONE]
 * New buildings
-  * Tents: small [partially done], medium, large; sleeping tents, show tents, kitchen tents
-  * Stalls: game stalls, vendor stalls
-  * "CARNIVALE" Entrance Banner
+  * Tents: lodging tents for carnies to sleep [DONE], chapiteau tent [DONE], kitchen tents?
+  * Stalls: vendor stalls [DONE], game stalls
+  * "CARNIVALE" Entrance Banner [DONE]
 * New apparel, and maybe a few new weapons (baseball bats, anyone?)
 * New incidents
   * Carnivals request to visit your colony one day prior [DONE]
-    * Refusal angers them slightly, enough of which can lead to...
+  * Upon arrival, carnies will set up their buildings and prepare immediately for a show [partially done]. Then, they will put on an 8-hour show every 16 hours until they leave (usually only a couple of days total).
   * Fireball shows... not gonna explain
   * "Carnival Justice": how'd you get a band of goofballs to hate you so much?
-* New stat: luckiness
+* A boatload of new backstories [DONE, ongoing]
+* New stat: luckiness [partially done]
   * affects chance to win carnival games, perhaps more things like surgery success chance / dodge chance
 * New traits [DONE]:
   * Narcissist - designed to go with spoiled prodigies. Increased social fight chance, global learn speed, mental break threshold.
