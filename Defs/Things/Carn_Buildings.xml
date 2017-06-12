@@ -294,7 +294,7 @@
   
   
   <!-- Food stall -->
-  <ThingDef ParentName="CarnStall">
+  <ThingDef Name="FoodStall" ParentName="CarnStall">
     <defName>Carn_StallFood</defName>
 	
 	<label>food stall</label>
@@ -335,6 +335,47 @@
 	</comps>
 	
   </ThingDef>
+  
+  
+  <!-- Curios stall -->
+  <ThingDef ParentName="FoodStall">
+    <defName>Carn_StallCurios</defName>
+	
+	<label>curios stall</label>
+	<description>'You break it, you buy it.'\n\n'No refunds.'</description>
+	
+    <graphicData>
+	  <texPath>Carnivale/Building/Stall_Curios</texPath>
+	  <graphicClass>Graphic_Single</graphicClass>
+	  
+	  <drawSize>(3,3)</drawSize>
+	  <damageData>
+	    <rect>(0.2,0.2,2.8,0.8)</rect>
+	  </damageData>
+	</graphicData>
+	
+  </ThingDef>
+  
+  
+  <!-- Surplus stall -->
+  <ThingDef ParentName="FoodStall">
+    <defName>Carn_StallSurplus</defName>
+	
+	<label>surplus stall</label>
+	<description>If carnies have any excess, you bet they're gonna make a profit off it.</description>
+	
+    <graphicData>
+	  <texPath>Carnivale/Building/Stall_Surplus</texPath>
+	  <graphicClass>Graphic_Single</graphicClass>
+	  
+	  <drawSize>(3,3)</drawSize>
+	  <damageData>
+	    <rect>(0.2,0.2,2.8,0.8)</rect>
+	  </damageData>
+	</graphicData>
+	
+  </ThingDef>
+  
   
   
 </ThingDefs>

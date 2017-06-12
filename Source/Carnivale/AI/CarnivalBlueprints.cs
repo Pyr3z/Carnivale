@@ -31,12 +31,12 @@ namespace Carnivale
             stallUsers = ((List<Pawn>)data.pawnsWithRole[CarnivalRole.Vendor]).ListFullCopyOrNull();
             CarnivalBlueprints.faction = faction;
 
-            foreach (Blueprint_StuffHacked tent in PlaceTentBlueprints(map))
+            foreach (Blueprint tent in PlaceTentBlueprints(map))
             {
                 yield return tent;
             }
 
-            foreach (Blueprint_Build stall in PlaceStallBlueprints(map))
+            foreach (Blueprint stall in PlaceStallBlueprints(map))
             {
                 yield return stall;
             }
@@ -114,7 +114,7 @@ namespace Carnivale
             {
                 // Insta-cut plants (potentially OP?)
                 RemovePlantsFor(tentSpot, tentDef.size, rot, map);
-                yield return (Blueprint_StuffHacked)GenConstruct.PlaceBlueprintForBuild(tentDef, tentSpot, map, rot, faction, null);
+                yield return GenConstruct.PlaceBlueprintForBuild(tentDef, tentSpot, map, rot, faction, null);
             }
 
         }
@@ -137,11 +137,11 @@ namespace Carnivale
                     }
                     else if (pawn.TraderKind == _DefOf.Carn_Trader_Surplus)
                     {
-                        // TODO
+                        stallDef = _DefOf.Carn_StallSurplus;
                     }
                     else if (pawn.TraderKind == _DefOf.Carn_Trader_Curios)
                     {
-                        // TODO
+                        stallDef = _DefOf.Carn_StallCurios;
                     }
                     else
                     {
@@ -190,7 +190,7 @@ namespace Carnivale
 
         private static IntVec3 FindRandomPlacementFor(ThingDef def, Rot4 rot, Map map, bool preferFarFromColony = false, int contractedBy = 0)
         {
-            CellRect noGo = CellRect.CenteredOn(entryCell, area.Width / 4);
+            CellRect noGo = CellRect.CenteredOn(entryCell, area.Width / 2);
 
             CellRect adjustedArea = area.ContractedBy(contractedBy);
 

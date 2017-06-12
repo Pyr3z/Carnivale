@@ -67,7 +67,11 @@ namespace Carnivale
 
         public static ThingDef Carn_Crate_TentMan;
 
+        public static ThingDef Carn_StallCurios;
+
         public static ThingDef Carn_StallFood;
+
+        public static ThingDef Carn_StallSurplus;
 
         public static ThingDef Carn_TentMedBed;
 
