@@ -60,27 +60,30 @@ namespace Carnivale
             }
 
             // Build interior
-            foreach (ThingPlacement tp in Props.interiorThings)
+            if (Props.interiorThings.Any())
             {
-                foreach (IntVec3 offset in tp.placementOffsets)
+                foreach (ThingPlacement tp in Props.interiorThings)
                 {
-                    IntVec3 cell = Position + offset.RotatedBy(Rotation);
-                    ThingDef stuff = tp.thingDef.MadeFromStuff ? GenStuff.DefaultStuffFor(tp.thingDef) : null;
-
-                    Building building = ThingMaker.MakeThing(tp.thingDef, stuff) as Building;
-                    building.SetFaction(this.Faction);
-
-                    // Give manager a specific bed:
-                    if (this.Type.Is(CarnBuildingType.Bedroom | CarnBuildingType.ManagerOnly))
+                    foreach (IntVec3 offset in tp.placementOffsets)
                     {
-                        if (building is Building_Bed && this.Faction != Faction.OfPlayer)
-                        {
-                            this.Faction.leader.ownership.ClaimBedIfNonMedical((Building_Bed)building);
-                        }
-                    }
+                        IntVec3 cell = Position + offset.RotatedBy(Rotation);
+                        ThingDef stuff = tp.thingDef.MadeFromStuff ? GenStuff.DefaultStuffFor(tp.thingDef) : null;
 
-                    Utilities.SpawnThingNoWipe(building, cell, map, Rotation.Opposite, respawnAfterLoad);
-                    childBuildings.Add(building);
+                        Building building = ThingMaker.MakeThing(tp.thingDef, stuff) as Building;
+                        building.SetFaction(this.Faction);
+
+                        // Give manager a specific bed:
+                        if (this.Type.Is(CarnBuildingType.Bedroom | CarnBuildingType.ManagerOnly))
+                        {
+                            if (building is Building_Bed && this.Faction != Faction.OfPlayer)
+                            {
+                                this.Faction.leader.ownership.ClaimBedIfNonMedical((Building_Bed)building);
+                            }
+                        }
+
+                        Utilities.SpawnThingNoWipe(building, cell, map, Rotation.Opposite, respawnAfterLoad);
+                        childBuildings.Add(building);
+                    }
                 }
             }
         }

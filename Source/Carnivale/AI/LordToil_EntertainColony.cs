@@ -28,6 +28,7 @@ namespace Carnivale
             base.Init();
         }
 
+
         public override void UpdateAllDuties()
         {
             foreach (Pawn pawn in this.lord.ownedPawns)

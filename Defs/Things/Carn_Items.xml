@@ -3,7 +3,7 @@
   
   <!-- BASES -->
   
-  <!-- Trade goods base -->
+  <!-- crate base -->
   <ThingDef Name="CrateBase" Abstract="True">
     <thingClass>ThingWithComps</thingClass>
     <category>Item</category>
@@ -51,6 +51,7 @@
     </recipeMaker>	
 	
 	<stuffProps>
+	  <stuffAdjective>Erroneous</stuffAdjective>
 	  <categories>
 	    <li>StuffedCrate</li>
 	  </categories>
@@ -58,16 +59,44 @@
 	  
   </ThingDef>
   
+  
+  <!-- Stall crate base -->
+  <ThingDef Name="StallCrateBase" ParentName="CrateBase" Abstract="True">
+    <recipeMaker>
+	  <workSpeedStat>WorkSpeedGlobal</workSpeedStat>
+	  <workSkill>Crafting</workSkill>
+	  <effectWorking>ConstructWood</effectWorking>
+	  <soundWorking>Interact_ConstructWood</soundWorking>
+	  <unfinishedThingDef>UnfinishedWeapon</unfinishedThingDef>
+	  
+	  <recipeUsers>
+	    <li>CraftingSpot</li>
+	  </recipeUsers>
+	  
+	</recipeMaker>
+	
+	<stuffProps>
+	  <stuffAdjective>Erroneous</stuffAdjective>
+	  <categories>
+	    <li>StuffedCrate</li>
+	  </categories>
+	</stuffProps>
+	
+  </ThingDef>
+  
+  
   <!-- END BASES -->
+  
+  
   
   
   <!-- Tent Crate: lodge tent -->
   <ThingDef ParentName="TentCrateBase" Name="TentCrateLodge">
     <defName>Carn_Crate_TentLodge</defName>
 	<label>crate, lodging tent</label>
-	<description>A crate filled with enough stakes, textile, rods, etcetera to construct a lodging tent.</description>
+	<description>A crate filled with enough stakes, textile, rods, etcetera to erect a lodging tent.</description>
 	<graphicData>
-	  <texPath>Carnivale/Items/TentCrate</texPath>
+	  <texPath>Carnivale/Items/Crate_Tent</texPath>
 	  <graphicClass>Graphic_Single</graphicClass>
 	  <!-- <shaderType>CutoutComplex</shaderType> -->
 	  <drawSize>(0.7,0.7)</drawSize>
@@ -98,13 +127,49 @@
   <ThingDef ParentName="TentCrateLodge">
     <defName>Carn_Crate_TentMan</defName>
 	<label>crate, management tent</label>
-	<description>A crate filled with enough stakes, textile, rods, etcetera to construct the manager's tent.</description>
+	<description>A crate filled with enough stakes, textile, rods, etcetera to erect the manager's tent.</description>
     
+	<graphicData>
+	  <texPath>Carnivale/Items/Crate_Tent_Small</texPath>
+	  <graphicClass>Graphic_Single</graphicClass>
+	  <!-- <shaderType>CutoutComplex</shaderType> -->
+	  <drawSize>(0.7,0.7)</drawSize>
+	</graphicData>
+	
 	<costStuffCount>275</costStuffCount>
 	<costList>
 	  <WoodLog>35</WoodLog>
 	  <Plasteel>5</Plasteel>
 	</costList>
+	
+  </ThingDef>
+  
+  
+  <!-- Stall crate -->
+  <ThingDef ParentName="StallCrateBase">
+    <defName>Carn_Crate_Stall</defName>
+	<label>crate, stall</label>
+	<description>A crate with all the materials needed to erect a stall.</description>
+	
+	<graphicData>
+	  <texPath>Carnivale/Items/Crate_Stall</texPath>
+	  <graphicClass>Graphic_Single</graphicClass>
+	  <drawSize>(0.7,0.7)</drawSize>
+	</graphicData>
+	
+	<stuffCategories>
+	  <li>Woody</li>
+	</stuffCategories>
+	
+	<costStuffCount>25</costStuffCount>
+	
+	<statBases>
+	  <MaxHitPoints>250</MaxHitPoints>
+	  <Flammability>1.5</Flammability>
+	  <WorkToMake>1100</WorkToMake>
+	  <Mass>10</Mass>
+	  <MarketValue>50</MarketValue>
+	</statBases>
 	
   </ThingDef>
   

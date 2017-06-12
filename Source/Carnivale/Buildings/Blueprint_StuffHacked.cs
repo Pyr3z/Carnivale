@@ -5,7 +5,7 @@ using Verse;
 
 namespace Carnivale
 {
-    public class Blueprint_Tent : Blueprint_Build
+    public class Blueprint_StuffHacked : Blueprint_Build
     {
         // Should only be used for stuffed tents.
 
@@ -16,7 +16,7 @@ namespace Carnivale
             ThingDef frameDef = this.def.entityDefToBuild.frameDef;
             Thing thing = (Thing)Activator.CreateInstance(frameDef.thingClass);
             thing.def = frameDef;
-            thing.SetStuffDirect(this.stuffToUse);
+            //thing.SetStuffDirect(this.stuffToUse);
             thing.PostMake();
             return thing;
         }

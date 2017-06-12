@@ -49,11 +49,11 @@ namespace Carnivale
         {
             base.Init();
 
-            LordToilData_Carnival data = Data; // more efficient to cast once?
-
             // Set radius for carnies to stick to
-            data.baseRadius = Mathf.InverseLerp(RADIUS_MIN, RADIUS_MAX, this.lord.ownedPawns.Count / 50f);
-            data.baseRadius = Mathf.Clamp(data.baseRadius, RADIUS_MIN, RADIUS_MAX);
+            Data.baseRadius = Mathf.InverseLerp(RADIUS_MIN, RADIUS_MAX, this.lord.ownedPawns.Count / 50f);
+            Data.baseRadius = Mathf.Clamp(Data.baseRadius, RADIUS_MIN, RADIUS_MAX);
+
+
 
             // Cache pawn roles (somewhat inefficient memory use, I know...)
             foreach (CarnivalRole role in Enum.GetValues(typeof(CarnivalRole)))
@@ -61,39 +61,52 @@ namespace Carnivale
                 List<Pawn> pawns = (from p in this.lord.ownedPawns
                                     where p.Is(role)
                                     select p).ToList();
-                data.pawnsWithRole.Add(role, pawns);
+                Data.pawnsWithRole.Add(role, pawns);
             }
 
 
-            int numCarnies = this.lord.ownedPawns.Count - data.pawnsWithRole[CarnivalRole.Carrier].Count;
-            
+            int numCarnies = this.lord.ownedPawns.Count - Data.pawnsWithRole[CarnivalRole.Carrier].Count;
+
+
+
             // Give workers tents (currently 8 carnies per tent), manager gets own tent
             int numBedTents = numCarnies > 9 ? Mathf.CeilToInt(numCarnies / 8f) : 1;
 
-            Thing tentCrate;
-            for (int i = 0; i < numBedTents; i++)
-            {
-                tentCrate = ThingMaker.MakeThing(_DefOf.Carn_Crate_TentLodge, Utilities.RandomSimplFabric());
-                // Makes them carry them instead of just having them in inventory:
-                data.TryHaveWorkerCarry(tentCrate);
-            }
+            bool errorFlag = Data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentLodge, numBedTents, Utilities.RandomSimpleFabricByValue()) != numBedTents;
 
-            if (data.pawnsWithRole[CarnivalRole.Manager].Count > 0)
+            if (Data.pawnsWithRole[CarnivalRole.Manager].Any())
             {
-                tentCrate = ThingMaker.MakeThing(_DefOf.Carn_Crate_TentMan, _DefOf.DevilstrandCloth);
-                if (!data.TryHaveWorkerCarry(tentCrate))
+                if (Data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentMan, 1, _DefOf.DevilstrandCloth) != 1)
                 {
-                    // If no workers to carry it, force the manager to carry it
-                    data.pawnsWithRole[CarnivalRole.Manager].First().carryTracker.TryStartCarry(tentCrate);
-                    data.availableCrates.Add(tentCrate);
+                    errorFlag = true;
                 }
             }
 
-            // Place blueprints
-            data.blueprints = BlueprintPlacer.PlaceCarnivalBlueprints(data.setupSpot, (int)(data.baseRadius / 1.5f), base.Map, this.lord.faction, data.availableCrates).ToList();
+            if (errorFlag)
+            {
+                Log.Error("Could not give enough tent crates to workers of " + this.lord.faction);
+            }
 
 
-            // Find spots for carriers to chill
+
+
+            // Give workers stalls
+
+            int numVendorStalls = Data.pawnsWithRole[CarnivalRole.Vendor].Count;
+            Data.TryHaveWorkerCarry(_DefOf.Carn_Crate_Stall, numVendorStalls, ThingDefOf.WoodLog);
+
+
+
+
+            // Place blueprints //
+            foreach (Blueprint bp in CarnivalBlueprints.PlaceCarnivalBlueprints(Data, base.Map, this.lord.faction))
+            {
+                Data.blueprints.Add(bp);
+            }
+
+
+
+            // Find spots for carriers to chill //
             TryFindCarrierSpots();
             
 
@@ -131,7 +144,7 @@ namespace Carnivale
             base.LordToilTick();
 
             // Check if everything is setup
-            if (this.lord.ticksInToil % 700 == 0)
+            if (this.lord.ticksInToil % 600 == 0)
             {
                 if (!(from frame in this.Frames
                       where !frame.Destroyed
@@ -307,6 +320,6 @@ namespace Carnivale
             }
         }
 
-
+        
     }
 }

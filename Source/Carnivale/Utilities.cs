@@ -20,9 +20,9 @@ namespace Carnivale
             _DefOf.WoolMuffalo
         };
 
-        public static ThingDef RandomSimplFabric()
+        public static ThingDef RandomSimpleFabricByValue()
         {
-            return simpleFabricStuffs.RandomElement();
+            return simpleFabricStuffs.RandomElementByWeight(d => d.BaseMarketValue);
         }
 
 
@@ -62,6 +62,11 @@ namespace Carnivale
             }
 
             CarnivalRole role = 0;
+
+            if (pawn.TraderKind != null)
+            {
+                return CarnivalRole.Vendor;
+            }
 
             switch (pawn.kindDef.defName)
             {
@@ -273,14 +278,14 @@ namespace Carnivale
             CellRect cellRect = CellRect.CenteredOn(entrySpot, 60);
             cellRect.ClipInsideMap(map);
             cellRect = cellRect.ContractedBy(14);
-            List<IntVec3> colonistThingsList = new List<IntVec3>();
-            foreach (Pawn current in map.mapPawns.FreeColonistsSpawned)
+            List<IntVec3> colonistThingsLocList = new List<IntVec3>();
+            foreach (Pawn pawn in map.mapPawns.FreeColonistsSpawned)
             {
-                colonistThingsList.Add(current.Position);
+                colonistThingsLocList.Add(pawn.Position);
             }
-            foreach (Building current2 in map.listerBuildings.allBuildingsColonistCombatTargets)
+            foreach (Building building in map.listerBuildings.allBuildingsColonistCombatTargets)
             {
-                colonistThingsList.Add(current2.Position);
+                colonistThingsLocList.Add(building.Position);
             }
             float minDistToColonySquared = minDistToColony * minDistToColony;
             IntVec3 randomCell;
@@ -296,9 +301,9 @@ namespace Carnivale
                             if (map.reachability.CanReachColony(randomCell))
                             {
                                 bool flag = false;
-                                for (int i = 0; i < colonistThingsList.Count; i++)
+                                for (int i = 0; i < colonistThingsLocList.Count; i++)
                                 {
-                                    if ((colonistThingsList[i] - randomCell).LengthHorizontalSquared < minDistToColonySquared)
+                                    if ((colonistThingsLocList[i] - randomCell).LengthHorizontalSquared < minDistToColonySquared)
                                     {
                                         flag = true;
                                         break;

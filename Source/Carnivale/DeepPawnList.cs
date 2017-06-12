@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Verse;
 
@@ -16,10 +17,32 @@ namespace Carnivale
             }
         }
 
+        public DeepPawnList Concat(DeepPawnList other)
+        {
+            List<Pawn> newList = new List<Pawn>();
+
+            foreach (Pawn p in this)
+            {
+                newList.Add(p);
+            }
+            foreach (Pawn p in other)
+            {
+                newList.Add(p);
+            }
+
+            return new DeepPawnList()
+            {
+                pawnsList = newList
+            };
+        }
+
         public void ExposeData()
         {
             Scribe_Collections.Look(ref pawnsList, "pawnsList", LookMode.Reference, new object[0]);
         }
+
+
+
 
         public IEnumerator<Pawn> GetEnumerator()
         {
@@ -29,6 +52,11 @@ namespace Carnivale
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable<Pawn>)pawnsList).GetEnumerator();
+        }
+
+        public static implicit operator List<Pawn>(DeepPawnList dpl)
+        {
+            return dpl.pawnsList;
         }
 
         public static implicit operator DeepPawnList(List<Pawn> list)

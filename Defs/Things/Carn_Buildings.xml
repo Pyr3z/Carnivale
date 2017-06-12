@@ -19,7 +19,7 @@
   <!-- Tent base -->
   <ThingDef Name="CarnTent" ParentName="CarnBuilding" Abstract="True">
     <thingClass>Carnivale.Building_Tent</thingClass>
-	<blueprintClass>Carnivale.Blueprint_Tent</blueprintClass>
+	<blueprintClass>Carnivale.Blueprint_StuffHacked</blueprintClass>
 	
 	<altitudeLayer>PawnUnused</altitudeLayer>
 	<pathCost>0</pathCost>
@@ -30,15 +30,23 @@
 	
 	<blockWind>true</blockWind>
 	<holdsRoof>true</holdsRoof>
+	<!--
 	<castEdgeShadows>true</castEdgeShadows>
+	<staticSunShadowHeight>1.0</staticSunShadowHeight>
+	-->
 	
 	<repairEffect>Sow</repairEffect>
+	<resourcesFractionWhenDeconstructed>1.0</resourcesFractionWhenDeconstructed>
 	
 	<damageMultipliers>
-      <li>
-        <damageDef>Bomb</damageDef>
-        <multiplier>2</multiplier>
-      </li>
+	  <li>
+	    <damageDef>Flame</damageDef>
+		<multiplier>2</multiplier>
+	  </li>
+	  <li>
+	    <damageDef>Burn</damageDef>
+		<multiplier>2</multiplier>
+	  </li>
     </damageMultipliers>
 	
 	<building>
@@ -53,7 +61,51 @@
   </ThingDef>
   
   
+  <!-- Stall base -->
+  <ThingDef Name="CarnStall" ParentName="CarnBuilding" Abstract="True">
+    <thingClass>Carnivale.Building_Stall</thingClass>
+	<blueprintClass>Carnivale.Blueprint_StuffHacked</blueprintClass>
+	
+	<altitudeLayer>PawnUnused</altitudeLayer>
+	<pathCost>15</pathCost>
+	<passability>Standable</passability>
+	
+	<rotatable>false</rotatable>
+	<blockWind>true</blockWind>
+	<holdsRoof>false</holdsRoof>
+	<castEdgeShadows>false</castEdgeShadows>
+	<resourcesFractionWhenDeconstructed>1.0</resourcesFractionWhenDeconstructed>
+	
+	<damageMultipliers>
+	  <li>
+	    <damageDef>Flame</damageDef>
+		<multiplier>2</multiplier>
+	  </li>
+	  <li>
+	    <damageDef>Burn</damageDef>
+		<multiplier>2</multiplier>
+	  </li>
+    </damageMultipliers>
+	
+	<building>
+	  <ignoreNeedsPower>true</ignoreNeedsPower>
+	</building>
+	
+	<placeWorkers>
+	  <li>PlaceWorker_NotUnderRoof</li>
+	</placeWorkers>
+	
+	<designationCategory>Structure</designationCategory>
+	
+  </ThingDef>
+  
+  
+  
   <!-- END BASES -->
+  
+  
+  
+  
   
   
   <!-- Tent small (manager tent) -->
@@ -85,7 +137,6 @@
 	<costList>
 	  <Carn_Crate_TentMan>1</Carn_Crate_TentMan>
 	</costList>
-	<resourcesFractionWhenDeconstructed>1.0</resourcesFractionWhenDeconstructed>
 	
 	<statBases>
 	  <MaxHitPoints>150</MaxHitPoints>
@@ -147,7 +198,6 @@
 	<costList>
 	  <Carn_Crate_TentLodge>1</Carn_Crate_TentLodge>
 	</costList>
-	<resourcesFractionWhenDeconstructed>1.0</resourcesFractionWhenDeconstructed>
 	
 	<statBases>
 	  <MaxHitPoints>250</MaxHitPoints>
@@ -188,26 +238,26 @@
   
   
   <!-- Tent huge -->
-  <ThingDef ParentName="CarnTent" Name="TentMedBed">
+  <ThingDef ParentName="CarnTent">
     <defName>Carn_TentHuge</defName>
 	
-	<label>prime tent</label>
-	<description>A gigantic tent intended to house the main event.</description>
+	<label>chapiteau</label>
+	<description>A large tent intended to house the main event.</description>
 	
 	<graphicData>
 	  <texPath>Carnivale/Building/TentHuge</texPath>
 	  <graphicClass>Graphic_Multi</graphicClass>
 	  <shaderType>CutoutComplex</shaderType>
-	  <drawSize>(7.15,7.15)</drawSize>
+	  <drawSize>(13,13)</drawSize>
 	  <allowFlip>false</allowFlip>
 	  
 	  <damageData>
-	    <rect>(1,1,6,6)</rect>
+	    <rect>(1,1,10,10)</rect>
 	  </damageData>
 	</graphicData>
 	
 	<size>(11,11)</size>
-	<interactionCellOffset>(0,0,-4)</interactionCellOffset>
+	<interactionCellOffset>(0,0,-6)</interactionCellOffset>
 	
 	<stuffCategories>
 	  <li>StuffedCrate</li>
@@ -216,14 +266,14 @@
 	<costList>
 	  <Carn_Crate_TentLodge>1</Carn_Crate_TentLodge>
 	</costList>
-	<resourcesFractionWhenDeconstructed>1.0</resourcesFractionWhenDeconstructed>
+	
 	
 	<statBases>
 	  <MaxHitPoints>250</MaxHitPoints>
 	  <Flammability>1.5</Flammability>
-	  <WorkToBuild>2500</WorkToBuild>
-	  <Mass>49</Mass> <!-- 7 * 7 -->
-	  <Beauty>75</Beauty>
+	  <WorkToBuild>3600</WorkToBuild>
+	  <Mass>121</Mass> <!-- 11 * 11 -->
+	  <Beauty>243</Beauty>
 	</statBases>
 	
 	<comps>
@@ -237,6 +287,50 @@
 			</placementOffsets>
 		  </li>
 		</interiorThings>
+	  </li>
+	</comps>
+	
+  </ThingDef>
+  
+  
+  <!-- Food stall -->
+  <ThingDef ParentName="CarnStall">
+    <defName>Carn_StallFood</defName>
+	
+	<label>food stall</label>
+	<description>Where the food at.</description>
+	
+	<graphicData>
+	  <texPath>Carnivale/Building/Stall_Food</texPath>
+	  <graphicClass>Graphic_Single</graphicClass>
+	  
+	  <drawSize>(3,3)</drawSize>
+	  <damageData>
+	    <rect>(0.2,0.2,2.8,0.8)</rect>
+	  </damageData>
+	</graphicData>
+	
+	<size>(3,3)</size>
+	
+	<stuffCategories>
+	  <li>StuffedCrate</li>
+	</stuffCategories>
+	
+	<costList>
+	  <Carn_Crate_Stall>1</Carn_Crate_Stall>
+	</costList>
+	
+	<statBases>
+	  <MaxHitPoints>250</MaxHitPoints>
+	  <Flammability>1.5</Flammability>
+	  <WorkToBuild>850</WorkToBuild>
+	  <Mass>10</Mass>
+	  <Beauty>12</Beauty>
+	</statBases>
+	
+	<comps>
+	  <li Class="Carnivale.CompProperties_CarnBuilding">
+	    <type>34</type> <!-- Stall | Vendor = 34 -->
 	  </li>
 	</comps>
 	

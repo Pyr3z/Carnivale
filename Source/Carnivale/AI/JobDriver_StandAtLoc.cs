@@ -45,6 +45,7 @@ namespace Carnivale
             stand.initAction = delegate
             {
                 stand.actor.pather.StopDead();
+                stand.actor.Rotation = Rot4.North;
             };
             stand.tickAction = delegate
             {

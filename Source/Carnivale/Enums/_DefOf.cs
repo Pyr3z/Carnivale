@@ -61,9 +61,13 @@ namespace Carnivale
 
 
 
+        public static ThingDef Carn_Crate_Stall;
+
         public static ThingDef Carn_Crate_TentLodge;
 
         public static ThingDef Carn_Crate_TentMan;
+
+        public static ThingDef Carn_StallFood;
 
         public static ThingDef Carn_TentMedBed;
 
@@ -85,6 +89,7 @@ namespace Carnivale
         public static ThingDef WoolCamel;
 
         public static ThingDef WoolAlpaca;
+
 
 
         public static TraderKindDef Carn_Trader_Food;

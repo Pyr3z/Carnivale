@@ -58,8 +58,8 @@ namespace Carnivale
         public bool TryHaveWorkerCarry(Thing thing)
         {
             Pawn worker;
-            // Try give pre-designated worker a thing, 6 attempts
-            for (int i = 0; i < 6; i++)
+            // Try give pre-designated worker a thing, 4 attempts
+            for (int i = 0; i < 4; i++)
             {
                 if (pawnsWithRole[CarnivalRole.Worker].TryRandomElement(out worker))
                 {
@@ -71,12 +71,13 @@ namespace Carnivale
                 }
             }
 
-            // Failing that, try giving a guard a thing, 2 attempts
-            for (int i = 0; i < 2; i++)
+            // Failing that, try giving anyone else a thing, 6 attempts
+            for (int i = 0; i < 6; i++)
             {
-                if (pawnsWithRole[CarnivalRole.Vendor].TryRandomElement(out worker))
+                if (pawnsWithRole[CarnivalRole.Any].TryRandomElement(out worker))
                 {
-                    if (!worker.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
+                    if (worker.Is(CarnivalRole.Carrier)
+                        || worker.story != null && !worker.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
                     {
                         if (worker.carryTracker.TryStartCarry(thing))
                         {
@@ -91,6 +92,23 @@ namespace Carnivale
             Log.Error("Found no suitable pawn to give " + thing + " to.");
 
             return false;
+        }
+
+        public int TryHaveWorkerCarry(ThingDef def, int count, ThingDef stuff = null)
+        {
+            // Returns how many things were successfully given.
+            int result = 0;
+
+            for (int i = 0; i < count; i++)
+            {
+                Thing newThing = ThingMaker.MakeThing(def, stuff);
+                if (TryHaveWorkerCarry(newThing))
+                {
+                    result++;
+                }
+            }
+
+            return result;
         }
 
 

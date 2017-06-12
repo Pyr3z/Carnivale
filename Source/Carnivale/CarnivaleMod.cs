@@ -31,8 +31,8 @@ namespace Carnivale
                                      select d)
             {
                 if (Prefs.DevMode)
-                    Log.Message("Successfully injected Frame_Tent type to implied FrameDef " + def.defName);
-                def.thingClass = typeof(Frame_Tent);
+                    Log.Message("Successfully injected stuff hack to implied FrameDef " + def.defName);
+                def.thingClass = typeof(Frame_StuffHacked);
                 def.tickerType = TickerType.Normal;
             }
 

@@ -3,7 +3,7 @@ using Verse;
 
 namespace Carnivale
 {
-    public class Frame_Tent : Frame
+    public class Frame_StuffHacked : Frame
     {
         [Unsaved]
         private bool ticked = false;
