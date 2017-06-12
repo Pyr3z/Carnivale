@@ -63,7 +63,7 @@
   
   <!-- Stall base -->
   <ThingDef Name="CarnStall" ParentName="CarnBuilding" Abstract="True">
-    <thingClass>Carnivale.Building_Stall</thingClass>
+    <thingClass>Carnivale.Building_Carn</thingClass>
 	<blueprintClass>Carnivale.Blueprint_StuffHacked</blueprintClass>
 	
 	<altitudeLayer>PawnUnused</altitudeLayer>
@@ -106,6 +106,59 @@
   
   
   
+  
+  <!-- Entry sign -->
+  <ThingDef ParentName="CarnStall">
+    <defName>Carn_SignEntry</defName>
+	
+	<label>entrance</label>
+	<description>Come one, come all! The Carnival is in town!</description>
+	
+	<graphicData>
+	  <texPath>Carnivale/Building/EntrySign</texPath>
+	  <graphicClass>Graphic_Multi</graphicClass>
+	  <shaderType>CutoutComplex</shaderType>
+	  <drawSize>(6,3)</drawSize>
+	  
+	  <damageData>
+	    <rect>(1.15,1.15,5.85,1.85)</rect>
+	  </damageData>
+	</graphicData>
+	
+	<size>(6,3)</size>
+	
+	<stuffCategories>
+	  <li>StuffedCrate</li>
+	</stuffCategories>
+	
+	<costList>
+	  <Carn_Crate_Stall>3</Carn_Crate_Stall>
+	</costList>
+	
+	<statBases>
+	  <MaxHitPoints>250</MaxHitPoints>
+	  <Flammability>1.5</Flammability>
+	  <WorkToBuild>850</WorkToBuild>
+	  <Mass>10</Mass>
+	  <Beauty>12</Beauty>
+	</statBases>
+	
+	<comps>
+	  <li Class="Carnivale.CompProperties_CarnBuilding">
+	    <type>128</type> <!-- Entrance = 128 -->
+		<interiorThings>
+		  <li>
+		    <thingDef>TorchLamp</thingDef>
+			<placementOffsets>
+			  <li>(-1,0,-1)</li>
+			  <li>(2,0,-1)</li>
+			</placementOffsets>
+		  </li>
+		</interiorThings>
+	  </li>
+	</comps>
+	
+  </ThingDef>
   
   
   <!-- Tent small (manager tent) -->
@@ -331,6 +384,15 @@
 	<comps>
 	  <li Class="Carnivale.CompProperties_CarnBuilding">
 	    <type>34</type> <!-- Stall | Vendor = 34 -->
+		<interiorThings>
+		  <li>
+		    <thingDef>TorchLamp</thingDef>
+			<placementOffsets>
+			  <li>(-1,0,-1)</li>
+			  <li>(1,0,-1)</li>
+			</placementOffsets>
+		  </li>
+		</interiorThings>
 	  </li>
 	</comps>
 	

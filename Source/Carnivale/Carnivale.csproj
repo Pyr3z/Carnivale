@@ -72,7 +72,6 @@
     <Compile Include="AI\LordToil_StrikeCarnival.cs" />
     <Compile Include="Buildings\Blueprint_StuffHacked.cs" />
     <Compile Include="Buildings\Building_Carn.cs" />
-    <Compile Include="Buildings\Building_Stall.cs" />
     <Compile Include="Buildings\Building_Tent.cs" />
     <Compile Include="Buildings\CompCarnBuilding.cs" />
     <Compile Include="Buildings\CompProperties_CarnBuilding.cs" />

@@ -13,6 +13,7 @@ namespace Carnivale
         Kitchen = 16,
         Vendor = 32,
         ManagerOnly = 64,
+        Entrance = 128,
         Any = 255
     }
 }

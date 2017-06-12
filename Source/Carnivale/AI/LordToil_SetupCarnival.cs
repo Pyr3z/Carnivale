@@ -70,6 +70,7 @@ namespace Carnivale
 
 
             // Give workers tents (currently 8 carnies per tent), manager gets own tent
+
             int numBedTents = numCarnies > 9 ? Mathf.CeilToInt(numCarnies / 8f) : 1;
 
             bool errorFlag = Data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentLodge, numBedTents, Utilities.RandomSimpleFabricByValue()) != numBedTents;
@@ -90,10 +91,10 @@ namespace Carnivale
 
 
 
-            // Give workers stalls
+            // Give workers stalls + entry sign
 
-            int numVendorStalls = Data.pawnsWithRole[CarnivalRole.Vendor].Count;
-            Data.TryHaveWorkerCarry(_DefOf.Carn_Crate_Stall, numVendorStalls, ThingDefOf.WoodLog);
+            int numStallCrates = Data.pawnsWithRole[CarnivalRole.Vendor].Count + _DefOf.Carn_SignEntry.costList.First().count;
+            Data.TryHaveWorkerCarry(_DefOf.Carn_Crate_Stall, numStallCrates, ThingDefOf.WoodLog);
 
 
 

@@ -41,7 +41,7 @@ namespace Carnivale
                 yield return stall;
             }
 
-            //yield return PlaceEntranceBlueprint(map);
+            yield return PlaceEntranceBlueprint(map);
         }
 
 
@@ -96,7 +96,7 @@ namespace Carnivale
                 }
                 else
                 {
-                    // Find new placement
+                    // Find new placement if next spot doesn't work
                     tentSpot = FindRandomPlacementFor(tentDef, rot, map);
                     i--;
                 }
@@ -172,8 +172,25 @@ namespace Carnivale
             }
         }
 
-        private static Blueprint_Build PlaceEntranceBlueprint(Map map)
+        private static Blueprint PlaceEntranceBlueprint(Map map)
         {
+            ThingDef entryDef = _DefOf.Carn_SignEntry;
+            Rot4 rot = default(Rot4);
+
+            if (CanPlaceBlueprintAt(entryCell, rot, entryDef, map))
+            {
+                RemovePlantsFor(entryCell, entryDef.size, rot, map);
+                return GenConstruct.PlaceBlueprintForBuild(entryDef, entryCell, map, rot, faction, null);
+            }
+
+            CellRect tryArea = CellRect.CenteredOn(entryCell, 8).ClipInsideRect(area);
+            IntVec3 entrySpot = FindRandomPlacementFor(entryDef, rot, map, tryArea);
+
+            if (entrySpot.IsValid)
+            {
+                RemovePlantsFor(entrySpot, entryDef.size, rot, map);
+                return GenConstruct.PlaceBlueprintForBuild(entryDef, entrySpot, map, rot, faction, null);
+            }
 
             return null;
         }
