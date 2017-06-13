@@ -44,19 +44,18 @@ namespace Carnivale
 
 
         // OVERRIDE METHODS //
+        
 
         public override void Init()
         {
             base.Init();
-
-            Data.SetCurrentLordToil(this);
 
             // Set radius for carnies to stick to
             Data.baseRadius = Mathf.InverseLerp(RADIUS_MIN, RADIUS_MAX, this.lord.ownedPawns.Count / RADIUS_MAX);
             Data.baseRadius = Mathf.Clamp(Data.baseRadius, RADIUS_MIN, RADIUS_MAX);
 
             // Set carnival area
-            Data.carnivalArea = CellRect.CenteredOn(Data.setupCentre, (int)Data.baseRadius).ClipInsideMap(Map);
+            Data.carnivalArea = CellRect.CenteredOn(Data.setupCentre, (int)Data.baseRadius).ClipInsideMap(Map).ContractedBy(10);
 
             // Set banner spot
             Data.bannerCell = CalculateBannerCell(Map);

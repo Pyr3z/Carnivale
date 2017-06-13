@@ -45,7 +45,8 @@ namespace Carnivale
                 }
             }
 
-            base.SpawnSetup(map, respawningAfterLoad); // constructs interior things and spawns everything
+            // constructs interior things and spawns everything:
+            base.SpawnSetup(map, respawningAfterLoad);
         }
 
 

@@ -274,7 +274,9 @@ namespace Carnivale
                 Log.Error("Tried to spawn " + thing + " but it's already spawned.");
                 return thing;
             }
+
             thing.SpawnSetup(map, respawningAfterLoad);
+
             if (thing.Spawned && thing.stackCount == 0)
             {
                 Log.Error("Spawned thing with 0 stackCount: " + thing);
@@ -289,10 +291,10 @@ namespace Carnivale
         public static IntVec3 FindCarnivalSetupPositionFrom(IntVec3 entrySpot, Map map)
         {
             // Copy of internal methods from RCellFinder (why the feck are they internal??)
-            for (int i = 70; i >= 20; i -= 10)
+            for (int minDistToColony = 70; minDistToColony >= 20; minDistToColony -= 10)
             {
                 IntVec3 result;
-                if (TryFindCarnivalSetupPosition(entrySpot, i, map, out result))
+                if (TryFindCarnivalSetupPosition(entrySpot, minDistToColony, map, out result))
                 {
                     return result;
                 }

@@ -38,9 +38,6 @@ namespace Carnivale
 
         // OVERRIDE METHODS //
 
-        public override void UpdateAllDuties()
-        {
-
-        }
+        
     }
 }

@@ -36,6 +36,11 @@ namespace Carnivale
             };
         }
 
+        public bool Remove(Pawn pawn)
+        {
+            return pawnsList.Remove(pawn);
+        }
+
         public void ExposeData()
         {
             Scribe_Collections.Look(ref pawnsList, "pawnsList", LookMode.Reference, new object[0]);

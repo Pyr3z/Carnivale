@@ -101,29 +101,11 @@ namespace Carnivale
             }
 
             PawnRelationUtility.Notify_PawnsSeenByPlayer(pawns, ref label, ref text, "LetterRelatedPawnsNeutralGroup".Translate(), true);
-            Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.Good, pawns[0], null);
+            Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.Good, parms.faction.leader, null);
 
-            //IntVec3 setupSpot;
-            //RCellFinder.TryFindRandomSpotJustOutsideColony(pawns[0], out setupSpot);
-            IntVec3 setupSpot = Utilities.FindCarnivalSetupPositionFrom(parms.spawnCenter, map);
+            IntVec3 setupCentre = Utilities.FindCarnivalSetupPositionFrom(parms.spawnCenter, map);
 
-            //List<Pawn> workersWithCrates = new List<Pawn>();
-            //List<Thing> availableCrates = new List<Thing>();
-
-            //foreach (Pawn p in pawns)
-            //{
-            //    foreach (Thing crate in from c in p.inventory.innerContainer
-            //                            where p.inventory.NotForSale(c)
-            //                                && c.def.tradeTags.Contains("Carn_Crate")
-            //                            select c)
-            //    {
-            //        workersWithCrates.Add(p);
-            //        availableCrates.Add(crate);
-            //    }
-            //}
-
-
-            LordJob_EntertainColony lordJob = new LordJob_EntertainColony(parms.faction, setupSpot, durationDays);
+            LordJob_EntertainColony lordJob = new LordJob_EntertainColony(parms.faction, setupCentre, durationDays);
             LordMaker.MakeNewLord(parms.faction, lordJob, map, pawns);
 
             return true;

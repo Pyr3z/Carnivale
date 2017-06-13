@@ -255,7 +255,15 @@ namespace Carnivale
                                 true,
                                 parms.inhabitants,
                                 false,
-                                null,
+                                delegate(Pawn p)
+                                {
+                                    if (p.kindDef == _DefOf.CarnyWorker)
+                                    {
+                                        return !p.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction);
+                                    }
+
+                                    return true;
+                                },
                                 null,
                                 null,
                                 null,

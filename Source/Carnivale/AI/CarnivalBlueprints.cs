@@ -30,23 +30,23 @@ namespace Carnivale
             bannerCell = data.bannerCell;
             availableCrates = data.availableCrates;
             stallUsers = ((List<Pawn>)data.pawnsWithRole[CarnivalRole.Vendor]).ListFullCopyOrNull();
-            faction = data.currentLordToil.lord.faction;
+            faction = data.lord.faction;
 
 
 
             // Do the blueprint thing
 
-            foreach (Blueprint tent in PlaceTentBlueprints(data.currentLordToil.Map))
+            foreach (Blueprint tent in PlaceTentBlueprints(data.lord.Map))
             {
                 yield return tent;
             }
 
-            foreach (Blueprint stall in PlaceStallBlueprints(data.currentLordToil.Map))
+            foreach (Blueprint stall in PlaceStallBlueprints(data.lord.Map))
             {
                 yield return stall;
             }
 
-            yield return PlaceEntranceBlueprint(data.currentLordToil.Map);
+            yield return PlaceEntranceBlueprint(data.lord.Map);
         }
 
 
@@ -217,7 +217,17 @@ namespace Carnivale
         private static bool CanPlaceBlueprintAt(IntVec3 spot, Rot4 rot, ThingDef def, Map map)
         {
             if (!spot.IsValid) return false;
-            return GenConstruct.CanPlaceBlueprintAt(def, spot, rot, map, false, null).Accepted;
+
+            // Cheaty cheaty
+            bool isEdifice = def.IsEdifice();
+
+            def.building.isEdifice = true;
+
+            bool result = GenConstruct.CanPlaceBlueprintAt(def, spot, rot, map, false, null).Accepted;
+
+            def.building.isEdifice = isEdifice;
+
+            return result;
         }
 
 

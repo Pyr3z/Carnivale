@@ -27,8 +27,6 @@ namespace Carnivale
         {
             base.Init();
 
-            Data.SetCurrentLordToil(this);
-
             // Calculate vendor positions
             // Deprecated! Spots are now assigned in one swoop when stall blueprints are placed
             // FindVendorSpots();
@@ -119,5 +117,7 @@ namespace Carnivale
                 }
             }
         }
+
+
     }
 }

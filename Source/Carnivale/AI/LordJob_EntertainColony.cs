@@ -10,7 +10,7 @@ namespace Carnivale
     {
         private Faction faction;
 
-        private IntVec3 setupSpot;
+        private IntVec3 setupCentre;
 
         private int durationTicks;
 
@@ -20,10 +20,10 @@ namespace Carnivale
             // Required for loading from save
         }
 
-        public LordJob_EntertainColony(Faction faction, IntVec3 setupSpot, int durationDays)
+        public LordJob_EntertainColony(Faction faction, IntVec3 setupCentre, int durationDays)
         {
             this.faction = faction;
-            this.setupSpot = setupSpot;
+            this.setupCentre = setupCentre;
             this.durationTicks = durationDays * GenDate.TicksPerDay;
         }
 
@@ -33,10 +33,10 @@ namespace Carnivale
         {
             StateGraph mainGraph = new StateGraph();
 
-            LordToilData_Carnival data = new LordToilData_Carnival(setupSpot);
+            LordToilData_Carnival data = new LordToilData_Carnival(lord, setupCentre);
 
             // Use LordJob_Travel as starting toil for this graph:
-            LordToil toil_MoveToSetup = mainGraph.AttachSubgraph(new LordJob_Travel(this.setupSpot).CreateGraph()).StartingToil;
+            LordToil toil_MoveToSetup = mainGraph.AttachSubgraph(new LordJob_Travel(this.setupCentre).CreateGraph()).StartingToil;
 
             // Next toil is to set up
             LordToil toil_Setup = new LordToil_SetupCarnival(data);
@@ -70,7 +70,7 @@ namespace Carnivale
             mainGraph.AddTransition(trans_FromRest);
 
             // Defend if attacked
-            LordToil toil_Defend = new LordToil_DefendCarnival(this.setupSpot, 30f);
+            LordToil toil_Defend = new LordToil_DefendCarnival(this.setupCentre, 30f);
             mainGraph.AddToil(toil_Defend);
 
             Transition trans_Defend = new Transition(toil_Setup, toil_Defend);
@@ -106,10 +106,10 @@ namespace Carnivale
 
             StateGraph mainGraph = new StateGraph();
 
-            LordToil lordToil_MoveToSetup = mainGraph.AttachSubgraph(new LordJob_Travel(this.setupSpot).CreateGraph()).StartingToil;
+            LordToil lordToil_MoveToSetup = mainGraph.AttachSubgraph(new LordJob_Travel(this.setupCentre).CreateGraph()).StartingToil;
             mainGraph.StartingToil = lordToil_MoveToSetup;
 
-            LordToil_DefendCarnival lordToil_Defend = new LordToil_DefendCarnival(this.setupSpot, 30f);
+            LordToil_DefendCarnival lordToil_Defend = new LordToil_DefendCarnival(this.setupCentre, 30f);
             mainGraph.AddToil(lordToil_Defend);
 
             LordToil_TakeWoundedGuest lordToil_TakeWounded = new LordToil_TakeWoundedGuest();
@@ -197,7 +197,7 @@ namespace Carnivale
         {
             Scribe_References.Look(ref this.faction, "faction", false);
 
-            Scribe_Values.Look(ref this.setupSpot, "setupSpot", default(IntVec3), false);
+            Scribe_Values.Look(ref this.setupCentre, "setupSpot", default(IntVec3), false);
 
             Scribe_Values.Look(ref this.durationTicks, "durationTicks", default(int), false);
 
