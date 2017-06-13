@@ -20,7 +20,7 @@
 	<label>tent wall</label>
 	<thingClass>Building</thingClass>
 	<category>Building</category>
-	<selectable>false</selectable>
+	<selectable>true</selectable>
 	
 	<graphicData>
 	  <texPath>Carnivale/Building/Invisible</texPath>
@@ -50,7 +50,7 @@
 	<label>tent flap</label>
 	<thingClass>Building_Door</thingClass>
 	<category>Building</category>
-	<selectable>false</selectable>
+	<selectable>true</selectable>
 	
 	<graphicData>
 	  <texPath>Carnivale/Building/Invisible</texPath>

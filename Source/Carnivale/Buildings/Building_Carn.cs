@@ -60,10 +60,8 @@ namespace Carnivale
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
-            base.SpawnSetup(map, respawningAfterLoad);
-
             // Build interior
-            if (Props.interiorThings.Any())
+            if (Props.interiorThings.Any() && !childBuildings.Any(b => b.def != _DefOf.Carn_TentDoor && b.def != _DefOf.Carn_TentWall))
             {
                 foreach (ThingPlacement tp in Props.interiorThings)
                 {
@@ -74,6 +72,8 @@ namespace Carnivale
 
                         Building building = ThingMaker.MakeThing(tp.thingDef, stuff) as Building;
                         building.SetFaction(this.Faction);
+                        building.Position = cell;
+                        building.Rotation = this.Rotation.Opposite;
 
                         // Give manager a specific bed:
                         if (this.Type.Is(CarnBuildingType.Bedroom | CarnBuildingType.ManagerOnly))
@@ -84,23 +84,38 @@ namespace Carnivale
                             }
                         }
 
-                        Utilities.SpawnThingNoWipe(building, cell, map, Rotation.Opposite, respawningAfterLoad);
                         childBuildings.Add(building);
+
+                        //Utilities.SpawnThingNoWipe(building, cell, map, Rotation.Opposite, respawningAfterLoad);
                     }
                 }
             }
+
+            foreach (var child in childBuildings)
+            {
+                // spawn here
+                if (!child.Spawned)
+                {
+                    Utilities.SpawnThingNoWipe(child, map, respawningAfterLoad);
+                }
+            }
+
+            base.SpawnSetup(map, respawningAfterLoad);
         }
 
 
         public override void DeSpawn()
         {
-            Utilities.SetRoofFor(OccupiedRect, this.Map, null);
             foreach (var child in childBuildings)
             {
-                // Potential null-pointer if child is destroyed elsewhere?
-                child.Destroy();
+                if (child.Destroyed)
+                {
+                    childBuildings.Remove(child);
+                    continue;
+                }
+                child.DeSpawn();
             }
-            childBuildings.Clear();
+            //childBuildings.Clear();
 
             base.DeSpawn();
         }
@@ -110,10 +125,11 @@ namespace Carnivale
         public override void ExposeData()
         {
             base.ExposeData();
-            if (Scribe.mode == LoadSaveMode.Saving)
+            if (Scribe.mode != LoadSaveMode.Inactive)
             {
-                this.childBuildings.RemoveAll(c => c.Destroyed);
+                this.childBuildings.RemoveAll(c => c == null || c.Destroyed);
             }
+
             Scribe_Collections.Look(ref this.childBuildings, "childBuildings", LookMode.Reference);
         }
     }

@@ -26,7 +26,7 @@ namespace Carnivale
         {
             get
             {
-                return Data.setupSpot;
+                return Data.setupCentre;
             }
         }
 

@@ -250,6 +250,40 @@ namespace Carnivale
             return thing;
         }
 
+        public static Thing SpawnThingNoWipe(Thing thing, Map map, bool respawningAfterLoad)
+        {
+            if (map == null)
+            {
+                Log.Error("Tried to spawn " + thing + " in a null map.");
+                return null;
+            }
+            if (!thing.Position.InBounds(map))
+            {
+                Log.Error(string.Concat(new object[]
+                {
+                    "Tried to spawn ",
+                    thing,
+                    " out of bounds at ",
+                    thing.Position,
+                    "."
+                }));
+                return null;
+            }
+            if (thing.Spawned)
+            {
+                Log.Error("Tried to spawn " + thing + " but it's already spawned.");
+                return thing;
+            }
+            thing.SpawnSetup(map, respawningAfterLoad);
+            if (thing.Spawned && thing.stackCount == 0)
+            {
+                Log.Error("Spawned thing with 0 stackCount: " + thing);
+                thing.Destroy(DestroyMode.Vanish);
+                return null;
+            }
+            return thing;
+        }
+
         
 
         public static IntVec3 FindCarnivalSetupPositionFrom(IntVec3 entrySpot, Map map)

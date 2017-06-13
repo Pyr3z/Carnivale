@@ -39,7 +39,7 @@ namespace Carnivale
 
         public LordToil_SetupCarnival(LordToilData_Carnival data)
         {
-            this.data = data.SetCurrentLordToil(this);
+            this.data = data;
         }
 
 
@@ -49,11 +49,17 @@ namespace Carnivale
         {
             base.Init();
 
+            Data.SetCurrentLordToil(this);
+
             // Set radius for carnies to stick to
-            Data.baseRadius = Mathf.InverseLerp(RADIUS_MIN, RADIUS_MAX, this.lord.ownedPawns.Count / 50f);
+            Data.baseRadius = Mathf.InverseLerp(RADIUS_MIN, RADIUS_MAX, this.lord.ownedPawns.Count / RADIUS_MAX);
             Data.baseRadius = Mathf.Clamp(Data.baseRadius, RADIUS_MIN, RADIUS_MAX);
 
+            // Set carnival area
+            Data.carnivalArea = CellRect.CenteredOn(Data.setupCentre, (int)Data.baseRadius).ClipInsideMap(Map);
 
+            // Set banner spot
+            Data.bannerCell = CalculateBannerCell(Map);
 
             // Cache pawn roles (somewhat inefficient memory use, I know...)
             foreach (CarnivalRole role in Enum.GetValues(typeof(CarnivalRole)))
@@ -99,7 +105,7 @@ namespace Carnivale
 
 
             // Place blueprints //
-            foreach (Blueprint bp in CarnivalBlueprints.PlaceCarnivalBlueprints(Data, base.Map, this.lord.faction))
+            foreach (Blueprint bp in CarnivalBlueprints.PlaceCarnivalBlueprints(Data))
             {
                 Data.blueprints.Add(bp);
             }
@@ -120,7 +126,7 @@ namespace Carnivale
             {
                 if (pawn.Is(CarnivalRole.Worker))
                 {
-                    DutyUtility.BuildCarnival(pawn, Data.setupSpot, Data.baseRadius);
+                    DutyUtility.BuildCarnival(pawn, Data.setupCentre, Data.baseRadius);
                     continue;
                 }
 
@@ -140,7 +146,7 @@ namespace Carnivale
                     continue;
                 }
 
-                DutyUtility.Meander(pawn, Data.setupSpot);
+                DutyUtility.Meander(pawn, Data.setupCentre);
             }
         }
 
@@ -227,13 +233,13 @@ namespace Carnivale
             int countCarriers = Data.pawnsWithRole[CarnivalRole.Carrier].Count;
             int countSpots = 0;
             List<IntVec3> spots = new List<IntVec3>();
-            CellRect rect = CellRect.CenteredOn(Data.setupSpot, (int)(Data.baseRadius / 2f));
+            CellRect searchRect = CellRect.CenteredOn(Data.setupCentre, (int)(Data.baseRadius / 2f));
 
             for (int i = 0; i < 50; i++)
             {
                 // Try to find initial spot
-                IntVec3 randomCell = rect.RandomCell;
-                if (Map.reachability.CanReach(randomCell, Data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
+                IntVec3 randomCell = searchRect.RandomCell;
+                if (Map.reachability.CanReach(randomCell, Data.setupCentre, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
                     && !randomCell.GetThingList(this.Map).Any(t => t is Blueprint))
                 {
                     //Data.carrierSpots.Add(randomCell); // Got rid of this field in favour of Data.rememberedPositions
@@ -285,7 +291,7 @@ namespace Carnivale
                 newSpot += offset;
 
                 if (!spots.Contains(newSpot)
-                    && Map.reachability.CanReach(newSpot, Data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
+                    && Map.reachability.CanReach(newSpot, Data.setupCentre, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
                     && !newSpot.GetThingList(this.Map).Any(t => t is Blueprint))
                 {
                     // Spot found
@@ -310,13 +316,13 @@ namespace Carnivale
                     if (spots.Any())
                     {
                         // Try to find next spots close to other spots
-                        rect = CellRect.CenteredOn(spots.Average(), 6);
+                        searchRect = CellRect.CenteredOn(spots.Average(), 6);
                     }
 
                     for (int i = 0; i < 50; i++)
                     {
-                        IntVec3 randomCell = rect.RandomCell;
-                        if (Map.reachability.CanReach(randomCell, Data.setupSpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
+                        IntVec3 randomCell = searchRect.RandomCell;
+                        if (Map.reachability.CanReach(randomCell, Data.setupCentre, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
                             && !randomCell.GetThingList(this.Map).Any(t => t is Blueprint))
                         {
                             //Data.carrierSpots.Add(randomCell);
@@ -346,6 +352,54 @@ namespace Carnivale
             Error:
             Log.Error("Not enough spots found for carnival carriers to chill.");
             return false;
+        }
+
+
+        private IntVec3 CalculateBannerCell(Map map)
+        {
+            IntVec3 colonistPos = map.listerBuildings.allBuildingsColonist.NullOrEmpty() ?
+                map.mapPawns.FreeColonistsSpawned.RandomElement().Position : map.listerBuildings.allBuildingsColonist.RandomElement().Position;
+
+            IntVec3 bannerCell = Data.carnivalArea.ClosestCellTo(colonistPos);
+
+            if (map.roadInfo.roadEdgeTiles.Any())
+            {
+                // Prefer to place banner on nearest road
+                CellRect searchArea = CellRect.CenteredOn(bannerCell, 70).ClipInsideMap(map);
+                float distance = 999999;
+                IntVec3 roadCell = IntVec3.Invalid;
+
+                foreach (var cell in searchArea)
+                {
+                    if (cell.GetTerrain(map).HasTag("Road") && !cell.InNoBuildEdgeArea(map))
+                    {
+                        float tempDist = bannerCell.DistanceTo(cell);
+                        if (tempDist < distance)
+                        {
+                            distance = tempDist;
+                            roadCell = cell;
+                        }
+                    }
+                }
+
+                if (roadCell.IsValid)
+                {
+                    // Found the edge of a road, try to centre it
+                    IntVec3 centredCell = roadCell + IntVec3.East * 2;
+                    if (centredCell.GetTerrain(map).HasTag("Road") && !centredCell.InNoBuildEdgeArea(map))
+                    {
+                        roadCell = centredCell;
+                    }
+                    else
+                    {
+                        roadCell += IntVec3.West * 2;
+                    }
+
+                    bannerCell = roadCell;
+                }
+            }
+
+            return bannerCell;
         }
 
         

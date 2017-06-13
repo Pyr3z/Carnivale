@@ -14,6 +14,8 @@
     <repairEffect>Repair</repairEffect>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
     <filthLeaving>BuildingRubble</filthLeaving>
+	<scatterableOnMapGen>false</scatterableOnMapGen>
+	<isSaveable>true</isSaveable>
   </ThingDef>
   
   <!-- Tent base -->
@@ -50,6 +52,7 @@
     </damageMultipliers>
 	
 	<building>
+	  <isEdifice>false</isEdifice>
 	  <ignoreNeedsPower>true</ignoreNeedsPower>
 	</building>
 	
@@ -88,6 +91,7 @@
     </damageMultipliers>
 	
 	<building>
+	  <isEdifice>false</isEdifice>
 	  <ignoreNeedsPower>true</ignoreNeedsPower>
 	</building>
 	

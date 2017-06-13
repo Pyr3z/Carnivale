@@ -17,7 +17,7 @@ namespace Carnivale
         public LordToil_EntertainColony(LordToilData_Carnival data)
         {
             // Need to clone the data structure?
-            this.data = data.SetCurrentLordToil(this);
+            this.data = data;
         }
 
 
@@ -26,6 +26,8 @@ namespace Carnivale
         public override void Init()
         {
             base.Init();
+
+            Data.SetCurrentLordToil(this);
 
             // Calculate vendor positions
             // Deprecated! Spots are now assigned in one swoop when stall blueprints are placed
@@ -46,10 +48,11 @@ namespace Carnivale
 
                         break;
                     case CarnivalRole.Vendor:
+                    case CarnivalRole.Carrier:
                         DutyUtility.HitchToSpot(pawn, Data.rememberedPositions[pawn]);
                         break;
                     default:
-                        DutyUtility.Meander(pawn, Data.setupSpot);
+                        DutyUtility.Meander(pawn, Data.setupCentre);
                         break;
                 }
             }
@@ -67,7 +70,7 @@ namespace Carnivale
                 if (vendor.TraderKind == null)
                 {
                     Log.Warning("Detected a carny vendor without a TraderKind. What gives?");
-                    Data.rememberedPositions.Add(vendor, Data.setupSpot);
+                    Data.rememberedPositions.Add(vendor, Data.setupCentre);
                     continue;
                 }
 
@@ -88,7 +91,7 @@ namespace Carnivale
                 else
                 {
                     Log.Warning("Detected a carny vendor without a carnival TraderKind. WTF");
-                    Data.rememberedPositions.Add(vendor, Data.setupSpot);
+                    Data.rememberedPositions.Add(vendor, Data.setupCentre);
                     continue;
                 }
 
@@ -112,7 +115,7 @@ namespace Carnivale
                 else
                 {
                     Log.Warning("Could not find a valid stall for " + vendor.NameStringShort);
-                    Data.rememberedPositions.Add(vendor, Data.setupSpot);
+                    Data.rememberedPositions.Add(vendor, Data.setupCentre);
                 }
             }
         }

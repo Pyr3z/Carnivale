@@ -10,9 +10,13 @@ namespace Carnivale
     {
         public LordToil currentLordToil;
 
-        public IntVec3 setupSpot;
+        public IntVec3 setupCentre;
+
+        public IntVec3 bannerCell;
 
         public float baseRadius;
+
+        public CellRect carnivalArea;
 
         public Dictionary<CarnivalRole, DeepPawnList> pawnsWithRole = new Dictionary<CarnivalRole, DeepPawnList>();
 
@@ -28,7 +32,7 @@ namespace Carnivale
 
         public LordToilData_Carnival(IntVec3 setupSpot)
         {
-            this.setupSpot = setupSpot;
+            this.setupCentre = setupSpot;
         }
 
         public LordToilData_Carnival Clone()
@@ -45,7 +49,7 @@ namespace Carnivale
 
             LordToilData_Carnival clone = new LordToilData_Carnival();
             clone.currentLordToil = this.currentLordToil;
-            clone.setupSpot = this.setupSpot;
+            clone.setupCentre = this.setupCentre;
             clone.baseRadius = this.baseRadius;
             clone.pawnsWithRole = this.pawnsWithRole;
             clone.rememberedPositions = this.rememberedPositions;
@@ -99,7 +103,7 @@ namespace Carnivale
             }
 
             // Failing that, try spawning the thing in the centre of the setup area
-            if (GenPlace.TryPlaceThing(thing, setupSpot, currentLordToil.Map, ThingPlaceMode.Near, null))
+            if (GenPlace.TryPlaceThing(thing, setupCentre, currentLordToil.Map, ThingPlaceMode.Near, null))
             {
                 availableCrates.Add(thing);
                 return true;
@@ -133,8 +137,10 @@ namespace Carnivale
         {
             Scribe_Values.Look(ref this.currentLordToil, "currentLordToil", default(LordToil), false);
 
-            Scribe_Values.Look(ref this.setupSpot, "setupSpot", default(IntVec3), false);
+            Scribe_Values.Look(ref this.setupCentre, "setupCentre", default(IntVec3), false);
+            Scribe_Values.Look(ref this.bannerCell, "bannerCell", default(IntVec3), false);
             Scribe_Values.Look(ref this.baseRadius, "baseRadius", 0f, false);
+            Scribe_Values.Look(ref this.carnivalArea, "carnivalArea", default(CellRect), false);
 
             Scribe_Collections.Look(ref this.pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
             Scribe_Collections.Look(ref this.rememberedPositions, "rememberedPositions", LookMode.Reference, LookMode.Value);
