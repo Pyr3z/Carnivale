@@ -44,30 +44,6 @@ namespace Carnivale
             this.setupCentre = setupCentre;
         }
 
-        public LordToilData_Carnival Clone()
-        {
-            // Cloning might be necessary due to the way that
-            // LordToilData is saved, and I want to be able to
-            // use the same data structure for each toil.
-            // Shrug. Maybe it's not necessary.
-
-            // Also, no need to worry about not deep-cloning each field
-            // (especally data structures like lists), because if they
-            // are changed by one toil, the change should be the same in
-            // the next toil.
-
-            LordToilData_Carnival clone = new LordToilData_Carnival();
-            clone.lord = this.lord;
-            clone.setupCentre = this.setupCentre;
-            clone.baseRadius = this.baseRadius;
-            clone.pawnsWithRole = this.pawnsWithRole;
-            clone.rememberedPositions = this.rememberedPositions;
-            clone.availableCrates = this.availableCrates;
-            clone.blueprints = this.blueprints;
-
-            return clone;
-        }
-
 
         public bool TryHaveWorkerCarry(Thing thing)
         {
@@ -176,13 +152,12 @@ namespace Carnivale
 
             Scribe_Collections.Look(ref this.pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
 
+            Scribe_Collections.Look(ref this.rememberedPositions, "rememberedPositions", LookMode.Reference, LookMode.Value, ref pawnWorkingList, ref vec3WorkingList);
+
             Scribe_Collections.Look(ref this.availableCrates, "availableCrates", LookMode.Reference, new object[0]);
 
             Scribe_Collections.Look(ref this.blueprints, "blueprints", LookMode.Reference, new object[0]);
 
-            
-
-            Scribe_Collections.Look(ref this.rememberedPositions, "rememberedPositions", LookMode.Reference, LookMode.Value, ref pawnWorkingList, ref vec3WorkingList);
         }
 
 

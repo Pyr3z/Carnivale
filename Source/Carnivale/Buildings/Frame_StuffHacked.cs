@@ -23,18 +23,23 @@ namespace Carnivale
             {
                 if (!stuffHacked)
                 {
-                    ThingDef stuff = resourceContainer[0].Stuff;
+                    int index = resourceContainer.FirstIndexOf(t => t.Stuff != null);
 
-                    this.SetStuffDirect(stuff);
+                    if (index < resourceContainer.Count)
+                    {
+                        ThingDef stuff = resourceContainer[index].Stuff;
 
-                    Thing dummyThingToSatisfyTheGods = ThingMaker.MakeThing(stuff);
+                        this.SetStuffDirect(stuff);
 
-                    this.resourceContainer.TryAdd(dummyThingToSatisfyTheGods);
+                        Thing dummyThingToSatisfyTheGods = ThingMaker.MakeThing(stuff);
 
-                    stuffHacked = true;
+                        this.resourceContainer.TryAdd(dummyThingToSatisfyTheGods);
+
+                        stuffHacked = true;
+                    }
                 }
 
-                if (this.factionInt != Faction.OfPlayer)
+                if (!lordToilDataHacked && this.factionInt != Faction.OfPlayer)
                 {
                     LordToilData_Carnival data = (LordToilData_Carnival)this.Map.lordManager.lords.FindLast(l => l.faction == this.factionInt).CurLordToil.data;
 
@@ -56,6 +61,11 @@ namespace Carnivale
                     lordToilDataHacked = true;
                 }
             }
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
         }
 
     }
