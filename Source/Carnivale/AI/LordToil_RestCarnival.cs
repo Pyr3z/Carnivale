@@ -14,9 +14,9 @@ namespace Carnivale
 
         public LordToil_RestCarnival() { }
 
-        public LordToil_RestCarnival(LordToilData_Carnival data)
+        public LordToil_RestCarnival(CarnivalInfo info)
         {
-            this.data = data;
+            this.data = new LordToilData_Carnival(info);
         }
 
 

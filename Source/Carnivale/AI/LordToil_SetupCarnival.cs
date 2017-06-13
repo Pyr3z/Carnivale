@@ -17,7 +17,6 @@ namespace Carnivale
 
         private const float RADIUS_MAX = 50f;
 
-
         private IEnumerable<Frame> Frames
         {
             get
@@ -37,9 +36,9 @@ namespace Carnivale
 
         public LordToil_SetupCarnival() { }
 
-        public LordToil_SetupCarnival(LordToilData_Carnival data)
+        public LordToil_SetupCarnival(CarnivalInfo data)
         {
-            this.data = data;
+            this.data = new LordToilData_Setup(data);
         }
 
 
@@ -50,39 +49,28 @@ namespace Carnivale
         {
             base.Init();
 
-            // Set radius for carnies to stick to
-            Data.baseRadius = Mathf.InverseLerp(RADIUS_MIN, RADIUS_MAX, this.lord.ownedPawns.Count / RADIUS_MAX);
-            Data.baseRadius = Mathf.Clamp(Data.baseRadius, RADIUS_MIN, RADIUS_MAX);
-
-            // Set carnival area
-            Data.carnivalArea = CellRect.CenteredOn(Data.setupCentre, (int)Data.baseRadius).ClipInsideMap(Map).ContractedBy(10);
-
-            // Set banner spot
-            Data.bannerCell = CalculateBannerCell(Map);
+            LordToilData_Setup data = (LordToilData_Setup)Data;
 
             // Cache pawn roles (somewhat inefficient memory use, I know...)
             foreach (CarnivalRole role in Enum.GetValues(typeof(CarnivalRole)))
             {
-                List<Pawn> pawns = (from p in this.lord.ownedPawns
-                                    where p.Is(role)
-                                    select p).ToList();
-                Data.pawnsWithRole.Add(role, pawns);
+                List<Pawn> pawns = (from p in Info.currentLord.ownedPawns
+                                                     where p.Is(role)
+                                                     select p).ToList();
+                Info.pawnsWithRole.Add(role, pawns);
             }
-
-
-            int numCarnies = this.lord.ownedPawns.Count - Data.pawnsWithRole[CarnivalRole.Carrier].Count;
-
-
 
             // Give workers tents (currently 8 carnies per tent), manager gets own tent
 
+            int numCarnies = this.lord.ownedPawns.Count - Info.pawnsWithRole[CarnivalRole.Carrier].Count;
+
             int numBedTents = numCarnies > 9 ? Mathf.CeilToInt(numCarnies / 8f) : 1;
 
-            bool errorFlag = Data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentLodge, numBedTents, Utilities.RandomSimpleFabricByValue()) != numBedTents;
+            bool errorFlag = data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentLodge, numBedTents, Utilities.RandomSimpleFabricByValue()) != numBedTents;
 
-            if (Data.pawnsWithRole[CarnivalRole.Manager].Any())
+            if (Info.pawnsWithRole[CarnivalRole.Manager].Any())
             {
-                if (Data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentMan, 1, _DefOf.DevilstrandCloth) != 1)
+                if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentMan, 1, _DefOf.DevilstrandCloth) != 1)
                 {
                     errorFlag = true;
                 }
@@ -98,20 +86,20 @@ namespace Carnivale
 
             // Give workers stalls + entry sign
 
-            int numStallCrates = Data.pawnsWithRole[CarnivalRole.Vendor].Count + _DefOf.Carn_SignEntry.costList.First().count;
-            Data.TryHaveWorkerCarry(_DefOf.Carn_Crate_Stall, numStallCrates, ThingDefOf.WoodLog);
+            int numStallCrates = Info.pawnsWithRole[CarnivalRole.Vendor].Count + _DefOf.Carn_SignEntry.costList.First().count;
+            data.TryHaveWorkerCarry(_DefOf.Carn_Crate_Stall, numStallCrates, ThingDefOf.WoodLog);
 
 
 
-            // Place blueprints //
-            foreach (Blueprint bp in CarnivalBlueprints.PlaceCarnivalBlueprints(Data))
+            // Place blueprints
+            foreach (Blueprint bp in CarnivalBlueprints.PlaceCarnivalBlueprints(Info))
             {
-                Data.blueprints.Add(bp);
+                data.blueprints.Add(bp);
             }
 
 
 
-            // Find spots for carriers to chill //
+            // Find spots for carriers to chill
             TryFindCarrierSpots();
             
 
@@ -125,15 +113,15 @@ namespace Carnivale
             {
                 if (pawn.Is(CarnivalRole.Worker))
                 {
-                    DutyUtility.BuildCarnival(pawn, Data.setupCentre, Data.baseRadius);
+                    DutyUtility.BuildCarnival(pawn, Info.setupCentre, Info.baseRadius);
                     continue;
                 }
 
                 if (pawn.Is(CarnivalRole.Carrier))
                 {
-                    IntVec3 pos = Data.rememberedPositions[pawn];
+                    IntVec3 pos;
 
-                    if (pos.IsValid)
+                    if (Info.rememberedPositions.TryGetValue(pawn, out pos))
                     {
                         DutyUtility.HitchToSpot(pawn, pos);
                     }
@@ -145,7 +133,7 @@ namespace Carnivale
                     continue;
                 }
 
-                DutyUtility.Meander(pawn, Data.setupCentre);
+                DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
             }
         }
 
@@ -162,7 +150,8 @@ namespace Carnivale
                       where !frame.Destroyed
                       select frame).Any())
                 {
-                    if (!(from blue in Data.blueprints
+                    LordToilData_Setup data = (LordToilData_Setup)Data;
+                    if (!(from blue in data.blueprints
                           where !blue.Destroyed
                           select blue).Any())
                     {
@@ -205,7 +194,7 @@ namespace Carnivale
         {
             if (frame.Faction == this.lord.faction && newBlueprint != null)
             {
-                this.Data.blueprints.Add(newBlueprint);
+                ((LordToilData_Setup)Data).blueprints.Add(newBlueprint);
             }
         }
 
@@ -213,7 +202,8 @@ namespace Carnivale
         public override void Cleanup()
         {
             // Do more cleanup here?
-            Data.blueprints.RemoveAll(blue => blue.Destroyed);
+            LordToilData_Setup data = (LordToilData_Setup)Data;
+            data.blueprints.RemoveAll(blue => blue.Destroyed);
             //foreach (Blueprint b in Data.blueprints)
             //{
             //    b.Destroy(DestroyMode.Cancel);
@@ -229,19 +219,18 @@ namespace Carnivale
         {
             // Should only be called right after blueprint creation
 
-            int countCarriers = Data.pawnsWithRole[CarnivalRole.Carrier].Count;
+            int countCarriers = Info.pawnsWithRole[CarnivalRole.Carrier].Count;
             int countSpots = 0;
             List<IntVec3> spots = new List<IntVec3>();
-            CellRect searchRect = CellRect.CenteredOn(Data.setupCentre, (int)(Data.baseRadius / 2f));
+            CellRect searchRect = CellRect.CenteredOn(Info.setupCentre, (int)(Info.baseRadius / 2f));
 
             for (int i = 0; i < 50; i++)
             {
                 // Try to find initial spot
                 IntVec3 randomCell = searchRect.RandomCell;
-                if (Map.reachability.CanReach(randomCell, Data.setupCentre, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
+                if (Map.reachability.CanReach(randomCell, Info.setupCentre, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
                     && !randomCell.GetThingList(this.Map).Any(t => t is Blueprint))
                 {
-                    //Data.carrierSpots.Add(randomCell); // Got rid of this field in favour of Data.rememberedPositions
                     spots.Add(randomCell);
                     countSpots++;
                     break;
@@ -290,11 +279,10 @@ namespace Carnivale
                 newSpot += offset;
 
                 if (!spots.Contains(newSpot)
-                    && Map.reachability.CanReach(newSpot, Data.setupCentre, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
+                    && Map.reachability.CanReach(newSpot, Info.setupCentre, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
                     && !newSpot.GetThingList(this.Map).Any(t => t is Blueprint))
                 {
                     // Spot found
-                    //Data.carrierSpots.Add(newSpot);
                     spots.Add(newSpot);
                     if (countSpots % 4 == 0)
                     {
@@ -315,16 +303,15 @@ namespace Carnivale
                     if (spots.Any())
                     {
                         // Try to find next spots close to other spots
-                        searchRect = CellRect.CenteredOn(spots.Average(), 6);
+                        searchRect = CellRect.CenteredOn(spots.Average(), 8);
                     }
 
                     for (int i = 0; i < 50; i++)
                     {
                         IntVec3 randomCell = searchRect.RandomCell;
-                        if (Map.reachability.CanReach(randomCell, Data.setupCentre, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
+                        if (Map.reachability.CanReach(randomCell, Info.setupCentre, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly)
                             && !randomCell.GetThingList(this.Map).Any(t => t is Blueprint))
                         {
-                            //Data.carrierSpots.Add(randomCell);
                             spots.Add(randomCell);
                             countSpots++;
                             break;
@@ -342,7 +329,7 @@ namespace Carnivale
                 for (int i = 0; i < countSpots; i++)
                 {
                     // Add calculated spots to rememberedPositions
-                    Data.rememberedPositions.Add(Data.pawnsWithRole[CarnivalRole.Carrier][i], spots[i]);
+                    Info.rememberedPositions.Add(Info.pawnsWithRole[CarnivalRole.Carrier][i], spots[i]);
                 }
                 return true;
             }
@@ -353,53 +340,6 @@ namespace Carnivale
             return false;
         }
 
-
-        private IntVec3 CalculateBannerCell(Map map)
-        {
-            IntVec3 colonistPos = map.listerBuildings.allBuildingsColonist.NullOrEmpty() ?
-                map.mapPawns.FreeColonistsSpawned.RandomElement().Position : map.listerBuildings.allBuildingsColonist.RandomElement().Position;
-
-            IntVec3 bannerCell = Data.carnivalArea.ClosestCellTo(colonistPos);
-
-            if (map.roadInfo.roadEdgeTiles.Any())
-            {
-                // Prefer to place banner on nearest road
-                CellRect searchArea = CellRect.CenteredOn(bannerCell, 70).ClipInsideMap(map);
-                float distance = 999999;
-                IntVec3 roadCell = IntVec3.Invalid;
-
-                foreach (var cell in searchArea)
-                {
-                    if (cell.GetTerrain(map).HasTag("Road") && !cell.InNoBuildEdgeArea(map))
-                    {
-                        float tempDist = bannerCell.DistanceTo(cell);
-                        if (tempDist < distance)
-                        {
-                            distance = tempDist;
-                            roadCell = cell;
-                        }
-                    }
-                }
-
-                if (roadCell.IsValid)
-                {
-                    // Found the edge of a road, try to centre it
-                    IntVec3 centredCell = roadCell + IntVec3.East * 2;
-                    if (centredCell.GetTerrain(map).HasTag("Road") && !centredCell.InNoBuildEdgeArea(map))
-                    {
-                        roadCell = centredCell;
-                    }
-                    else
-                    {
-                        roadCell += IntVec3.West * 2;
-                    }
-
-                    bannerCell = roadCell;
-                }
-            }
-
-            return bannerCell;
-        }
 
         
     }

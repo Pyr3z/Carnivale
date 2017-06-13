@@ -17,11 +17,11 @@ namespace Carnivale
             }
         }
 
-        public static void Meander(Pawn pawn, IntVec3 centre)
+        public static void Meander(Pawn pawn, IntVec3 centre, float radius)
         {
             if (pawn != null)
             {
-                pawn.mindState.duty = new PawnDuty(_DefOf.Duty_Meander, centre); 
+                pawn.mindState.duty = new PawnDuty(_DefOf.Duty_Meander, centre, radius); 
             }
         }
 

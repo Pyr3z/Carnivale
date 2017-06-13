@@ -22,11 +22,19 @@ namespace Carnivale
             }
         }
 
+        protected CarnivalInfo Info
+        {
+            get
+            {
+                return Data.info;
+            }
+        }
+
         public override IntVec3 FlagLoc
         {
             get
             {
-                return Data.setupCentre;
+                return Data.info.setupCentre;
             }
         }
 

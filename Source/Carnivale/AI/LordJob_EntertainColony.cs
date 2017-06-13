@@ -8,6 +8,8 @@ namespace Carnivale
 {
     public class LordJob_EntertainColony : LordJob
     {
+        private CarnivalInfo info;
+
         private Faction faction;
 
         private IntVec3 setupCentre;
@@ -17,29 +19,27 @@ namespace Carnivale
 
         public LordJob_EntertainColony()
         {
-            // Required for loading from save
+            
         }
 
-        public LordJob_EntertainColony(Faction faction, IntVec3 setupCentre, int durationDays)
+        public LordJob_EntertainColony(Faction faction, IntVec3 setupCentre, int durationDays) : this()
         {
             this.faction = faction;
             this.setupCentre = setupCentre;
             this.durationTicks = durationDays * GenDate.TicksPerDay;
         }
 
-
-
         public override StateGraph CreateGraph()
         {
-            StateGraph mainGraph = new StateGraph();
+            this.info = Map.GetComponent<CarnivalInfo>().ReInitWith(this.lord, this.setupCentre);
 
-            LordToilData_Carnival data = new LordToilData_Carnival(lord, setupCentre);
+            StateGraph mainGraph = new StateGraph();
 
             // Use LordJob_Travel as starting toil for this graph:
             LordToil toil_MoveToSetup = mainGraph.AttachSubgraph(new LordJob_Travel(this.setupCentre).CreateGraph()).StartingToil;
 
             // Next toil is to set up
-            LordToil toil_Setup = new LordToil_SetupCarnival(data);
+            LordToil toil_Setup = new LordToil_SetupCarnival(info);
             mainGraph.AddToil(toil_Setup);
 
             Transition trans_Setup = new Transition(toil_MoveToSetup, toil_Setup);
@@ -48,7 +48,7 @@ namespace Carnivale
             mainGraph.AddTransition(trans_Setup);
 
             // Meat of the event: entertaining the colony
-            LordToil toil_Entertain = new LordToil_EntertainColony(data);
+            LordToil toil_Entertain = new LordToil_EntertainColony(info);
             mainGraph.AddToil(toil_Entertain);
 
             Transition trans_Entertain = new Transition(toil_Setup, toil_Entertain);
@@ -56,7 +56,7 @@ namespace Carnivale
             mainGraph.AddTransition(trans_Entertain);
 
             // Rest the carnival for 16 hours after 8 hours of entertaining
-            LordToil toil_Rest = new LordToil_RestCarnival(data);
+            LordToil toil_Rest = new LordToil_RestCarnival(info);
             mainGraph.AddToil(toil_Rest);
 
             Transition trans_ToRest = new Transition(toil_Entertain, toil_Rest);
@@ -195,6 +195,8 @@ namespace Carnivale
 
         public override void ExposeData()
         {
+            Scribe_References.Look(ref this.info, "info");
+
             Scribe_References.Look(ref this.faction, "faction", false);
 
             Scribe_Values.Look(ref this.setupCentre, "setupSpot", default(IntVec3), false);

@@ -41,7 +41,7 @@ namespace Carnivale
 
                 if (!lordToilDataHacked && this.factionInt != Faction.OfPlayer)
                 {
-                    LordToilData_Carnival data = (LordToilData_Carnival)this.Map.lordManager.lords.FindLast(l => l.faction == this.factionInt).CurLordToil.data;
+                    LordToilData_Setup data = (LordToilData_Setup)this.Map.lordManager.lords.FindLast(l => l.faction == this.factionInt).CurLordToil.data;
 
                     if (data != null)
                     {

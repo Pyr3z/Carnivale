@@ -8,7 +8,7 @@ namespace Carnivale
 {
     public static class CarnivalBlueprints
     {
-        private static LordToilData_Carnival toilData;
+        private static CarnivalInfo info;
 
         private static CellRect area;
 
@@ -22,31 +22,31 @@ namespace Carnivale
 
         // The only public method; use this
         [DebuggerHidden]
-        public static IEnumerable<Blueprint> PlaceCarnivalBlueprints(LordToilData_Carnival data)
+        public static IEnumerable<Blueprint> PlaceCarnivalBlueprints(CarnivalInfo info)
         {
             // Assign necessary values to this singleton (is this technically a singleton?)
-            toilData = data;
-            area = data.carnivalArea;
-            bannerCell = data.bannerCell;
-            availableCrates = data.availableCrates;
-            stallUsers = ((List<Pawn>)data.pawnsWithRole[CarnivalRole.Vendor]).ListFullCopyOrNull();
-            faction = data.lord.faction;
+            CarnivalBlueprints.info = info;
+            area = info.carnivalArea;
+            bannerCell = info.bannerCell;
+            availableCrates = ((LordToilData_Setup)info.currentLord.CurLordToil.data).availableCrates;
+            stallUsers = ((List<Pawn>)info.pawnsWithRole[CarnivalRole.Vendor]).ListFullCopyOrNull();
+            faction = info.currentLord.faction;
 
 
 
             // Do the blueprint thing
 
-            foreach (Blueprint tent in PlaceTentBlueprints(data.lord.Map))
+            foreach (Blueprint tent in PlaceTentBlueprints(info.map))
             {
                 yield return tent;
             }
 
-            foreach (Blueprint stall in PlaceStallBlueprints(data.lord.Map))
+            foreach (Blueprint stall in PlaceStallBlueprints(info.map))
             {
                 yield return stall;
             }
 
-            yield return PlaceEntranceBlueprint(data.lord.Map);
+            yield return PlaceEntranceBlueprint(info.map);
         }
 
 
@@ -176,7 +176,7 @@ namespace Carnivale
                 {
                     RemovePlantsAndTeleportHaulablesFor(stallSpot, stallDef.size, rot, map);
                     // Add spot to stall user's spot
-                    toilData.rememberedPositions.Add(stallUser, stallSpot);
+                    info.rememberedPositions.Add(stallUser, stallSpot);
                     yield return GenConstruct.PlaceBlueprintForBuild(stallDef, stallSpot, map, rot, faction, null);
                 }
             }

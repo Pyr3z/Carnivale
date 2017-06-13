@@ -64,6 +64,7 @@
     <Compile Include="AI\JobDriver_StandAtLoc.cs" />
     <Compile Include="AI\JobGiver_StandAtLoc.cs" />
     <Compile Include="AI\LordToilData_Carnival.cs" />
+    <Compile Include="AI\LordToilData_Setup.cs" />
     <Compile Include="AI\LordToil_Carn.cs" />
     <Compile Include="AI\LordToil_DefendCarnival.cs" />
     <Compile Include="AI\LordToil_EntertainColony.cs" />
@@ -77,7 +78,8 @@
     <Compile Include="Buildings\CompProperties_CarnBuilding.cs" />
     <Compile Include="Buildings\Frame_StuffHacked.cs" />
     <Compile Include="CarnivaleMod.cs" />
-    <Compile Include="DeepPawnList.cs" />
+    <Compile Include="Data\CarnivalInfo.cs" />
+    <Compile Include="Data\DeepReferenceableList.cs" />
     <Compile Include="Enums\CarnBuildingType.cs" />
     <Compile Include="Enums\CarnivalRole.cs" />
     <Compile Include="Enums\_DefOf.cs" />

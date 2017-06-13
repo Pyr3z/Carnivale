@@ -1,0 +1,100 @@
+﻿using RimWorld;
+using System.Collections.Generic;
+using Verse;
+
+namespace Carnivale
+{
+    public class LordToilData_Setup : LordToilData_Carnival
+    {
+        public List<Thing> availableCrates = new List<Thing>();
+
+        public List<Blueprint> blueprints = new List<Blueprint>();
+
+
+        public LordToilData_Setup(CarnivalInfo carnivalInfo) : base(carnivalInfo)
+        {
+
+        }
+
+
+        public bool TryHaveWorkerCarry(Thing thing)
+        {
+            Pawn worker;
+            // Try give pre-designated worker a thing, 4 attempts
+            for (int i = 0; i < 4; i++)
+            {
+                if (info.pawnsWithRole[CarnivalRole.Worker].TryRandomElement(out worker))
+                {
+                    if (worker.carryTracker.TryStartCarry(thing))
+                    {
+                        availableCrates.Add(thing);
+                        return true;
+                    }
+                }
+            }
+
+            // Failing that, try giving anyone else a thing, 6 attempts
+            for (int i = 0; i < 6; i++)
+            {
+                if (info.pawnsWithRole[CarnivalRole.Any].TryRandomElement(out worker))
+                {
+                    if (worker.Is(CarnivalRole.Carrier)
+                        || worker.story != null && !worker.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
+                    {
+                        if (worker.carryTracker.TryStartCarry(thing))
+                        {
+                            availableCrates.Add(thing);
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            // Failing that, try spawning the thing in the centre of the setup area
+            if (GenPlace.TryPlaceThing(thing, info.setupCentre, info.map, ThingPlaceMode.Near, null))
+            {
+                availableCrates.Add(thing);
+                return true;
+            }
+
+            // You failed me.
+            Log.Warning("Found no suitable pawn or place to drop " + thing + ". Construction may halt.");
+
+            return false;
+        }
+
+        public int TryHaveWorkerCarry(ThingDef def, int count, ThingDef stuff = null)
+        {
+            // Returns how many things were successfully given.
+            int result = 0;
+
+            for (int i = 0; i < count; i++)
+            {
+                Thing newThing = ThingMaker.MakeThing(def, stuff);
+                if (TryHaveWorkerCarry(newThing))
+                {
+                    result++;
+                }
+            }
+
+            return result;
+        }
+
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                // Clean up unusable elements in collections
+                this.availableCrates.RemoveAll(b => b.Destroyed);
+                this.blueprints.RemoveAll(b => b.Destroyed);
+            }
+
+            Scribe_Collections.Look(ref this.availableCrates, "availableCrates", LookMode.Reference, new object[0]);
+
+            Scribe_Collections.Look(ref this.blueprints, "blueprints", LookMode.Reference, new object[0]);
+        }
+    }
+}
