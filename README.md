@@ -44,4 +44,4 @@ I'm a bit stronger on the coding side of things than the texturing side, so if y
 * And absolutely (eventually), the ability for players to run their own carnival caravans
 
 # Side note
-Holy cow AI and data scribing is intense. Thought I'd be done with this weeks ago. At least it's all still fun.
+Holy cow AI and data scribing is intense. Thought I'd be done with this weeks ago. At least it's all still fun though :P
