@@ -51,7 +51,7 @@ namespace Carnivale
         public override void LordToilTick()
         {
             // Check if there are any things needing to be hauled to carriers
-            if (this.lord.ticksInToil % 1000 == 0)
+            if (this.lord.ticksInToil % 1009 == 0)
             {
                 foreach (Thing thing in from t in GenRadial.RadialDistinctThingsAround(Info.setupCentre, this.Map, Info.baseRadius, true)
                                         where (t.def.IsWithinCategory(ThingCategoryDefOf.Foods)
@@ -66,5 +66,7 @@ namespace Carnivale
                 }
             }
         }
+
+
     }
 }

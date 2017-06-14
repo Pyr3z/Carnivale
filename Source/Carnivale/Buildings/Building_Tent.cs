@@ -11,7 +11,7 @@ namespace Carnivale
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             // Build roof
-            Utilities.SetRoofFor(base.OccupiedRect, map, _DefOf.Carn_TentRoof);
+            Utilities.SetRoofFor(this.OccupiedRect(), map, _DefOf.Carn_TentRoof);
 
             if (!childBuildings.Any(b => b.def == _DefOf.Carn_TentDoor))
             {
@@ -33,7 +33,7 @@ namespace Carnivale
                 childBuildings.Add(door);
 
                 // Build invisible walls
-                IEnumerable<IntVec3> edges = Utilities.CornerlessEdgeCells(OccupiedRect);
+                IEnumerable<IntVec3> edges = Utilities.CornerlessEdgeCells(this.OccupiedRect());
                 foreach (var cell in edges)
                 {
                     if (cell == doorCell) continue;
@@ -52,7 +52,7 @@ namespace Carnivale
 
         public override void DeSpawn()
         {
-            Utilities.SetRoofFor(OccupiedRect, this.Map, null);
+            Utilities.SetRoofFor(this.OccupiedRect(), this.Map, null);
 
             base.DeSpawn();
         }

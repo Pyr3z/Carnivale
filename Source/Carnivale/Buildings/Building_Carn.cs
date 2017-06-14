@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using Verse;
 
@@ -7,6 +8,9 @@ namespace Carnivale
 {
     public class Building_Carn : Building
     {
+        [Unsaved]
+        private IntVec3 oldPosition = IntVec3.Invalid;
+
         protected List<Building> childBuildings = new List<Building>();
 
         [Unsaved]
@@ -32,19 +36,6 @@ namespace Carnivale
             }
         }
 
-        [Unsaved]
-        private CellRect occupiedRectInt;
-
-        public CellRect OccupiedRect
-        {
-            get
-            {
-                if (this.occupiedRectInt == default(CellRect))
-                    occupiedRectInt = this.OccupiedRect();
-                return occupiedRectInt;
-            }
-        }
-
 
 
         public override Color DrawColorTwo
@@ -58,11 +49,24 @@ namespace Carnivale
         }
 
 
+        public override string GetInspectString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(base.GetInspectString());
+
+            sb.AppendLine("Owner".Translate() + ": " + factionInt.Name);
+
+            return sb.ToString().TrimEndNewlines();
+        }
+
+
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             // Build interior
-            if (Props.interiorThings.Any() && !childBuildings.Any(b => b.def != _DefOf.Carn_TentDoor && b.def != _DefOf.Carn_TentWall))
+            if (Props.interiorThings.Any() && !childBuildings.Any(b => Props.interiorThings.Any(t => t.thingDef == b.def)))
             {
+                this.oldPosition = Position;
+
                 foreach (ThingPlacement tp in Props.interiorThings)
                 {
                     foreach (IntVec3 offset in tp.placementOffsets)
@@ -96,11 +100,16 @@ namespace Carnivale
                 // spawn here
                 if (!child.Spawned)
                 {
+                    // offset is necessary for reinstallation
+                    IntVec3 offset = child.Position - this.oldPosition;
+                    child.Position = this.Position + offset;
                     Utilities.SpawnThingNoWipe(child, map, respawningAfterLoad);
                 }
             }
 
             base.SpawnSetup(map, respawningAfterLoad);
+
+            this.oldPosition = this.Position;
         }
 
 
@@ -115,7 +124,6 @@ namespace Carnivale
                 }
                 child.DeSpawn();
             }
-            //childBuildings.Clear();
 
             base.DeSpawn();
         }

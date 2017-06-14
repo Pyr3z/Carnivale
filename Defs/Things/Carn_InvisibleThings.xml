@@ -20,7 +20,7 @@
 	<label>tent wall</label>
 	<thingClass>Building</thingClass>
 	<category>Building</category>
-	<selectable>true</selectable>
+	<selectable>false</selectable>
 	
 	<graphicData>
 	  <texPath>Carnivale/Building/Invisible</texPath>
@@ -32,6 +32,10 @@
 	<blockLight>false</blockLight>
 	
 	<tickerType>Never</tickerType>
+	
+	<statBases>
+	  <Beauty>1</Beauty>
+	</statBases>
 	
 	<building>
 	  <isEdifice>false</isEdifice>
@@ -50,7 +54,7 @@
 	<label>tent flap</label>
 	<thingClass>Building_Door</thingClass>
 	<category>Building</category>
-	<selectable>true</selectable>
+	<selectable>false</selectable>
 	
 	<graphicData>
 	  <texPath>Carnivale/Building/Invisible</texPath>
@@ -61,6 +65,11 @@
 	<blockLight>false</blockLight>
 	
 	<tickerType>Normal</tickerType>
+	
+	<statBases>
+	  <Beauty>1</Beauty>
+	  <DoorOpenSpeed>0.35</DoorOpenSpeed>
+	</statBases>
 	
 	<building>
 	  <isEdifice>false</isEdifice>

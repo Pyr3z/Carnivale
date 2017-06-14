@@ -5,7 +5,7 @@ using Verse.AI;
 
 namespace Carnivale
 {
-    public class ThinkNode_ConditionalCanInteractWithAnimals : ThinkNode_Conditional
+    public class ThinkNode_CanInteractWithAnimals : ThinkNode_Conditional
     {
 
         public override float GetPriority(Pawn pawn)

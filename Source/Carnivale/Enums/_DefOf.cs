@@ -33,8 +33,6 @@ namespace Carnivale
 
 
 
-        public static JobDef Job_GuardSmallArea;
-
         public static JobDef Job_StandAtLoc;
 
 

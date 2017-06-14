@@ -38,7 +38,7 @@ namespace Carnivale
 
 
         // OVERRIDE METHODS //
-        
+
 
         public override void Init()
         {
@@ -88,43 +88,19 @@ namespace Carnivale
             // Find spots for carriers to chill + a guard spot
             IntVec3 guardSpot = GetCarrierSpots().Average();
 
-            // Assign guard spot
+            // Assign guard spot at carriers
             Pawn guard;
-            if (Info.pawnsWithRole[CarnivalRole.Guard].TryRandomElement(out guard))
+            if (Info.pawnsWithRole[CarnivalRole.Guard].Where(p => lord.faction.leader != p).TryRandomElement(out guard))
             {
                 Info.rememberedPositions.Add(guard, guardSpot);
-            }
-        }
 
-
-
-        public override void UpdateAllDuties()
-        {
-            foreach (Pawn pawn in this.lord.ownedPawns)
-            {
-                CarnivalRole pawnRole = pawn.GetCarnivalRole();
-                if (pawnRole.Is(CarnivalRole.Worker))
+                // if can feed animals, give em kibble
+                if (!guard.story.WorkTypeIsDisabled(WorkTypeDefOf.Handling))
                 {
-                    DutyUtility.BuildCarnival(pawn, Info.setupCentre, Info.baseRadius);
+                    Thing kib = ThingMaker.MakeThing(ThingDefOf.Kibble);
+                    kib.stackCount = 75;
+                    guard.inventory.TryAddItemNotForSale(kib);
                 }
-                else if (pawnRole.Is(CarnivalRole.Carrier))
-                {
-                    IntVec3 pos;
-
-                    if (Info.rememberedPositions.TryGetValue(pawn, out pos))
-                    {
-                        DutyUtility.HitchToSpot(pawn, pos);
-                    }
-                    else
-                    {
-                        DutyUtility.HitchToSpot(pawn, pawn.Position);
-                    }
-                }
-                else
-                {
-                    DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
-                }
-
             }
         }
 
@@ -135,7 +111,7 @@ namespace Carnivale
             base.LordToilTick();
 
             // Check if everything is setup
-            if (this.lord.ticksInToil % 600 == 0)
+            if (this.lord.ticksInToil % 601 == 0)
             {
                 if (!(from frame in this.Frames
                       where !frame.Destroyed
@@ -178,6 +154,38 @@ namespace Carnivale
             // End check
 
         }
+
+
+        public override void UpdateAllDuties()
+        {
+            foreach (Pawn pawn in this.lord.ownedPawns)
+            {
+                CarnivalRole pawnRole = pawn.GetCarnivalRole();
+                if (pawnRole.Is(CarnivalRole.Worker))
+                {
+                    DutyUtility.BuildCarnival(pawn, Info.setupCentre, Info.baseRadius);
+                }
+                else if (pawnRole.Is(CarnivalRole.Carrier))
+                {
+                    IntVec3 pos;
+
+                    if (Info.rememberedPositions.TryGetValue(pawn, out pos))
+                    {
+                        DutyUtility.HitchToSpot(pawn, pos);
+                    }
+                    else
+                    {
+                        DutyUtility.HitchToSpot(pawn, pawn.Position);
+                    }
+                }
+                else
+                {
+                    DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
+                }
+
+            }
+        }
+
 
         public override void Notify_PawnLost(Pawn victim, PawnLostCondition cond)
         {

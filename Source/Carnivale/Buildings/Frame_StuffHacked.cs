@@ -41,7 +41,7 @@ namespace Carnivale
 
                 if (!lordToilDataHacked && this.factionInt != Faction.OfPlayer)
                 {
-                    LordToilData_Setup data = (LordToilData_Setup)this.Map.lordManager.lords.FindLast(l => l.faction == this.factionInt).CurLordToil.data;
+                    LordToilData_Setup data = this.MapHeld.lordManager.lords.FindLast(l => l.faction == this.factionInt).CurLordToil.data as LordToilData_Setup;
 
                     if (data != null)
                     {
@@ -53,6 +53,7 @@ namespace Carnivale
 
                     if (workDone != 0f)
                     {
+                        // Work is being done -> all resources are present
                         lordToilDataHacked = true;
                     }
                 }
@@ -61,11 +62,6 @@ namespace Carnivale
                     lordToilDataHacked = true;
                 }
             }
-        }
-
-        public override void ExposeData()
-        {
-            base.ExposeData();
         }
 
     }

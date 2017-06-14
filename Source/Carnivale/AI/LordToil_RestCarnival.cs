@@ -24,7 +24,10 @@ namespace Carnivale
 
         public override void UpdateAllDuties()
         {
-            
+            foreach (var pawn in lord.ownedPawns)
+            {
+
+            }
         }
     }
 }

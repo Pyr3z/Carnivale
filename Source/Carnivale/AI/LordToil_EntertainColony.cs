@@ -35,21 +35,21 @@ namespace Carnivale
         {
             int countCarriers = Info.pawnsWithRole[CarnivalRole.Carrier].Count;
             IntVec3 pos;
+
             foreach (Pawn pawn in this.lord.ownedPawns)
             {
                 CarnivalRole pawnRole = pawn.GetCarnivalRole();
-                if (pawnRole.Is(CarnivalRole.Entertainer))
+
+                if (pawnRole.Is(CarnivalRole.Guard))
                 {
                     if (Info.rememberedPositions.TryGetValue(pawn, out pos))
                     {
-                        DutyUtility.HitchToSpot(pawn, pos);
-                    }
-                    else
-                    {
-                        DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
+                        DutyUtility.GuardSmallArea(pawn, pos, countCarriers);
+                        continue;
                     }
                 }
-                else if (pawnRole.IsAny(CarnivalRole.Vendor, CarnivalRole.Carrier))
+
+                if (pawnRole.IsAny(CarnivalRole.Vendor, CarnivalRole.Carrier))
                 {
                     if (Info.rememberedPositions.TryGetValue(pawn, out pos))
                     {
@@ -59,22 +59,19 @@ namespace Carnivale
                     {
                         DutyUtility.HitchToSpot(pawn, pawn.Position);
                     }
+                    continue;
                 }
-                else if (pawnRole.Is(CarnivalRole.Guard))
+
+                if (pawnRole.Is(CarnivalRole.Entertainer))
                 {
                     if (Info.rememberedPositions.TryGetValue(pawn, out pos))
                     {
-                        DutyUtility.GuardSmallArea(pawn, pos, countCarriers);
-                    }
-                    else
-                    {
-                        DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
+                        DutyUtility.HitchToSpot(pawn, pos);
+                        continue;
                     }
                 }
-                else
-                {
-                    DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
-                }
+
+                DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
             }
         }
 

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <DutyDefs>
+
+  <!-- Insertion hooks will be added for most things if people want it : testing stuff for now -->
   
   <!-- Setup carnival buildings -->
   <DutyDef>
@@ -58,6 +60,7 @@
 		  <!-- </subNodes> -->
 		<!-- </li> -->
 		
+		<!-- Socialise a lil bit -->
 		<li Class="ThinkNode_ConditionalRandom">
           <chance>0.25</chance>
           <subNodes>
@@ -70,6 +73,7 @@
           </subNodes>
         </li>
 		
+		<!-- but mostly wander round -->
 		<li Class="JobGiver_WanderNearDutyLocation">
 		  <wanderRadius>12</wanderRadius>
 		</li>
@@ -86,19 +90,41 @@
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
 	    
-		<!-- <li Class="Carnivale.JobGiver_GuardSmallArea" /> < not going to use this for now -->
-	  
 	    <li Class="JobGiver_WanderNearDutyLocation">
 	      <wanderRadius>4</wanderRadius>
 	    </li>
 	  
-	    <li Class="Carnivale.ThinkNode_ConditionalCanInteractWithAnimals">
+	    <li Class="Carnivale.ThinkNode_CanInteractWithAnimals">
 	      
 	    </li>
 		
 	  </subNodes>
 	</thinkNode>
 	
+  </DutyDef>
+  
+  
+  <!-- Rest -->
+  <DutyDef>
+    <defName>Duty_Rest</defName>
+	<alwaysShowWeapon>false</alwaysShowWeapon>
+	<thinkNode Class="ThinkNode_Priority">
+	  <subNodes>
+		
+		<!-- Goto carnival area if not already -->
+		<li Class="Carnivale.ThinkNode_InCarnivalArea">
+		  <invert>true</invert>
+		  <subNodes>
+		    <li Class="Carnivale.JobGiver_GotoCarnivalArea" />
+		  </subNodes>
+		</li>
+		
+		<li Class="ThinkNode_Subtree">
+		  <treeDef>SatisfyBasicNeeds</treeDef>
+		</li>
+		
+	  </subNodes>
+	</thinkNode>
   </DutyDef>
   
   

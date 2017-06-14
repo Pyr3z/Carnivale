@@ -16,6 +16,9 @@
     <filthLeaving>BuildingRubble</filthLeaving>
 	<scatterableOnMapGen>false</scatterableOnMapGen>
 	<isSaveable>true</isSaveable>
+	
+	<minifiedDef>MinifiedFurniture</minifiedDef>
+	
   </ThingDef>
   
   <!-- Tent base -->
@@ -200,7 +203,7 @@
 	  <Flammability>1.5</Flammability>
 	  <WorkToBuild>2000</WorkToBuild>
 	  <Mass>25</Mass> <!-- 5 * 5 -->
-	  <Beauty>6</Beauty>
+	  <Beauty>90</Beauty>
 	</statBases>
 	
 	<comps>
@@ -261,7 +264,7 @@
 	  <Flammability>1.5</Flammability>
 	  <WorkToBuild>2500</WorkToBuild>
 	  <Mass>49</Mass> <!-- 7 * 7 -->
-	  <Beauty>75</Beauty>
+	  <Beauty>50</Beauty>
 	</statBases>
 	
 	<comps>
