@@ -167,20 +167,37 @@ namespace Carnivale
             IntVec3 colonistPos = map.listerBuildings.allBuildingsColonist.NullOrEmpty() ?
                 map.mapPawns.FreeColonistsSpawned.RandomElement().Position : map.listerBuildings.allBuildingsColonist.RandomElement().Position;
 
-            IntVec3 bannerCell = carnivalArea.ClosestCellTo(colonistPos);
+            IntVec3 closestCell = carnivalArea.ClosestCellTo(colonistPos);
+            
+            if (!closestCell.Standable(map))
+            {
+                CellFinder.TryRandomClosewalkCellNear(
+                    closestCell,
+                    map,
+                    16,
+                    out closestCell
+                    //delegate(IntVec3 cell)
+                    //{
+                    //    return true;
+                    //}
+                );
+            }
+            
 
             if (map.roadInfo.roadEdgeTiles.Any())
             {
                 // Prefer to place banner on nearest road
-                CellRect searchArea = CellRect.CenteredOn(bannerCell, 75).ClipInsideMap(map).ContractedBy(10);
+                CellRect searchArea = CellRect.CenteredOn(closestCell, 75).ClipInsideMap(map).ContractedBy(10);
                 float distance = 9999999f;
                 IntVec3 roadCell = IntVec3.Invalid;
 
                 foreach (var cell in searchArea)
                 {
-                    if (cell.GetTerrain(map).HasTag("Road") && !cell.InNoBuildEdgeArea(map))
+                    if (cell.GetTerrain(map).HasTag("Road")
+                        && !cell.InNoBuildEdgeArea(map)
+                        && cell.Standable(map))
                     {
-                        float tempDist = bannerCell.DistanceToSquared(cell);
+                        float tempDist = closestCell.DistanceToSquared(cell);
                         if (tempDist < distance)
                         {
                             distance = tempDist;
@@ -192,22 +209,20 @@ namespace Carnivale
                 if (roadCell.IsValid
                     && roadCell.DistanceToSquared(setupCentre) < baseRadius * baseRadius * 1.5f)
                 {
-                    // Found the edge of a road, try to centre it
+                    // Found the edge of a road,
+                    // try to centre it if it is diagonal or vertical
+                    // (no real effect if it is horizontal)
                     IntVec3 centredCell = roadCell + IntVec3.East * 2;
-                    if (centredCell.GetTerrain(map).HasTag("Road") && !centredCell.InNoBuildEdgeArea(map))
+                    if (!centredCell.GetTerrain(map).HasTag("Road"))
                     {
-                        roadCell = centredCell;
-                    }
-                    else
-                    {
-                        roadCell += IntVec3.West * 2;
+                        centredCell = roadCell + IntVec3.West * 2;
                     }
 
-                    bannerCell = roadCell;
+                    closestCell = centredCell.Standable(map) ? centredCell : roadCell;
                 }
             }
 
-            return bannerCell;
+            return closestCell;
         }
     }
 }

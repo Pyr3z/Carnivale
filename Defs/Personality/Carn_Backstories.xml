@@ -274,7 +274,7 @@
 	<slot>Adulthood</slot>
 	<title>Carnival acrobat</title>
 	<titleShort>Acrobat</titleShort>
-	<baseDescription>NAME prided HIMself in HIS flexibility since before HE could walk. Coupled with HIS peak physical condition and no small amount of bravery, HE turned HIS talents into a spectacle to behold... and one you have to pay to be able to see.</baseDescription>
+	<baseDescription>NAME prided HIMself in HIS ability to perform stunts that nobody else would since before he could walk. Coupled with HIS peak physical condition and no small amount of bravery, HE turned HIS talents into a spectacle to behold... and one you have to pay to be able to see.</baseDescription>
 	
 	<bodyTypeFemale>Thin</bodyTypeFemale>
 	<bodyTypeMale>Thin</bodyTypeMale>
@@ -286,6 +286,7 @@
 	
 	<requiredWorkTags>
 	  <li>Artistic</li>
+	  <li>Violent</li>
 	</requiredWorkTags>
 	
 	<forcedTraits>
@@ -565,11 +566,13 @@
 	
 	<requiredWorkTags>
 	  <li>ManualDumb</li>
+	  <li>ManualSkilled</li>
 	  <li>Violent</li>
 	</requiredWorkTags>
 	
 	<skillGains>
-	  <li><defName>Melee</defName><degree>5</degree></li>
+	  <li><defName>Shooting</defName><degree>2</degree></li>
+	  <li><defName>Melee</defName><degree>2</degree></li>
 	  <li><defName>Social</defName><degree>-2</degree></li>
 	</skillGains>
 	

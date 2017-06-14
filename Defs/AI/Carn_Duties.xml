@@ -95,10 +95,17 @@
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
 	    
+		<!-- satisfy needs -->
+		<li Class="ThinkNode_Subtree">
+		  <treeDef>SatisfyBasicNeeds</treeDef>
+		</li>
+		
+		<!-- guard area -->
 	    <li Class="JobGiver_WanderNearDutyLocation">
 	      <wanderRadius>4</wanderRadius>
 	    </li>
-	  
+	    
+		<!-- TODO: feed animals -->
 	    <li Class="Carnivale.ThinkNode_CanInteractWithAnimals">
 	      
 	    </li>

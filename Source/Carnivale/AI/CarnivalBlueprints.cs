@@ -194,26 +194,18 @@ namespace Carnivale
             ThingDef bannerDef = _DefOf.Carn_SignEntry;
             Rot4 rot = default(Rot4);
 
-            if (CanPlaceBlueprintAt(info.bannerCell, rot, bannerDef))
-            {
-                RemovePlantsAndTeleportHaulablesFor(info.bannerCell, bannerDef.size, rot);
-                return GenConstruct.PlaceBlueprintForBuild(bannerDef, info.bannerCell, info.map, rot, info.currentLord.faction, null);
-            }
-
-            // If cannot place on bannerCell, try in a small area around it
-
-            CellRect tryArea = CellRect.CenteredOn(info.bannerCell, 8).ClipInsideRect(info.carnivalArea);
-            IntVec3 bannerSpot = FindRandomPlacementFor(bannerDef, rot, tryArea);
+            IntVec3 bannerSpot = FindRadialPlacementFor(bannerDef, rot, info.bannerCell, 16);
 
             if (bannerSpot.IsValid)
             {
                 info.bannerCell = bannerSpot;
-                RemovePlantsAndTeleportHaulablesFor(bannerSpot, bannerDef.size, rot);
-                return GenConstruct.PlaceBlueprintForBuild(bannerDef, bannerSpot, info.map, rot, info.currentLord.faction, null);
+                RemovePlantsAndTeleportHaulablesFor(info.bannerCell, bannerDef.size, rot);
+                return GenConstruct.PlaceBlueprintForBuild(bannerDef, info.bannerCell, info.map, rot, info.currentLord.faction, null);
             }
 
-            // If that fails, try any area in the carnival area (suboptimal)
+            // If that fails, try any spot in the carnival area (suboptimal)
 
+            Log.Error("Couldn't find an optimum place for " + bannerDef + ". Giving random place in carnival area.");
             bannerSpot = FindRandomPlacementFor(bannerDef, rot);
             info.bannerCell = bannerSpot;
             RemovePlantsAndTeleportHaulablesFor(bannerSpot, bannerDef.size, rot);
@@ -297,6 +289,27 @@ namespace Carnivale
                     }
                 }
             }
+            return IntVec3.Invalid;
+        }
+
+
+
+        private static IntVec3 FindRadialPlacementFor(ThingDef def, Rot4 rot, IntVec3 centre, int radius)
+        {
+            foreach (var cell in GenRadial.RadialCellsAround(centre, radius, true))
+            {
+                if (info.map.reachability.CanReach(cell, info.carnivalArea.CenterCell, Verse.AI.PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
+                {
+                    if (!cell.Roofed(info.map))
+                    {
+                        if (CanPlaceBlueprintAt(cell, rot, def))
+                        {
+                            return cell;
+                        }
+                    }
+                }
+            }
+
             return IntVec3.Invalid;
         }
 
