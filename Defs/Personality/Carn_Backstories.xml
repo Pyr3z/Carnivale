@@ -183,7 +183,7 @@
 	<slot>Adulthood</slot>
 	<title>Carny weirdo</title>
 	<titleShort>Weirdo</titleShort>
-	<baseDescription>NAME traveled with a rimworld carnival for many years, where all HE had to do for HIS act was be HIMself. When hands were short, HE made HIMself useful by being quite the eccentric in the kitchen tent.</baseDescription>
+	<baseDescription>NAME has traveled with a rimworld carnival for many years, where all HE had to do for HIS act was be HIMself. When hands were short, HE made HIMself useful by being quite the eccentric in the kitchen tent. Ever hear of muffalo burger lasagna? Yeah. That was NAME.</baseDescription>
 	
 	<skillGains>
 	  <li><defName>Social</defName><degree>2</degree></li>
@@ -207,7 +207,6 @@
 	<spawnCategories>
 	  <li>Carnivale</li>
 	  <li>Slave</li>
-	  <li>Uncommon</li>
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>
   
@@ -218,7 +217,7 @@
 	<slot>Adulthood</slot>
 	<title>Burlesque performer</title>
 	<titleShort>Burla</titleShort>
-	<baseDescription>NAME used to put on quite a show that got the sultry juices of HIS crowds flowing. Despite portraying numerous colourful personas daily, nobody is entirely sure who the real NAME is.</baseDescription>
+	<baseDescription>NAME used to put on quite a show that got the sultry juices of HIS crowds flowing. Despite portraying numerous colourful personas daily, nobody is entirely sure who the real NAME is. Rumour has it that HE packs a decent punch, though.</baseDescription>
 	
 	<skillGains>
 	  <li><defName>Artistic</defName><degree>6</degree></li>
@@ -227,6 +226,7 @@
 	
 	<requiredWorkTags>
 	  <li>Artistic</li>
+	  <li>Violent</li>
 	</requiredWorkTags>
 	
 	<spawnCategories>
@@ -261,8 +261,9 @@
 	</forcedTraits>
 	
 	<spawnCategories>
-	  <li>CarnivaleRare</li>
-	  <li>Rare</li>
+	  <li>Civil</li>
+	  <li>Carnivale</li>
+	  <li>Uncommon</li>
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>
   
@@ -273,7 +274,7 @@
 	<slot>Adulthood</slot>
 	<title>Carnival acrobat</title>
 	<titleShort>Acrobat</titleShort>
-	<baseDescription>NAME prided HIMself with HIS flexibility since before HE could walk. Coupled with peak physical condition and no small amount of bravery, HE turned HIS talents into a spectacle to behold... and pay to see.</baseDescription>
+	<baseDescription>NAME prided HIMself in HIS flexibility since before HE could walk. Coupled with HIS peak physical condition and no small amount of bravery, HE turned HIS talents into a spectacle to behold... and one you have to pay to be able to see.</baseDescription>
 	
 	<bodyTypeFemale>Thin</bodyTypeFemale>
 	<bodyTypeMale>Thin</bodyTypeMale>
@@ -304,22 +305,15 @@
 	<slot>Adulthood</slot>
 	<title>Talent scout</title>
 	<titleShort>Booner</titleShort>
-	<baseDescription>NAME worked for a traveling act and HIS main job was to have a keen eye for talent. HECAP learned to be fairly independent and able to work alone, but was nonetheless skilled at convincing people to sign on with HIS show.</baseDescription>
+	<baseDescription>NAME worked for a traveling act, and HIS main job was to have a keen eye for new talent. HECAP learned to be fairly independent and able to work alone, but was nonetheless skilled at convincing people to sign on with HIS show.</baseDescription>
 	
 	<skillGains>
-	  <li><defName>Social</defName><degree>2</degree></li>
-	  <li><defName>Artistic</defName><degree>5</degree></li>
-	  <li><defName>Cooking</defName><degree>3</degree></li>
+	  <li><defName>Social</defName><degree>4</degree></li>
 	</skillGains>
 	
 	<requiredWorkTags>
 	  <li>Social</li>
 	</requiredWorkTags>
-	
-	<workDisables>
-	  <li>PlantWork</li>
-	  <li>Mining</li>
-	</workDisables>
 	
 	<forcedTraits>
 	  <li><defName>Carn_SweetTalkerTrait</defName><degree>0</degree></li>
@@ -337,10 +331,10 @@
 	<slot>Adulthood</slot>
 	<title>Carnival razorback</title>
 	<titleShort>Razorback</titleShort>
-	<baseDescription>Either nobody remembers or nobody is permitted to remember why NAME was permanently demoted to a razorback, or a grunt in the carnival workforce. Loading and unloading pack animals and carriages have made HIM strong, as well as a regular contender whenever a brawl breaks out.</baseDescription>
+	<baseDescription>Either nobody remembers, or nobody is permitted to remember why NAME was permanently demoted to a razorback, a grunt in the carnival workforce. Loading and unloading pack animals and carriages have made HIM strong, as well as a regular contender whenever a brawl breaks out.</baseDescription>
 	
 	<skillGains>
-	  <li><defName>Shooting</defName><degree>3</degree></li>
+	  <li><defName>Shooting</defName><degree>1</degree></li>
 	  <li><defName>Melee</defName><degree>3</degree></li>
 	  <li><defName>Construction</defName><degree>5</degree></li>
 	</skillGains>
@@ -370,8 +364,8 @@
 	
 	<skillGains>
 	  <li><defName>Shooting</defName><degree>3</degree></li>
-	  <li><defName>Melee</defName><degree>6</degree></li>
-	  <li><defName>Construction</defName><degree>5</degree></li>
+	  <li><defName>Melee</defName><degree>4</degree></li>
+	  <li><defName>Construction</defName><degree>6</degree></li>
 	</skillGains>
 	
 	<requiredWorkTags>
@@ -461,7 +455,7 @@
 	<slot>Adulthood</slot>
 	<title>Carnival dancer</title>
 	<titleShort>Dancer</titleShort>
-	<baseDescription>NAME was always lauded for HIS beauty and grace, and when HE dances, the crowd goes into a mesmerised trance. Albeit, it doesn't take much to be a thing of beauty on a rim world...</baseDescription>
+	<baseDescription>NAME was always lauded for HIS beauty and grace, and when HE dances, the crowd goes into a mesmerised trance. Albeit, it doesn't take much to be a thing of beauty on a rimworld...</baseDescription>
 	
 	<skillGains>
 	  <li><defName>Artistic</defName><degree>6</degree></li>
@@ -523,11 +517,11 @@
 	<slot>Adulthood</slot>
 	<title>Carnival vendor</title>
 	<titleShort>Vendor</titleShort>
-	<baseDescription>NAME was recognised as a superior haggler when HE joined the carnival. HECAP's held the job ever since, but sometimes HE wonders if HE could someday have HIS own show.</baseDescription>
+	<baseDescription>NAME was recognised as a decent haggler when HE joined the carnival. HECAP's held the job ever since, but sometimes HE wonders if HE could someday have HIS own show.</baseDescription>
 	
 	<skillGains>
 	  <li><defName>Social</defName><degree>4</degree></li>
-	  <li><defName>Cooking</defName><degree>4</degree></li>
+	  <li><defName>Cooking</defName><degree>2</degree></li>
 	  <li><defName>Artistic</defName><degree>2</degree></li>
 	</skillGains>
 	
@@ -547,7 +541,7 @@
 	<baseDescription>NAME was recognised as a superior haggler when HE joined the carnival, and HE loves HIS job. HISCAP talents became especially useful during fireball shows...</baseDescription>
 	
 	<skillGains>
-	  <li><defName>Social</defName><degree>6</degree></li>
+	  <li><defName>Social</defName><degree>5</degree></li>
 	  <li><defName>Melee</defName><degree>3</degree></li>
 	</skillGains>
 	
@@ -575,13 +569,17 @@
 	</requiredWorkTags>
 	
 	<skillGains>
-	  <li><defName>Melee</defName><degree>6</degree></li>
+	  <li><defName>Melee</defName><degree>5</degree></li>
 	  <li><defName>Social</defName><degree>-2</degree></li>
 	</skillGains>
 	
 	<forcedTraits>
 	  <li><defName>Carn_LuckinessTrait</defName><degree>-1</degree></li>
 	</forcedTraits>
+	
+	<disallowedTraits>
+	  <li><defName>Wimp</defName><degree>0</degree></li>
+	</disallowedTraits>
 	
 	<spawnCategories>
 	  <li>CarnivaleWorker</li>

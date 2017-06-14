@@ -1,7 +1,4 @@
-﻿using Verse;
-using Verse.AI.Group;
-
-namespace Carnivale
+﻿namespace Carnivale
 {
     public class LordToil_StrikeCarnival : LordToil_Carn
     {

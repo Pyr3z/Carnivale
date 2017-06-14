@@ -79,6 +79,14 @@ namespace Carnivale
         }
 
 
+        public override void LordToilTick()
+        {
+            base.LordToilTick();
+
+
+        }
+
+
 
         private bool TryGiveAnnouncerPosition()
         {

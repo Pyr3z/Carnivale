@@ -10,8 +10,7 @@ namespace Carnivale
 {
     public class CarnivalInfo : MapComponent, ILoadReferenceable
     {
-        private static IntRange radiusRange = new IntRange(13, 25);
-
+        private static IntRange addToRadius = new IntRange(13, 25);
 
         public Lord currentLord;
 
@@ -22,6 +21,8 @@ namespace Carnivale
         public CellRect carnivalArea;
 
         public IntVec3 bannerCell;
+
+        public Stack<Thing> thingsToHaul = new Stack<Thing>();
 
         public List<Building> carnivalBuildings = new List<Building>();
 
@@ -77,6 +78,8 @@ namespace Carnivale
 
             Scribe_Values.Look(ref this.bannerCell, "bannerCell", default(IntVec3), false);
 
+            Scribe_Collections.Look(ref this.thingsToHaul, "thingsToHaul", LookMode.Reference);
+
             Scribe_Collections.Look(ref this.carnivalBuildings, "carnivalBuildings", LookMode.Reference);
 
             Scribe_Collections.Look(ref this.pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
@@ -101,7 +104,7 @@ namespace Carnivale
             this.setupCentre = centre;
 
             // Set radius for carnies to stick to
-            baseRadius = lord.ownedPawns.Count + radiusRange.RandomInRange;
+            baseRadius = lord.ownedPawns.Count + addToRadius.RandomInRange;
             baseRadius = Mathf.Clamp(baseRadius, 15f, 50f);
 
             // Set carnival area
