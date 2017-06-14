@@ -30,9 +30,7 @@
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
 	  
-	    <li Class="Carnivale.JobGiver_StandAtLoc">
-		  
-		</li>
+	    <li Class="Carnivale.JobGiver_StandAtLoc" />
 		
 		<li Class="ThinkNode_Subtree">
 		  <treeDef>SatisfyBasicNeeds</treeDef>
@@ -53,28 +51,55 @@
 		  <treeDef>SatisfyBasicNeeds</treeDef>
 		</li>
 		
-		<li Class="JobGiver_WanderNearDutyLocation">
-		  <wanderRadius>12</wanderRadius>
-		</li>
+		<!-- <li Class="ThinkNode_Priority_GetJoy"> -->
+		  <!-- <subNodes> -->
+		    <!-- <li Class="JobGiver_GetJoyInBed" /> -->
+			<!-- <li Class="JobGiver_GetJoy" /> -->
+		  <!-- </subNodes> -->
+		<!-- </li> -->
 		
 		<li Class="ThinkNode_ConditionalRandom">
-          <chance>0.5</chance>
+          <chance>0.25</chance>
           <subNodes>
             <li Class="JobGiver_StandAndBeSociallyActive">
               <ticksRange>
-                <min>350</min>
-                <max>750</max>
+                <min>300</min>
+                <max>450</max>
               </ticksRange>
             </li>
           </subNodes>
         </li>
+		
+		<li Class="JobGiver_WanderNearDutyLocation">
+		  <wanderRadius>12</wanderRadius>
+		</li>
 		
 	  </subNodes>
 	</thinkNode>
   </DutyDef>
   
   
-  <!--  -->
+  <!-- Guard small area -->
+  <DutyDef>
+    <defName>Duty_GuardSmallArea</defName>
+	<alwaysShowWeapon>true</alwaysShowWeapon>
+	<thinkNode Class="ThinkNode_Priority">
+	  <subNodes>
+	    
+		<!-- <li Class="Carnivale.JobGiver_GuardSmallArea" /> < not going to use this for now -->
+	  
+	    <li Class="JobGiver_WanderNearDutyLocation">
+	      <wanderRadius>4</wanderRadius>
+	    </li>
+	  
+	    <li Class="Carnivale.ThinkNode_ConditionalCanInteractWithAnimals">
+	      
+	    </li>
+		
+	  </subNodes>
+	</thinkNode>
+	
+  </DutyDef>
   
   
 </DutyDefs>

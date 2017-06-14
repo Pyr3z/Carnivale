@@ -1,9 +1,10 @@
-﻿using Verse;
+﻿using System;
+using Verse;
 using Verse.AI;
 
 namespace Carnivale
 {
-    public class JobGiver_StandAtLoc : ThinkNode_JobGiver
+    public class JobGiver_GuardSmallArea : JobGiver_Wander
     {
         public override float GetPriority(Pawn pawn)
         {
@@ -19,7 +20,13 @@ namespace Carnivale
                 return null;
             }
 
-            return new Job(_DefOf.Job_StandAtLoc, duty.focus);
+            return new Job(_DefOf.Job_GuardSmallArea, duty.focus);
         }
+
+        protected override IntVec3 GetWanderRoot(Pawn pawn)
+        {
+            return WanderUtility.BestCloseWanderRoot(pawn.mindState.duty.focus.Cell, pawn);
+        }
+
     }
 }

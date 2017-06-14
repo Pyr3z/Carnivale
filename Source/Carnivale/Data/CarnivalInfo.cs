@@ -10,9 +10,7 @@ namespace Carnivale
 {
     public class CarnivalInfo : MapComponent, ILoadReferenceable
     {
-        private const int RADIUS_MIN = 25;
-
-        private const int RADIUS_MAX = 50;
+        private static IntRange radiusRange = new IntRange(13, 25);
 
 
         public Lord currentLord;
@@ -24,6 +22,8 @@ namespace Carnivale
         public CellRect carnivalArea;
 
         public IntVec3 bannerCell;
+
+        public List<Building> carnivalBuildings = new List<Building>();
 
         public Dictionary<CarnivalRole, DeepReferenceableList<Pawn>> pawnsWithRole = new Dictionary<CarnivalRole, DeepReferenceableList<Pawn>>();
 
@@ -44,6 +44,8 @@ namespace Carnivale
             if (Scribe.mode == LoadSaveMode.Saving)
             {
                 // Clean up unusable elements in collections
+
+                carnivalBuildings.RemoveAll(b => b.DestroyedOrNull() || !b.Spawned);
 
                 foreach (var list in pawnsWithRole.Values)
                 {
@@ -75,6 +77,8 @@ namespace Carnivale
 
             Scribe_Values.Look(ref this.bannerCell, "bannerCell", default(IntVec3), false);
 
+            Scribe_Collections.Look(ref this.carnivalBuildings, "carnivalBuildings", LookMode.Reference);
+
             Scribe_Collections.Look(ref this.pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
 
             Scribe_Collections.Look(ref this.rememberedPositions, "rememberedPositions", LookMode.Reference, LookMode.Value, ref pawnWorkingList, ref vec3WorkingList);
@@ -91,31 +95,60 @@ namespace Carnivale
 
         public CarnivalInfo ReInitWith(Lord lord, IntVec3 centre)
         {
+            // MUST BE CALLED AFTER LordMaker.MakeNewLord()
+
             this.currentLord = lord;
             this.setupCentre = centre;
 
             // Set radius for carnies to stick to
-            baseRadius = Mathf.InverseLerp(RADIUS_MIN, RADIUS_MAX, currentLord.ownedPawns.Count / RADIUS_MAX);
-            baseRadius = Mathf.Clamp(baseRadius, RADIUS_MIN, RADIUS_MAX);
+            baseRadius = lord.ownedPawns.Count + radiusRange.RandomInRange;
+            baseRadius = Mathf.Clamp(baseRadius, 15f, 50f);
 
             // Set carnival area
-            carnivalArea = CellRect.CenteredOn(setupCentre, (int)baseRadius).ClipInsideMap(map).ContractedBy(10);
+            carnivalArea = CellRect.CenteredOn(setupCentre, (int)baseRadius + 10).ClipInsideMap(map).ContractedBy(10);
 
             // Set banner spot
             bannerCell = CalculateBannerCell();
 
             // Moved to LordToil_SetupCarnival.. dunno why but it doesn't work here
-            //foreach (CarnivalRole role in Enum.GetValues(typeof(CarnivalRole)))
-            //{
-            //    List<Pawn> pawns = (from p in currentLord.ownedPawns
-            //                        where p.Is(role)
-            //                        select p).ToList();
-            //    pawnsWithRole.Add(role, pawns);
-            //}
+            foreach (CarnivalRole role in Enum.GetValues(typeof(CarnivalRole)))
+            {
+                List<Pawn> pawns = (from p in currentLord.ownedPawns
+                                    where p.Is(role)
+                                    select p).ToList();
+                pawnsWithRole.Add(role, pawns);
+            }
 
             // The rest is assigned as the carnival goes along
 
             return this;
+        }
+
+
+        public void Cleanup()
+        {
+            this.currentLord = null;
+        }
+
+
+        public Building GetFirstBuildingOf(ThingDef def)
+        {
+            if (this.currentLord == null)
+            {
+                Log.Error("Cannot get carnival building: carnival is not in town.");
+                return null;
+            }
+
+            foreach (var building in this.carnivalBuildings)
+            {
+                if (building.def == def)
+                {
+                    return building;
+                }
+            }
+
+            Log.Warning("Tried to find any building of def " + def + " in CarnivalInfo, but none exists.");
+            return null;
         }
 
 
@@ -132,14 +165,14 @@ namespace Carnivale
             {
                 // Prefer to place banner on nearest road
                 CellRect searchArea = CellRect.CenteredOn(bannerCell, 75).ClipInsideMap(map).ContractedBy(10);
-                float distance = 999999;
+                float distance = 9999999f;
                 IntVec3 roadCell = IntVec3.Invalid;
 
                 foreach (var cell in searchArea)
                 {
                     if (cell.GetTerrain(map).HasTag("Road") && !cell.InNoBuildEdgeArea(map))
                     {
-                        float tempDist = bannerCell.DistanceTo(cell);
+                        float tempDist = bannerCell.DistanceToSquared(cell);
                         if (tempDist < distance)
                         {
                             distance = tempDist;
@@ -148,7 +181,8 @@ namespace Carnivale
                     }
                 }
 
-                if (roadCell.IsValid)
+                if (roadCell.IsValid
+                    && roadCell.DistanceToSquared(setupCentre) < baseRadius * baseRadius * 1.5f)
                 {
                     // Found the edge of a road, try to centre it
                     IntVec3 centredCell = roadCell + IntVec3.East * 2;

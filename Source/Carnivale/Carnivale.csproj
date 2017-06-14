@@ -61,7 +61,9 @@
   <ItemGroup>
     <Compile Include="AI\CarnivalBlueprints.cs" />
     <Compile Include="AI\DutyUtility.cs" />
+    <Compile Include="AI\JobDriver_GuardSmallArea.cs" />
     <Compile Include="AI\JobDriver_StandAtLoc.cs" />
+    <Compile Include="AI\JobGiver_GuardSmallArea.cs" />
     <Compile Include="AI\JobGiver_StandAtLoc.cs" />
     <Compile Include="AI\LordToilData_Carnival.cs" />
     <Compile Include="AI\LordToilData_Setup.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="AI\LordToil_RestCarnival.cs" />
     <Compile Include="AI\LordToil_SetupCarnival.cs" />
     <Compile Include="AI\LordToil_StrikeCarnival.cs" />
+    <Compile Include="AI\ThinkNode_ConditionalCanInteractWithAnimals.cs" />
     <Compile Include="Buildings\Blueprint_StuffHacked.cs" />
     <Compile Include="Buildings\Building_Carn.cs" />
     <Compile Include="Buildings\Building_Tent.cs" />

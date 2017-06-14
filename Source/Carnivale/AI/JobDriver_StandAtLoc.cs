@@ -7,6 +7,7 @@ namespace Carnivale
 {
     public class JobDriver_StandAtLoc : JobDriver
     {
+        [Unsaved]
         private CarnivalRole typeInt = 0;
 
         private CarnivalRole Type
@@ -27,6 +28,10 @@ namespace Carnivale
             if (Type.Is(CarnivalRole.Vendor))
             {
                 return "peddling goods.";
+            }
+            else if (Type.Is(CarnivalRole.Entertainer))
+            {
+                return "announcing.";
             }
             else
             {
@@ -61,5 +66,6 @@ namespace Carnivale
             stand.defaultCompleteMode = ToilCompleteMode.Delay;
             yield return stand;
         }
+
     }
 }

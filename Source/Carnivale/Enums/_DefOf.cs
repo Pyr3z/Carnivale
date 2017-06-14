@@ -9,6 +9,8 @@ namespace Carnivale
     {
         public static DutyDef Duty_BuildCarnival;
 
+        public static DutyDef Duty_GuardSmallArea;
+
         public static DutyDef Duty_HitchToSpot;
 
         public static DutyDef Duty_Meander;
@@ -30,6 +32,8 @@ namespace Carnivale
         public static IncidentDef CarnivalJustice;
 
 
+
+        public static JobDef Job_GuardSmallArea;
 
         public static JobDef Job_StandAtLoc;
 

@@ -141,6 +141,22 @@ namespace Carnivale
             return (roles & role) == role;
         }
 
+        public static bool IsAny(this Pawn pawn, params CarnivalRole[] roles)
+        {
+            return pawn.GetCarnivalRole().IsAny(roles);
+        }
+
+        public static bool IsAny(this CarnivalRole pawnRole, params CarnivalRole[] roles)
+        {
+            foreach (var role in roles)
+            {
+                if (pawnRole.Is(role))
+                    return true;
+            }
+
+            return false;
+        }
+
 
 
 

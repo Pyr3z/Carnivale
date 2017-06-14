@@ -200,6 +200,7 @@ namespace Carnivale
 
             if (bannerSpot.IsValid)
             {
+                info.bannerCell = bannerSpot;
                 RemovePlantsAndTeleportHaulablesFor(bannerSpot, bannerDef.size, rot, map);
                 return GenConstruct.PlaceBlueprintForBuild(bannerDef, bannerSpot, map, rot, faction, null);
             }
@@ -207,6 +208,7 @@ namespace Carnivale
             // If that fails, try any area in the carnival area (suboptimal)
 
             bannerSpot = FindRandomPlacementFor(bannerDef, rot, map);
+            info.bannerCell = bannerSpot;
             RemovePlantsAndTeleportHaulablesFor(bannerSpot, bannerDef.size, rot, map);
             return GenConstruct.PlaceBlueprintForBuild(bannerDef, bannerSpot, map, rot, faction, null);
         }

@@ -11,6 +11,8 @@ namespace Carnivale
     {
         public CarnivalInfo info;
 
+        public LordToilData_Carnival() { }
+
         public LordToilData_Carnival(CarnivalInfo carnivalInfo)
         {
             this.info = carnivalInfo;

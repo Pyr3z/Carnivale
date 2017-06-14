@@ -18,6 +18,13 @@ namespace Carnivale
             // another, which is where the ability for this to fire is
             // resolved.
             // ...Or should a double check be made? Case: toxic fallout etc
+
+            Map map = (Map)target;
+            if (map.GetComponent<CarnivalInfo>().currentLord != null)
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -106,12 +113,12 @@ namespace Carnivale
             IntVec3 setupCentre = Utilities.FindCarnivalSetupPositionFrom(parms.spawnCenter, map);
 
             LordJob_EntertainColony lordJob = new LordJob_EntertainColony(parms.faction, setupCentre, durationDays);
-            LordMaker.MakeNewLord(parms.faction, lordJob, map, pawns);
+            Lord lord = LordMaker.MakeNewLord(parms.faction, lordJob, map, pawns);
+
+            map.GetComponent<CarnivalInfo>().ReInitWith(lord, setupCentre);
 
             return true;
         }
-
-
         
     }
 }

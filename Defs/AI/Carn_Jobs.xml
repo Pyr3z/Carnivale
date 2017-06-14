@@ -6,4 +6,11 @@
 	<driverClass>Carnivale.JobDriver_StandAtLoc</driverClass>
   </JobDef>
   
+  <JobDef>
+    <defName>Job_GuardSmallArea</defName>
+	<driverClass>Carnivale.JobDriver_GuardSmallArea</driverClass>
+	<reportString>guarding.</reportString>
+	<alwaysShowWeapon>true</alwaysShowWeapon>
+  </JobDef>
+  
 </Defs>

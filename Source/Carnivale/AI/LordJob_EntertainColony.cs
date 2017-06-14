@@ -29,9 +29,31 @@ namespace Carnivale
             this.durationTicks = durationDays * GenDate.TicksPerDay;
         }
 
+
+        public override void ExposeData()
+        {
+            Scribe_References.Look(ref this.info, "info");
+
+            Scribe_References.Look(ref this.faction, "faction", false);
+
+            Scribe_Values.Look(ref this.setupCentre, "setupSpot", default(IntVec3), false);
+
+            Scribe_Values.Look(ref this.durationTicks, "durationTicks", default(int), false);
+
+            //Scribe_Collections.Look(ref this.workersWithCrates, false, "workersWithCrates", LookMode.Reference);
+
+            //Scribe_Collections.Look(ref this.availableCrates, false, "availableCrates", LookMode.Reference);
+        }
+
+        public override void Cleanup()
+        {
+            base.Cleanup();
+            info.Cleanup();
+        }
+
         public override StateGraph CreateGraph()
         {
-            this.info = Map.GetComponent<CarnivalInfo>().ReInitWith(this.lord, this.setupCentre);
+            this.info = Map.GetComponent<CarnivalInfo>();
 
             StateGraph mainGraph = new StateGraph();
 
@@ -191,21 +213,5 @@ namespace Carnivale
             return mainGraph;
         }
 
-
-
-        public override void ExposeData()
-        {
-            Scribe_References.Look(ref this.info, "info");
-
-            Scribe_References.Look(ref this.faction, "faction", false);
-
-            Scribe_Values.Look(ref this.setupCentre, "setupSpot", default(IntVec3), false);
-
-            Scribe_Values.Look(ref this.durationTicks, "durationTicks", default(int), false);
-
-            //Scribe_Collections.Look(ref this.workersWithCrates, false, "workersWithCrates", LookMode.Reference);
-
-            //Scribe_Collections.Look(ref this.availableCrates, false, "availableCrates", LookMode.Reference);
-        }
     }
 }

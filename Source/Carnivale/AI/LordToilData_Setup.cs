@@ -10,6 +10,7 @@ namespace Carnivale
 
         public List<Blueprint> blueprints = new List<Blueprint>();
 
+        public LordToilData_Setup() { }
 
         public LordToilData_Setup(CarnivalInfo carnivalInfo) : base(carnivalInfo)
         {

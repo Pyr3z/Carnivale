@@ -1,5 +1,4 @@
 ﻿using RimWorld;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,11 +10,7 @@ namespace Carnivale
 {
     public class LordToil_SetupCarnival : LordToil_Carn
     {
-        // FIELDS + PROPERTIES //
-
-        private const float RADIUS_MIN = 25f;
-
-        private const float RADIUS_MAX = 50f;
+        // FIELDS + PROPERTIES
 
         private IEnumerable<Frame> Frames
         {
@@ -36,9 +31,9 @@ namespace Carnivale
 
         public LordToil_SetupCarnival() { }
 
-        public LordToil_SetupCarnival(CarnivalInfo data)
+        public LordToil_SetupCarnival(CarnivalInfo info)
         {
-            this.data = new LordToilData_Setup(data);
+            this.data = new LordToilData_Setup(info);
         }
 
 
@@ -50,15 +45,6 @@ namespace Carnivale
             base.Init();
 
             LordToilData_Setup data = (LordToilData_Setup)Data;
-
-            // Cache pawn roles (somewhat inefficient memory use, I know...)
-            foreach (CarnivalRole role in Enum.GetValues(typeof(CarnivalRole)))
-            {
-                List<Pawn> pawns = (from p in Info.currentLord.ownedPawns
-                                                     where p.Is(role)
-                                                     select p).ToList();
-                Info.pawnsWithRole.Add(role, pawns);
-            }
 
             // Give workers tents (currently 8 carnies per tent), manager gets own tent
 
@@ -99,10 +85,15 @@ namespace Carnivale
 
 
 
-            // Find spots for carriers to chill
-            TryFindCarrierSpots();
-            
+            // Find spots for carriers to chill + a guard spot
+            IntVec3 guardSpot = GetCarrierSpots().Average();
 
+            // Assign guard spot
+            Pawn guard;
+            if (Info.pawnsWithRole[CarnivalRole.Guard].TryRandomElement(out guard))
+            {
+                Info.rememberedPositions.Add(guard, guardSpot);
+            }
         }
 
 
@@ -111,13 +102,12 @@ namespace Carnivale
         {
             foreach (Pawn pawn in this.lord.ownedPawns)
             {
-                if (pawn.Is(CarnivalRole.Worker))
+                CarnivalRole pawnRole = pawn.GetCarnivalRole();
+                if (pawnRole.Is(CarnivalRole.Worker))
                 {
                     DutyUtility.BuildCarnival(pawn, Info.setupCentre, Info.baseRadius);
-                    continue;
                 }
-
-                if (pawn.Is(CarnivalRole.Carrier))
+                else if (pawnRole.Is(CarnivalRole.Carrier))
                 {
                     IntVec3 pos;
 
@@ -129,11 +119,12 @@ namespace Carnivale
                     {
                         DutyUtility.HitchToSpot(pawn, pawn.Position);
                     }
-                    
-                    continue;
+                }
+                else
+                {
+                    DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
                 }
 
-                DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
             }
         }
 
@@ -155,17 +146,30 @@ namespace Carnivale
                           where !blue.Destroyed
                           select blue).Any())
                     {
-                        if (!base.Map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial).Any(b => b.Faction == this.lord.faction))
+                        bool anyBuildings = false;
+                        foreach (Building building in from b in base.Map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial)
+                                                 where b.Faction == this.lord.faction
+                                                 select b)
                         {
-                            // No frames, blueprints, OR buildings
-                            // Nothing is buildable. Was the carnival attacked?
-                            this.lord.ReceiveMemo("NoBuildings");
+                            anyBuildings = true;
+                            // Add buildings to CarnivalInfo
+                            if (building is Building_Carn)
+                            {
+                                Info.carnivalBuildings.Add(building);
+                            }
+                        }
+
+                        if (anyBuildings)
+                        {
+                            // Buildings are there. Next toil.
+                            this.lord.ReceiveMemo("SetupDone");
                             return;
                         }
                         else
                         {
-                            // Buildings are there. Next toil.
-                            this.lord.ReceiveMemo("SetupDone");
+                            // No frames, blueprints, OR buildings
+                            // Nothing is buildable. Was the carnival attacked?
+                            this.lord.ReceiveMemo("NoBuildings");
                             return;
                         }
                     }
@@ -215,7 +219,7 @@ namespace Carnivale
         }
 
 
-        private bool TryFindCarrierSpots()
+        private IEnumerable<IntVec3> GetCarrierSpots()
         {
             // Should only be called right after blueprint creation
 
@@ -324,20 +328,21 @@ namespace Carnivale
                 attempts++;
             }
 
+            Error:
+
             if (countSpots == countCarriers)
             {
                 for (int i = 0; i < countSpots; i++)
                 {
                     // Add calculated spots to rememberedPositions
                     Info.rememberedPositions.Add(Info.pawnsWithRole[CarnivalRole.Carrier][i], spots[i]);
+                    yield return spots[i];
                 }
-                return true;
             }
-
-
-            Error:
-            Log.Error("Not enough spots found for carnival carriers to chill.");
-            return false;
+            else
+            {
+                Log.Error("Not enough spots found for carnival carriers to chill.");
+            }
         }
 
 
