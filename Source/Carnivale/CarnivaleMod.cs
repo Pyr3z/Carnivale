@@ -13,7 +13,7 @@ namespace Carnivale
     {
         public override string ModIdentifier { get { return "Carnivale"; } }
 
-        protected override bool HarmonyAutoPatch { get { return false; } }
+        protected override bool HarmonyAutoPatch { get { return true; } }
 
 
         static CarnivaleMod()

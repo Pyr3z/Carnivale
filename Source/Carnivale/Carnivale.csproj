@@ -88,6 +88,8 @@
     <Compile Include="Enums\_DefOf.cs" />
     <Compile Include="AI\LordJob_EntertainColony.cs" />
     <Compile Include="One\TheOne.cs" />
+    <Compile Include="Patches\CarnyDrugPolicyPatch.cs" />
+    <Compile Include="Patches\CarnyJoyNeedPatch.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Workers\CarnivalArrives.cs" />
     <Compile Include="Workers\CarnivalFireball.cs" />

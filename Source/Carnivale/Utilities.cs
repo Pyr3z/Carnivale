@@ -32,20 +32,9 @@ namespace Carnivale
             return faction.def.defName.StartsWith("Carn_");
         }
 
-
-
-        public static IEnumerable<Pawn> FindVendors(this Lord lord)
+        public static bool IsCarny(this Pawn pawn)
         {
-            if (!lord.faction.IsCarnival())
-            {
-                Log.Error("The faction under " + lord + " is not a carnival.");
-                yield break;
-            }
-            foreach (Pawn p in lord.ownedPawns)
-            {
-                if (p.TraderKind != null)
-                    yield return p;
-            }
+            return pawn.RaceProps.Humanlike && pawn.Faction != null && pawn.Faction.IsCarnival();
         }
 
         public static CarnivalRole GetCarnivalRole(this Pawn pawn)
@@ -63,11 +52,6 @@ namespace Carnivale
 
             CarnivalRole role = 0;
 
-            if (pawn.TraderKind != null)
-            {
-                return CarnivalRole.Vendor;
-            }
-
             switch (pawn.kindDef.defName)
             {
                 case "Carny":
@@ -80,9 +64,9 @@ namespace Carnivale
                     if (pawn.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
                         role |= CarnivalRole.Cook;
 
-                    if (pawn.skills.GetSkill(SkillDefOf.Melee).Level > 6
-                        || pawn.skills.GetSkill(SkillDefOf.Shooting).Level > 6)
-                        role |= CarnivalRole.Guard;
+                    //if (pawn.skills.GetSkill(SkillDefOf.Melee).Level > 6
+                    //    || pawn.skills.GetSkill(SkillDefOf.Shooting).Level > 6)
+                    //    role |= CarnivalRole.Guard;
 
                     break;
                 case "CarnyRare":
@@ -102,6 +86,10 @@ namespace Carnivale
                     break;
                 case "CarnyTrader":
                     role = CarnivalRole.Vendor;
+
+                    if (pawn.skills.GetSkill(SkillDefOf.Cooking).Level > 4)
+                        role |= CarnivalRole.Cook;
+
                     break;
                 case "CarnyGuard":
                     role = CarnivalRole.Guard;
@@ -113,8 +101,8 @@ namespace Carnivale
                 case "CarnyManager":
                     role = CarnivalRole.Manager;
 
-                    if (pawn.skills.GetSkill(SkillDefOf.Shooting).Level > 3)
-                        role |= CarnivalRole.Guard;
+                    //if (pawn.skills.GetSkill(SkillDefOf.Shooting).Level > 3)
+                    //    role |= CarnivalRole.Guard;
 
                     break;
                 default:

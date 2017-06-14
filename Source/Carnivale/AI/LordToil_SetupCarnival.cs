@@ -90,7 +90,7 @@ namespace Carnivale
 
             // Assign guard spot at carriers
             Pawn guard;
-            if (Info.pawnsWithRole[CarnivalRole.Guard].Where(p => lord.faction.leader != p).TryRandomElement(out guard))
+            if (Info.pawnsWithRole[CarnivalRole.Guard].Where(g => !Info.rememberedPositions.ContainsKey(g)).TryRandomElement(out guard))
             {
                 Info.rememberedPositions.Add(guard, guardSpot);
 

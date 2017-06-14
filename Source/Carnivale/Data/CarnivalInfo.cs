@@ -10,7 +10,11 @@ namespace Carnivale
 {
     public class CarnivalInfo : MapComponent, ILoadReferenceable
     {
+
         private static IntRange addToRadius = new IntRange(13, 25);
+
+
+        // Fields
 
         public Lord currentLord;
 
@@ -131,6 +135,7 @@ namespace Carnivale
         public void Cleanup()
         {
             this.currentLord = null;
+            Utilities.cachedRoles.Clear();
         }
 
 

@@ -31,12 +31,12 @@
     <defName>Duty_HitchToSpot</defName>
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
-	  
-	    <li Class="Carnivale.JobGiver_StandAtLoc" />
-		
+	    
 		<li Class="ThinkNode_Subtree">
 		  <treeDef>SatisfyBasicNeeds</treeDef>
 	    </li>
+		
+	    <li Class="Carnivale.JobGiver_StandAtLoc" />
 		
 	  </subNodes>
 	</thinkNode>
@@ -49,16 +49,21 @@
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
 	    
+		<!-- satisfy needs -->
 		<li Class="ThinkNode_Subtree">
 		  <treeDef>SatisfyBasicNeeds</treeDef>
 		</li>
 		
-		<!-- <li Class="ThinkNode_Priority_GetJoy"> -->
-		  <!-- <subNodes> -->
-		    <!-- <li Class="JobGiver_GetJoyInBed" /> -->
-			<!-- <li Class="JobGiver_GetJoy" /> -->
-		  <!-- </subNodes> -->
-		<!-- </li> -->
+		<!-- Get joy -->
+		<li Class="ThinkNode_ConditionalNeedPercentageAbove">
+		  <need>Joy</need>
+		  <threshold>0.5</threshold>
+		  <invert>true</invert>
+		  <subNodes>
+		    <li Class="JobGiver_GetJoyInBed" />
+			<li Class="JobGiver_GetJoy" />
+		  </subNodes>
+		</li>
 		
 		<!-- Socialise a lil bit -->
 		<li Class="ThinkNode_ConditionalRandom">

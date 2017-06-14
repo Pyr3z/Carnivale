@@ -96,7 +96,7 @@ namespace Carnivale
                   select p).TryRandomElement(out announcer))
             {
                 // If no pawns have the announcer backstory
-                if (!Info.pawnsWithRole[CarnivalRole.Entertainer].TryRandomElement(out announcer))
+                if (!Info.pawnsWithRole[CarnivalRole.Entertainer].Where(p => !Info.rememberedPositions.ContainsKey(p)).TryRandomElement(out announcer))
                 {
                     // No entertainers either
                     return false;

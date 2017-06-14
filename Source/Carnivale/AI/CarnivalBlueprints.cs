@@ -10,15 +10,9 @@ namespace Carnivale
     {
         private static CarnivalInfo info;
 
-        private static CellRect area;
-
-        private static IntVec3 bannerCell;
-
         private static List<Thing> availableCrates;
 
         private static List<Pawn> stallUsers;
-
-        private static Faction faction;
 
         // The only public method; use this
         [DebuggerHidden]
@@ -26,31 +20,44 @@ namespace Carnivale
         {
             // Assign necessary values to this singleton (is this technically a singleton?)
             CarnivalBlueprints.info = info;
-            area = info.carnivalArea;
-            bannerCell = info.bannerCell;
-            availableCrates = ((LordToilData_Setup)info.currentLord.CurLordToil.data).availableCrates;
-            stallUsers = ((List<Pawn>)info.pawnsWithRole[CarnivalRole.Vendor]).ListFullCopyOrNull();
-            faction = info.currentLord.faction;
+            
+            if (info.currentLord.CurLordToil.data is LordToilData_Setup)
+            {
+                availableCrates = ((LordToilData_Setup)info.currentLord.CurLordToil.data).availableCrates;
+                stallUsers = ((List<Pawn>)info.pawnsWithRole[CarnivalRole.Vendor]).ListFullCopyOrNull();
+            }
+            else
+            {
+                Log.Error("Tried to place carnival blueprints while not in setup toil.");
+                availableCrates = null;
+                stallUsers = null;
+            }
 
 
 
             // Do the blueprint thing
 
-            foreach (Blueprint tent in PlaceTentBlueprints(info.map))
+            if (!availableCrates.NullOrEmpty())
             {
-                yield return tent;
-            }
+                foreach (Blueprint tent in PlaceTentBlueprints())
+                {
+                    yield return tent;
+                }
 
-            foreach (Blueprint stall in PlaceStallBlueprints(info.map))
-            {
-                yield return stall;
-            }
+                if (!stallUsers.NullOrEmpty())
+                {
+                    foreach (Blueprint stall in PlaceStallBlueprints())
+                    {
+                        yield return stall;
+                    }
+                }
 
-            yield return PlaceEntranceBlueprint(info.map);
+                yield return PlaceEntranceBlueprint();
+            }
         }
 
 
-        private static IEnumerable<Blueprint> PlaceTentBlueprints(Map map)
+        private static IEnumerable<Blueprint> PlaceTentBlueprints()
         {
             int numTents = 0;
             foreach (Thing crate in availableCrates)
@@ -61,7 +68,7 @@ namespace Carnivale
 
             ThingDef tentDef = _DefOf.Carn_TentMedBed;
             Rot4 rot = Rot4.Random;
-            IntVec3 tentSpot = FindRandomPlacementFor(tentDef, rot, map, true);
+            IntVec3 tentSpot = FindRandomPlacementFor(tentDef, rot, true);
 
             IntVec3 lineDirection;
 
@@ -93,16 +100,16 @@ namespace Carnivale
                 // Distance between tents is 1 cell
                 tentSpot += lineDirection * ((tentDef.size.x + 1) * i);
 
-                if (CanPlaceBlueprintAt(tentSpot, rot, tentDef, map))
+                if (CanPlaceBlueprintAt(tentSpot, rot, tentDef))
                 {
                     // Insta-cut plants (potentially OP?)
-                    RemovePlantsAndTeleportHaulablesFor(tentSpot, tentDef.size, rot, map);
-                    yield return GenConstruct.PlaceBlueprintForBuild(tentDef, tentSpot, map, rot, faction, null);
+                    RemovePlantsAndTeleportHaulablesFor(tentSpot, tentDef.size, rot);
+                    yield return GenConstruct.PlaceBlueprintForBuild(tentDef, tentSpot, info.map, rot, info.currentLord.faction, null);
                 }
                 else
                 {
                     // Find new placement if next spot doesn't work
-                    tentSpot = FindRandomPlacementFor(tentDef, rot, map);
+                    tentSpot = FindRandomPlacementFor(tentDef, rot);
                     i--;
                 }
             }
@@ -113,23 +120,23 @@ namespace Carnivale
 
             rot = Rot4.Random;
             tentDef = _DefOf.Carn_TentSmallMan;
-            tentSpot = FindRandomPlacementFor(tentDef, rot, map, true);
+            tentSpot = FindRandomPlacementFor(tentDef, rot, true);
 
             if (tentSpot.IsValid)
             {
-                RemovePlantsAndTeleportHaulablesFor(tentSpot, tentDef.size, rot, map);
-                yield return GenConstruct.PlaceBlueprintForBuild(tentDef, tentSpot, map, rot, faction, null);
+                RemovePlantsAndTeleportHaulablesFor(tentSpot, tentDef.size, rot);
+                yield return GenConstruct.PlaceBlueprintForBuild(tentDef, tentSpot, info.map, rot, info.currentLord.faction, null);
             }
 
         }
 
-        private static IEnumerable<Blueprint_Build> PlaceStallBlueprints(Map map)
+        private static IEnumerable<Blueprint> PlaceStallBlueprints()
         {
             // Default stall is food for now
             ThingDef stallDef = _DefOf.Carn_StallFood;
             IntVec3 stallSpot = IntVec3.Invalid;
             Rot4 rot = default(Rot4);
-            CellRect stallArea = area;
+            CellRect stallArea = info.carnivalArea;
 
             foreach (Pawn stallUser in stallUsers)
             {
@@ -161,12 +168,12 @@ namespace Carnivale
                 if (stallSpot.IsValid)
                 {
                     // Next spot should be close to last spot
-                    stallSpot = FindRandomPlacementFor(stallDef, rot, map, stallArea, stallSpot);
+                    stallSpot = FindRandomPlacementFor(stallDef, rot, stallArea, stallSpot);
                 }
                 else
                 {
                     // Find random initial spot
-                    stallSpot = FindRandomPlacementFor(stallDef, rot, map, false, 8);
+                    stallSpot = FindRandomPlacementFor(stallDef, rot, false, 8);
                     stallArea = CellRect.CenteredOn(stallSpot, 8);
                 }
 
@@ -174,49 +181,54 @@ namespace Carnivale
                 // Finally, spawn the fucker
                 if (stallSpot.IsValid)
                 {
-                    RemovePlantsAndTeleportHaulablesFor(stallSpot, stallDef.size, rot, map);
+                    RemovePlantsAndTeleportHaulablesFor(stallSpot, stallDef.size, rot);
                     // Add spot to stall user's spot
                     info.rememberedPositions.Add(stallUser, stallSpot);
-                    yield return GenConstruct.PlaceBlueprintForBuild(stallDef, stallSpot, map, rot, faction, null);
+                    yield return GenConstruct.PlaceBlueprintForBuild(stallDef, stallSpot, info.map, rot, info.currentLord.faction, null);
                 }
             }
         }
 
-        private static Blueprint PlaceEntranceBlueprint(Map map)
+        private static Blueprint PlaceEntranceBlueprint()
         {
             ThingDef bannerDef = _DefOf.Carn_SignEntry;
             Rot4 rot = default(Rot4);
 
-            if (CanPlaceBlueprintAt(bannerCell, rot, bannerDef, map))
+            if (CanPlaceBlueprintAt(info.bannerCell, rot, bannerDef))
             {
-                RemovePlantsAndTeleportHaulablesFor(bannerCell, bannerDef.size, rot, map);
-                return GenConstruct.PlaceBlueprintForBuild(bannerDef, bannerCell, map, rot, faction, null);
+                RemovePlantsAndTeleportHaulablesFor(info.bannerCell, bannerDef.size, rot);
+                return GenConstruct.PlaceBlueprintForBuild(bannerDef, info.bannerCell, info.map, rot, info.currentLord.faction, null);
             }
 
             // If cannot place on bannerCell, try in a small area around it
 
-            CellRect tryArea = CellRect.CenteredOn(bannerCell, 8).ClipInsideRect(area);
-            IntVec3 bannerSpot = FindRandomPlacementFor(bannerDef, rot, map, tryArea);
+            CellRect tryArea = CellRect.CenteredOn(info.bannerCell, 8).ClipInsideRect(info.carnivalArea);
+            IntVec3 bannerSpot = FindRandomPlacementFor(bannerDef, rot, tryArea);
 
             if (bannerSpot.IsValid)
             {
                 info.bannerCell = bannerSpot;
-                RemovePlantsAndTeleportHaulablesFor(bannerSpot, bannerDef.size, rot, map);
-                return GenConstruct.PlaceBlueprintForBuild(bannerDef, bannerSpot, map, rot, faction, null);
+                RemovePlantsAndTeleportHaulablesFor(bannerSpot, bannerDef.size, rot);
+                return GenConstruct.PlaceBlueprintForBuild(bannerDef, bannerSpot, info.map, rot, info.currentLord.faction, null);
             }
 
             // If that fails, try any area in the carnival area (suboptimal)
 
-            bannerSpot = FindRandomPlacementFor(bannerDef, rot, map);
+            bannerSpot = FindRandomPlacementFor(bannerDef, rot);
             info.bannerCell = bannerSpot;
-            RemovePlantsAndTeleportHaulablesFor(bannerSpot, bannerDef.size, rot, map);
-            return GenConstruct.PlaceBlueprintForBuild(bannerDef, bannerSpot, map, rot, faction, null);
+            RemovePlantsAndTeleportHaulablesFor(bannerSpot, bannerDef.size, rot);
+            return GenConstruct.PlaceBlueprintForBuild(bannerDef, bannerSpot, info.map, rot, info.currentLord.faction, null);
+        }
+
+        private static Blueprint PlaceJoyBuildings()
+        {
+            return null;
         }
 
 
 
 
-        private static bool CanPlaceBlueprintAt(IntVec3 spot, Rot4 rot, ThingDef def, Map map)
+        private static bool CanPlaceBlueprintAt(IntVec3 spot, Rot4 rot, ThingDef def)
         {
             if (!spot.IsValid) return false;
 
@@ -225,7 +237,7 @@ namespace Carnivale
 
             def.building.isEdifice = true;
 
-            bool result = GenConstruct.CanPlaceBlueprintAt(def, spot, rot, map, false, null).Accepted;
+            bool result = GenConstruct.CanPlaceBlueprintAt(def, spot, rot, info.map, false, null).Accepted;
 
             def.building.isEdifice = isEdifice;
 
@@ -233,11 +245,11 @@ namespace Carnivale
         }
 
 
-        private static IntVec3 FindRandomPlacementFor(ThingDef def, Rot4 rot, Map map, bool preferFarFromColony = false, int contractedBy = 0)
+        private static IntVec3 FindRandomPlacementFor(ThingDef def, Rot4 rot, bool preferFarFromColony = false, int contractedBy = 0)
         {
-            CellRect noGo = CellRect.CenteredOn(bannerCell, area.Width / 2);
+            CellRect noGo = CellRect.CenteredOn(info.bannerCell, info.carnivalArea.Width / 2);
 
-            CellRect adjustedArea = area.ContractedBy(contractedBy);
+            CellRect adjustedArea = info.carnivalArea.ContractedBy(contractedBy);
 
             for (int i = 0; i < 200; i++)
             {
@@ -246,11 +258,11 @@ namespace Carnivale
                 if (preferFarFromColony && noGo.Contains(randomCell))
                     continue;
 
-                if (map.reachability.CanReach(randomCell, area.CenterCell, Verse.AI.PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
+                if (info.map.reachability.CanReach(randomCell, info.carnivalArea.CenterCell, Verse.AI.PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
                 {
-                    if (!randomCell.Roofed(map))
+                    if (!randomCell.Roofed(info.map))
                     {
-                        if (CanPlaceBlueprintAt(randomCell, rot, def, map))
+                        if (CanPlaceBlueprintAt(randomCell, rot, def))
                         {
                             return randomCell;
                         }
@@ -260,17 +272,17 @@ namespace Carnivale
             return IntVec3.Invalid;
         }
 
-        private static IntVec3 FindRandomPlacementFor(ThingDef def, Rot4 rot, Map map, CellRect otherArea, IntVec3 preferCardinalAdjacentTo = default(IntVec3))
+        private static IntVec3 FindRandomPlacementFor(ThingDef def, Rot4 rot, CellRect otherArea, IntVec3 preferCardinalAdjacentTo = default(IntVec3))
         {
             for (int i = 0; i < 200; i++)
             {
                 IntVec3 randomCell = otherArea.RandomCell;
 
-                if (map.reachability.CanReach(randomCell, area.CenterCell, Verse.AI.PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
+                if (info.map.reachability.CanReach(randomCell, info.carnivalArea.CenterCell, Verse.AI.PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
                 {
-                    if (!randomCell.Roofed(map))
+                    if (!randomCell.Roofed(info.map))
                     {
-                        if (CanPlaceBlueprintAt(randomCell, rot, def, map))
+                        if (CanPlaceBlueprintAt(randomCell, rot, def))
                         {
                             if (preferCardinalAdjacentTo != default(IntVec3))
                             {
@@ -290,21 +302,21 @@ namespace Carnivale
 
 
 
-        private static void RemovePlantsAndTeleportHaulablesFor(IntVec3 spot, IntVec2 size, Rot4 rot, Map map)
+        private static void RemovePlantsAndTeleportHaulablesFor(IntVec3 spot, IntVec2 size, Rot4 rot)
         {
             CellRect removeCells = GenAdj.OccupiedRect(spot, rot, size);
             // Not sure if CellRects are immutable upon assignment but w/e
-            CellRect moveToCells = new CellRect(removeCells.minX, removeCells.minZ, removeCells.maxX, removeCells.maxZ).ExpandedBy(2).ClipInsideMap(map);
+            CellRect moveToCells = new CellRect(removeCells.minX, removeCells.minZ, removeCells.maxX, removeCells.maxZ).ExpandedBy(2).ClipInsideMap(info.map);
 
             foreach (IntVec3 cell in removeCells)
             {
-                Plant plant = cell.GetPlant(map);
+                Plant plant = cell.GetPlant(info.map);
                 if (plant != null)
                 {
                     plant.Destroy(DestroyMode.KillFinalize);
                 }
 
-                Thing haulable = cell.GetFirstHaulable(map);
+                Thing haulable = cell.GetFirstHaulable(info.map);
                 if (haulable != null)
                 {
                     IntVec3 moveToSpot = haulable.Position;
@@ -313,7 +325,7 @@ namespace Carnivale
                         IntVec3 tempSpot = moveToCells.RandomCell;
                         if (!removeCells.Contains(tempSpot))
                         {
-                            if (!tempSpot.GetThingList(map).Any())
+                            if (!tempSpot.GetThingList(info.map).Any())
                             {
                                 moveToSpot = tempSpot;
                                 break;
