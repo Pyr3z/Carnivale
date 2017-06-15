@@ -96,7 +96,7 @@
 		
 		<guards>
 		  <!-- First is treated as costless -->
-		  <CarnyGuard>2</CarnyGuard>
+		  <CarnyGuard>3</CarnyGuard>
 		</guards>
 	  </li>
 	  

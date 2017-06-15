@@ -9,6 +9,8 @@ namespace Carnivale
     {
         public static DutyDef Duty_BuildCarnival;
 
+        public static DutyDef Duty_ForceRest;
+
         public static DutyDef Duty_GuardSmallArea;
 
         public static DutyDef Duty_HitchToSpot;

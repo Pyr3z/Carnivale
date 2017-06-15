@@ -611,8 +611,6 @@
 
 	
 	<skillGains>
-	  <li><defName>Melee</defName><degree>3</degree></li>
-	  <li><defName>Shooting</defName><degree>3</degree></li>
 	  <li><defName>Construction</defName><degree>5</degree></li>
 	  <li><defName>Intellectual</defName><degree>2</degree></li>
 	</skillGains>

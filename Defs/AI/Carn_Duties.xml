@@ -118,22 +118,25 @@
   
   <!-- Rest -->
   <DutyDef>
-    <defName>Duty_Rest</defName>
+    <defName>Duty_ForceRest</defName>
 	<alwaysShowWeapon>false</alwaysShowWeapon>
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
 		
 		<!-- Goto carnival area if not already -->
-		<li Class="Carnivale.ThinkNode_InCarnivalArea">
-		  <invert>true</invert>
-		  <subNodes>
-		    <li Class="Carnivale.JobGiver_GotoCarnivalArea" />
-		  </subNodes>
-		</li>
+		<!-- <li Class="Carnivale.ThinkNode_InCarnivalArea"> -->
+		  <!-- <invert>true</invert> -->
+		  <!-- <subNodes> -->
+		    <!-- <li Class="Carnivale.JobGiver_GotoCarnivalArea" /> -->
+		  <!-- </subNodes> -->
+		<!-- </li> -->
 		
 		<li Class="ThinkNode_Subtree">
 		  <treeDef>SatisfyBasicNeeds</treeDef>
 		</li>
+		
+		<!-- Force get rest -->
+		<!-- <li Class="Carnivale.JobGiver_ForceGetRest" /> -->
 		
 	  </subNodes>
 	</thinkNode>

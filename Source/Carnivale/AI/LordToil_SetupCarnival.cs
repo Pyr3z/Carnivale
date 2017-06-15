@@ -44,6 +44,12 @@ namespace Carnivale
         {
             base.Init();
 
+            foreach (var pawn in lord.ownedPawns)
+            {
+                if (!pawn.RaceProps.Humanlike) continue;
+                Log.Warning(pawn.NameStringShort + " --> " + pawn.kindDef.defName);
+            }
+
             LordToilData_Setup data = (LordToilData_Setup)Data;
 
             // Give workers tents (currently 8 carnies per tent), manager gets own tent
@@ -102,6 +108,10 @@ namespace Carnivale
                     guard.inventory.TryAddItemNotForSale(kib);
                 }
             }
+
+
+            // Set announcer pos at entrance sign
+            TryGiveAnnouncerPosition();
         }
 
 
@@ -161,6 +171,7 @@ namespace Carnivale
             foreach (Pawn pawn in this.lord.ownedPawns)
             {
                 CarnivalRole pawnRole = pawn.GetCarnivalRole();
+
                 if (pawnRole.Is(CarnivalRole.Worker))
                 {
                     DutyUtility.BuildCarnival(pawn, Info.setupCentre, Info.baseRadius);
@@ -215,15 +226,8 @@ namespace Carnivale
         {
             // Do more cleanup here?
             LordToilData_Setup data = (LordToilData_Setup)Data;
-            data.blueprints.RemoveAll(blue => blue.Destroyed);
-            //foreach (Blueprint b in Data.blueprints)
-            //{
-            //    b.Destroy(DestroyMode.Cancel);
-            //}
-            //foreach (Frame frame in this.Frames)
-            //{
-            //    frame.Destroy(DestroyMode.Cancel);
-            //}
+            data.availableCrates.RemoveAll(c => c.DestroyedOrNull());
+            data.blueprints.RemoveAll(blue => blue.DestroyedOrNull());
         }
 
 
@@ -354,6 +358,32 @@ namespace Carnivale
         }
 
 
-        
+        private bool TryGiveAnnouncerPosition()
+        {
+            Pawn announcer;
+
+            if (!(from p in lord.ownedPawns
+                  where p.story != null && p.story.adulthood != null
+                    && p.story.adulthood.TitleShort == "Announcer"
+                    && !Info.rememberedPositions.ContainsKey(p)
+                  select p).TryRandomElement(out announcer))
+            {
+                // If no pawns have the announcer backstory
+                if (!Info.pawnsWithRole[CarnivalRole.Entertainer].Where(p => !Info.rememberedPositions.ContainsKey(p)).TryRandomElement(out announcer))
+                {
+                    // No entertainers either
+                    return false;
+                }
+            }
+
+            IntVec3 offset = new IntVec3(-1, 0, -2);
+
+            Info.rememberedPositions.Add(announcer, Info.bannerCell + offset);
+
+            return true;
+        }
+
+
+
     }
 }

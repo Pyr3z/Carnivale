@@ -26,8 +26,25 @@ namespace Carnivale
         {
             foreach (var pawn in lord.ownedPawns)
             {
-
+                CarnivalRole role = pawn.GetCarnivalRole();
+                if (!role.Is(CarnivalRole.Carrier))
+                {
+                    DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
+                }
             }
         }
+
+
+        public override void LordToilTick()
+        {
+            base.LordToilTick();
+        }
+
+
+        private void SwitchGuardDuties(Pawn guard, Pawn newGuard)
+        {
+
+        }
+
     }
 }

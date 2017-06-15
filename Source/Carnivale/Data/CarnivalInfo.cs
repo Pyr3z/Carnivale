@@ -11,7 +11,7 @@ namespace Carnivale
     public class CarnivalInfo : MapComponent, ILoadReferenceable
     {
 
-        private static IntRange addToRadius = new IntRange(13, 25);
+        private static IntRange addToRadius = new IntRange(13, 20);
 
 
         // Fields
@@ -109,13 +109,15 @@ namespace Carnivale
 
             // Set radius for carnies to stick to
             baseRadius = lord.ownedPawns.Count + addToRadius.RandomInRange;
-            baseRadius = Mathf.Clamp(baseRadius, 15f, 50f);
+            baseRadius = Mathf.Clamp(baseRadius, 15f, 35f);
 
             // Set carnival area
             carnivalArea = CellRect.CenteredOn(setupCentre, (int)baseRadius + 10).ClipInsideMap(map).ContractedBy(10);
 
             // Set banner spot
             bannerCell = CalculateBannerCell();
+            if (Prefs.DevMode)
+                Log.Warning("CarnivalInfo.bannerCell first pass: " + bannerCell.ToString());
 
             // Moved to LordToil_SetupCarnival.. dunno why but it doesn't work here
             foreach (CarnivalRole role in Enum.GetValues(typeof(CarnivalRole)))
@@ -207,7 +209,7 @@ namespace Carnivale
                 }
 
                 if (roadCell.IsValid
-                    && roadCell.DistanceToSquared(setupCentre) < baseRadius * baseRadius * 1.5f)
+                    && roadCell.DistanceToSquared(setupCentre) < baseRadius * baseRadius * 1.25f)
                 {
                     // Found the edge of a road,
                     // try to centre it if it is diagonal or vertical

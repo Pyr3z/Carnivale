@@ -23,13 +23,6 @@ namespace Carnivale
 
         // OVERRIDE METHODS //
 
-        public override void Init()
-        {
-            base.Init();
-
-            TryGiveAnnouncerPosition();
-        }
-
 
         public override void UpdateAllDuties()
         {
@@ -44,8 +37,14 @@ namespace Carnivale
                 {
                     if (Info.rememberedPositions.TryGetValue(pawn, out pos))
                     {
+                        // more carriers = more radius
                         DutyUtility.GuardSmallArea(pawn, pos, countCarriers);
                         continue;
+                    }
+                    else
+                    {
+                        // rest on the off shift
+                        DutyUtility.ForceRest(pawn);
                     }
                 }
 
@@ -71,44 +70,11 @@ namespace Carnivale
                     }
                 }
 
+                // Default
                 DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
             }
         }
 
-
-        public override void LordToilTick()
-        {
-            base.LordToilTick();
-
-
-        }
-
-
-
-        private bool TryGiveAnnouncerPosition()
-        {
-            Pawn announcer;
-
-            if (!(from p in lord.ownedPawns
-                  where p.story != null && p.story.adulthood != null
-                    && p.story.adulthood.TitleShort == "Announcer"
-                    && !Info.rememberedPositions.ContainsKey(p)
-                  select p).TryRandomElement(out announcer))
-            {
-                // If no pawns have the announcer backstory
-                if (!Info.pawnsWithRole[CarnivalRole.Entertainer].Where(p => !Info.rememberedPositions.ContainsKey(p)).TryRandomElement(out announcer))
-                {
-                    // No entertainers either
-                    return false;
-                }
-            }
-
-            IntVec3 offset = new IntVec3(-1, 0, -2);
-
-            Info.rememberedPositions.Add(announcer, Info.bannerCell + offset);
-
-            return true;
-        }
 
     }
 }

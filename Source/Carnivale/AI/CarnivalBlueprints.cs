@@ -52,23 +52,23 @@ namespace Carnivale
                     }
                 }
 
-                yield return PlaceEntranceBlueprint();
+                Blueprint entrance = PlaceEntranceBlueprint();
+
+                if (entrance != null)
+                {
+                    yield return entrance;
+                    if (Prefs.DevMode)
+                        Log.Warning("CarnivalInfo.bannerCell second pass: " + info.bannerCell.ToString());
+                }
             }
         }
 
 
         private static IEnumerable<Blueprint> PlaceTentBlueprints()
         {
-            int numTents = 0;
-            foreach (Thing crate in availableCrates)
-            {
-                if (crate.def == _DefOf.Carn_Crate_TentLodge)
-                    numTents++;
-            }
-
             ThingDef tentDef = _DefOf.Carn_TentMedBed;
             Rot4 rot = Rot4.Random;
-            IntVec3 tentSpot = FindRandomPlacementFor(tentDef, rot, true);
+            IntVec3 tentSpot = FindRandomPlacementFor(tentDef, rot, true, (int)info.baseRadius / 2);
 
             IntVec3 lineDirection;
 
@@ -93,25 +93,29 @@ namespace Carnivale
             }
 
             // Place lodging tents (8 pawns per medium sized tent)
-            for (int i = 0; i < numTents; i++)
+            int counter = 0;
+            int attempts = 0;
+            while (attempts < 20 && availableCrates.Any(t => t.def == _DefOf.Carn_Crate_TentLodge))
             {
                 // Following works as intended iff size.x == size.y
 
                 // Distance between tents is 1 cell
-                tentSpot += lineDirection * ((tentDef.size.x + 1) * i);
+                tentSpot += lineDirection * ((tentDef.size.x + 1) * counter++);
 
                 if (CanPlaceBlueprintAt(tentSpot, rot, tentDef))
                 {
-                    // Insta-cut plants (potentially OP?)
+                    RemoveFirstCrateOfDef(_DefOf.Carn_Crate_TentLodge);
                     RemovePlantsAndTeleportHaulablesFor(tentSpot, tentDef.size, rot);
-                    yield return GenConstruct.PlaceBlueprintForBuild(tentDef, tentSpot, info.map, rot, info.currentLord.faction, null);
+                    yield return PlaceBlueprint(tentDef, tentSpot, rot);
                 }
                 else
                 {
                     // Find new placement if next spot doesn't work
-                    tentSpot = FindRandomPlacementFor(tentDef, rot);
-                    i--;
+                    tentSpot = FindRandomPlacementFor(tentDef, rot, CellRect.CenteredOn(tentSpot, 12));
+                    counter = 0;
                 }
+
+                attempts++;
             }
 
             // Place manager tent
@@ -120,12 +124,31 @@ namespace Carnivale
 
             rot = Rot4.Random;
             tentDef = _DefOf.Carn_TentSmallMan;
-            tentSpot = FindRandomPlacementFor(tentDef, rot, true);
+
+            // Try to place near other tents
+            CellRect searchArea = CellRect.CenteredOn(tentSpot, 10);
+            tentSpot = FindRandomPlacementFor(tentDef, rot, searchArea, tentSpot);
 
             if (tentSpot.IsValid)
             {
+                RemoveFirstCrateOfDef(_DefOf.Carn_Crate_TentMan);
                 RemovePlantsAndTeleportHaulablesFor(tentSpot, tentDef.size, rot);
-                yield return GenConstruct.PlaceBlueprintForBuild(tentDef, tentSpot, info.map, rot, info.currentLord.faction, null);
+                yield return PlaceBlueprint(tentDef, tentSpot, rot);
+            }
+            else
+            {
+                // use suboptimal random cell
+                tentSpot = FindRadialPlacementFor(tentDef, rot, info.setupCentre, (int)info.baseRadius / 2);
+                if (tentSpot.IsValid)
+                {
+                    RemoveFirstCrateOfDef(_DefOf.Carn_Crate_TentMan);
+                    RemovePlantsAndTeleportHaulablesFor(tentSpot, tentDef.size, rot);
+                    yield return PlaceBlueprint(tentDef, tentSpot, rot);
+                }
+                else
+                {
+                    Log.Error("Found no valid placement for manager tent.");
+                }
             }
 
         }
@@ -173,24 +196,28 @@ namespace Carnivale
                 else
                 {
                     // Find random initial spot
-                    stallSpot = FindRandomPlacementFor(stallDef, rot, false, 8);
+                    stallSpot = FindRandomPlacementFor(stallDef, rot, false, (int)info.baseRadius / 3);
                     stallArea = CellRect.CenteredOn(stallSpot, 8);
                 }
 
 
-                // Finally, spawn the fucker
+                // Finally, spawn the f*cker
                 if (stallSpot.IsValid)
                 {
+                    RemoveFirstCrateOfDef(_DefOf.Carn_Crate_Stall);
                     RemovePlantsAndTeleportHaulablesFor(stallSpot, stallDef.size, rot);
                     // Add spot to stall user's spot
                     info.rememberedPositions.Add(stallUser, stallSpot);
-                    yield return GenConstruct.PlaceBlueprintForBuild(stallDef, stallSpot, info.map, rot, info.currentLord.faction, null);
+                    yield return PlaceBlueprint(stallDef, stallSpot, rot);
                 }
             }
         }
 
         private static Blueprint PlaceEntranceBlueprint()
         {
+            if (!availableCrates.Any(c => c.def == _DefOf.Carn_Crate_Stall))
+                return null;
+
             ThingDef bannerDef = _DefOf.Carn_SignEntry;
             Rot4 rot = default(Rot4);
 
@@ -199,21 +226,27 @@ namespace Carnivale
             if (bannerSpot.IsValid)
             {
                 info.bannerCell = bannerSpot;
+
+                RemoveFirstCrateOfDef(_DefOf.Carn_Crate_Stall);
                 RemovePlantsAndTeleportHaulablesFor(info.bannerCell, bannerDef.size, rot);
-                return GenConstruct.PlaceBlueprintForBuild(bannerDef, info.bannerCell, info.map, rot, info.currentLord.faction, null);
+                return PlaceBlueprint(bannerDef, bannerSpot, rot);
             }
 
             // If that fails, try any spot in the carnival area (suboptimal)
 
             Log.Error("Couldn't find an optimum place for " + bannerDef + ". Giving random place in carnival area.");
             bannerSpot = FindRandomPlacementFor(bannerDef, rot);
-            info.bannerCell = bannerSpot;
-            RemovePlantsAndTeleportHaulablesFor(bannerSpot, bannerDef.size, rot);
-            return GenConstruct.PlaceBlueprintForBuild(bannerDef, bannerSpot, info.map, rot, info.currentLord.faction, null);
-        }
+            
+            if (bannerSpot.IsValid)
+            {
+                info.bannerCell = bannerSpot;
 
-        private static Blueprint PlaceJoyBuildings()
-        {
+                RemoveFirstCrateOfDef(_DefOf.Carn_Crate_Stall);
+                RemovePlantsAndTeleportHaulablesFor(bannerSpot, bannerDef.size, rot);
+                return PlaceBlueprint(bannerDef, bannerSpot, rot);
+            }
+
+            Log.Error("Couldn't find any place for " + bannerDef + ". Not retrying.");
             return null;
         }
 
@@ -234,6 +267,12 @@ namespace Carnivale
             def.building.isEdifice = isEdifice;
 
             return result;
+        }
+
+
+        private static Blueprint PlaceBlueprint(ThingDef def, IntVec3 spot, Rot4 rotation)
+        {
+            return GenConstruct.PlaceBlueprintForBuild(def, spot, info.map, rotation, info.currentLord.faction, null);
         }
 
 
@@ -350,6 +389,16 @@ namespace Carnivale
                 }
             }
         }
+
+        private static void RemoveFirstCrateOfDef(ThingDef def)
+        {
+            Thing first = availableCrates.FirstOrDefault(t => t.def == def);
+            if (first != null)
+            {
+                availableCrates.Remove(first);
+            }
+        }
+
         
     }
 }
