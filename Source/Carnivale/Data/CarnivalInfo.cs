@@ -173,16 +173,27 @@ namespace Carnivale
             
             if (!closestCell.Standable(map))
             {
-                CellFinder.TryRandomClosewalkCellNear(
-                    closestCell,
-                    map,
-                    16,
-                    out closestCell
-                    //delegate(IntVec3 cell)
-                    //{
-                    //    return true;
-                    //}
-                );
+                if (!CellFinder.TryRandomClosewalkCellNear(
+                        closestCell,
+                        map,
+                        16,
+                        out closestCell
+                        //delegate(IntVec3 cell)
+                        //{
+                        //    return true;
+                        //}
+                   ))
+                {
+                    // Really tough time finding a cell now
+                    foreach (var cell in GenRadial.RadialCellsAround(closestCell, 25, false))
+                    {
+                        if (cell.Standable(map))
+                        {
+                            closestCell = cell;
+                            break;
+                        }
+                    }
+                }
             }
             
 
@@ -190,7 +201,7 @@ namespace Carnivale
             {
                 // Prefer to place banner on nearest road
                 CellRect searchArea = CellRect.CenteredOn(closestCell, 75).ClipInsideMap(map).ContractedBy(10);
-                float distance = 9999999f;
+                float distance = float.MaxValue;
                 IntVec3 roadCell = IntVec3.Invalid;
 
                 foreach (var cell in searchArea)

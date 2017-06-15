@@ -44,11 +44,11 @@ namespace Carnivale
         {
             base.Init();
 
-            foreach (var pawn in lord.ownedPawns)
-            {
-                if (!pawn.RaceProps.Humanlike) continue;
-                Log.Warning(pawn.NameStringShort + " --> " + pawn.kindDef.defName);
-            }
+            //foreach (var pawn in lord.ownedPawns)
+            //{
+            //    if (!pawn.RaceProps.Humanlike) continue;
+            //    Log.Warning(pawn.NameStringShort + " --> " + pawn.kindDef.defName);
+            //}
 
             LordToilData_Setup data = (LordToilData_Setup)Data;
 

@@ -8,6 +8,9 @@ namespace Carnivale
 {
     public class PawnGroupKindWorker_Carnival : PawnGroupKindWorker
     {
+        private const int MaxCarnies = 25; // not including carriers
+
+        private const int MaxVendors = 3;
 
         public override float MinPointsToGenerateAnything(PawnGroupMaker groupMaker)
         {
@@ -36,20 +39,21 @@ namespace Carnivale
             if (!CanGenerateFrom(parms, groupMaker) || !ValidateTradersList(groupMaker) || !ValidateCarriers(groupMaker))
             {
                 if (errorOnZeroResults)
-                    Log.Error("Cannot generate carnival caravan for " + parms.faction);
+                    Log.Error("Cannot generate carnival caravan for " + parms.faction + ". parms=" + parms);
                 return;
             }
             // End validation steps
 
-            IEnumerable<Pawn> existingPawns = from p in Find.WorldPawns.AllPawnsAlive
-                                              where p.Faction == parms.faction
-                                                    && parms.faction.leader != p
-                                              select p;
+            // New approach
+            //int numCarnies = 0;
+            //int numVendors = 0;
+            //while (parms.points > 1 && numCarnies < MaxCarnies)
+            //{
 
-            if (existingPawns == null)
-                existingPawns = new HashSet<Pawn>();
+            //}
+            // End new approach
 
-
+            // Old approach
             // Generate vendors (first one is costless)
             for (int i = 0;  i < groupMaker.traders.First().selectionWeight; i++)
             {
@@ -60,7 +64,7 @@ namespace Carnivale
                 if (i == 0) parms.points += _DefOf.CarnyTrader.combatPower;
                 else if (parms.points < _DefOf.CarnyTrader.combatPower) break;
 
-                GenerateVendor(parms, groupMaker, traderKind, outPawns, existingPawns, true);
+                GenerateVendor(parms, groupMaker, traderKind, outPawns, true);
 
                 // Generate wares
                 ItemCollectionGeneratorParams waresParms = default(ItemCollectionGeneratorParams);
@@ -78,11 +82,11 @@ namespace Carnivale
             }
 
             // Generate options
-            GenerateGroup(parms, groupMaker.options, outPawns, existingPawns, true);
+            GenerateGroup(parms, groupMaker.options, outPawns, true);
 
             // Generate guards (first one is costless)
             parms.points += _DefOf.CarnyGuard.combatPower;
-            GenerateGroup(parms, groupMaker.guards, outPawns, existingPawns, true);
+            GenerateGroup(parms, groupMaker.guards, outPawns, true);
 
             // Generate manager (costless)
             GenerateLeader(parms, outPawns);
@@ -93,7 +97,7 @@ namespace Carnivale
         /* Private Methods */
 
 
-        private void GenerateVendor(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, TraderKindDef traderKind, List<Pawn> outPawns, IEnumerable<Pawn> existingPawns, bool subtractPoints = false)
+        private void GenerateVendor(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, TraderKindDef traderKind, List<Pawn> outPawns, bool subtractPoints = false)
         {
             if (subtractPoints)
                 if (parms.points < _DefOf.CarnyTrader.combatPower)
@@ -101,39 +105,33 @@ namespace Carnivale
                 else
                     parms.points -= _DefOf.CarnyTrader.combatPower;
 
-            // Tries to get existing vendor:
-            Pawn vendor = existingPawns.FirstOrDefault(p => traderKind == p.TraderKind);
+            // Generate new vendor
+            PawnGenerationRequest request = new PawnGenerationRequest(
+                groupMaker.traders.RandomElement().kind,
+                parms.faction,
+                PawnGenerationContext.NonPlayer,
+                parms.tile,
+                false,
+                false,
+                false,
+                false,
+                true,
+                false,
+                1f,
+                true, // Force free warm layers if needed
+                true,
+                true,
+                parms.inhabitants,
+                false,
+                null, // Consider adding predicate for backstory here
+                null,
+                null,
+                null,
+                null,
+                null
+            );
 
-            if (vendor == null)
-            {
-                // Generate new vendor if no existing vendor
-                PawnGenerationRequest request = new PawnGenerationRequest(
-                    groupMaker.traders.RandomElement().kind,
-                    parms.faction,
-                    PawnGenerationContext.NonPlayer,
-                    parms.tile,
-                    false,
-                    false,
-                    false,
-                    false,
-                    true,
-                    false,
-                    1f,
-                    true, // Force free warm layers if needed
-                    true,
-                    true,
-                    parms.inhabitants,
-                    false,
-                    null, // Consider adding predicate for backstory here
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                );
-
-                vendor = PawnGenerator.GeneratePawn(request);
-            }
+            var vendor = PawnGenerator.GeneratePawn(request);
 
             vendor.mindState.wantsToTradeWithColony = true;
 
@@ -147,16 +145,25 @@ namespace Carnivale
 
         private void GenerateCarriers(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, List<Thing> wares, List<Pawn> outPawns)
         {
-            List<Thing> waresList = (from x in wares
-                                         where !(x is Pawn)
-                                         select x).ToList();
-            List<Pawn> carrierList = new List<Pawn>();
-            PawnKindDef carrierKind = (from x in groupMaker.carriers
-                                       where parms.tile == -1
-                                       || Find.WorldGrid[parms.tile].biome.IsPackAnimalAllowed(x.kind.race)
-                                       select x).RandomElementByWeight(o => o.selectionWeight).kind;
+            var waresList = (from x in wares
+                             where !(x is Pawn)
+                             select x).ToList();
+
+            var totalWeight = waresList.Sum(t => t.GetInnerIfMinified().GetStatValue(StatDefOf.Mass) * t.stackCount);
+
+            Log.Warning("totalWeight for wares: " + totalWeight);
+
+            var carrierList = new List<Pawn>();
+
+            var carrierKind = (from x in groupMaker.carriers
+                               where parms.tile == -1
+                                     || Find.WorldGrid[parms.tile].biome.IsPackAnimalAllowed(x.kind.race)
+                               select x).RandomElementByWeight(o => o.selectionWeight).kind;
+            float baseCapacity = carrierKind.RaceProps.baseBodySize * 34f; // Leaving some space for silvah, original calculation is 35f
+
+            int numCarriers = Mathf.CeilToInt(totalWeight / baseCapacity);
+
             int i = 0;
-            int numCarriers = Mathf.CeilToInt(waresList.Count / 8f);
 
             for (int j = 0; j < numCarriers; j++)
             {
@@ -185,28 +192,46 @@ namespace Carnivale
                     null,
                     null
                 );
-                Pawn carrier = PawnGenerator.GeneratePawn(request);
+                var carrier = PawnGenerator.GeneratePawn(request);
                 if (i < waresList.Count)
                 {
                     // Add initial few items to carrier
-                    carrier.inventory.innerContainer.TryAdd(waresList[i], true);
-                    i++;
+                    if (carrier.inventory.innerContainer.TryAdd(waresList[i], true))
+                        i++;
                 }
                 carrierList.Add(carrier);
                 outPawns.Add(carrier);
             }
 
             // Finally, fill up all the carriers' inventories
+            int numFailures = 0;
+            while (i < waresList.Count && numFailures < 15)
+            {
+                var ware = waresList[i];
+                Pawn randCarrier;
+                if (carrierList.TryRandomElementByWeight(
+                    c => Mathf.Max(0f, MassUtility.FreeSpace(c) - ware.GetInnerIfMinified().GetStatValue(StatDefOf.Mass) * ware.stackCount),
+                    out randCarrier)
+                    && randCarrier.inventory.innerContainer.TryAdd(ware))
+                {
+                    i++;
+                }
+                else
+                    numFailures++;
+            }
+
             while (i < waresList.Count)
             {
-                carrierList.RandomElement().inventory.innerContainer.TryAdd(waresList[i], true);
-                i++;
+                // Remove things that could not fit for whatever reason
+                if (Prefs.DevMode)
+                    Log.Warning("Could not fit " + waresList[i] + " in any carrier. Removing.");
+                wares.Remove(waresList[i++]);
             }
         }
 
 
 
-        private void GenerateGroup(PawnGroupMakerParms parms, List<PawnGenOption> options, List<Pawn> outPawns, IEnumerable<Pawn> existingPawns, bool subtractPoints = false)
+        private void GenerateGroup(PawnGroupMakerParms parms, List<PawnGenOption> options, List<Pawn> outPawns, bool subtractPoints = false)
         {
             int counter = 0;
             while (counter < options.Max(o => o.selectionWeight))
@@ -222,10 +247,7 @@ namespace Carnivale
                                 parms.points -= option.Cost;
 
 
-                        Pawn pawn = existingPawns.FirstOrDefault(p => p.kindDef == option.kind);
-                        if (pawn == null)
-                        {
-                            PawnGenerationRequest request = new PawnGenerationRequest(
+                        PawnGenerationRequest request = new PawnGenerationRequest(
                                 option.kind,
                                 parms.faction,
                                 PawnGenerationContext.NonPlayer,
@@ -242,7 +264,7 @@ namespace Carnivale
                                 true,
                                 parms.inhabitants,
                                 false,
-                                delegate(Pawn p)
+                                delegate (Pawn p)
                                 {
                                     if (p.kindDef == _DefOf.CarnyWorker)
                                     {
@@ -258,8 +280,7 @@ namespace Carnivale
                                 null
                             );
 
-                            pawn = PawnGenerator.GeneratePawn(request);
-                        }
+                        var pawn = PawnGenerator.GeneratePawn(request);
 
                         outPawns.Add(pawn);
                     }
