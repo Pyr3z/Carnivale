@@ -59,13 +59,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AI\CarnivalBlueprints.cs" />
+    <Compile Include="AI\AIBlueprintsUtility.cs" />
     <Compile Include="AI\DutyUtility.cs" />
+    <Compile Include="AI\JobDriver_HaulToCarriers.cs" />
     <Compile Include="AI\JobDriver_StandAtLoc.cs" />
     <Compile Include="AI\JobGiver_GotoCarnivalArea.cs" />
     <Compile Include="AI\JobGiver_StandAtLoc.cs" />
-    <Compile Include="AI\LordToilData_Carnival.cs" />
-    <Compile Include="AI\LordToilData_Setup.cs" />
+    <Compile Include="Data\LordToilData_Carnival.cs" />
+    <Compile Include="Data\LordToilData_Setup.cs" />
     <Compile Include="AI\LordToil_Carn.cs" />
     <Compile Include="AI\LordToil_DefendCarnival.cs" />
     <Compile Include="AI\LordToil_EntertainColony.cs" />
@@ -77,19 +78,23 @@
     <Compile Include="Buildings\Blueprint_StuffHacked.cs" />
     <Compile Include="Buildings\Building_Carn.cs" />
     <Compile Include="Buildings\Building_Tent.cs" />
+    <Compile Include="Buildings\Building_TentFlap.cs" />
     <Compile Include="Buildings\CompCarnBuilding.cs" />
     <Compile Include="Buildings\CompProperties_CarnBuilding.cs" />
     <Compile Include="Buildings\Frame_StuffHacked.cs" />
     <Compile Include="CarnivaleMod.cs" />
     <Compile Include="Data\CarnivalInfo.cs" />
     <Compile Include="Data\DeepReferenceableList.cs" />
+    <Compile Include="Debug.cs" />
     <Compile Include="Enums\CarnBuildingType.cs" />
     <Compile Include="Enums\CarnivalRole.cs" />
     <Compile Include="Enums\_DefOf.cs" />
     <Compile Include="AI\LordJob_EntertainColony.cs" />
     <Compile Include="One\TheOne.cs" />
+    <Compile Include="Patches\CarniesOnlyDoCarnivalsPatch.cs" />
     <Compile Include="Patches\CarnyDrugPolicyPatch.cs" />
     <Compile Include="Patches\CarnyJoyNeedPatch.cs" />
+    <Compile Include="Rendering\PawnDanceWiggler.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Workers\CarnivalArrives.cs" />
     <Compile Include="Workers\CarnivalFireball.cs" />
@@ -97,7 +102,9 @@
     <Compile Include="Workers\CarnivalApproaches.cs" />
     <Compile Include="Workers\PawnGroupKindWorker_Carnival.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Workers\PlaceWorker_CarnBuilding.cs" />
     <Compile Include="Workers\RoomRoleWorker_Tent.cs" />
+    <Compile Include="Workers\WorkGiver_HaulToCarrier.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

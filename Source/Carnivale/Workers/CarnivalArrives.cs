@@ -22,6 +22,7 @@ namespace Carnivale
             Map map = (Map)target;
             if (map.GetComponent<CarnivalInfo>().currentLord != null)
             {
+                // only one carnival per map
                 return false;
             }
 
@@ -31,8 +32,13 @@ namespace Carnivale
 
         protected override bool FactionCanBeGroupSource(Faction f, Map map, bool desperate = false)
         {
-            return f.IsCarnival() &&
-                base.FactionCanBeGroupSource(f, map, desperate);
+            return !f.IsPlayer
+                   && f.IsCarnival()
+                   && !f.defeated
+                   && !f.HostileTo(Faction.OfPlayer)
+                   && (desperate
+                      || (f.def.allowedArrivalTemperatureRange.Includes(map.mapTemperature.OutdoorTemp)
+                   && f.def.allowedArrivalTemperatureRange.Includes(map.mapTemperature.SeasonalTemp)));
         }
 
 

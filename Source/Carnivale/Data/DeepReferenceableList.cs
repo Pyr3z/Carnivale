@@ -5,7 +5,7 @@ using Verse;
 
 namespace Carnivale
 {
-    public class DeepReferenceableList<T> : IEnumerable<T>, IExposable where T:ILoadReferenceable
+    public sealed class DeepReferenceableList<T> : IEnumerable<T>, IExposable where T:ILoadReferenceable
     {
         private List<T> referenceableList;
 

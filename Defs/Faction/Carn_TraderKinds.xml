@@ -24,12 +24,12 @@
 		  <li>EggsFertilized</li>
 		</excludedCategories>
         <thingDefCountRange>
-          <min>6</min>
-          <max>12</max>
+          <min>2</min>
+          <max>7</max>
         </thingDefCountRange>
         <totalPriceRange>
-          <min>300</min>
-          <max>1200</max>
+          <min>100</min>
+          <max>500</max>
         </totalPriceRange>
       </li>
 	  
@@ -78,16 +78,16 @@
 	  
 	  <li Class="StockGenerator_Art">
 	    <countRange>
-		  <min>3</min>
-		  <max>9</max>
+		  <min>1</min>
+		  <max>4</max>
 		</countRange>
 	  </li>
 	  
 	  <li Class="StockGenerator_SingleDef">
 		<thingDef>Gold</thingDef>
 		<countRange>
-		  <min>75</min>
-		  <max>150</max>
+		  <min>25</min>
+		  <max>100</max>
 		</countRange>
 	  </li>
 	  
@@ -95,7 +95,7 @@
 	    <tradeTag>Exotic</tradeTag>
 		<thingDefCountRange>
 		  <min>1</min>
-		  <max>6</max>
+		  <max>3</max>
 		</thingDefCountRange>
 		<countRange>
 		  <min>1</min>
@@ -157,6 +157,14 @@
       </li>
 	  
 	  <li Class="StockGenerator_SingleDef">
+        <thingDef>WoodLog</thingDef>
+        <countRange>
+          <min>35</min>
+          <max>150</max>
+        </countRange>
+      </li>
+	  
+	  <li Class="StockGenerator_SingleDef">
         <thingDef>Cloth</thingDef>
         <countRange>
           <min>250</min>
@@ -172,7 +180,7 @@
 		<thingDef>Chemfuel</thingDef>
 		<countRange>
 		  <min>50</min>
-		  <max>300</max>
+		  <max>200</max>
 	    </countRange>
 	  </li>
 	  
@@ -194,11 +202,11 @@
 	  <li Class="StockGenerator_Tag">
         <tradeTag>Furniture</tradeTag>
         <thingDefCountRange>
-          <min>1</min>
-          <max>6</max>
+          <min>0</min>
+          <max>3</max>
         </thingDefCountRange>
         <countRange>
-          <min>1</min>
+          <min>0</min>
           <max>1</max>
         </countRange>
       </li>

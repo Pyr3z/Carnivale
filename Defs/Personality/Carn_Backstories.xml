@@ -335,7 +335,6 @@
 	<baseDescription>Either nobody remembers, or nobody is permitted to remember why NAME was permanently demoted to a razorback, a grunt in the carnival workforce. Loading and unloading pack animals and carriages have made HIM strong, as well as a regular contender whenever a brawl breaks out.</baseDescription>
 	
 	<skillGains>
-	  <li><defName>Shooting</defName><degree>1</degree></li>
 	  <li><defName>Melee</defName><degree>3</degree></li>
 	  <li><defName>Construction</defName><degree>5</degree></li>
 	</skillGains>
@@ -372,6 +371,7 @@
 	<requiredWorkTags>
 	  <li>Hauling</li>
 	  <li>ManualSkilled</li>
+	  <li>PlantWork</li>
 	</requiredWorkTags>
 	
 	<bodyTypeMale>Hulk</bodyTypeMale>
@@ -398,6 +398,7 @@
 	<skillGains>
 	  <li><defName>Cooking</defName><degree>2</degree></li>
 	  <li><defName>Medicine</defName><degree>3</degree></li>
+	  <li><defName>Growing</defName><degree>2</degree></li>
 	</skillGains>
 	
 	<workDisables>
@@ -429,6 +430,7 @@
 	<skillGains>
 	  <li><defName>Cooking</defName><degree>2</degree></li>
 	  <li><defName>Medicine</defName><degree>3</degree></li>
+	  <li><defName>Growing</defName><degree>3</degree></li>
 	</skillGains>
 	
 	<forcedTraits>
@@ -524,6 +526,7 @@
 	  <li><defName>Social</defName><degree>4</degree></li>
 	  <li><defName>Cooking</defName><degree>2</degree></li>
 	  <li><defName>Artistic</defName><degree>2</degree></li>
+	  <li><defName>Medicine</defName><degree>-2</degree></li>
 	</skillGains>
 	
 	<spawnCategories>
@@ -613,6 +616,7 @@
 	<skillGains>
 	  <li><defName>Construction</defName><degree>5</degree></li>
 	  <li><defName>Intellectual</defName><degree>2</degree></li>
+	  <li><defName>Medicine</defName><degree>-4</degree></li>
 	</skillGains>
 	
 	<spawnCategories>
@@ -637,10 +641,13 @@
 	<requiredWorkTags>
 	  <li>Hauling</li>
 	  <li>ManualSkilled</li>
+	  <li>PlantWork</li>
 	</requiredWorkTags>
 	
 	<skillGains>
 	  <li><defName>Construction</defName><degree>6</degree></li>
+	  <li><defName>Growing</defName><degree>2</degree></li>
+	  <li><defName>Medicine</defName><degree>-4</degree></li>
 	</skillGains>
 	
 	<disallowedTraits>
@@ -660,7 +667,7 @@
 	<slot>Adulthood</slot>
 	<title>Tough cookie</title>
 	<titleShort>Cookie</titleShort>
-	<baseDescription>NAME was a seasoned veteran when it came to feeding large numbers of starving stomachs. Don't let the job title fool you; NAME is a force of nature with a frying pan.</baseDescription>
+	<baseDescription>Rumoured to be on the run after HIS urbworld restaurant was exposed as a crime family den, NAME is nonetheless a seasoned veteran when it comes to feeding large numbers of mouths. Be careful not to tick HIM off; HE is a force of nature with a frying pan.</baseDescription>
 	
 	<requiredWorkTags>
 	  <li>Cooking</li>
@@ -672,13 +679,44 @@
 	</workDisables>
 	
 	<skillGains>
-	  <li><defName>Cooking</defName><degree>6</degree></li>
+	  <li><defName>Cooking</defName><degree>5</degree></li>
 	  <li><defName>Melee</defName><degree>4</degree></li>
 	</skillGains>
 	
 	<spawnCategories>
 	  <li>Carnivale</li>
 	  <li>Slave</li>
+	</spawnCategories>
+  </Xnope.Defs.BackstoryDef>
+  
+  
+  <!-- Lumberjack -->
+  <Xnope.Defs.BackstoryDef>
+    <defName>XnopeBS_Lumberjack</defName>
+	<slot>Adulthood</slot>
+	<title>Lumberjack</title>
+	<titleShort>Jack</titleShort>
+	<baseDescription>When asked what skills HE could offer in working for a rimworld carnival, NAME simply replied, 'I like chopping wood.' HE's been chopping wood ever since. I guess they say do what you love.</baseDescription>
+	
+	<requiredWorkTags>
+	  <li>PlantWork</li>
+	  <li>Social</li>
+	  <li>ManualSkilled</li>
+	  <li>ManualDumb</li>
+	</requiredWorkTags>
+	
+	<workDisables>
+	  <li>Caring</li>
+	</workDisables>
+	
+	<skillGains>
+	  <li><defName>Growing</defName><degree>4</degree></li>
+	  <li><defName>Melee</defName><degree>3</degree></li>
+	  <li><defName>Intellectual</defName><degree>-5</degree></li>
+	</skillGains>
+	
+	<spawnCategories>
+	  <li>CarnivaleWorker</li>
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>
   

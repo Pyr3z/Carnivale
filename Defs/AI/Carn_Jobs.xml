@@ -6,4 +6,9 @@
 	<driverClass>Carnivale.JobDriver_StandAtLoc</driverClass>
   </JobDef>
   
+  <JobDef>
+    <defName>Job_HaulToCarriers</defName>
+	<driverClass>Carnivale.JobDriver_HaulToCarriers</driverClass>
+  </JobDef>
+  
 </Defs>

@@ -13,7 +13,27 @@ namespace Carnivale
                 pawn.mindState.duty = new PawnDuty(_DefOf.Duty_BuildCarnival, centre, radius);
 
                 pawn.workSettings.EnableAndInitialize();
+
                 pawn.workSettings.SetPriority(WorkTypeDefOf.Construction, 1);
+
+                if (!pawn.story.WorkTypeIsDisabled(_DefOf.PlantCutting))
+                    pawn.workSettings.SetPriority(_DefOf.PlantCutting, 1);
+            }
+        }
+
+        public static void MeanderAndHelp(Pawn pawn, IntVec3 centre, float radius)
+        {
+            if (pawn.mindState != null)
+            {
+                pawn.mindState.duty = new PawnDuty(_DefOf.Duty_Meander, centre, radius);
+
+                pawn.workSettings.EnableAndInitialize();
+
+                if (!pawn.story.WorkTypeIsDisabled(_DefOf.PlantCutting))
+                    pawn.workSettings.SetPriority(_DefOf.PlantCutting, 1);
+
+                if (!pawn.story.WorkTypeIsDisabled(WorkTypeDefOf.Hauling))
+                    pawn.workSettings.SetPriority(WorkTypeDefOf.Hauling, 1);
             }
         }
 
@@ -21,7 +41,7 @@ namespace Carnivale
         {
             if (pawn.mindState != null)
             {
-                pawn.mindState.duty = new PawnDuty(_DefOf.Duty_Meander, centre, radius); 
+                pawn.mindState.duty = new PawnDuty(_DefOf.Duty_Meander, centre, radius);
             }
         }
 

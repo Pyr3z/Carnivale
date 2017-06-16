@@ -71,6 +71,15 @@ namespace Carnivale
                 waresParms.traderDef = traderKind;
                 waresParms.forTile = parms.tile;
                 waresParms.forFaction = parms.faction;
+                waresParms.validator = delegate (ThingDef def)
+                {
+                    if (def.stackLimit == 1)
+                    {
+                        return def.statBases.GetStatValueFromList(StatDefOf.Mass, 0f) < 70f;
+                    }
+
+                    return true;
+                };
                 List<Thing> wares = ItemCollectionGeneratorDefOf.TraderStock.Worker.Generate(waresParms).InRandomOrder(null).ToList();
 
                 // Spawn pawns that are for sale (if any)
@@ -80,6 +89,9 @@ namespace Carnivale
                 // Carriers are costless.
                 GenerateCarriers(parms, groupMaker, wares, outPawns);
             }
+
+            // Generate one extra carrier carrying nothing
+            GenerateCarriers(parms, groupMaker, new List<Thing>(), outPawns);
 
             // Generate options
             GenerateGroup(parms, groupMaker.options, outPawns, true);
@@ -151,7 +163,7 @@ namespace Carnivale
 
             var totalWeight = waresList.Sum(t => t.GetInnerIfMinified().GetStatValue(StatDefOf.Mass) * t.stackCount);
 
-            Log.Warning("totalWeight for wares: " + totalWeight);
+            //Log.Warning("totalWeight for wares: " + totalWeight);
 
             var carrierList = new List<Pawn>();
 
@@ -210,7 +222,7 @@ namespace Carnivale
                 var ware = waresList[i];
                 Pawn randCarrier;
                 if (carrierList.TryRandomElementByWeight(
-                    c => Mathf.Max(0f, MassUtility.FreeSpace(c) - ware.GetInnerIfMinified().GetStatValue(StatDefOf.Mass) * ware.stackCount),
+                    c => c.FreeSpaceIfCarried(ware),
                     out randCarrier)
                     && randCarrier.inventory.innerContainer.TryAdd(ware))
                 {

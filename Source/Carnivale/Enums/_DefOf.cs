@@ -35,6 +35,8 @@ namespace Carnivale
 
 
 
+        public static JobDef Job_HaulToCarriers;
+
         public static JobDef Job_StandAtLoc;
 
 
@@ -87,7 +89,7 @@ namespace Carnivale
 
         public static ThingDef Carn_TentWall;
 
-        // Not in vanilla
+        // Not in vanilla DefOf
         public static ThingDef Cloth;
 
         public static ThingDef DevilstrandCloth;
@@ -109,6 +111,9 @@ namespace Carnivale
         public static TraderKindDef Carn_Trader_Surplus;
 
 
+
+        // Not in vanilla DefOf
+        public static WorkTypeDef PlantCutting;
 
     }
 }

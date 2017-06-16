@@ -43,7 +43,7 @@ namespace Carnivale
                     }
                     else
                     {
-                        // rest on the off shift
+                        // rest on the off shift if not assigned a position
                         DutyUtility.ForceRest(pawn);
                     }
                 }

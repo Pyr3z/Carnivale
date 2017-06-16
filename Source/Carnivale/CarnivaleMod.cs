@@ -41,6 +41,21 @@ namespace Carnivale
             TheOne.Instantiate();
         }
 
+        public override void MapLoaded(Map map)
+        {
+            //Debug.TestLineDraw(map, map.Center, CellRect.CenteredOn(map.Center, 10).RandomCell);
+
+            //Debug.TestLineDrawCardinal(map, map.Center, 7);
+
+            //Debug.TestLineDrawDiagonal(map, map.Center, 7);
+
+            //Debug.TestLineDraw8Way(map, map.Center, 21);
+
+            //Debug.TestLineDraw12Way(map, map.Center, 21);
+
+            //Debug.TestLineDraw16Way(map, map.Center, 26);
+        }
+
 
     }
 

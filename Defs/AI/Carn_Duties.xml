@@ -48,10 +48,14 @@
     <defName>Duty_Meander</defName>
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
+	  
+	    <li Class="JobGiver_FightFiresNearPoint">
+		  <maxDistFromPoint>38</maxDistFromPoint>
+		</li>
 	    
 		<!-- satisfy needs -->
 		<li Class="ThinkNode_Subtree">
-		  <treeDef>SatisfyBasicNeeds</treeDef>
+		  <treeDef>SatisfyBasicNeedsAndWork</treeDef>
 		</li>
 		
 		<!-- Get joy -->
@@ -94,6 +98,10 @@
 	<alwaysShowWeapon>true</alwaysShowWeapon>
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
+	    
+		<li Class="JobGiver_FightFiresNearPoint">
+		  <maxDistFromPoint>8</maxDistFromPoint>
+		</li>
 	    
 		<!-- satisfy needs -->
 		<li Class="ThinkNode_Subtree">

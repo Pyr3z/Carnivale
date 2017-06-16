@@ -84,7 +84,7 @@ namespace Carnivale
 
 
             // Place blueprints
-            foreach (Blueprint bp in CarnivalBlueprints.PlaceCarnivalBlueprints(Info))
+            foreach (Blueprint bp in AIBlueprintsUtility.PlaceCarnivalBlueprints(Info))
             {
                 data.blueprints.Add(bp);
             }
@@ -191,7 +191,7 @@ namespace Carnivale
                 }
                 else
                 {
-                    DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
+                    DutyUtility.MeanderAndHelp(pawn, Info.setupCentre, Info.baseRadius);
                 }
 
             }

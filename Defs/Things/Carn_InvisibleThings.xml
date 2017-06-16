@@ -35,6 +35,7 @@
 	
 	<statBases>
 	  <Beauty>1</Beauty>
+	  <Flammability>1.5</Flammability>
 	</statBases>
 	
 	<building>
@@ -52,7 +53,7 @@
   <ThingDef>
     <defName>Carn_TentDoor</defName>
 	<label>tent flap</label>
-	<thingClass>Building_Door</thingClass>
+	<thingClass>Carnivale.Building_TentFlap</thingClass>
 	<category>Building</category>
 	<selectable>false</selectable>
 	
@@ -68,6 +69,7 @@
 	
 	<statBases>
 	  <Beauty>1</Beauty>
+	  <Flammability>1.5</Flammability>
 	  <DoorOpenSpeed>0.35</DoorOpenSpeed>
 	</statBases>
 	

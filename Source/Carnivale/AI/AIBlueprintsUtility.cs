@@ -6,7 +6,7 @@ using Verse;
 
 namespace Carnivale
 {
-    public static class CarnivalBlueprints
+    public static class AIBlueprintsUtility
     {
         private static CarnivalInfo info;
 
@@ -19,7 +19,7 @@ namespace Carnivale
         public static IEnumerable<Blueprint> PlaceCarnivalBlueprints(CarnivalInfo info)
         {
             // Assign necessary values to this singleton (is this technically a singleton?)
-            CarnivalBlueprints.info = info;
+            AIBlueprintsUtility.info = info;
             
             if (info.currentLord.CurLordToil.data is LordToilData_Setup)
             {
@@ -57,8 +57,6 @@ namespace Carnivale
                 if (entrance != null)
                 {
                     yield return entrance;
-                    if (Prefs.DevMode)
-                        Log.Warning("CarnivalInfo.bannerCell second pass: " + info.bannerCell.ToString());
                 }
             }
         }
@@ -104,22 +102,27 @@ namespace Carnivale
 
                 if (CanPlaceBlueprintAt(tentSpot, rot, tentDef))
                 {
-                    RemoveFirstCrateOfDef(_DefOf.Carn_Crate_TentLodge);
-                    RemovePlantsAndTeleportHaulablesFor(tentSpot, tentDef.size, rot);
+                    RemoveFirstCrateOf(_DefOf.Carn_Crate_TentLodge);
+                    Utilities.ClearThingsFor(info.map, tentSpot, tentDef.size, rot, false, true);
                     yield return PlaceBlueprint(tentDef, tentSpot, rot);
                 }
                 else
                 {
                     // Find new placement if next spot doesn't work
-                    tentSpot = FindRandomPlacementFor(tentDef, rot, CellRect.CenteredOn(tentSpot, 12));
+                    tentSpot = FindRandomPlacementFor(tentDef, rot, CellRect.CenteredOn(tentSpot, 25).ClipInsideRect(info.carnivalArea));
                     counter = 0;
                 }
 
                 attempts++;
             }
 
+            if (attempts == 20 && availableCrates.Any(t => t.def == _DefOf.Carn_Crate_TentLodge))
+            {
+                Log.Error("Tried too many times to place tents. They will not be built.");
+            }
+
             // Place manager tent
-            if (!availableCrates.Any(c => c.def == _DefOf.Carn_Crate_TentMan))
+                if (!availableCrates.Any(c => c.def == _DefOf.Carn_Crate_TentMan))
                 yield break;
 
             rot = Rot4.Random;
@@ -131,8 +134,8 @@ namespace Carnivale
 
             if (tentSpot.IsValid)
             {
-                RemoveFirstCrateOfDef(_DefOf.Carn_Crate_TentMan);
-                RemovePlantsAndTeleportHaulablesFor(tentSpot, tentDef.size, rot);
+                RemoveFirstCrateOf(_DefOf.Carn_Crate_TentMan);
+                Utilities.ClearThingsFor(info.map, tentSpot, tentDef.size, rot, false, true);
                 yield return PlaceBlueprint(tentDef, tentSpot, rot);
             }
             else
@@ -141,8 +144,8 @@ namespace Carnivale
                 tentSpot = FindRadialPlacementFor(tentDef, rot, info.setupCentre, (int)info.baseRadius / 2);
                 if (tentSpot.IsValid)
                 {
-                    RemoveFirstCrateOfDef(_DefOf.Carn_Crate_TentMan);
-                    RemovePlantsAndTeleportHaulablesFor(tentSpot, tentDef.size, rot);
+                    RemoveFirstCrateOf(_DefOf.Carn_Crate_TentMan);
+                    Utilities.ClearThingsFor(info.map, tentSpot, tentDef.size, rot, false, true);
                     yield return PlaceBlueprint(tentDef, tentSpot, rot);
                 }
                 else
@@ -204,8 +207,8 @@ namespace Carnivale
                 // Finally, spawn the f*cker
                 if (stallSpot.IsValid)
                 {
-                    RemoveFirstCrateOfDef(_DefOf.Carn_Crate_Stall);
-                    RemovePlantsAndTeleportHaulablesFor(stallSpot, stallDef.size, rot);
+                    RemoveFirstCrateOf(_DefOf.Carn_Crate_Stall);
+                    Utilities.ClearThingsFor(info.map, stallSpot, stallDef.size, rot, false, true);
                     // Add spot to stall user's spot
                     info.rememberedPositions.Add(stallUser, stallSpot);
                     yield return PlaceBlueprint(stallDef, stallSpot, rot);
@@ -227,8 +230,11 @@ namespace Carnivale
             {
                 info.bannerCell = bannerSpot;
 
-                RemoveFirstCrateOfDef(_DefOf.Carn_Crate_Stall);
-                RemovePlantsAndTeleportHaulablesFor(info.bannerCell, bannerDef.size, rot);
+                if (Prefs.DevMode)
+                    Log.Warning("CarnivalInfo.bannerCell final pass: " + info.bannerCell.ToString());
+
+                RemoveFirstCrateOf(_DefOf.Carn_Crate_Stall);
+                Utilities.ClearThingsFor(info.map, info.bannerCell, bannerDef.size, rot, false, true);
                 return PlaceBlueprint(bannerDef, bannerSpot, rot);
             }
 
@@ -241,8 +247,11 @@ namespace Carnivale
             {
                 info.bannerCell = bannerSpot;
 
-                RemoveFirstCrateOfDef(_DefOf.Carn_Crate_Stall);
-                RemovePlantsAndTeleportHaulablesFor(bannerSpot, bannerDef.size, rot);
+                if (Prefs.DevMode)
+                    Log.Warning("CarnivalInfo.bannerCell final pass: " + info.bannerCell.ToString());
+
+                RemoveFirstCrateOf(_DefOf.Carn_Crate_Stall);
+                Utilities.ClearThingsFor(info.map, bannerSpot, bannerDef.size, rot, false, true);
                 return PlaceBlueprint(bannerDef, bannerSpot, rot);
             }
 
@@ -291,12 +300,9 @@ namespace Carnivale
 
                 if (info.map.reachability.CanReach(randomCell, info.carnivalArea.CenterCell, Verse.AI.PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
                 {
-                    if (!randomCell.Roofed(info.map))
+                    if (CanPlaceBlueprintAt(randomCell, rot, def))
                     {
-                        if (CanPlaceBlueprintAt(randomCell, rot, def))
-                        {
-                            return randomCell;
-                        }
+                        return randomCell;
                     }
                 }
             }
@@ -311,19 +317,16 @@ namespace Carnivale
 
                 if (info.map.reachability.CanReach(randomCell, info.carnivalArea.CenterCell, Verse.AI.PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
                 {
-                    if (!randomCell.Roofed(info.map))
+                    if (CanPlaceBlueprintAt(randomCell, rot, def))
                     {
-                        if (CanPlaceBlueprintAt(randomCell, rot, def))
+                        if (preferCardinalAdjacentTo != default(IntVec3))
                         {
-                            if (preferCardinalAdjacentTo != default(IntVec3))
-                            {
-                                return randomCell;
-                            }
+                            return randomCell;
+                        }
 
-                            if (randomCell.AdjacentToCardinal(preferCardinalAdjacentTo))
-                            {
-                                return randomCell;
-                            }
+                        if (randomCell.AdjacentToCardinal(preferCardinalAdjacentTo))
+                        {
+                            return randomCell;
                         }
                     }
                 }
@@ -339,12 +342,9 @@ namespace Carnivale
             {
                 if (info.map.reachability.CanReach(cell, info.carnivalArea.CenterCell, Verse.AI.PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
                 {
-                    if (!cell.Roofed(info.map))
+                    if (CanPlaceBlueprintAt(cell, rot, def))
                     {
-                        if (CanPlaceBlueprintAt(cell, rot, def))
-                        {
-                            return cell;
-                        }
+                        return cell;
                     }
                 }
             }
@@ -353,44 +353,7 @@ namespace Carnivale
         }
 
 
-
-        private static void RemovePlantsAndTeleportHaulablesFor(IntVec3 spot, IntVec2 size, Rot4 rot)
-        {
-            CellRect removeCells = GenAdj.OccupiedRect(spot, rot, size);
-            // Not sure if CellRects are immutable upon assignment but w/e
-            CellRect moveToCells = new CellRect(removeCells.minX, removeCells.minZ, removeCells.maxX, removeCells.maxZ).ExpandedBy(2).ClipInsideMap(info.map);
-
-            foreach (IntVec3 cell in removeCells)
-            {
-                Plant plant = cell.GetPlant(info.map);
-                if (plant != null)
-                {
-                    plant.Destroy(DestroyMode.KillFinalize);
-                }
-
-                Thing haulable = cell.GetFirstHaulable(info.map);
-                if (haulable != null)
-                {
-                    IntVec3 moveToSpot = haulable.Position;
-                    for (int i = 0; i < 30; i++)
-                    {
-                        IntVec3 tempSpot = moveToCells.RandomCell;
-                        if (!removeCells.Contains(tempSpot))
-                        {
-                            if (!tempSpot.GetThingList(info.map).Any())
-                            {
-                                moveToSpot = tempSpot;
-                                break;
-                            }
-                        }
-                    }
-                    // Teleport the fucker
-                    haulable.Position = moveToSpot;
-                }
-            }
-        }
-
-        private static void RemoveFirstCrateOfDef(ThingDef def)
+        private static void RemoveFirstCrateOf(ThingDef def)
         {
             Thing first = availableCrates.FirstOrDefault(t => t.def == def);
             if (first != null)

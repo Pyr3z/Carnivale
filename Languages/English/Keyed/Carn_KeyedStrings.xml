@@ -20,5 +20,18 @@
   <CarnivalArrivalVendorsList>\n\nThere are several vendors with them:</CarnivalArrivalVendorsList>
   
   
+  <!-- Motes -->
+  <StepRightUp>Step right up, folks!</StepRightUp>
+  <BargainPrices>Bargain prices, guaranteed!</BargainPrices>
+  <RareItems>Rare artifacts, you won't find these anywhere else!</RareItems>
+  <YouLookHungry>Boy, you look hungry. How about a {0}?</YouLookHungry>
+  <WeHave>We've got your {0}s and your {1}s, all right here!</WeHave>
+  <Prizes>Prizes, prizes, prizes! Do you have what it takes?</Prizes>
+  <YouThere>You there! This new {0} could be all yours!</YouThere>
+  
+  
+  <!-- Messages -->
+  <ExistingCarnThingThere>There is already a {0} there.</ExistingCarnThingThere>
+  
   
 </LanguageData>

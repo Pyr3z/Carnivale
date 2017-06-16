@@ -1,5 +1,7 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
@@ -315,9 +317,10 @@ namespace Carnivale
 
         private static bool TryFindCarnivalSetupPosition(IntVec3 entrySpot, float minDistToColony, Map map, out IntVec3 result)
         {
-            CellRect cellRect = CellRect.CenteredOn(entrySpot, 60);
+            CellRect cellRect = CellRect.CenteredOn(entrySpot, 80);
             cellRect.ClipInsideMap(map);
-            cellRect = cellRect.ContractedBy(14);
+            cellRect = cellRect.ContractedBy(16);
+
             List<IntVec3> colonistThingsLocList = new List<IntVec3>();
             foreach (Pawn pawn in map.mapPawns.FreeColonistsSpawned)
             {
@@ -327,38 +330,36 @@ namespace Carnivale
             {
                 colonistThingsLocList.Add(building.Position);
             }
+
+            IntVec3 averageColonyPos = colonistThingsLocList.Average();
             float minDistToColonySquared = minDistToColony * minDistToColony;
+
             IntVec3 randomCell;
             for (int attempt = 0; attempt < 200; attempt++)
             {
                 randomCell = cellRect.RandomCell;
-                if (randomCell.Standable(map))
+                if (randomCell.Standable(map)
+                    && (averageColonyPos - randomCell).LengthHorizontalSquared > minDistToColonySquared
+                    && !randomCell.Roofed(map)
+                    && randomCell.SupportsStructureType(map, TerrainAffordance.Light)
+                    && map.reachability.CanReach(randomCell, entrySpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some)
+                    && map.reachability.CanReachColony(randomCell))
                 {
-                    if (randomCell.SupportsStructureType(map, TerrainAffordance.Light))
+                    // We don't want to be within 12 cells of water
+                    bool water = false;
+                    foreach (var cell in GenRadial.RadialCellsAround(randomCell, 12, true))
                     {
-                        if (map.reachability.CanReach(randomCell, entrySpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some))
+                        if (cell.GetTerrain(map).HasTag("Water"))
                         {
-                            if (map.reachability.CanReachColony(randomCell))
-                            {
-                                bool flag = false;
-                                for (int i = 0; i < colonistThingsLocList.Count; i++)
-                                {
-                                    if ((colonistThingsLocList[i] - randomCell).LengthHorizontalSquared < minDistToColonySquared)
-                                    {
-                                        flag = true;
-                                        break;
-                                    }
-                                }
-                                if (!flag)
-                                {
-                                    if (!randomCell.Roofed(map))
-                                    {
-                                        result = randomCell;
-                                        return true;
-                                    }
-                                }
-                            }
+                            water = true;
+                            break;
                         }
+                    }
+
+                    if (!water)
+                    {
+                        result = randomCell;
+                        return true;
                     }
                 }
             }
@@ -382,7 +383,325 @@ namespace Carnivale
 
             return new IntVec3(totalX / count, 0, totalZ / count);
         }
-        
+
+
+        public static IEnumerable<IntVec3> CellsInLineTo(this IntVec3 a, IntVec3 b, bool debug = false)
+        {
+            if (!a.InBounds(Find.VisibleMap) || !b.InBounds(Find.VisibleMap))
+            {
+                Log.Error("Cell out of map bounds. a=" + a + " b=" + b);
+            }
+
+            if (debug)
+                Log.Warning("[Debug] (" + a.x + ", 0, " + a.z + ")");
+
+            yield return a;
+
+
+            int dx = b.x - a.x;
+            int dz = b.z - a.z;
+
+            int x = a.x;
+            int z = a.z;
+
+            int d;
+            int r;
+
+            int dxa = Mathf.Abs(dx);
+            int dza = Mathf.Abs(dz);
+
+            if (dxa > dza)
+            {
+                d = dxa / (dza + 1);
+                r = dxa % (dza + 1);
+            }
+            else if (dxa < dza)
+            {
+                d = dza / (dxa + 1);
+                r = dza % (dxa + 1);
+            }
+            else
+            {
+                d = dxa;
+                r = 0;
+            }
+
+            while (dx != 0 || dz != 0)
+            {
+                // handle straight lines
+                if (dx == 0 && dz != 0)
+                {
+                    if (dz > 0)
+                    {
+                        z++;
+                        dz--;
+                    }
+                    else
+                    {
+                        z--;
+                        dz++;
+                    }
+
+                    if (debug)
+                        Log.Warning("[Debug] (" + x + ", 0, " + z + ")");
+
+                    yield return new IntVec3(x, 0, z);
+                }
+                else if (dz == 0 && dx != 0)
+                {
+                    if (dx > 0)
+                    {
+                        x++;
+                        dx--;
+                    }
+                    else
+                    {
+                        x--;
+                        dx++;
+                    }
+
+                    if (debug)
+                        Log.Warning("[Debug] (" + x + ", 0, " + z + ")");
+
+                    yield return new IntVec3(x, 0, z);
+                }
+                else
+                {
+                    // non-straight lines
+                    for (int i = 0; i < d; i++)
+                    {
+                        if (dx == -dz && dx != 0)
+                        {
+                            if (dx > dz)
+                            {
+                                x++;
+                                z--;
+                                dx--;
+                                dz++;
+                            }
+                            else
+                            {
+                                x--;
+                                z++;
+                                dx++;
+                                dz--;
+                            }
+                        }
+                        else if (dx < dz)
+                        {
+                            if (dx > 0 || dza > dxa)
+                            {
+                                if (dz > 0)
+                                {
+                                    z++;
+                                    dz--;
+                                }
+                                else
+                                {
+                                    z--;
+                                    dz++;
+                                }
+                            }
+                            else
+                            {
+                                x--;
+                                dx++;
+                            }
+                        }
+                        else if (dx > dz)
+                        {
+                            if (dz > 0 || dxa > dza)
+                            {
+                                if (dx > 0)
+                                {
+                                    x++;
+                                    dx--;
+                                }
+                                else
+                                {
+                                    x--;
+                                    dx++;
+                                }
+                            }
+                            else
+                            {
+                                z--;
+                                dz++;
+                            }
+                        }
+                        else if (dx == dz && dx != 0)
+                        {
+                            if (dx > 0)
+                            {
+                                x++;
+                                z++;
+                                dx--;
+                                dz--;
+                            }
+                            else
+                            {
+                                x--;
+                                z--;
+                                dx++;
+                                dz++;
+                            }
+                        }
+                        else // dx == dz && dx == 0
+                        {
+                            break;
+                        }
+
+                        if (debug)
+                            Log.Warning("[Debug] (" + x + ", 0, " + z + ")");
+
+                        yield return new IntVec3(x, 0, z);
+                    }
+
+                    // handle increment
+                    if (dx > dz && dz != 0)
+                    {
+                        if (dz > 0)
+                        {
+                            z++;
+                            dz--;
+                        }
+                        else
+                        {
+                            z--;
+                            dz++;
+                        }
+
+                        // handle remainder
+                        if (r != 0)
+                        {
+                            if (dx > 0)
+                            {
+                                x++;
+                                dx--;
+                                r--;
+                            }
+                            else if (dx < 0)
+                            {
+                                x--;
+                                dx++;
+                                r--;
+                            }
+                        }
+
+                        if (debug)
+                            Log.Warning("[Debug] (" + x + ", 0, " + z + ")");
+
+                        yield return new IntVec3(x, 0, z);
+                    }
+                    else if (dx < dz && dx != 0)
+                    {
+                        if (dx > 0)
+                        {
+                            x++;
+                            dx--;
+                        }
+                        else
+                        {
+                            x--;
+                            dx++;
+                        }
+
+                        // handle remainder
+                        if (r != 0)
+                        {
+                            if (dz > 0)
+                            {
+                                z++;
+                                dz--;
+                                r--;
+                            }
+                            else if (dz < 0)
+                            {
+                                z--;
+                                dz++;
+                                r--;
+                            }
+                        }
+
+                        if (debug)
+                            Log.Warning("[Debug] (" + x + ", 0, " + z + ")");
+
+                        yield return new IntVec3(x, 0, z);
+                    }
+                    
+                }
+
+                
+
+            } // end while
+
+        }
+
+
+        public static void ClearThingsFor(Map map, IntVec3 spot, IntVec2 size, Rot4 rot, bool clearPlants = true, bool teleportHaulables = true)
+        {
+            CellRect removeCells = GenAdj.OccupiedRect(spot, rot, size);
+            // Not sure if CellRects are immutable upon assignment?
+            CellRect moveToCells = removeCells.ExpandedBy(2).ClipInsideMap(map);
+
+            foreach (IntVec3 cell in removeCells)
+            {
+                if (clearPlants)
+                {
+                    Plant plant = cell.GetPlant(map);
+                    if (plant != null)
+                    {
+                        plant.Destroy(DestroyMode.KillFinalize);
+                    }
+                }
+
+                if (teleportHaulables)
+                {
+                    Thing haulable = cell.GetFirstHaulable(map);
+                    if (haulable != null)
+                    {
+                        IntVec3 moveToSpot = haulable.Position;
+                        for (int i = 0; i < 30; i++)
+                        {
+                            IntVec3 tempSpot = moveToCells.RandomCell;
+                            if (!removeCells.Contains(tempSpot))
+                            {
+                                if (!tempSpot.GetThingList(map).Any())
+                                {
+                                    moveToSpot = tempSpot;
+                                    break;
+                                }
+                            }
+                        }
+                        // Teleport the fucker
+                        //haulable.Position = moveToSpot;
+                        GenPlace.TryMoveThing(haulable, moveToSpot, map);
+                    }
+                }
+            }
+        }
+
+
+        public static float Mass(this Thing thing)
+        {
+            return thing.GetInnerIfMinified().GetStatValue(StatDefOf.Mass) * thing.stackCount;
+        }
+
+        public static float FreeSpaceIfCarried(this Pawn carrier, Thing thing)
+        {
+            return Mathf.Max(0f, MassUtility.FreeSpace(carrier) - thing.Mass());
+        }
+
+        public static bool HasSpaceFor(this Pawn carrier, Thing thing)
+        {
+            return  carrier.FreeSpaceIfCarried(thing) > 0;
+        }
+
+
+        public static void TryThrowTextMotes(this Pawn pawn)
+        {
+
+        }
 
     }
 }

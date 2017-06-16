@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 using Verse.AI.Group;
 
 namespace Carnivale
 {
-    public class CarnivalInfo : MapComponent, ILoadReferenceable
+    public sealed class CarnivalInfo : MapComponent, ILoadReferenceable
     {
 
         private static IntRange addToRadius = new IntRange(13, 20);
@@ -115,9 +116,7 @@ namespace Carnivale
             carnivalArea = CellRect.CenteredOn(setupCentre, (int)baseRadius + 10).ClipInsideMap(map).ContractedBy(10);
 
             // Set banner spot
-            bannerCell = CalculateBannerCell();
-            if (Prefs.DevMode)
-                Log.Warning("CarnivalInfo.bannerCell first pass: " + bannerCell.ToString());
+            bannerCell = PreCalculateBannerCell();
 
             // Moved to LordToil_SetupCarnival.. dunno why but it doesn't work here
             foreach (CarnivalRole role in Enum.GetValues(typeof(CarnivalRole)))
@@ -125,6 +124,12 @@ namespace Carnivale
                 List<Pawn> pawns = (from p in currentLord.ownedPawns
                                     where p.Is(role)
                                     select p).ToList();
+                if (role == CarnivalRole.Vendor)
+                {
+                    // Will enable this when they are standing in stalls
+                    pawns.ForEach(p => p.mindState.wantsToTradeWithColony = false);
+                }
+
                 pawnsWithRole.Add(role, pawns);
             }
 
@@ -164,36 +169,29 @@ namespace Carnivale
 
         
 
-        private IntVec3 CalculateBannerCell()
+        private IntVec3 PreCalculateBannerCell()
         {
             IntVec3 colonistPos = map.listerBuildings.allBuildingsColonist.NullOrEmpty() ?
                 map.mapPawns.FreeColonistsSpawned.RandomElement().Position : map.listerBuildings.allBuildingsColonist.RandomElement().Position;
 
             IntVec3 closestCell = carnivalArea.ClosestCellTo(colonistPos);
-            
-            if (!closestCell.Standable(map))
+
+            if (Prefs.DevMode)
+                Log.Warning("CarnivalInfo.bannerCell first pre pass: " + closestCell.ToString());
+
+            if (!map.reachability.CanReach(setupCentre, closestCell, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some))
             {
-                if (!CellFinder.TryRandomClosewalkCellNear(
-                        closestCell,
-                        map,
-                        16,
-                        out closestCell
-                        //delegate(IntVec3 cell)
-                        //{
-                        //    return true;
-                        //}
-                   ))
+                foreach (var cell in GenRadial.RadialCellsAround(closestCell, 25, false))
                 {
-                    // Really tough time finding a cell now
-                    foreach (var cell in GenRadial.RadialCellsAround(closestCell, 25, false))
+                    if (map.reachability.CanReach(setupCentre, cell, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some))
                     {
-                        if (cell.Standable(map))
-                        {
-                            closestCell = cell;
-                            break;
-                        }
+                        closestCell = cell;
+                        break;
                     }
                 }
+
+                if (Prefs.DevMode)
+                    Log.Warning("CarnivalInfo.bannerCell reachability pre pass: " + closestCell.ToString());
             }
             
 
@@ -219,21 +217,38 @@ namespace Carnivale
                     }
                 }
 
+                if (Prefs.DevMode)
+                    Log.Warning("CarnivalInfo.bannerCell first road pass: " + closestCell.ToString());
+
                 if (roadCell.IsValid
                     && roadCell.DistanceToSquared(setupCentre) < baseRadius * baseRadius * 1.25f)
                 {
                     // Found the edge of a road,
                     // try to centre it if it is diagonal or vertical
-                    // (no real effect if it is horizontal)
-                    IntVec3 centredCell = roadCell + IntVec3.East * 2;
-                    if (!centredCell.GetTerrain(map).HasTag("Road"))
+                    IntVec3 adjustedCell = roadCell;
+
+                    if ((adjustedCell + IntVec3.East * 2).GetTerrain(map).HasTag("Road"))
                     {
-                        centredCell = roadCell + IntVec3.West * 2;
+                        adjustedCell += IntVec3.East * 2;
+                    }
+                    else if ((adjustedCell + IntVec3.West * 2).GetTerrain(map).HasTag("Road"))
+                    {
+                        adjustedCell += IntVec3.West * 2;
+                    }
+                    else
+                    {
+                        adjustedCell += IntVec3.North;
                     }
 
-                    closestCell = centredCell.Standable(map) ? centredCell : roadCell;
+                    closestCell = adjustedCell.Standable(map) ? adjustedCell : roadCell;
+
+                    if (Prefs.DevMode)
+                        Log.Warning("CarnivalInfo.bannerCell final road pass: " + closestCell.ToString());
                 }
             }
+
+            if (Prefs.DevMode)
+                Log.Warning("CarnivalInfo.bannerCell final pre pass: " + closestCell.ToString());
 
             return closestCell;
         }

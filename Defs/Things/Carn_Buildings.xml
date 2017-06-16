@@ -7,6 +7,7 @@
   <ThingDef Name="CarnBuilding" Abstract="True">
     <category>Building</category>
 	<thingClass>Building</thingClass>
+	
 	<soundImpactDefault>BulletImpactWood</soundImpactDefault>
     <selectable>true</selectable>
     <drawerType>MapMeshAndRealTime</drawerType>
@@ -19,12 +20,22 @@
 	
 	<minifiedDef>MinifiedFurniture</minifiedDef>
 	
+	<blueprintClass>Carnivale.Blueprint_StuffHacked</blueprintClass>
+	
+	<placeWorkers>
+	  <li>Carnivale.PlaceWorker_CarnBuilding</li>
+	</placeWorkers>
+	
+	<building>
+	  <isEdifice>false</isEdifice>
+	  <ignoreNeedsPower>true</ignoreNeedsPower>
+	</building>
+	
   </ThingDef>
   
   <!-- Tent base -->
   <ThingDef Name="CarnTent" ParentName="CarnBuilding" Abstract="True">
     <thingClass>Carnivale.Building_Tent</thingClass>
-	<blueprintClass>Carnivale.Blueprint_StuffHacked</blueprintClass>
 	
 	<altitudeLayer>PawnUnused</altitudeLayer>
 	<pathCost>0</pathCost>
@@ -54,15 +65,6 @@
 	  </li>
     </damageMultipliers>
 	
-	<building>
-	  <isEdifice>false</isEdifice>
-	  <ignoreNeedsPower>true</ignoreNeedsPower>
-	</building>
-	
-	<placeWorkers>
-	  <li>PlaceWorker_NotUnderRoof</li>
-	</placeWorkers>
-	
 	<designationCategory>Structure</designationCategory>
   </ThingDef>
   
@@ -70,7 +72,6 @@
   <!-- Stall base -->
   <ThingDef Name="CarnStall" ParentName="CarnBuilding" Abstract="True">
     <thingClass>Carnivale.Building_Carn</thingClass>
-	<blueprintClass>Carnivale.Blueprint_StuffHacked</blueprintClass>
 	
 	<altitudeLayer>PawnUnused</altitudeLayer>
 	<pathCost>15</pathCost>
@@ -92,15 +93,6 @@
 		<multiplier>2</multiplier>
 	  </li>
     </damageMultipliers>
-	
-	<building>
-	  <isEdifice>false</isEdifice>
-	  <ignoreNeedsPower>true</ignoreNeedsPower>
-	</building>
-	
-	<placeWorkers>
-	  <li>PlaceWorker_NotUnderRoof</li>
-	</placeWorkers>
 	
 	<designationCategory>Structure</designationCategory>
 	
