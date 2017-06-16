@@ -387,6 +387,7 @@ namespace Carnivale
 
         public static IEnumerable<IntVec3> CellsInLineTo(this IntVec3 a, IntVec3 b, bool debug = false)
         {
+            // Holy shit tho. It works, it's efficient, and it took me sooo long to figure out.
             if (!a.InBounds(Find.VisibleMap) || !b.InBounds(Find.VisibleMap))
             {
                 Log.Error("Cell out of map bounds. a=" + a + " b=" + b);
@@ -630,11 +631,24 @@ namespace Carnivale
                     }
                     
                 }
-
-                
-
             } // end while
 
+        }
+
+
+        public static int CountMountainCells(IntVec3 from, IntVec3 to, Map map)
+        {
+            int numObstacles = 0;
+            foreach (var cel in from.CellsInLineTo(to))
+            {
+                var obst = cel.GetCover(map);
+                if (obst != null && obst.def.mineable)
+                {
+                    numObstacles++;
+                }
+            }
+
+            return numObstacles;
         }
 
 

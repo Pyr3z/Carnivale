@@ -179,6 +179,70 @@ namespace Carnivale
             if (Prefs.DevMode)
                 Log.Warning("CarnivalInfo.bannerCell first pre pass: " + closestCell.ToString());
 
+            // Try to not have too much mountain in the way
+            int attempts = 0;
+            while ( attempts < 10 && Utilities.CountMountainCells(setupCentre, closestCell, map) > 9)
+            {
+                IntVec3 quadPos = setupCentre - map.Center;
+                Rot4 rot;
+
+                if (quadPos.x > 0 && quadPos.z > 0)
+                {
+                    // quadrant I
+                    if (attempts < 5)
+                    {
+                        rot = Rot4.South;
+                    }
+                    else
+                    {
+                        rot = Rot4.West;
+                    }
+                }
+                else if (quadPos.x < 0 && quadPos.z > 0)
+                {
+                    // quadrant II
+                    if (attempts < 5)
+                    {
+                        rot = Rot4.South;
+                    }
+                    else
+                    {
+                        rot = Rot4.East;
+                    }
+                }
+                else if (quadPos.x < 0 && quadPos.z < 0)
+                {
+                    // quadrant III
+                    if (attempts < 5)
+                    {
+                        rot = Rot4.North;
+                    }
+                    else
+                    {
+                        rot = Rot4.East;
+                    }
+                }
+                else
+                {
+                    // quadrant IV
+                    if (attempts < 5)
+                    {
+                        rot = Rot4.North;
+                    }
+                    else
+                    {
+                        rot = Rot4.West;
+                    }
+                }
+
+                closestCell = carnivalArea.GetEdgeCells(rot).RandomElement();
+                attempts++;
+
+                if (Prefs.DevMode)
+                    Log.Warning("CarnivalInfo.bannerCell anti-mountain pass #" + attempts + ": " + closestCell.ToString());
+            }
+
+
             if (!map.reachability.CanReach(setupCentre, closestCell, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some))
             {
                 foreach (var cell in GenRadial.RadialCellsAround(closestCell, 25, false))
@@ -191,7 +255,7 @@ namespace Carnivale
                 }
 
                 if (Prefs.DevMode)
-                    Log.Warning("CarnivalInfo.bannerCell reachability pre pass: " + closestCell.ToString());
+                    Log.Warning("CarnivalInfo.bannerCell reachability pass: " + closestCell.ToString());
             }
             
 
@@ -252,5 +316,6 @@ namespace Carnivale
 
             return closestCell;
         }
+
     }
 }
