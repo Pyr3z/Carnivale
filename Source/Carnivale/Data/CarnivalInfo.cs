@@ -225,7 +225,7 @@ namespace Carnivale
 
             // Try to not have too much mountain in the way
             int attempts = 0;
-            while ( attempts < 10 && Utilities.CountMountainCells(setupCentre, closestCell, map) > 9)
+            while ( attempts < 10 && Utilities.CountMineableCells(setupCentre, closestCell, map) > 9)
             {
                 IntVec3 quadPos = setupCentre - map.Center;
                 Rot4 rot;

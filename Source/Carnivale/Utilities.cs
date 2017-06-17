@@ -664,7 +664,7 @@ namespace Carnivale
         }
 
 
-        public static int CountMountainCells(IntVec3 from, IntVec3 to, Map map)
+        public static int CountMineableCells(IntVec3 from, IntVec3 to, Map map)
         {
             int numObstacles = 0;
             foreach (var cel in from.CellsInLineTo(to))
@@ -680,12 +680,12 @@ namespace Carnivale
         }
 
 
-        public static IntVec3 FurthestCellFrom(this CellRect rect, IntVec3 point, Predicate<IntVec3> validator = null)
+        public static IntVec3 FurthestCellFrom(this CellRect rect, IntVec3 point, bool edgeCellsOnly = false, Predicate<IntVec3> validator = null)
         {
             IntVec3 result = rect.CenterCell;
             float distanceSquared = 0f;
 
-            foreach (var cell in rect)
+            foreach (var cell in edgeCellsOnly ? rect.EdgeCells : rect.Cells)
             {
                 if (validator == null || validator(cell))
                 {

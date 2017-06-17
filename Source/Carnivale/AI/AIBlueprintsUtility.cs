@@ -275,7 +275,7 @@ namespace Carnivale
         private static Blueprint PlaceTrashBlueprint()
         {
             ThingDef signDef = _DefOf.Carn_SignTrash;
-            IntVec3 trashPos = info.carnivalArea.ContractedBy(5).FurthestCellFrom(cachedPos.Average(), delegate (IntVec3 c) 
+            IntVec3 trashPos = info.carnivalArea.ContractedBy(5).FurthestCellFrom(cachedPos.Average(), true, delegate (IntVec3 c) 
             {
                 if (GenRadial.RadialCellsAround(info.bannerCell, 7, false).Contains(c))
                     return false;
