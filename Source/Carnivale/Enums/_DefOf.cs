@@ -13,11 +13,13 @@ namespace Carnivale
 
         public static DutyDef Duty_GuardSmallArea;
 
+        //public static DutyDef Duty_HaulToCarrierOrTrash;
+
         public static DutyDef Duty_HitchToSpot;
 
         public static DutyDef Duty_Meander;
 
-        //public static DutyDef Duty_RestETC;
+        public static DutyDef Duty_MeanderAndHelp;
 
 
 

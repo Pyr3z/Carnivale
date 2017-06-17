@@ -17,6 +17,8 @@
           <treeDef>SatisfyBasicNeedsAndWork</treeDef>
         </li>
 		
+		<li Class="Carnivale.JobGiver_HaulToCarrierOrTrash" />
+		
 		<li Class="JobGiver_WanderNearDutyLocation">
           <wanderRadius>12</wanderRadius>
         </li>
@@ -43,7 +45,7 @@
   </DutyDef>
   
   
-  <!-- Meander and socialise -->
+  <!-- Meander -->
   <DutyDef>
     <defName>Duty_Meander</defName>
 	<thinkNode Class="ThinkNode_Priority">
@@ -55,8 +57,59 @@
 	    
 		<!-- satisfy needs -->
 		<li Class="ThinkNode_Subtree">
+		  <treeDef>SatisfyBasicNeeds</treeDef>
+		</li>
+		
+		<!-- Get joy -->
+		<li Class="ThinkNode_ConditionalNeedPercentageAbove">
+		  <need>Joy</need>
+		  <threshold>0.5</threshold>
+		  <invert>true</invert>
+		  <subNodes>
+		    <li Class="JobGiver_GetJoyInBed" />
+			<li Class="JobGiver_GetJoy" />
+		  </subNodes>
+		</li>
+		
+		<!-- Socialise a lil bit -->
+		<li Class="ThinkNode_ConditionalRandom">
+          <chance>0.25</chance>
+          <subNodes>
+            <li Class="JobGiver_StandAndBeSociallyActive">
+              <ticksRange>
+                <min>300</min>
+                <max>450</max>
+              </ticksRange>
+            </li>
+          </subNodes>
+        </li>
+		
+		<!-- but mostly wander round -->
+		<li Class="JobGiver_WanderNearDutyLocation">
+		  <wanderRadius>12</wanderRadius>
+		</li>
+		
+	  </subNodes>
+	</thinkNode>
+  </DutyDef>
+  
+  
+  <!-- Meander and work -->
+  <DutyDef>
+    <defName>Duty_MeanderAndHelp</defName>
+	<thinkNode Class="ThinkNode_Priority">
+	  <subNodes>
+	  
+	    <li Class="JobGiver_FightFiresNearPoint">
+		  <maxDistFromPoint>38</maxDistFromPoint>
+		</li>
+	    
+		<!-- satisfy needs or do work -->
+		<li Class="ThinkNode_Subtree">
 		  <treeDef>SatisfyBasicNeedsAndWork</treeDef>
 		</li>
+		
+		<li Class="Carnivale.JobGiver_HaulToCarrierOrTrash" />
 		
 		<!-- Get joy -->
 		<li Class="ThinkNode_ConditionalNeedPercentageAbove">

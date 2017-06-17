@@ -171,17 +171,22 @@ namespace Carnivale
         }
 
 
-        public IntVec3 GetNextTrashSpot()
+        public IntVec3 GetNextTrashSpotFor(Thing thing = null)
         {
             // a better way to do this might be to cache the radial
             foreach (var cell in GenRadial.RadialCellsAround(trashCell, 10, false))
             {
-                if (cell.GetFirstHaulable(map) == null)
+                if (!cell.Standable(map)) continue;
+
+                var first = cell.GetFirstHaulable(map);
+
+                if (first == null || (thing == null || (thing.def == first.def && thing.stackCount + first.stackCount <= thing.def.stackLimit)))
                 {
                     return cell;
                 }
             }
 
+            Log.Error("Found no spot to put trash. Did the trash area overflow?");
             return IntVec3.Invalid;
         }
 
@@ -189,6 +194,20 @@ namespace Carnivale
         public bool AnyCarriersCanCarry(Thing thing)
         {
             return pawnsWithRole[CarnivalRole.Carrier].Any(c => c.HasSpaceFor(thing));
+        }
+
+
+        public int TotalCountToHaulFor(ThingDef def)
+        {
+            int result = 0;
+            foreach (var thing in from t in this.thingsToHaul
+                                  where t.def == def
+                                  select t)
+            {
+                result += thing.stackCount;
+            }
+
+            return result;
         }
 
 
@@ -202,7 +221,7 @@ namespace Carnivale
             IntVec3 closestCell = carnivalArea.ClosestCellTo(colonistPos);
 
             if (Prefs.DevMode)
-                Log.Warning("CarnivalInfo.bannerCell first pre pass: " + closestCell.ToString());
+                Log.Warning("CarnivalInfo.bannerCell first pre pass: " + closestCell);
 
             // Try to not have too much mountain in the way
             int attempts = 0;
@@ -264,7 +283,7 @@ namespace Carnivale
                 attempts++;
 
                 if (Prefs.DevMode)
-                    Log.Warning("CarnivalInfo.bannerCell anti-mountain pass #" + attempts + ": " + closestCell.ToString());
+                    Log.Warning("CarnivalInfo.bannerCell anti-mountain pass #" + attempts + ": " + closestCell);
             }
 
 
@@ -280,7 +299,7 @@ namespace Carnivale
                 }
 
                 if (Prefs.DevMode)
-                    Log.Warning("CarnivalInfo.bannerCell reachability pass: " + closestCell.ToString());
+                    Log.Warning("CarnivalInfo.bannerCell reachability pass: " + closestCell);
             }
             
 
@@ -307,10 +326,10 @@ namespace Carnivale
                 }
 
                 if (Prefs.DevMode)
-                    Log.Warning("CarnivalInfo.bannerCell first road pass: " + closestCell.ToString());
+                    Log.Warning("CarnivalInfo.bannerCell first road pass: " + roadCell);
 
                 if (roadCell.IsValid
-                    && roadCell.DistanceToSquared(setupCentre) < baseRadius * baseRadius * 1.25f)
+                    && roadCell.DistanceToSquared(setupCentre) < baseRadius * baseRadius * 3f)
                 {
                     // Found the edge of a road,
                     // try to centre it if it is diagonal or vertical
@@ -332,12 +351,20 @@ namespace Carnivale
                     closestCell = adjustedCell.Standable(map) ? adjustedCell : roadCell;
 
                     if (Prefs.DevMode)
-                        Log.Warning("CarnivalInfo.bannerCell final road pass: " + closestCell.ToString());
+                        Log.Warning("CarnivalInfo.bannerCell final road pass: " + closestCell);
+                }
+                else
+                {
+                    if (Prefs.DevMode)
+                        if (!roadCell.IsValid)
+                            Log.Warning("CarnivalInfo.bannerCell road pass was invalid. Reason: no road cell found in search area.");
+                        else
+                            Log.Warning("CarnivalInfo.bannerCell road pass was invalid. Reason: found road cell too far from setupCentre.");
                 }
             }
 
             if (Prefs.DevMode)
-                Log.Warning("CarnivalInfo.bannerCell final pre pass: " + closestCell.ToString());
+                Log.Warning("CarnivalInfo.bannerCell final pre pass: " + closestCell);
 
             return closestCell;
         }

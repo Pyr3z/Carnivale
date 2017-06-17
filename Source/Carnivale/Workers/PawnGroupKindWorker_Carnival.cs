@@ -174,8 +174,9 @@ namespace Carnivale
             var totalWeight = 0f;
             var waresSansPawns = new List<Thing>();
 
-            foreach (var thing in wares)
+            for (int j = wares.Count - 1; j > -1; j--) // required for iterative removing
             {
+                var thing = wares[j];
                 if (thing is Pawn) continue;
 
                 var mass = thing.Mass();
@@ -194,7 +195,7 @@ namespace Carnivale
                             + baseCapacity
                         );
                     }
-                    wares.Remove(thing);
+                    wares.RemoveAt(j);
                     continue;
                 }
 

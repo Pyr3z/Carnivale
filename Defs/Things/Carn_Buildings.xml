@@ -71,7 +71,7 @@
   
   <!-- Stall base -->
   <ThingDef Name="CarnStall" ParentName="CarnBuilding" Abstract="True">
-    <thingClass>Building</thingClass>
+    <thingClass>Carnivale.Building_Carn</thingClass>
 	
 	<altitudeLayer>PawnUnused</altitudeLayer>
 	<pathCost>15</pathCost>

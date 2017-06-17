@@ -20,7 +20,7 @@ namespace Carnivale
         [DebuggerHidden]
         public static IEnumerable<Blueprint> PlaceCarnivalBlueprints(CarnivalInfo info)
         {
-            // Assign necessary values to this singleton (is this technically a singleton?)
+            // Assign necessary values to this singleton (is this technically a singleton, or just static?)
             AIBlueprintsUtility.info = info;
             
             if (info.currentLord.CurLordToil.data is LordToilData_Setup)
@@ -87,47 +87,55 @@ namespace Carnivale
             IntVec3 lineDirection = rot.ToIntVec3(1); // shifted clockwise by 1
 
             // Place lodging tents (8 pawns per medium sized tent)
-            int attempts = 0;
+            int numFailures = 0;
             bool firstNewPass = true;
-            while (attempts < 30 && availableCrates.Any(t => t.def == _DefOf.Carn_Crate_TentLodge))
+            while (numFailures < 30 && availableCrates.Any(t => t.def == _DefOf.Carn_Crate_TentLodge))
             {
                 // Following works as intended iff size.x == size.y
 
                 if (!firstNewPass)
                 {
-                    // Distance between tents is 1 cell
+                    // try adding tent next in a an adjacent line
                     tentSpot += lineDirection * ((tentDef.size.x + 1));
                 }
 
                 if (CanPlaceBlueprintAt(tentSpot, tentDef, rot))
                 {
+                    // bingo
                     firstNewPass = false;
                     RemoveFirstCrateOf(_DefOf.Carn_Crate_TentLodge);
                     Utilities.ClearThingsFor(info.map, tentSpot, tentDef.size, rot, false, true);
                     yield return PlaceBlueprint(tentDef, tentSpot, rot);
                 }
-                else if (attempts % 3 != 0)
+                else if (numFailures % 3 != 0)
                 {
+                    // try different line directions
                     rot.AsByte++;
                     lineDirection = rot.ToIntVec3(1);
+                    numFailures++;
                 }
                 else
                 {
-                    // Find new placement if next spot doesn't work
-                    tentSpot = FindRandomPlacementFor(tentDef, rot, info.carnivalArea);
+                    // Find new placement if next spot and any of its rotations don't work
+                    tentSpot = FindRadialPlacementFor(tentDef, rot, tentSpot, (int)info.baseRadius / 2);
+
+                    if (!tentSpot.IsValid)
+                    {
+                        // suboptimal random placement
+                        tentSpot = FindRandomPlacementFor(tentDef, rot, false, 5);
+                    }
+
                     firstNewPass = true;
                 }
-
-                attempts++;
             }
 
-            if (attempts == 30 && availableCrates.Any(t => t.def == _DefOf.Carn_Crate_TentLodge))
+            if (numFailures == 30 && availableCrates.Any(t => t.def == _DefOf.Carn_Crate_TentLodge))
             {
                 Log.Error("Tried too many times to place tents. Some may not be built.");
             }
 
             // Place manager tent
-                if (!availableCrates.Any(c => c.def == _DefOf.Carn_Crate_TentMan))
+            if (!availableCrates.Any(c => c.def == _DefOf.Carn_Crate_TentMan))
                 yield break;
 
             rot = Rot4.Random;
@@ -145,7 +153,7 @@ namespace Carnivale
             }
             else
             {
-                // use suboptimal random cell
+                // suboptimal placement
                 tentSpot = FindRadialPlacementFor(tentDef, rot, info.setupCentre, (int)info.baseRadius / 2);
                 if (tentSpot.IsValid)
                 {
@@ -267,7 +275,13 @@ namespace Carnivale
         private static Blueprint PlaceTrashBlueprint()
         {
             ThingDef signDef = _DefOf.Carn_SignTrash;
-            IntVec3 trashPos = info.carnivalArea.ContractedBy(3).FurthestCellFrom(cachedPos.Average());
+            IntVec3 trashPos = info.carnivalArea.ContractedBy(5).FurthestCellFrom(cachedPos.Average(), delegate (IntVec3 c) 
+            {
+                if (GenRadial.RadialCellsAround(info.bannerCell, 7, false).Contains(c))
+                    return false;
+
+                return true;
+            });
 
             if (!CanPlaceBlueprintAt(trashPos, signDef))
             {
@@ -281,6 +295,8 @@ namespace Carnivale
             }
 
             info.trashCell = trashPos;
+
+            RemoveFirstCrateOf(ThingDefOf.WoodLog);
             Utilities.ClearThingsFor(info.map, trashPos, new IntVec2(4,4), default(Rot4));
             return PlaceBlueprint(signDef, trashPos, default(Rot4), ThingDefOf.WoodLog);
         }

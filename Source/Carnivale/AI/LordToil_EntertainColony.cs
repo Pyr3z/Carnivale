@@ -71,7 +71,7 @@ namespace Carnivale
                 }
 
                 // Default
-                DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
+                DutyUtility.MeanderAndHelp(pawn, Info.setupCentre, Info.baseRadius);
             }
         }
 

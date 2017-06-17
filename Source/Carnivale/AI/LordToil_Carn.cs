@@ -54,10 +54,14 @@ namespace Carnivale
             if (this.lord.ticksInToil % 1009 == 0)
             {
                 foreach (Thing thing in from t in GenRadial.RadialDistinctThingsAround(Info.setupCentre, this.Map, Info.baseRadius, true)
-                                        where (!t.def.IsWithinCategory(ThingCategoryDefOf.Chunks))
+                                        where (t.def.IsWithinCategory(ThingCategoryDefOf.Root))
+                                          && !t.def.IsWithinCategory(ThingCategoryDefOf.Chunks)
+                                          && (!(this.data is LordToilData_Setup) || ((LordToilData_Setup)this.data).availableCrates.Contains(t))
                                           && !Info.thingsToHaul.Contains(t)
                                         select t)
                 {
+                    if (Prefs.DevMode)
+                        Log.Warning("Pushing " + thing + " to CarnivalInfo.thingsToHaul stack.");
                     Info.thingsToHaul.Push(thing);
                 }
             }

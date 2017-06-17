@@ -41,26 +41,24 @@ namespace Carnivale
         [DebuggerHidden]
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            Toils_Haul.ErrorCheckForCarry(this.pawn, this.ToHaul);
-
             this.FailOn(delegate
             {
                 return !this.pawn.Map.lordManager.lords.Contains(this.pawn.CurJob.lord);
             });
 
-            Toil reserve = Toils_Reserve.Reserve(TargetIndex.A, 1, -1, null);
+            Toil reserve = Toils_Reserve.Reserve(TargetIndex.A);
 
             yield return reserve;
 
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
 
-            //yield return this.DetermineNumToHaul();
+            yield return this.DetermineNumToHaul();
 
             yield return Toils_Haul.StartCarryThing(TargetIndex.A, false, true);
 
             //yield return this.AddCarriedThingToTransferable();
 
-            yield return Toils_Haul.CheckForGetOpportunityDuplicate(reserve, TargetIndex.A, TargetIndex.None, true, t => Info.thingsToHaul.Contains(t));
+            yield return Toils_Haul.CheckForGetOpportunityDuplicate(reserve, TargetIndex.A, TargetIndex.None, false, t => Info.thingsToHaul.Contains(t));
 
             HaulLocation destType = Utilities.GetHaulToLocation(this.ToHaul);
 
@@ -69,6 +67,8 @@ namespace Carnivale
                 Toil findCarrier = FindCarrier();
 
                 yield return findCarrier;
+
+                //yield return Toils_Reserve.Reserve(TargetIndex.B);
 
                 yield return Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.Touch)
                     .JumpIf(() => !JobDriver_PrepareCaravan_GatherItems.IsUsableCarrier(this.Carrier, this.pawn, false), findCarrier);
@@ -83,12 +83,44 @@ namespace Carnivale
 
                 yield return findTrashSpot;
 
+                //yield return Toils_Reserve.Reserve(TargetIndex.B);
+
                 yield return Toils_Goto.GotoCell(TargetIndex.B, PathEndMode.Touch);
 
                 yield return Toils_Haul.PlaceHauledThingInCell(TargetIndex.B, findTrashSpot, false);
             }
         }
 
+
+
+
+        private Toil DetermineNumToHaul()
+        {
+            return new Toil
+            {
+                initAction = delegate
+                {
+                    int num = Info.TotalCountToHaulFor(this.ToHaul.def);
+
+                    if (this.pawn.carryTracker.CarriedThing != null)
+                    {
+                        num -= this.pawn.carryTracker.CarriedThing.stackCount;
+                    }
+
+                    if (num <= 0)
+                    {
+                        this.pawn.jobs.EndCurrentJob(JobCondition.Succeeded, true);
+                    }
+                    else
+                    {
+                        base.CurJob.count = num;
+                    }
+
+                },
+                defaultCompleteMode = ToilCompleteMode.Instant,
+                atomicWithPrevious = true
+            };
+        }
 
 
         private Toil FindCarrier()
@@ -129,7 +161,7 @@ namespace Carnivale
             {
                 initAction = delegate
                 {
-                    base.CurJob.SetTarget(TargetIndex.B, Info.GetNextTrashSpot());
+                    base.CurJob.SetTarget(TargetIndex.B, Info.GetNextTrashSpotFor());
                 }
             };
         }

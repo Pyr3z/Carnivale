@@ -25,15 +25,15 @@ namespace Carnivale
         {
             if (pawn.mindState != null)
             {
-                pawn.mindState.duty = new PawnDuty(_DefOf.Duty_Meander, centre, radius);
+                pawn.mindState.duty = new PawnDuty(_DefOf.Duty_MeanderAndHelp, centre, radius);
 
                 pawn.workSettings.EnableAndInitialize();
 
                 if (!pawn.story.WorkTypeIsDisabled(_DefOf.PlantCutting))
                     pawn.workSettings.SetPriority(_DefOf.PlantCutting, 1);
 
-                if (!pawn.story.WorkTypeIsDisabled(WorkTypeDefOf.Hauling))
-                    pawn.workSettings.SetPriority(WorkTypeDefOf.Hauling, 1);
+                //if (!pawn.story.WorkTypeIsDisabled(WorkTypeDefOf.Hauling))
+                //    pawn.workSettings.SetPriority(WorkTypeDefOf.Hauling, 1);
             }
         }
 
