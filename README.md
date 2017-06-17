@@ -20,11 +20,22 @@ I'm a bit stronger on the coding side of things than the texturing side, so if y
   * New roaming faction (no settlements generated) type: Carnivals [DONE]
   * MANY new backstories reflecting carny lifestyles [DONE]
   * Dynamic faction naming: Carnivals' names often reflect their leaders', and update upon change of leadership [DONE]
+* Complex, but still fairly efficient AI behaviour
+  * Highly specific and versatile placement logic for buildings etcetera [DONE, ongoing]
+  * Construction of carnival buildings [DONE]
+  * Cutting of plants where buildings should go [DONE]
+  * Hauling of things either to carriers or to a trash zone that is up for colonist grabs [partially done]
+  * Manning of positions at the approriate times [ongoing]
+    * vendor positions (there are up to three different kinds of trader at a time!) [DONE]
+    * guard positions [DONE]
+    * announcers / ticket (silver) takers [partially done]
+  * Meandering, socialising, getting joy, eating, sleeping, etc [DONE]
 * New buildings
   * Tents: lodging tents for carnies to sleep [DONE], chapiteau tent [DONE], kitchen tents?
     * YES! BUILDINGS YOU CAN GO INSIDE OF!
   * Stalls: vendor stalls [DONE], game stalls
   * "CARNIVALE" Entrance Banner [DONE]
+  * A trash sign designating items that are unwanted by the carnies and are up for grabs. This is great because carnies may cut plants that you've been wanting to cut for a while, but they won't (usually) steal the resources. [DONE]
 * New apparel, and maybe a few new weapons (baseball bats, anyone?)
 * New incidents
   * Carnivals request to visit your colony one day prior [DONE]
