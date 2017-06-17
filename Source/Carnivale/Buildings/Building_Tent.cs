@@ -26,11 +26,14 @@ namespace Carnivale
                 else
                     doorCell.z -= 1;
 
-                Building door = ThingMaker.MakeThing(_DefOf.Carn_TentDoor) as Building;
+                Building_TentFlap door = ThingMaker.MakeThing(_DefOf.Carn_TentDoor) as Building_TentFlap;
                 door.SetFaction(this.Faction);
                 door.Position = doorCell;
-                //GenSpawn.Spawn(door, doorCell, map);
-                childBuildings.Add(door);
+                if (Props.type.Is(CarnBuildingType.Attraction))
+                    door.availableToNonCarnies = true;
+
+                //GenSpawn.Spawn(door, doorCell, map); // spawned in base method now
+                childBuildings.Add(door); 
 
                 // Build invisible walls
                 IEnumerable<IntVec3> edges = Utilities.CornerlessEdgeCells(this.OccupiedRect());
@@ -40,7 +43,8 @@ namespace Carnivale
                     Building wall = ThingMaker.MakeThing(_DefOf.Carn_TentWall) as Building;
                     wall.SetFaction(this.Faction);
                     wall.Position = cell;
-                    //GenSpawn.Spawn(wall, cell, map);
+
+                    //GenSpawn.Spawn(wall, cell, map); // spawned in base method now
                     childBuildings.Add(wall);
                 }
             }

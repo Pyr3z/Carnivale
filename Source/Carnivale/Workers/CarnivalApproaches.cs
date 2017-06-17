@@ -27,7 +27,7 @@ namespace Carnivale
             int durationDays = Mathf.RoundToInt(this.def.durationDays.RandomInRange);
 
             // Attempt to find a spawn spot.
-            if (!FindSpawnSpot(map, out spawnSpot))
+            if (!FindCarnivalSpawnSpot(map, out spawnSpot))
             {
                 if (Prefs.DevMode)
                     Log.Warning("Tried to execute incident CarnivalApproaches, failed to find reachable spawn spot.");
@@ -58,10 +58,15 @@ namespace Carnivale
                 parms.faction.AffectGoodwillWith(Faction.OfPlayer, acceptanceBonus);
 
                 IncidentParms arrivalParms = StorytellerUtility.DefaultParmsNow(Find.Storyteller.def, IncidentCategory.AllyArrival, map);
-                arrivalParms.forced = true;
+                //arrivalParms.forced = true; // forcing not necessary
                 arrivalParms.faction = parms.faction;
                 arrivalParms.spawnCenter = spawnSpot;
                 arrivalParms.points = parms.points; // Do this?
+
+                // This is so it can be determined that the spawnpoint was precomputed.
+                Rot4 sneakyValueForSpawnpointResolved = Rot4.East;
+                arrivalParms.spawnRotation = sneakyValueForSpawnpointResolved;
+
                 // This is super cheaty, but there is no other field to pass this to.
                 arrivalParms.raidPodOpenDelay = durationDays;
                 // End cheaty.
@@ -117,10 +122,12 @@ namespace Carnivale
             return true;
         }
 
-        private static bool FindSpawnSpot(Map map, out IntVec3 spot)
+        // made public in case IncidentParms.spawnCenter needs to be resolved elsewhere
+        public static bool FindCarnivalSpawnSpot(Map map, out IntVec3 spot)
         {
             return CellFinder.TryFindRandomEdgeCellWith(
-                c => map.reachability.CanReachColony(c) && !c.IsAroundWater(map, 12),
+                c => map.reachability.CanReachColony(c)
+                     && (map.roadInfo.roadEdgeTiles.Any() || !c.IsAroundTerrainOfTag(map, 12, "Water")),
                 map,
                 CellFinder.EdgeRoadChance_Always,
                 out spot);

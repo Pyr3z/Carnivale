@@ -29,11 +29,14 @@ namespace Carnivale
 
                 pawn.workSettings.EnableAndInitialize();
 
-                if (!pawn.story.WorkTypeIsDisabled(_DefOf.PlantCutting))
+                if (pawn.skills.GetSkill(SkillDefOf.Growing).Level > 1)
                     pawn.workSettings.SetPriority(_DefOf.PlantCutting, 1);
 
-                //if (!pawn.story.WorkTypeIsDisabled(WorkTypeDefOf.Hauling))
-                //    pawn.workSettings.SetPriority(WorkTypeDefOf.Hauling, 1);
+                // Does setting hauling even do anything for non-colonists?
+                // I still have to assign them the hauling job via a
+                // Duty_MeanderAndWork JobGiver, but that's giving errors.
+                if (!pawn.story.WorkTypeIsDisabled(WorkTypeDefOf.Hauling))
+                    pawn.workSettings.SetPriority(WorkTypeDefOf.Hauling, 1);
             }
         }
 

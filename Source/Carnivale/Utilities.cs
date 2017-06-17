@@ -344,14 +344,11 @@ namespace Carnivale
                     && !randomCell.Roofed(map)
                     && randomCell.SupportsStructureType(map, TerrainAffordance.Light)
                     && map.reachability.CanReach(randomCell, entrySpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some)
-                    && map.reachability.CanReachColony(randomCell))
+                    && map.reachability.CanReachColony(randomCell)
+                    && (map.roadInfo.roadEdgeTiles.Any() || !randomCell.IsAroundTerrainOfTag(map, 12, "Water")))
                 {
-                    // We don't want to be within 16 cells of water
-                    if (!randomCell.IsAroundWater(map, 16))
-                    {
-                        result = randomCell;
-                        return true;
-                    }
+                    result = randomCell;
+                    return true;
                 }
             }
             result = IntVec3.Invalid;
@@ -359,11 +356,13 @@ namespace Carnivale
         }
 
 
-        public static bool IsAroundWater(this IntVec3 spot, Map map, int radius)
+        public static bool IsAroundTerrainOfTag(this IntVec3 spot, Map map, int radius, string tag)
         {
             foreach (var cell in GenRadial.RadialCellsAround(spot, radius, true))
             {
-                if (cell.GetTerrain(map).HasTag("Water"))
+                if (!cell.InBounds(map)) continue;
+
+                if (cell.GetTerrain(map).HasTag(tag))
                 {
                     return true;
                 }
@@ -787,6 +786,7 @@ namespace Carnivale
         {
 
         }
+
 
     }
 }

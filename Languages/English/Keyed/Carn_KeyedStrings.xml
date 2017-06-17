@@ -31,7 +31,7 @@
   
   
   <!-- Messages -->
-  <ExistingCarnThingThere>There is already a {0} there.</ExistingCarnThingThere>
+  <ExistingCarnThingThere>There is something blocking {0}. The interior can overlap buildings other than other {0}s.</ExistingCarnThingThere>
   
   
 </LanguageData>

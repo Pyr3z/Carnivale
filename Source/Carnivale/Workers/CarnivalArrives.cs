@@ -44,8 +44,21 @@ namespace Carnivale
 
         protected List<Pawn> SpawnPawns(IncidentParms parms, int spawnPointSpread)
         {
-            // Essentially a copy of the base method, however spawn spread is tweakable.
             Map map = (Map)parms.target;
+
+            if (parms.spawnRotation != Rot4.East)
+            {
+                if (Prefs.DevMode)
+                    Log.Warning("[Debug] Spawn centre for CarnivalArrives was not precomputed. Resolving now.");
+
+                IntVec3 tempSpot = parms.spawnCenter;
+
+                if (IncidentWorker_CarnivalApproaches.FindCarnivalSpawnSpot(map, out tempSpot))
+                    parms.spawnCenter = tempSpot;
+                else if (Prefs.DevMode)
+                    Log.Warning("[Debug] Failed to resolve spawn center for CarnivalArrives. Defaulting.");
+            }
+            
             PawnGroupMakerParms defaultMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(parms);
 
             List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(this.PawnGroupKindDef, defaultMakerParms, false).ToList();
@@ -118,7 +131,7 @@ namespace Carnivale
 
             IntVec3 setupCentre = Utilities.FindCarnivalSetupPositionFrom(parms.spawnCenter, map);
 
-            LordJob_EntertainColony lordJob = new LordJob_EntertainColony(parms.faction, setupCentre, durationDays);
+            LordJob_EntertainColony lordJob = new LordJob_EntertainColony(setupCentre, durationDays);
             Lord lord = LordMaker.MakeNewLord(parms.faction, lordJob, map, pawns);
 
             map.GetComponent<CarnivalInfo>().ReInitWith(lord, setupCentre);
