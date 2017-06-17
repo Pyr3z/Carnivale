@@ -14,6 +14,8 @@ namespace Carnivale
 
         private static List<Pawn> stallUsers;
 
+        private static List<IntVec3> cachedPos = new List<IntVec3>();
+
         // The only public method; use this
         [DebuggerHidden]
         public static IEnumerable<Blueprint> PlaceCarnivalBlueprints(CarnivalInfo info)
@@ -29,9 +31,10 @@ namespace Carnivale
             else
             {
                 Log.Error("Tried to place carnival blueprints while not in setup toil.");
-                availableCrates = null;
-                stallUsers = null;
+                yield break;
             }
+
+            cachedPos = new List<IntVec3>(availableCrates.Count);
 
 
 
@@ -41,6 +44,7 @@ namespace Carnivale
             {
                 foreach (Blueprint tent in PlaceTentBlueprints())
                 {
+                    cachedPos.Add(tent.Position);
                     yield return tent;
                 }
 
@@ -48,6 +52,7 @@ namespace Carnivale
                 {
                     foreach (Blueprint stall in PlaceStallBlueprints())
                     {
+                        cachedPos.Add(stall.Position);
                         yield return stall;
                     }
                 }
@@ -56,9 +61,20 @@ namespace Carnivale
 
                 if (entrance != null)
                 {
+                    cachedPos.Add(entrance.Position);
                     yield return entrance;
                 }
+
+                Blueprint trashSign = PlaceTrashBlueprint();
+
+                if (trashSign != null)
+                {
+                    yield return trashSign;
+                }
             }
+
+            cachedPos.Clear();
+            cachedPos = null;
         }
 
 
@@ -68,37 +84,19 @@ namespace Carnivale
             Rot4 rot = Rot4.Random;
             IntVec3 tentSpot = FindRandomPlacementFor(tentDef, rot, true, (int)info.baseRadius / 2);
 
-            IntVec3 lineDirection;
-
-            switch (rot.AsByte)
-            {
-                // Want to draw an even line of tents with the same rotation
-                case 0: // North
-                    lineDirection = IntVec3.East;
-                    break;
-                case 1: // East
-                    lineDirection = IntVec3.North;
-                    break;
-                case 2: // South
-                    lineDirection = IntVec3.West;
-                    break;
-                case 3: // West
-                    lineDirection = IntVec3.South;
-                    break;
-                default:
-                    lineDirection = IntVec3.Invalid;
-                    break;
-            }
+            IntVec3 lineDirection = rot.ToIntVec3(1); // shifted clockwise by 1
 
             // Place lodging tents (8 pawns per medium sized tent)
-            int counter = 0;
             int attempts = 0;
             while (attempts < 20 && availableCrates.Any(t => t.def == _DefOf.Carn_Crate_TentLodge))
             {
                 // Following works as intended iff size.x == size.y
 
                 // Distance between tents is 1 cell
-                tentSpot += lineDirection * ((tentDef.size.x + 1) * counter++);
+                if (attempts > 0)
+                {
+                    tentSpot += lineDirection * ((tentDef.size.x + 1));
+                }
 
                 if (CanPlaceBlueprintAt(tentSpot, rot, tentDef))
                 {
@@ -108,9 +106,14 @@ namespace Carnivale
                 }
                 else
                 {
+                    rot.AsByte++;
+                    lineDirection = rot.ToIntVec3(1);
+                }
+
+                if (attempts > 4)
+                {
                     // Find new placement if next spot doesn't work
-                    tentSpot = FindRandomPlacementFor(tentDef, rot, CellRect.CenteredOn(tentSpot, 25).ClipInsideRect(info.carnivalArea));
-                    counter = 0;
+                    tentSpot = FindRandomPlacementFor(tentDef, rot, info.carnivalArea);
                 }
 
                 attempts++;
@@ -118,7 +121,7 @@ namespace Carnivale
 
             if (attempts == 20 && availableCrates.Any(t => t.def == _DefOf.Carn_Crate_TentLodge))
             {
-                Log.Error("Tried too many times to place tents. They will not be built.");
+                Log.Error("Tried too many times to place tents. Some may not be built.");
             }
 
             // Place manager tent
@@ -259,6 +262,14 @@ namespace Carnivale
             return null;
         }
 
+        private static Blueprint PlaceTrashBlueprint()
+        {
+            ThingDef signDef = _DefOf.Carn_SignTrash;
+            IntVec3 trashPos = info.carnivalArea.ContractedBy(3).FurthestCellFrom(cachedPos.Average());
+            Utilities.ClearThingsFor(info.map, trashPos, new IntVec2(4,4), default(Rot4));
+            return PlaceBlueprint(signDef, trashPos, default(Rot4), ThingDefOf.WoodLog);
+        }
+
 
 
 
@@ -279,9 +290,9 @@ namespace Carnivale
         }
 
 
-        private static Blueprint PlaceBlueprint(ThingDef def, IntVec3 spot, Rot4 rotation)
+        private static Blueprint PlaceBlueprint(ThingDef def, IntVec3 spot, Rot4 rotation, ThingDef stuff = null)
         {
-            return GenConstruct.PlaceBlueprintForBuild(def, spot, info.map, rotation, info.currentLord.faction, null);
+            return GenConstruct.PlaceBlueprintForBuild(def, spot, info.map, rotation, info.currentLord.faction, stuff);
         }
 
 

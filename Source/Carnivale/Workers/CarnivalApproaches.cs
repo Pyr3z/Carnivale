@@ -120,7 +120,7 @@ namespace Carnivale
         private static bool FindSpawnSpot(Map map, out IntVec3 spot)
         {
             return CellFinder.TryFindRandomEdgeCellWith(
-                (IntVec3 c) => map.reachability.CanReachColony(c),
+                c => map.reachability.CanReachColony(c) && !c.IsAroundWater(map, 12),
                 map,
                 CellFinder.EdgeRoadChance_Always,
                 out spot);

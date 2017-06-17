@@ -81,6 +81,8 @@ namespace Carnivale
             int numStallCrates = Info.pawnsWithRole[CarnivalRole.Vendor].Count + _DefOf.Carn_SignEntry.costList.First().count;
             data.TryHaveWorkerCarry(_DefOf.Carn_Crate_Stall, numStallCrates, ThingDefOf.WoodLog);
 
+            // Give em a wood
+            data.TryHaveWorkerCarry(ThingDefOf.WoodLog, 1);
 
 
             // Place blueprints
@@ -139,7 +141,7 @@ namespace Carnivale
                         {
                             anyBuildings = true;
                             // Add buildings to CarnivalInfo
-                            if (building is Building_Carn)
+                            if (building.GetComp<CompCarnBuilding>() != null)
                             {
                                 Info.carnivalBuildings.Add(building);
                             }
@@ -238,7 +240,7 @@ namespace Carnivale
             int countCarriers = Info.pawnsWithRole[CarnivalRole.Carrier].Count;
             int countSpots = 0;
             List<IntVec3> spots = new List<IntVec3>();
-            CellRect searchRect = CellRect.CenteredOn(Info.setupCentre, (int)(Info.baseRadius / 2f));
+            CellRect searchRect = CellRect.CenteredOn(Info.setupCentre, 8);
 
             for (int i = 0; i < 50; i++)
             {

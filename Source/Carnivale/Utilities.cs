@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -345,18 +346,8 @@ namespace Carnivale
                     && map.reachability.CanReach(randomCell, entrySpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some)
                     && map.reachability.CanReachColony(randomCell))
                 {
-                    // We don't want to be within 12 cells of water
-                    bool water = false;
-                    foreach (var cell in GenRadial.RadialCellsAround(randomCell, 12, true))
-                    {
-                        if (cell.GetTerrain(map).HasTag("Water"))
-                        {
-                            water = true;
-                            break;
-                        }
-                    }
-
-                    if (!water)
+                    // We don't want to be within 16 cells of water
+                    if (!randomCell.IsAroundWater(map, 16))
                     {
                         result = randomCell;
                         return true;
@@ -365,6 +356,43 @@ namespace Carnivale
             }
             result = IntVec3.Invalid;
             return false;
+        }
+
+
+        public static bool IsAroundWater(this IntVec3 spot, Map map, int radius)
+        {
+            foreach (var cell in GenRadial.RadialCellsAround(spot, radius, true))
+            {
+                if (cell.GetTerrain(map).HasTag("Water"))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
+        public static IntVec3 ToIntVec3(this Rot4 rot, byte shiftedBy = 0)
+        {
+            byte rotb = rot.AsByte;
+            rotb += shiftedBy;
+            rotb %= 4;
+
+            switch (rotb)
+            {
+                case 0: // North
+                    return IntVec3.North;
+                case 1: // East
+                    return IntVec3.East;
+                case 2: // South
+                    return IntVec3.South;
+                case 3: // West
+                    return IntVec3.West;
+                default:
+                    Log.Error("Error when converting Rot4 to IntVec3. Expect more errors.");
+                    return IntVec3.Invalid;
+            }
         }
 
 
@@ -649,6 +677,28 @@ namespace Carnivale
             }
 
             return numObstacles;
+        }
+
+
+        public static IntVec3 FurthestCellFrom(this CellRect rect, IntVec3 point, Predicate<IntVec3> validator = null)
+        {
+            IntVec3 result = rect.CenterCell;
+            float distanceSquared = 0f;
+
+            foreach (var cell in rect)
+            {
+                if (validator == null || validator(cell))
+                {
+                    float tempDistanceSqrd = cell.DistanceToSquared(point);
+                    if (tempDistanceSqrd > distanceSquared)
+                    {
+                        result = cell;
+                        distanceSquared = tempDistanceSqrd;
+                    }
+                }
+            }
+
+            return result;
         }
 
 
