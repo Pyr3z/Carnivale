@@ -61,7 +61,7 @@
   <ItemGroup>
     <Compile Include="AI\AIBlueprintsUtility.cs" />
     <Compile Include="AI\DutyUtility.cs" />
-    <Compile Include="AI\JobDriver_HaulToCarriers.cs" />
+    <Compile Include="AI\JobDriver_HaulToCarrierOrTrash.cs" />
     <Compile Include="AI\JobDriver_StandAtLoc.cs" />
     <Compile Include="AI\JobGiver_GotoCarnivalArea.cs" />
     <Compile Include="AI\JobGiver_StandAtLoc.cs" />
@@ -88,6 +88,7 @@
     <Compile Include="Debug.cs" />
     <Compile Include="Enums\CarnBuildingType.cs" />
     <Compile Include="Enums\CarnivalRole.cs" />
+    <Compile Include="Enums\HaulLocation.cs" />
     <Compile Include="Enums\_DefOf.cs" />
     <Compile Include="AI\LordJob_EntertainColony.cs" />
     <Compile Include="One\TheOne.cs" />
@@ -104,7 +105,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Workers\PlaceWorker_CarnBuilding.cs" />
     <Compile Include="Workers\RoomRoleWorker_Tent.cs" />
-    <Compile Include="Workers\WorkGiver_HaulToCarrier.cs" />
+    <Compile Include="AI\WorkGiver_HaulToCarrierOrTrash.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

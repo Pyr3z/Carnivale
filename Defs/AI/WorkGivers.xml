@@ -2,9 +2,9 @@
 <Defs>
   
   <WorkGiverDef>
-    <defName>Work_HaulToCarriers</defName>
+    <defName>Work_HaulToCarrierOrTrash</defName>
 	<label>haul dropped items to carriers</label>
-	<giverClass>Carnivale.WorkGiver_HaulToCarrier</giverClass>
+	<giverClass>Carnivale.WorkGiver_HaulToCarrierOrTrash</giverClass>
 	<workType>Hauling</workType>
 	<verb>load</verb>
 	<gerund>loading</gerund>

@@ -758,7 +758,28 @@ namespace Carnivale
 
         public static bool HasSpaceFor(this Pawn carrier, Thing thing)
         {
-            return  carrier.FreeSpaceIfCarried(thing) > 0;
+            return carrier.FreeSpaceIfCarried(thing) > 0;
+        }
+
+
+        public static HaulLocation GetHaulToLocation(Thing thing)
+        {
+            // there is a more elegant way to do this, but I'll do that later.
+
+            if (thing.def == ThingDefOf.WoodLog)
+            {
+                return HaulLocation.ToTrash;
+            }
+
+            if (thing.def.IsWithinCategory(ThingCategoryDefOf.Foods)
+                || thing.def.IsWithinCategory(ThingCategoryDefOf.ResourcesRaw))
+            {
+                return HaulLocation.ToCarriers;
+            }
+
+            
+
+            return HaulLocation.None;
         }
 
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <ThingCategoryDef>
+    <defName>CarnivalThings</defName>
+    <label>carnival things</label>
+    <parent>Manufactured</parent>
+    <iconPath>Carnivale/UI/EntrySignIcon</iconPath>
+    <resourceReadoutRoot>true</resourceReadoutRoot>
+  </ThingCategoryDef>
+  
+</Defs>

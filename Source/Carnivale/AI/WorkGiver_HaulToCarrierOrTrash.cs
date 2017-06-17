@@ -6,7 +6,8 @@ using Verse.AI.Group;
 
 namespace Carnivale
 {
-    public class WorkGiver_HaulToCarrier : WorkGiver
+    // Perhaps this is not favourable over using a duty
+    public class WorkGiver_HaulToCarrierOrTrash : WorkGiver
     {
         public override bool ShouldSkip(Pawn pawn)
         {
@@ -23,12 +24,13 @@ namespace Carnivale
                 if (info.thingsToHaul.Any())
                 {
                     var haulable = info.thingsToHaul.Pop();
-                    foreach (var carrier in info.pawnsWithRole[CarnivalRole.Carrier])
+                    
+                    if (haulable != null)
                     {
-                        if (carrier.HasSpaceFor(haulable))
+                        return new Job(_DefOf.Job_HaulToCarrierOrTrash, haulable)
                         {
-
-                        }
+                            lord = lord
+                        };
                     }
                 }
             }

@@ -27,6 +27,8 @@ namespace Carnivale
 
         public IntVec3 bannerCell;
 
+        public IntVec3 trashCell; // Assigned when blueprint is placed
+
         public Stack<Thing> thingsToHaul = new Stack<Thing>();
 
         public List<Building> carnivalBuildings = new List<Building>();
@@ -82,6 +84,8 @@ namespace Carnivale
             Scribe_Values.Look(ref this.carnivalArea, "carnivalArea", default(CellRect), false);
 
             Scribe_Values.Look(ref this.bannerCell, "bannerCell", default(IntVec3), false);
+
+            Scribe_Values.Look(ref this.trashCell, "trashCell", default(IntVec3), false);
 
             Scribe_Collections.Look(ref this.thingsToHaul, "thingsToHaul", LookMode.Reference);
 
@@ -164,6 +168,27 @@ namespace Carnivale
 
             Log.Warning("Tried to find any building of def " + def + " in CarnivalInfo, but none exists.");
             return null;
+        }
+
+
+        public IntVec3 GetNextTrashSpot()
+        {
+            // a better way to do this might be to cache the radial
+            foreach (var cell in GenRadial.RadialCellsAround(trashCell, 10, false))
+            {
+                if (cell.GetFirstHaulable(map) == null)
+                {
+                    return cell;
+                }
+            }
+
+            return IntVec3.Invalid;
+        }
+
+
+        public bool AnyCarriersCanCarry(Thing thing)
+        {
+            return pawnsWithRole[CarnivalRole.Carrier].Any(c => c.HasSpaceFor(thing));
         }
 
 

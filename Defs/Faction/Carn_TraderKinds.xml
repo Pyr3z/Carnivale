@@ -77,6 +77,7 @@
       </li>
 	  
 	  <li Class="StockGenerator_Art">
+	    <price>Expensive</price>
 	    <countRange>
 		  <min>1</min>
 		  <max>4</max>
@@ -92,6 +93,7 @@
 	  </li>
 	  
 	  <li Class="StockGenerator_Tag">
+	    <price>Expensive</price>
 	    <tradeTag>Exotic</tradeTag>
 		<thingDefCountRange>
 		  <min>1</min>
@@ -104,6 +106,7 @@
 	  </li>
 	  
 	  <li Class="StockGenerator_Tag">
+	    <price>Expensive</price>
 	    <tradeTag>Artifact</tradeTag>
 		<thingDefCountRange>
 		  <min>0</min>

@@ -7,8 +7,8 @@
   </JobDef>
   
   <JobDef>
-    <defName>Job_HaulToCarriers</defName>
-	<driverClass>Carnivale.JobDriver_HaulToCarriers</driverClass>
+    <defName>Job_HaulToCarrierOrTrash</defName>
+	<driverClass>Carnivale.JobDriver_HaulToCarrierOrTrash</driverClass>
   </JobDef>
   
 </Defs>

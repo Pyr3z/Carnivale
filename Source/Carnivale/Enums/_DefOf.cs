@@ -35,7 +35,7 @@ namespace Carnivale
 
 
 
-        public static JobDef Job_HaulToCarriers;
+        public static JobDef Job_HaulToCarrierOrTrash;
 
         public static JobDef Job_StandAtLoc;
 

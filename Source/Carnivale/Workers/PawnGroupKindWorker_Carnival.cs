@@ -157,13 +157,11 @@ namespace Carnivale
 
         private void GenerateCarriers(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, List<Thing> wares, List<Pawn> outPawns)
         {
-            var waresList = (from x in wares
-                             where !(x is Pawn)
-                             select x).ToList();
-
-            var totalWeight = waresList.Sum(t => t.GetInnerIfMinified().GetStatValue(StatDefOf.Mass) * t.stackCount);
-
-            //Log.Warning("totalWeight for wares: " + totalWeight);
+            // disabling this more elegant solution in order to exclude overweight items
+            //var waresList = (from x in wares
+            //                 where !(x is Pawn)
+            //                 select x).ToList();
+            //var totalWeight = waresList.Sum(t => t.GetInnerIfMinified().GetStatValue(StatDefOf.Mass) * t.stackCount);
 
             var carrierList = new List<Pawn>();
 
@@ -173,10 +171,40 @@ namespace Carnivale
                                select x).RandomElementByWeight(o => o.selectionWeight).kind;
             float baseCapacity = carrierKind.RaceProps.baseBodySize * 34f; // Leaving some space for silvah, original calculation is 35f
 
+            var totalWeight = 0f;
+            var waresSansPawns = new List<Thing>();
+
+            foreach (var thing in wares)
+            {
+                if (thing is Pawn) continue;
+
+                var mass = thing.Mass();
+
+                if (mass > baseCapacity)
+                {
+                    if (Prefs.DevMode)
+                    {
+                        Log.Warning(
+                            thing
+                            + " is too big for any carrier and will be removed from wares. mass="
+                            + mass
+                            + ", "
+                            + carrierKind.label
+                            + " capacity="
+                            + baseCapacity
+                        );
+                    }
+                    wares.Remove(thing);
+                    continue;
+                }
+
+                totalWeight += mass;
+                waresSansPawns.Add(thing);
+            }
+
             int numCarriers = Mathf.CeilToInt(totalWeight / baseCapacity);
 
             int i = 0;
-
             for (int j = 0; j < numCarriers; j++)
             {
                 // Generate carrier
@@ -205,10 +233,10 @@ namespace Carnivale
                     null
                 );
                 var carrier = PawnGenerator.GeneratePawn(request);
-                if (i < waresList.Count)
+                if (i < waresSansPawns.Count)
                 {
                     // Add initial few items to carrier
-                    if (carrier.inventory.innerContainer.TryAdd(waresList[i], true))
+                    if (carrier.inventory.innerContainer.TryAdd(waresSansPawns[i], true))
                         i++;
                 }
                 carrierList.Add(carrier);
@@ -217,9 +245,9 @@ namespace Carnivale
 
             // Finally, fill up all the carriers' inventories
             int numFailures = 0;
-            while (i < waresList.Count && numFailures < 15)
+            while (i < waresSansPawns.Count && numFailures < 15)
             {
-                var ware = waresList[i];
+                var ware = waresSansPawns[i];
                 Pawn randCarrier;
                 if (carrierList.TryRandomElementByWeight(
                     c => c.FreeSpaceIfCarried(ware),
@@ -232,12 +260,12 @@ namespace Carnivale
                     numFailures++;
             }
 
-            while (i < waresList.Count)
+            while (i < waresSansPawns.Count)
             {
                 // Remove things that could not fit for whatever reason
                 if (Prefs.DevMode)
-                    Log.Warning("Could not fit " + waresList[i] + " in any carrier. Removing.");
-                wares.Remove(waresList[i++]);
+                    Log.Warning("Could not fit " + waresSansPawns[i] + " in any carrier. Removing.");
+                wares.Remove(waresSansPawns[i++]);
             }
         }
 

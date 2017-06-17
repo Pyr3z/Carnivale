@@ -88,38 +88,40 @@ namespace Carnivale
 
             // Place lodging tents (8 pawns per medium sized tent)
             int attempts = 0;
-            while (attempts < 20 && availableCrates.Any(t => t.def == _DefOf.Carn_Crate_TentLodge))
+            bool firstNewPass = true;
+            while (attempts < 30 && availableCrates.Any(t => t.def == _DefOf.Carn_Crate_TentLodge))
             {
                 // Following works as intended iff size.x == size.y
 
-                // Distance between tents is 1 cell
-                if (attempts > 0)
+                if (!firstNewPass)
                 {
+                    // Distance between tents is 1 cell
                     tentSpot += lineDirection * ((tentDef.size.x + 1));
                 }
 
-                if (CanPlaceBlueprintAt(tentSpot, rot, tentDef))
+                if (CanPlaceBlueprintAt(tentSpot, tentDef, rot))
                 {
+                    firstNewPass = false;
                     RemoveFirstCrateOf(_DefOf.Carn_Crate_TentLodge);
                     Utilities.ClearThingsFor(info.map, tentSpot, tentDef.size, rot, false, true);
                     yield return PlaceBlueprint(tentDef, tentSpot, rot);
                 }
-                else
+                else if (attempts % 3 != 0)
                 {
                     rot.AsByte++;
                     lineDirection = rot.ToIntVec3(1);
                 }
-
-                if (attempts > 4)
+                else
                 {
                     // Find new placement if next spot doesn't work
                     tentSpot = FindRandomPlacementFor(tentDef, rot, info.carnivalArea);
+                    firstNewPass = true;
                 }
 
                 attempts++;
             }
 
-            if (attempts == 20 && availableCrates.Any(t => t.def == _DefOf.Carn_Crate_TentLodge))
+            if (attempts == 30 && availableCrates.Any(t => t.def == _DefOf.Carn_Crate_TentLodge))
             {
                 Log.Error("Tried too many times to place tents. Some may not be built.");
             }
@@ -266,6 +268,19 @@ namespace Carnivale
         {
             ThingDef signDef = _DefOf.Carn_SignTrash;
             IntVec3 trashPos = info.carnivalArea.ContractedBy(3).FurthestCellFrom(cachedPos.Average());
+
+            if (!CanPlaceBlueprintAt(trashPos, signDef))
+            {
+                trashPos = FindRadialPlacementFor(signDef, default(Rot4), trashPos, 10);
+            }
+
+            if (!trashPos.IsValid)
+            {
+                Log.Error("Could not find any place for a trash spot. Defaulting to setupCentre.");
+                trashPos = info.setupCentre;
+            }
+
+            info.trashCell = trashPos;
             Utilities.ClearThingsFor(info.map, trashPos, new IntVec2(4,4), default(Rot4));
             return PlaceBlueprint(signDef, trashPos, default(Rot4), ThingDefOf.WoodLog);
         }
@@ -273,7 +288,7 @@ namespace Carnivale
 
 
 
-        private static bool CanPlaceBlueprintAt(IntVec3 spot, Rot4 rot, ThingDef def)
+        private static bool CanPlaceBlueprintAt(IntVec3 spot, ThingDef def, Rot4 rot = default(Rot4))
         {
             if (!spot.IsValid) return false;
 
@@ -290,13 +305,13 @@ namespace Carnivale
         }
 
 
-        private static Blueprint PlaceBlueprint(ThingDef def, IntVec3 spot, Rot4 rotation, ThingDef stuff = null)
+        private static Blueprint PlaceBlueprint(ThingDef def, IntVec3 spot, Rot4 rotation = default(Rot4), ThingDef stuff = null)
         {
             return GenConstruct.PlaceBlueprintForBuild(def, spot, info.map, rotation, info.currentLord.faction, stuff);
         }
 
 
-        private static IntVec3 FindRandomPlacementFor(ThingDef def, Rot4 rot, bool preferFarFromColony = false, int contractedBy = 0)
+        private static IntVec3 FindRandomPlacementFor(ThingDef def, Rot4 rot = default(Rot4), bool preferFarFromColony = false, int contractedBy = 0)
         {
             CellRect noGo = CellRect.CenteredOn(info.bannerCell, info.carnivalArea.Width / 2);
 
@@ -311,7 +326,7 @@ namespace Carnivale
 
                 if (info.map.reachability.CanReach(randomCell, info.carnivalArea.CenterCell, Verse.AI.PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
                 {
-                    if (CanPlaceBlueprintAt(randomCell, rot, def))
+                    if (CanPlaceBlueprintAt(randomCell, def, rot))
                     {
                         return randomCell;
                     }
@@ -328,7 +343,7 @@ namespace Carnivale
 
                 if (info.map.reachability.CanReach(randomCell, info.carnivalArea.CenterCell, Verse.AI.PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
                 {
-                    if (CanPlaceBlueprintAt(randomCell, rot, def))
+                    if (CanPlaceBlueprintAt(randomCell, def, rot))
                     {
                         if (preferCardinalAdjacentTo != default(IntVec3))
                         {
@@ -353,7 +368,7 @@ namespace Carnivale
             {
                 if (info.map.reachability.CanReach(cell, info.carnivalArea.CenterCell, Verse.AI.PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
                 {
-                    if (CanPlaceBlueprintAt(cell, rot, def))
+                    if (CanPlaceBlueprintAt(cell, def, rot))
                     {
                         return cell;
                     }
