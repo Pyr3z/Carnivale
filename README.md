@@ -1,8 +1,10 @@
+![banner](About/Preview.png)
+
+## NOT EVEN READY FOR ALPHA RELEASE. Download at your own risk.
+### When an alpha or better is available, they will show up under releases.
 Requires [XnopeCore](https://github.com/Xnope/XnopeCore)
 
 # CARNIVÀLE
-![banner](About/Preview.png)
-
 My first content mod for Rimworld. Adds a new unique faction type: carnivals. My goal for this mod is for the end product to fit very nicely in the space-cowboy / wild-west aesthetic of vanilla RimWorld. It was inspired by the long-cancelled HBO show by the same name.
 
 The shear variety of content this mod seeks to add (and partially already has added) to the vanilla game makes it one of the most expansive kinds of mods out there. Feel free to peruse the source if you want to see how this or that is accomplished; I make this available entirely because of how grateful I am to other modders who have made their mods open-source and thus allowed me to learn from their examples.
@@ -40,6 +42,7 @@ I'm a bit stronger on the coding side of things than the texturing side, so if y
 * New incidents
   * Carnivals request to visit your colony one day prior [DONE]
   * Upon arrival, carnies will set up their buildings and prepare immediately for a show [partially done]. Then, they will put on an 8-hour show every 16 hours until they leave (usually only a couple of days total).
+  * Other passing factions may visit to experience the carnival!
   * Fireball shows... not gonna explain
   * "Carnival Justice": how'd you get a band of goofballs to hate you so much?
 * A boatload of new backstories [DONE, ongoing]
@@ -54,5 +57,9 @@ I'm a bit stronger on the coding side of things than the texturing side, so if y
   * A secret, rare trait that only one pawn in the game can have, with a devastating yet unique mechanic... look for this pawn amongst carnies.
 * And absolutely (eventually), the ability for players to run their own carnival caravans
 
-# Side note
+## Side note
 Holy cow AI and data scribing is intense. Thought I'd be done with this weeks ago. At least it's all still fun though :P
+
+# Screenies
+![promo1](Imagework/Promo/promo_1.png)
+![promo2](Imagework/Promo/promo4.PNG)
