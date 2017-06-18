@@ -1,6 +1,8 @@
-Requires [XnopeCore](https://github.com/Xnope/XnopeCore)
-
 ![banner](About/Preview.png)
+
+## NOT EVEN READY FOR ALPHA RELEASE. Download at your own risk.
+### When an alpha or better is available, they will show up under releases.
+Requires [XnopeCore](https://github.com/Xnope/XnopeCore)
 
 # CARNIVÀLE
 My first content mod for Rimworld. Adds a new unique faction type: carnivals. My goal for this mod is for the end product to fit very nicely in the space-cowboy / wild-west aesthetic of vanilla RimWorld. It was inspired by the long-cancelled HBO show by the same name.
