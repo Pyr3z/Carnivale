@@ -29,7 +29,8 @@ namespace Carnivale
 
                 pawn.workSettings.EnableAndInitialize();
 
-                if (pawn.skills.GetSkill(SkillDefOf.Growing).Level > 1)
+                if (!pawn.story.WorkTypeIsDisabled(_DefOf.PlantCutting)
+                    && pawn.skills.GetSkill(SkillDefOf.Growing).Level > 1)
                     pawn.workSettings.SetPriority(_DefOf.PlantCutting, 1);
 
                 // Does setting hauling even do anything for non-colonists?

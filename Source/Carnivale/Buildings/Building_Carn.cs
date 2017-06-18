@@ -116,14 +116,14 @@ namespace Carnivale
 
         public override void DeSpawn()
         {
-            foreach (var child in childBuildings)
+            for (int i = childBuildings.Count - 1; i > -1; i--)
             {
-                if (child.Destroyed)
+                if (childBuildings[i].Destroyed)
                 {
-                    childBuildings.Remove(child);
+                    childBuildings.RemoveAt(i);
                     continue;
                 }
-                child.DeSpawn();
+                childBuildings[i].DeSpawn();
             }
 
             base.DeSpawn();

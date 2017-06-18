@@ -46,6 +46,11 @@ namespace Carnivale
             return referenceableList.Remove(pawn);
         }
 
+        public void RemoveAt(int index)
+        {
+            referenceableList.RemoveAt(index);
+        }
+
         public void ExposeData()
         {
             Scribe_Collections.Look(ref referenceableList, "loadReferenceIDs", LookMode.Reference);

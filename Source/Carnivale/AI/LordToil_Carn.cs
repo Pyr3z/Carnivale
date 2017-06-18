@@ -61,8 +61,8 @@ namespace Carnivale
                                         select t)
                 {
                     if (Prefs.DevMode)
-                        Log.Warning("Pushing " + thing + " to CarnivalInfo.thingsToHaul stack.");
-                    Info.thingsToHaul.Push(thing);
+                        Log.Warning("[Debug] Adding " + thing + " to CarnivalInfo.thingsToHaul.");
+                    Info.thingsToHaul.Add(thing);
                 }
             }
         }

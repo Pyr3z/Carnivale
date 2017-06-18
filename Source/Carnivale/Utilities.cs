@@ -14,18 +14,16 @@ namespace Carnivale
         // Remember to flush this whenever a carnival exits the map
         public static Dictionary<Pawn, CarnivalRole> cachedRoles = new Dictionary<Pawn, CarnivalRole>();
 
-        public static ThingDef[] simpleFabricStuffs = new ThingDef[]
-        {
-            _DefOf.Cloth,
-            _DefOf.WoolAlpaca,
-            _DefOf.WoolCamel,
-            _DefOf.WoolMegasloth,
-            _DefOf.WoolMuffalo
-        };
 
-        public static ThingDef RandomSimpleFabricByValue()
+
+        public static ThingDef RandomFabricByCheapness()
         {
-            return simpleFabricStuffs.RandomElementByWeight(d => d.BaseMarketValue);
+            return _DefOf.Textiles.childThingDefs.RandomElementByWeight(def => 10f / def.BaseMarketValue);
+        }
+
+        public static ThingDef RandomFabricByExpensiveness()
+        {
+            return _DefOf.Textiles.childThingDefs.RandomElementByWeight(def => def.BaseMarketValue);
         }
 
 
@@ -39,6 +37,8 @@ namespace Carnivale
         {
             return pawn.RaceProps.Humanlike && pawn.Faction != null && pawn.Faction.IsCarnival();
         }
+
+
 
         public static CarnivalRole GetCarnivalRole(this Pawn pawn)
         {
@@ -117,6 +117,20 @@ namespace Carnivale
             return role;
         }
 
+        public static IEnumerable<CarnivalRole> GetCarnivalRolesIndividually(this Pawn pawn)
+        {
+            byte bitFlaggedRoles = (byte)pawn.GetCarnivalRole();
+
+            for (byte bitPos = 0; bitPos < 8; bitPos++)
+            {
+                if ((bitFlaggedRoles & (1 << bitPos)) != 0)
+                {
+                    yield return (CarnivalRole)bitPos;
+                }
+            }
+            // God damn this is elegant. Thx stackoverflow.com.
+        }
+
         public static bool Is(this Pawn pawn, CarnivalRole role)
         {
             return pawn.GetCarnivalRole().Is(role);
@@ -167,19 +181,6 @@ namespace Carnivale
             return (type & other) == other;
         }
 
-
-        public static void SetRoofFor(CellRect rect, Map map, RoofDef roof)
-        {
-            // pass a null RoofDef to clear a roof
-            for (int i = rect.minZ; i <= rect.maxZ; i++)
-            {
-                for (int j = rect.minX; j <= rect.maxX; j++)
-                {
-                    IntVec3 cell = new IntVec3(j, 0, i);
-                    map.roofGrid.SetRoof(cell, roof);
-                }
-            }
-        }
 
 
 
@@ -409,6 +410,11 @@ namespace Carnivale
             }
 
             return new IntVec3(totalX / count, 0, totalZ / count);
+        }
+
+        public static IntVec3 Average(params IntVec3[] vecs)
+        {
+            return vecs.Average();
         }
 
 
@@ -663,19 +669,44 @@ namespace Carnivale
         }
 
 
-        public static int CountMineableCells(IntVec3 from, IntVec3 to, Map map)
+        public static int CountMineableCellsTo(this IntVec3 from, IntVec3 to, Map map, bool consecutive = false)
         {
-            int numObstacles = 0;
-            foreach (var cel in from.CellsInLineTo(to))
+            int numMineable = 0;
+            int numMineableConsecutive = 0;
+            foreach (var cell in from.CellsInLineTo(to))
             {
-                var obst = cel.GetCover(map);
+                var obst = cell.GetCover(map);
                 if (obst != null && obst.def.mineable)
                 {
-                    numObstacles++;
+                    numMineable++;
+                }
+                else if (consecutive)
+                {
+                    if (numMineable > numMineableConsecutive)
+                        numMineableConsecutive = numMineable;
+
+                    numMineable = 0;
                 }
             }
 
-            return numObstacles;
+            return consecutive ? numMineableConsecutive : numMineable;
+        }
+
+
+        public static float DistanceSquaredToNearestMineable(this IntVec3 cell, Map map, int searchRadius, out IntVec3 mineable)
+        {
+            foreach (var cel in GenRadial.RadialCellsAround(cell, searchRadius, false))
+            {
+                var cover = cel.GetCover(map);
+                if (cover != null && cover.def.mineable)
+                {
+                    mineable = cel;
+                    return cell.DistanceToSquared(cel);
+                }
+            }
+
+            mineable = IntVec3.Invalid;
+            return float.MaxValue;
         }
 
 

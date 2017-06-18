@@ -9,7 +9,7 @@ namespace Carnivale
         // List is more efficient than HashSet for element count under 20
         private List<int> allowedColonistIDs = new List<int>(Find.VisibleMap.mapPawns.ColonistCount);
 
-        public bool availableToNonCarnies = false;
+        public bool everAvailableToNonCarnies = false;
 
 
 
@@ -23,7 +23,7 @@ namespace Carnivale
         {
             if (p.Faction == this.Faction) return true;
 
-            if (!availableToNonCarnies) return false;
+            if (!everAvailableToNonCarnies) return false;
 
             if (p.Faction.HostileTo(this.Faction)) return false;
 
@@ -38,7 +38,7 @@ namespace Carnivale
 
             Scribe_Collections.Look(ref this.allowedColonistIDs, "allowedColonistsIDs", LookMode.Value);
 
-            Scribe_Values.Look(ref this.availableToNonCarnies, "availableToNonCarnies", false);
+            Scribe_Values.Look(ref this.everAvailableToNonCarnies, "availableToNonCarnies", false);
         }
 
     }

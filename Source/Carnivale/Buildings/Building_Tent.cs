@@ -11,10 +11,15 @@ namespace Carnivale
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             // Build roof
-            Utilities.SetRoofFor(this.OccupiedRect(), map, _DefOf.Carn_TentRoof);
+            foreach (var cell in this.OccupiedRect())
+            {
+                map.roofGrid.SetRoof(cell, _DefOf.Carn_TentRoof);
+            }
+
 
             if (!childBuildings.Any(b => b.def == _DefOf.Carn_TentDoor))
             {
+                // Initial spawn.
                 // Build invisible door
                 IntVec3 doorCell = InteractionCell;
                 if (Rotation == Rot4.North)
@@ -29,8 +34,9 @@ namespace Carnivale
                 Building_TentFlap door = ThingMaker.MakeThing(_DefOf.Carn_TentDoor) as Building_TentFlap;
                 door.SetFaction(this.Faction);
                 door.Position = doorCell;
+
                 if (Props.type.Is(CarnBuildingType.Attraction))
-                    door.availableToNonCarnies = true;
+                    door.everAvailableToNonCarnies = true;
 
                 //GenSpawn.Spawn(door, doorCell, map); // spawned in base method now
                 childBuildings.Add(door); 
@@ -56,7 +62,10 @@ namespace Carnivale
 
         public override void DeSpawn()
         {
-            Utilities.SetRoofFor(this.OccupiedRect(), this.Map, null);
+            foreach (var cell in this.OccupiedRect())
+            {
+                Map.roofGrid.SetRoof(cell, null);
+            }
 
             base.DeSpawn();
         }

@@ -58,11 +58,11 @@ namespace Carnivale
 
             int numBedTents = numCarnies > 9 ? Mathf.CeilToInt(numCarnies / 8f) : 1;
 
-            bool errorFlag = data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentLodge, numBedTents, Utilities.RandomSimpleFabricByValue()) != numBedTents;
+            bool errorFlag = data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentLodge, numBedTents, Utilities.RandomFabricByCheapness()) != numBedTents;
 
             if (Info.pawnsWithRole[CarnivalRole.Manager].Any())
             {
-                if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentMan, 1, _DefOf.DevilstrandCloth) != 1)
+                if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentMan, 1, Utilities.RandomFabricByExpensiveness()) != 1)
                 {
                     errorFlag = true;
                 }
@@ -136,8 +136,8 @@ namespace Carnivale
                     {
                         bool anyBuildings = false;
                         foreach (Building building in from b in base.Map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial)
-                                                 where b.Faction == this.lord.faction
-                                                 select b)
+                                                      where b.Faction == this.lord.faction
+                                                      select b)
                         {
                             anyBuildings = true;
                             // Add buildings to CarnivalInfo

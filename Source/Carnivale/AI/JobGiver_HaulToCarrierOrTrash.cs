@@ -8,6 +8,11 @@ namespace Carnivale
 {
     public class JobGiver_HaulToCarrierOrTrash : ThinkNode_JobGiver
     {
+        public override float GetPriority(Pawn pawn)
+        {
+            return base.GetPriority(pawn);
+        }
+
         protected override Job TryGiveJob(Pawn pawn)
         {
             var info = pawn.MapHeld.GetComponent<CarnivalInfo>();
@@ -21,13 +26,10 @@ namespace Carnivale
             {
                 if (info.thingsToHaul.Any())
                 {
-                    var haulable = info.thingsToHaul.Pop();
+                    var haulable = info.thingsToHaul.Last();
 
                     if (haulable != null)
                     {
-                        if (Prefs.DevMode)
-                            Log.Warning("Popping " + haulable + " from CarnivalInfo.thingsToHaul stack.");
-
                         return new Job(_DefOf.Job_HaulToCarrierOrTrash, haulable)
                         {
                             lord = lord

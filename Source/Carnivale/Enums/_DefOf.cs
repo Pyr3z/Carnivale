@@ -68,6 +68,10 @@ namespace Carnivale
         public static StuffCategoryDef StuffedCrate;
 
 
+        // Not in vanilla DefOf
+        public static ThingCategoryDef Textiles;
+
+
 
         public static ThingDef Carn_Crate_Stall;
 
