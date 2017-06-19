@@ -71,7 +71,7 @@ namespace Carnivale
             mainGraph.AddToil(toil_Entertain);
 
             Transition trans_Entertain = new Transition(toil_Setup, toil_Entertain);
-            trans_Entertain.AddTrigger(new Trigger_Memo("SetupDone"));
+            trans_Entertain.AddTrigger(new Trigger_Memo("SetupDoneEntertain"));
             mainGraph.AddTransition(trans_Entertain);
 
             // Rest the carnival for 16 hours after 8 hours of entertaining
@@ -79,13 +79,17 @@ namespace Carnivale
             mainGraph.AddToil(toil_Rest);
 
             Transition trans_ToRest = new Transition(toil_Entertain, toil_Rest);
-            trans_ToRest.AddTrigger(new Trigger_TicksPassed(GenDate.TicksPerHour * 8));
+
+            //trans_ToRest.AddTrigger(new Trigger_TicksPassed(GenDate.TicksPerHour * 8));
+            trans_ToRest.AddTrigger(new Trigger_TickCondition(() => info.AnyCarnyNeedsRest));
+            trans_ToRest.AddTrigger(new Trigger_Memo("SetupDoneRest"));
             trans_ToRest.AddPostAction(new TransitionAction_EndAllJobs());
             mainGraph.AddTransition(trans_ToRest);
 
             Transition trans_FromRest = new Transition(toil_Rest, toil_Entertain);
-            trans_FromRest.AddTrigger(new Trigger_TicksPassed(GenDate.TicksPerHour * 16));
-            trans_ToRest.AddPostAction(new TransitionAction_EndAllJobs());
+            //trans_FromRest.AddTrigger(new Trigger_TicksPassed(GenDate.TicksPerHour * 16));
+            trans_FromRest.AddTrigger(new Trigger_TickCondition(() => !info.AnyCarnyNeedsRest && info.CanEntertainNow));
+            trans_FromRest.AddPostAction(new TransitionAction_EndAllJobs());
             mainGraph.AddTransition(trans_FromRest);
 
             // Defend if attacked

@@ -14,13 +14,8 @@ namespace Carnivale
 
         protected override bool CanFireNowSub(IIncidentTarget target)
         {
-            // Always true, because this incident is manually fired by
-            // another, which is where the ability for this to fire is
-            // resolved.
-            // ...Or should a double check be made? Case: toxic fallout etc
-
             Map map = (Map)target;
-            if (map.GetComponent<CarnivalInfo>().currentLord != null)
+            if (map.GetComponent<CarnivalInfo>().Active)
             {
                 // only one carnival per map
                 return false;

@@ -58,7 +58,7 @@ namespace Carnivale
 
             Toil reserve = Toils_Reserve.Reserve(TargetIndex.A);
 
-            yield return reserve;
+            yield return reserve; // reserve if not already reserved by this pawn
 
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
 
@@ -112,7 +112,7 @@ namespace Carnivale
             {
                 initAction = delegate
                 {
-                    int num = Info.UnreservedThingsToHaulOf(this.ThingToHaul.def);
+                    int num = Info.UnreservedThingsToHaulOf(this.ThingToHaul.def, this.pawn);
 
                     if (this.pawn.carryTracker.CarriedThing != null)
                     {
@@ -191,7 +191,7 @@ namespace Carnivale
             {
                 initAction = delegate
                 {
-                    var target = Info.GetNextTrashSpotFor(this.ThingToHaul, this.pawn);
+                    var target = Info.GetNextTrashCellFor(this.ThingToHaul, this.pawn);
                     if (!target.IsValid)
                     {
                         base.EndJobWith(JobCondition.Errored);
@@ -212,7 +212,11 @@ namespace Carnivale
                     Pawn_CarryTracker carryTracker = this.pawn.carryTracker;
                     Thing carriedThing = carryTracker.CarriedThing;
                     //this.Transferable.AdjustTo(Mathf.Max(this.Transferable.CountToTransfer - carriedThing.stackCount, 0));
-                    carryTracker.innerContainer.TryTransferToContainer(carriedThing, this.Carrier.inventory.innerContainer, carriedThing.stackCount, true);
+                    if (carryTracker.innerContainer.TryTransferToContainer(carriedThing, this.Carrier.inventory.innerContainer, carriedThing.stackCount, true))
+                    {
+                        if (Prefs.DevMode)
+                            Log.Warning("[Debug] Succesfully hauled " + carriedThing + " to " + this.Carrier + ".");
+                    }
                 }
             };
         }

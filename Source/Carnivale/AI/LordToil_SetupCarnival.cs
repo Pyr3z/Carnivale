@@ -74,25 +74,19 @@ namespace Carnivale
                 Log.Warning("Could not give enough tent crates to workers of " + this.lord.faction);
             }
 
-
-
+            // Give em a wood
+            data.TryHaveWorkerCarry(ThingDefOf.WoodLog, 1);
 
             // Give workers stalls + entry sign
 
             int numStallCrates = Info.pawnsWithRole[CarnivalRole.Vendor].Count + _DefOf.Carn_SignEntry.costList.First().count;
             data.TryHaveWorkerCarry(_DefOf.Carn_Crate_Stall, numStallCrates, ThingDefOf.WoodLog);
 
-            // Give em a wood
-            data.TryHaveWorkerCarry(ThingDefOf.WoodLog, 1);
-
-
             // Place blueprints
             foreach (Blueprint bp in AIBlueprintsUtility.PlaceCarnivalBlueprints(Info))
             {
                 data.blueprints.Add(bp);
             }
-
-
 
             // Find spots for carriers to chill + a guard spot
             IntVec3 guardSpot = GetCarrierSpots().Average();
@@ -111,7 +105,6 @@ namespace Carnivale
                     guard.inventory.TryAddItemNotForSale(kib);
                 }
             }
-
 
             // Set announcer pos at entrance sign
             TryGiveAnnouncerPosition();
@@ -151,14 +144,22 @@ namespace Carnivale
                         if (anyBuildings)
                         {
                             // Buildings are there. Next toil.
-                            this.lord.ReceiveMemo("SetupDone");
+                            if (Info.CanEntertainNow)
+                            {
+                                lord.ReceiveMemo("SetupDoneEntertain");
+                            }
+                            else
+                            {
+                                // rest the carnival
+                                lord.ReceiveMemo("SetupDoneRest");
+                            }
                             return;
                         }
                         else
                         {
                             // No frames, blueprints, OR buildings
                             // Nothing is buildable. Was the carnival attacked?
-                            this.lord.ReceiveMemo("NoBuildings");
+                            lord.ReceiveMemo("NoBuildings");
                             Log.Error("LordToil_SetupCarnival found no frames, blueprints, or buildings after " + lord.ticksInToil + " ticks.");
                             return;
                         }

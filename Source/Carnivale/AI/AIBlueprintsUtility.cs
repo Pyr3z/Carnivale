@@ -35,7 +35,7 @@ namespace Carnivale
                 yield break;
             }
 
-            cachedPos = new List<IntVec3>(availableCrates.Count);
+            cachedPos.Clear();
 
 
 
@@ -75,7 +75,6 @@ namespace Carnivale
             }
 
             cachedPos.Clear();
-            cachedPos = null;
         }
 
 
@@ -292,11 +291,11 @@ namespace Carnivale
             if (!trashPos.IsValid)
             {
                 Log.Error("Could not find any place for a trash spot. Trash will not be hauled.");
-                info.TrashCell = IntVec3.Invalid;
+                info.TrashCentre = IntVec3.Invalid;
                 return null;
             }
 
-            info.TrashCell = trashPos;
+            info.TrashCentre = trashPos;
 
             RemoveFirstCrateOf(ThingDefOf.WoodLog);
             Utilities.ClearThingsFor(info.map, trashPos, new IntVec2(4,4), default(Rot4));

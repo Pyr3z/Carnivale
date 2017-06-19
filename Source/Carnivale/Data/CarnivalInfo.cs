@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -15,6 +14,12 @@ namespace Carnivale
     {
 
         private static IntRange addToRadius = new IntRange(13, 20);
+
+        private const int TrashRadius = 5;
+
+        public const float MaxEntertainHour = 22f;
+
+        public const float MinEntertainHour = 10f;
 
 
         // Fields
@@ -42,6 +47,8 @@ namespace Carnivale
         public Dictionary<Pawn, IntVec3> rememberedPositions = new Dictionary<Pawn, IntVec3>();
 
         [Unsaved]
+        private bool anyCarnyNeedsRest = false;
+        [Unsaved]
         private List<Pawn> pawnWorkingList = null;
         [Unsaved]
         private List<IntVec3> vec3WorkingList = null;
@@ -51,7 +58,7 @@ namespace Carnivale
 
         public bool ShouldHaulTrash { get { return trashCentre != null && trashCentre.IsValid; } }
 
-        public IntVec3 TrashCell
+        public IntVec3 TrashCentre
         {
             get
             {
@@ -63,10 +70,31 @@ namespace Carnivale
 
                 if (value.IsValid)
                 {
-                    
+                    // cache trash cells
+
                 }
             }
         }
+
+        public bool AnyCarnyNeedsRest
+        {
+            get
+            {
+                if (anyCarnyNeedsRest && Prefs.DevMode)
+                    Log.Warning("[Debug] At least one carny needs rest. LordToil_RestCarnival should trigger now.");
+                return anyCarnyNeedsRest;
+            }
+        }
+
+        public bool CanEntertainNow
+        {
+            get
+            {
+                float curHour = GenDate.HourFloat((long)GenTicks.TicksAbs, Find.WorldGrid.LongLatOf(map.Tile).x);
+                return curHour < MaxEntertainHour && curHour > MinEntertainHour;
+            }
+        }
+
 
 
         public CarnivalInfo(Map map) : base(map)
@@ -217,28 +245,32 @@ namespace Carnivale
 
         public override void MapComponentTick()
         {
-            // Check if there are any things needing to be hauled to carriers or trash
-            if (Active && Find.TickManager.TicksGame % 1000 == 0)
+            if (Active)
             {
-                int curCount = thingsToHaul.Count;
-
-                // Should cache search cells? Is optimisation essential here?
-                foreach (var thing in from t in GenRadial.RadialDistinctThingsAround(setupCentre, this.map, baseRadius, true)
-                                        where t.def.EverHaulable
-                                           && !t.def.IsWithinCategory(ThingCategoryDefOf.Chunks)
-                                           && (!(currentLord.CurLordToil is LordToil_SetupCarnival)
-                                              || ((LordToilData_SetupCarnival)currentLord.CurLordToil.data).availableCrates.Contains(t))
-                                           && !thingsToHaul.Contains(t)
-                                        select t)
+                if (Find.TickManager.TicksGame % 1009 == 0)
                 {
-                    if (Prefs.DevMode)
-                        Log.Warning("[Debug] Adding " + thing + " to CarnivalInfo.thingsToHaul.");
-                    thingsToHaul.Add(thing);
+                    // Check if there are any things needing to be hauled to carriers or trash
+                    foreach (var thing in from t in GenRadial.RadialDistinctThingsAround(setupCentre, this.map, baseRadius, true)
+                                          where !TrashCells().Any(cell => cell == t.Position)
+                                             && t.def.EverHaulable
+                                             && !t.def.IsWithinCategory(ThingCategoryDefOf.Chunks)
+                                             && t.IsForbidden(Faction.OfPlayer) // dropped things are by default forbidden to the player
+                                             && (!(currentLord.CurLordToil is LordToil_SetupCarnival)
+                                                || ((LordToilData_SetupCarnival)currentLord.CurLordToil.data).availableCrates.Contains(t))
+                                             && !thingsToHaul.Contains(t)
+                                          select t)
+                    {
+                        if (Prefs.DevMode)
+                            Log.Warning("[Debug] Adding " + thing + " to CarnivalInfo.thingsToHaul. pos=" + thing.Position);
+                        thingsToHaul.Add(thing);
+                    }
                 }
-
-                if (Prefs.DevMode && curCount == thingsToHaul.Count)
+                else if (Find.TickManager.TicksGame % 509 == 0)
                 {
-                    Log.Warning("[Debug] CarnivalInfo ticked but found no new things to haul. Everything could still be fine.");
+                    // Check carny rest levels
+                    this.anyCarnyNeedsRest = currentLord.ownedPawns
+                        .Where(p => !p.Is(CarnivalRole.Carrier))
+                        .Any(c => c.needs.rest.CurCategory > RestCategory.Rested);
                 }
             }
         }
@@ -265,16 +297,24 @@ namespace Carnivale
         }
 
 
+        public IEnumerable<IntVec3> TrashCells()
+        {
+            foreach (var cell in GenRadial.RadialCellsAround(trashCentre, TrashRadius, false))
+            {
+                if (!cell.InBounds(map) || !cell.Walkable(map)) continue;
 
-        public IntVec3 GetNextTrashSpotFor(Thing thing, Pawn carrier = null)
+                yield return cell;
+            }
+        }
+
+
+        public IntVec3 GetNextTrashCellFor(Thing thing, Pawn carrier = null)
         {
             if (thing != null && ShouldHaulTrash)
             {
                 // a better way to do this might be to cache the radial
-                foreach (var cell in GenRadial.RadialCellsAround(trashCentre, 10, false))
+                foreach (var cell in TrashCells())
                 {
-                    if (!cell.Standable(map) || !cell.InBounds(map)) continue;
-
                     if (StoreUtility.IsGoodStoreCell(cell, map, thing, carrier, currentLord.faction))
                     {
                         return cell;
@@ -283,7 +323,7 @@ namespace Carnivale
             }
             
 
-            Log.Error("Found no spot to put trash. Jobs will be ended. Did the trash area overflow?");
+            Log.Error("Found no spot to put trash. Jobs will be ended. Did the trash area overflow, or was trash cell calculation bad?");
             this.trashCentre = IntVec3.Invalid;
             return trashCentre;
         }
@@ -295,14 +335,19 @@ namespace Carnivale
         }
 
 
-        public int UnreservedThingsToHaulOf(ThingDef def)
+        public int UnreservedThingsToHaulOf(ThingDef def, Pawn claimant)
         {
-            return thingsToHaul.Sum(delegate (Thing t)
+            int num = thingsToHaul.Sum(delegate (Thing t)
             {
-                if (t.def == def && !map.reservationManager.IsReserved(t, currentLord.faction))
+                if (t.def == def && claimant.CanReserve(t))
                     return t.stackCount;
                 return 0;
             });
+
+            if (Prefs.DevMode)
+                Log.Warning("[Debug] Things of def " + def.defName + " that " + claimant + " can reserve: " + num);
+
+            return num;
         }
 
 

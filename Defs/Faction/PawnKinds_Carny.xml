@@ -9,6 +9,9 @@
 	<chemicalAddictionChance>0.09</chemicalAddictionChance>
 	<baseRecruitDifficulty>0.5</baseRecruitDifficulty>
 	<backstoryCategory>Carnivale</backstoryCategory>
+	
+	<invNutrition>4.0</invNutrition>
+	<invFoodDef>MealSimple</invFoodDef>
   </PawnKindDef>
   
   <PawnKindDef Name="PawnKinds_Rare" Abstract="True">
@@ -17,6 +20,9 @@
 	<chemicalAddictionChance>0.15</chemicalAddictionChance>
 	<baseRecruitDifficulty>0.8</baseRecruitDifficulty>
 	<backstoryCategory>CarnivaleRare</backstoryCategory>
+	
+	<invNutrition>4.0</invNutrition>
+	<invFoodDef>MealSimple</invFoodDef>
   </PawnKindDef>
   
   <PawnKindDef Name="PawnKinds_Trader" Abstract="True">
@@ -25,6 +31,9 @@
 	<chemicalAddictionChance>0.06</chemicalAddictionChance>
 	<baseRecruitDifficulty>0.7</baseRecruitDifficulty>
 	<backstoryCategory>CarnivaleTrader</backstoryCategory>
+	
+	<invNutrition>4.0</invNutrition>
+	<invFoodDef>MealSimple</invFoodDef>
   </PawnKindDef>
   
   <PawnKindDef Name="PawnKinds_Fighter" Abstract="True">
@@ -35,6 +44,9 @@
 	<backstoryCategory>CarnivaleFighter</backstoryCategory>
 	
 	<isFighter>true</isFighter>
+	
+	<invNutrition>4.0</invNutrition>
+	<invFoodDef>MealSimple</invFoodDef>
   </PawnKindDef>
   
   <PawnKindDef Name="PawnKinds_Worker" Abstract="True">
@@ -45,6 +57,9 @@
 	<backstoryCategory>CarnivaleWorker</backstoryCategory>
 	
 	<isFighter>true</isFighter>
+	
+	<invNutrition>4.0</invNutrition>
+	<invFoodDef>MealSimple</invFoodDef>
   </PawnKindDef>
   
   
@@ -82,7 +97,7 @@
       <li>Simple</li>
     </techHediffsTags>
     <techHediffsChance>0.001</techHediffsChance>
-    <invNutrition>2.55</invNutrition>
+    
     <inventoryOptions>
       <skipChance>0.75</skipChance>
       <subOptionsChooseOne>
@@ -138,7 +153,7 @@
       <min>200</min>
       <max>300</max>
     </techHediffsMoney>
-    <invNutrition>2.55</invNutrition>
+    
     <inventoryOptions>
       <skipChance>0.75</skipChance>
       <thingDef>Silver</thingDef>
@@ -157,6 +172,8 @@
 	<label>manager</label>
 	
 	<factionLeader>true</factionLeader>
+	
+	<invFoodDef>MealFine</invFoodDef>
 	
 	<combatPower>55</combatPower>
 	<minGenerationAge>30</minGenerationAge>
@@ -186,7 +203,7 @@
       <li>Simple</li>
     </techHediffsTags>
     <techHediffsChance>0.001</techHediffsChance>
-    <invNutrition>2.55</invNutrition>
+    
     <inventoryOptions>
       <skipChance>0.15</skipChance>
       <thingDef>Silver</thingDef>
@@ -234,7 +251,7 @@
       <li>Simple</li>
     </techHediffsTags>
     <techHediffsChance>0.001</techHediffsChance>
-    <invNutrition>2.55</invNutrition>
+    
     <inventoryOptions>
       <skipChance>0.0</skipChance>
       <thingDef>Silver</thingDef>
@@ -280,7 +297,7 @@
       <li>Simple</li>
     </techHediffsTags>
     <techHediffsChance>0.001</techHediffsChance>
-    <invNutrition>2.55</invNutrition>
+    
     <inventoryOptions>
       <skipChance>0.50</skipChance>
       <thingDef>Silver</thingDef>
@@ -326,7 +343,7 @@
       <li>Simple</li>
     </techHediffsTags>
     <techHediffsChance>0.001</techHediffsChance>
-    <invNutrition>2.55</invNutrition>
+    
     <inventoryOptions>
       <skipChance>0.50</skipChance>
       <thingDef>Silver</thingDef>

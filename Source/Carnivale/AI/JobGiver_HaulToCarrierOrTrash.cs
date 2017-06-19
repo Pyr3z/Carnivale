@@ -34,6 +34,18 @@ namespace Carnivale
 
                     if (haulable != null)
                     {
+                        if (!haulable.IsForbidden(Faction.OfPlayer))
+                        {
+                            if (Prefs.DevMode)
+                                Log.Warning("[Debug] " + haulable + " from CarnivalInfo.thingsToHaul was claimed by the player. Removing from list.");
+
+                            info.thingsToHaul.Remove(haulable);
+
+                            return null;
+                        }
+
+                        pawn.Reserve(haulable);
+
                         return new Job(_DefOf.Job_HaulToCarrierOrTrash, haulable)
                         {
                             lord = lord

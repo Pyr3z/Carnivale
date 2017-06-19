@@ -15,8 +15,8 @@ namespace Carnivale
         {
             get
             {
-                // TODO: Adjust based off proximity to roads
-                return base.AdjustedChance;
+                float baseChance = base.AdjustedChance;
+                return Find.VisibleMap.roadInfo.roadEdgeTiles.Any() ? baseChance * 1.5f : baseChance;
             }
         }
 
