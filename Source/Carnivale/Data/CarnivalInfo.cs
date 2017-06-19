@@ -1,6 +1,5 @@
 ﻿using RimWorld;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,6 +7,7 @@ using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
+using Xnope;
 
 namespace Carnivale
 {
@@ -21,8 +21,6 @@ namespace Carnivale
 
         public Lord currentLord;
 
-        public ZoneManager zoneManager;
-
         public IntVec3 setupCentre; // possibly use the same setup area for every carnival after initial calculation?
 
         public float baseRadius;
@@ -31,7 +29,7 @@ namespace Carnivale
 
         public IntVec3 bannerCell;
 
-        public IntVec3 trashCell; // Assigned when blueprint is placed
+        private IntVec3 trashCentre; // Assigned when blueprint is placed
 
         //public Stack<Thing> thingsToHaul = new Stack<Thing>();
 
@@ -47,6 +45,28 @@ namespace Carnivale
         private List<Pawn> pawnWorkingList = null;
         [Unsaved]
         private List<IntVec3> vec3WorkingList = null;
+
+
+        public bool Active { get { return currentLord != null; } }
+
+        public bool ShouldHaulTrash { get { return trashCentre != null && trashCentre.IsValid; } }
+
+        public IntVec3 TrashCell
+        {
+            get
+            {
+                return trashCentre;
+            }
+            set
+            {
+                trashCentre = value;
+
+                if (value.IsValid)
+                {
+                    
+                }
+            }
+        }
 
 
         public CarnivalInfo(Map map) : base(map)
@@ -98,7 +118,7 @@ namespace Carnivale
 
             Scribe_Values.Look(ref this.bannerCell, "bannerCell", default(IntVec3), false);
 
-            Scribe_Values.Look(ref this.trashCell, "trashCell", default(IntVec3), false);
+            Scribe_Values.Look(ref this.trashCentre, "trashCell", default(IntVec3), false);
 
             Scribe_Collections.Look(ref this.thingsToHaul, "thingsToHaul", LookMode.Reference);
 
@@ -120,51 +140,26 @@ namespace Carnivale
             if (debug)
                 Log.Message("[Debug] cleared Utilities.cachedRoles.");
 
-            try
-            {
-                foreach (var fi in this.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
-                {
-                    var oldVal = fi.GetValue(this);
+            currentLord = null;
 
-                    if (oldVal == null) continue;
+            setupCentre = default(IntVec3);
 
-                    if (typeof(ICollection<object>).IsAssignableFrom(fi.FieldType))
-                    {
-                        var coll = (ICollection<object>)oldVal;
-                        coll.Clear();
-                        // don't nullify
-                    }
-                    else if (fi.FieldType == typeof(ZoneManager))
-                    {
-                        var zm = (ZoneManager)oldVal;
+            baseRadius = 0f;
 
-                        var zonelist = zm.AllZones;
-                        for (int i = zonelist.Count - 1; i > -1; i--)
-                        {
-                            zonelist[i].Delete();
-                            zonelist[i].Deregister();
-                        }
-                        fi.SetValue(this, null);
+            carnivalArea = default(CellRect);
 
-                    }
-                    else if (fi.FieldType == typeof(float))
-                    {
-                        fi.SetValue(this, 0f);
-                    }
-                    else
-                    {
-                        fi.SetValue(this, null);
-                    }
+            bannerCell = default(IntVec3);
 
-                    if (debug)
-                        Log.Message("[Debug] successfully flushed CarnivalInfo." + fi.Name + ".");
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error("Exception during CarnivalInfo Cleanup(). Xnope is garbage with reflection. ex:\n" + e);
-            }
-        }
+            trashCentre = default(IntVec3);
+
+            thingsToHaul.Clear();
+
+            carnivalBuildings.Clear();
+
+            pawnsWithRole.Clear();
+
+            rememberedPositions.Clear();
+    }
 
 
         public string GetUniqueLoadID()
@@ -179,7 +174,6 @@ namespace Carnivale
             // MUST BE CALLED AFTER LordMaker.MakeNewLord()
 
             this.currentLord = lord;
-            this.zoneManager = new ZoneManager(map);
             this.setupCentre = centre;
 
             // Set radius for carnies to stick to
@@ -207,11 +201,46 @@ namespace Carnivale
                 pawnsWithRole.Add(role, pawns);
             }
 
-
-
             // The rest is assigned as the carnival goes along
 
             return this;
+        }
+
+
+        public override void MapRemoved()
+        {
+            this.Cleanup(false);
+
+            base.MapRemoved();
+        }
+
+
+        public override void MapComponentTick()
+        {
+            // Check if there are any things needing to be hauled to carriers or trash
+            if (Active && Find.TickManager.TicksGame % 1000 == 0)
+            {
+                int curCount = thingsToHaul.Count;
+
+                // Should cache search cells? Is optimisation essential here?
+                foreach (var thing in from t in GenRadial.RadialDistinctThingsAround(setupCentre, this.map, baseRadius, true)
+                                        where t.def.EverHaulable
+                                           && !t.def.IsWithinCategory(ThingCategoryDefOf.Chunks)
+                                           && (!(currentLord.CurLordToil is LordToil_SetupCarnival)
+                                              || ((LordToilData_SetupCarnival)currentLord.CurLordToil.data).availableCrates.Contains(t))
+                                           && !thingsToHaul.Contains(t)
+                                        select t)
+                {
+                    if (Prefs.DevMode)
+                        Log.Warning("[Debug] Adding " + thing + " to CarnivalInfo.thingsToHaul.");
+                    thingsToHaul.Add(thing);
+                }
+
+                if (Prefs.DevMode && curCount == thingsToHaul.Count)
+                {
+                    Log.Warning("[Debug] CarnivalInfo ticked but found no new things to haul. Everything could still be fine.");
+                }
+            }
         }
 
 
@@ -236,23 +265,27 @@ namespace Carnivale
         }
 
 
-        public IntVec3 GetNextTrashSpotFor(Thing thing = null)
+
+        public IntVec3 GetNextTrashSpotFor(Thing thing, Pawn carrier = null)
         {
-            // a better way to do this might be to cache the radial
-            foreach (var cell in GenRadial.RadialCellsAround(trashCell, 10, false))
+            if (thing != null && ShouldHaulTrash)
             {
-                if (!cell.Standable(map)) continue;
-
-                var first = cell.GetFirstHaulable(map);
-
-                if (first == null || (thing == null || (thing.def == first.def && thing.stackCount + first.stackCount <= thing.def.stackLimit)))
+                // a better way to do this might be to cache the radial
+                foreach (var cell in GenRadial.RadialCellsAround(trashCentre, 10, false))
                 {
-                    return cell;
+                    if (!cell.Standable(map) || !cell.InBounds(map)) continue;
+
+                    if (StoreUtility.IsGoodStoreCell(cell, map, thing, carrier, currentLord.faction))
+                    {
+                        return cell;
+                    }
                 }
             }
+            
 
-            Log.Error("Found no spot to put trash. Did the trash area overflow?");
-            return IntVec3.Invalid;
+            Log.Error("Found no spot to put trash. Jobs will be ended. Did the trash area overflow?");
+            this.trashCentre = IntVec3.Invalid;
+            return trashCentre;
         }
 
 
@@ -262,17 +295,14 @@ namespace Carnivale
         }
 
 
-        public int TotalCountToHaulFor(ThingDef def)
+        public int UnreservedThingsToHaulOf(ThingDef def)
         {
-            int result = 0;
-            foreach (var thing in from t in this.thingsToHaul
-                                  where t.def == def
-                                  select t)
+            return thingsToHaul.Sum(delegate (Thing t)
             {
-                result += thing.stackCount;
-            }
-
-            return result;
+                if (t.def == def && !map.reservationManager.IsReserved(t, currentLord.faction))
+                    return t.stackCount;
+                return 0;
+            });
         }
 
 
@@ -280,6 +310,8 @@ namespace Carnivale
 
         private IntVec3 PreCalculateBannerCell()
         {
+            // Yo stop working on this. If it ain't broke don't fix it.
+
             IntVec3 colonistPos = map.listerBuildings.allBuildingsColonist.NullOrEmpty() ?
                 map.mapPawns.FreeColonistsSpawned.RandomElement().Position : map.listerBuildings.allBuildingsColonist.RandomElement().Position;
 
@@ -290,13 +322,14 @@ namespace Carnivale
                 Log.Warning("[Debug] CarnivalInfo.bannerCell initial pass: " + closestCell);
 
 
-
             // Mountain line of sight pass
 
             int attempts = 0;
-            IntVec3 quadPos = setupCentre - map.Center;
+            //IntVec3 quadPos = setupCentre - map.Center;
+            // using colonistPos instead to get edges closest to colonists, rather than the map centre
+            IntVec3 quadPos = setupCentre - colonistPos;
             Rot4 rot;
-            while ( attempts < 10 && Utilities.CountMineableCellsTo(setupCentre, closestCell, map, true) > 4)
+            while (attempts < 10 && setupCentre.CountMineableCellsTo(closestCell, map, true) > 4)
             {
                 if (quadPos.x > 0 && quadPos.z > 0)
                 {
@@ -412,7 +445,7 @@ namespace Carnivale
                     if (attempts > 0 && roadCell.IsValid)
                     {
                         // after first pass, try an average of closestCell with setupCentre and closest roadCell
-                        tempClosestCell = Utilities.Average(roadCell, tempClosestCell, setupCentre);
+                        tempClosestCell = CellsUtil.Average(roadCell, tempClosestCell, setupCentre);
                         searchArea = CellRect.CenteredOn(tempClosestCell, searchRadius - 7*attempts).ClipInsideMap(map).ContractedBy(10);
                     }
 
@@ -474,7 +507,7 @@ namespace Carnivale
             }
 
             if (Prefs.DevMode)
-                Log.Warning("[Debug] CarnivalInfo.bannerCell pre pass: " + closestCell);
+                Log.Warning("[Debug] CarnivalInfo.bannerCell pre-buildability pass: " + closestCell);
 
             return closestCell;
         }

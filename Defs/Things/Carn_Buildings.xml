@@ -8,6 +8,8 @@
     <category>Building</category>
 	<thingClass>Building</thingClass>
 	
+	<tickerType>Rare</tickerType>
+	
 	<soundImpactDefault>BulletImpactWood</soundImpactDefault>
     <selectable>true</selectable>
     <drawerType>MapMeshAndRealTime</drawerType>
@@ -104,6 +106,8 @@
     <thingClass>Building</thingClass>
 	<blueprintClass>Blueprint_Build</blueprintClass>
 	
+	<tickerType>Never</tickerType>
+	
 	<altitudeLayer>Building</altitudeLayer>
 	<passability>PassThroughOnly</passability>
 
@@ -125,6 +129,8 @@
   
   
   <!-- END BASES -->
+  
+  
   
   <!-- Trash sign -->
   <ThingDef ParentName="CarnSmallSign">

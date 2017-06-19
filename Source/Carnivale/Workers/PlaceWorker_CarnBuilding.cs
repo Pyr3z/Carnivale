@@ -18,11 +18,11 @@ namespace Carnivale
                           || t is Frame_StuffHacked
                           || t is Building_Carn))
                 {
-                    return new AcceptanceReport("ExistingCarnThingThere".Translate(checkingDef.label));
+                    return new AcceptanceReport("CarnTentInvalidInterior".Translate(checkingDef.label));
                 }
             }
 
-            foreach (var wallCell in rect.EdgeCells)
+            foreach (var wallCell in rect.EdgeCells.Concat(rect.ExpandedBy(1).EdgeCells))
             {
                 // Edge cells are more exclusive
                 if (wallCell.GetThingList(base.Map)
@@ -30,23 +30,13 @@ namespace Carnivale
                           || t is Frame
                           || t is Building))
                 {
-                    return new AcceptanceReport("ExistingCarnThingThere".Translate(checkingDef.label));
-                }
-            }
-
-            // No blocking interaction cell
-            ThingDef def = checkingDef as ThingDef;
-            if (def != null && def.hasInteractionCell)
-            {
-                var intCell = Thing.InteractionCellWhenAt(def, loc, rot, base.Map);
-                if (intCell.GetThingList(base.Map).Any(t => t is Blueprint_StuffHacked || t is Frame_StuffHacked || t is Building_Carn))
-                {
-                    return new AcceptanceReport("ExistingCarnThingThere".Translate(checkingDef.label));
+                    return new AcceptanceReport("CarnTentInvalidWalls".Translate(checkingDef.label));
                 }
             }
 
 
             return base.AllowsPlacing(checkingDef, loc, rot, thingToIgnore);
         }
+
     }
 }

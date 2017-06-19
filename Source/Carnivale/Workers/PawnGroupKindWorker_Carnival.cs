@@ -185,8 +185,8 @@ namespace Carnivale
                 {
                     if (Prefs.DevMode)
                     {
-                        Log.Warning(
-                            thing
+                        Log.Warning("[Debug] "
+                            + thing
                             + " is too big for any carrier and will be removed from wares. mass="
                             + mass
                             + ", "
@@ -265,7 +265,7 @@ namespace Carnivale
             {
                 // Remove things that could not fit for whatever reason
                 if (Prefs.DevMode)
-                    Log.Warning("Could not fit " + waresSansPawns[i] + " in any carrier. Removing.");
+                    Log.Warning("[Debug] Could not fit " + waresSansPawns[i] + " in any carrier. Removing.");
                 wares.Remove(waresSansPawns[i++]);
             }
         }

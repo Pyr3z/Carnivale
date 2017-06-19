@@ -4,15 +4,15 @@ using Verse;
 
 namespace Carnivale
 {
-    public class LordToilData_Setup : LordToilData_Carnival
+    public class LordToilData_SetupCarnival : LordToilData_Carnival
     {
         public List<Thing> availableCrates = new List<Thing>();
 
         public List<Blueprint> blueprints = new List<Blueprint>();
 
-        public LordToilData_Setup() { }
+        public LordToilData_SetupCarnival() { }
 
-        public LordToilData_Setup(CarnivalInfo carnivalInfo) : base(carnivalInfo)
+        public LordToilData_SetupCarnival(CarnivalInfo carnivalInfo) : base(carnivalInfo)
         {
 
         }
@@ -69,9 +69,25 @@ namespace Carnivale
             // Returns how many things were successfully given.
             int result = 0;
 
-            for (int i = 0; i < count; i++)
+            while (count > 0)
             {
                 Thing newThing = ThingMaker.MakeThing(def, stuff);
+
+                if (def.stackLimit > 1)
+                {
+                    int div = count / def.stackLimit;
+                    if (div == 0)
+                        newThing.stackCount = count;
+                    else
+                        newThing.stackCount = def.stackLimit;
+
+                    count -= newThing.stackCount;
+                }
+                else
+                {
+                    count--;
+                }
+
                 if (TryHaveWorkerCarry(newThing))
                 {
                     result++;

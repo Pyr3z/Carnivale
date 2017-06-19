@@ -14,7 +14,10 @@ namespace Carnivale
     {
         private const int PlaceInInventoryDuration = 25;
 
-        public Thing ToHaul
+        [Unsaved]
+        private CarnivalInfo infoInt = null;
+
+        public Thing ThingToHaul
         {
             get
             {
@@ -34,7 +37,11 @@ namespace Carnivale
         {
             get
             {
-                return Map.GetComponent<CarnivalInfo>();
+                if (infoInt == null)
+                {
+                    infoInt = Map.GetComponent<CarnivalInfo>();
+                }
+                return infoInt;
             }
         }
 
@@ -43,7 +50,10 @@ namespace Carnivale
         {
             this.FailOn(delegate
             {
-                return !this.pawn.Map.lordManager.lords.Contains(this.pawn.CurJob.lord);
+                return !Info.Active
+                       || Info.currentLord != pawn.GetLord()
+                       || (!Info.AnyCarriersCanCarry(this.ThingToHaul)
+                          && !Info.ShouldHaulTrash);
             });
 
             Toil reserve = Toils_Reserve.Reserve(TargetIndex.A);
@@ -62,9 +72,9 @@ namespace Carnivale
 
             yield return Toils_Haul.CheckForGetOpportunityDuplicate(reserve, TargetIndex.A, TargetIndex.None, false, t => Info.thingsToHaul.Contains(t));
 
-            HaulLocation destType = Utilities.GetHaulToLocation(this.ToHaul);
+            HaulLocation destType = Utilities.GetHaulToLocation(this.ThingToHaul);
 
-            if (destType == HaulLocation.ToCarriers && Info.AnyCarriersCanCarry(this.ToHaul))
+            if (destType == HaulLocation.ToCarriers)
             {
                 Toil findCarrier = FindCarrier();
 
@@ -102,7 +112,7 @@ namespace Carnivale
             {
                 initAction = delegate
                 {
-                    int num = Info.TotalCountToHaulFor(this.ToHaul.def);
+                    int num = Info.UnreservedThingsToHaulOf(this.ThingToHaul.def);
 
                     if (this.pawn.carryTracker.CarriedThing != null)
                     {
@@ -152,7 +162,7 @@ namespace Carnivale
                     Pawn carrier = null;
                     foreach (var car in Info.pawnsWithRole[CarnivalRole.Carrier])
                     {
-                        if (car.HasSpaceFor(this.ToHaul))
+                        if (car.HasSpaceFor(this.ThingToHaul))
                         {
                             carrier = car;
                             break;
@@ -161,7 +171,7 @@ namespace Carnivale
 
                     if (carrier == null)
                     {
-                        Log.Error("Could not find a carrier to carry " + ToHaul + ". A validation step failed somewhere.");
+                        Log.Error("Could not find a carrier to carry " + ThingToHaul + ". A validation step failed somewhere.");
                     }
                     else
                     {
@@ -181,7 +191,12 @@ namespace Carnivale
             {
                 initAction = delegate
                 {
-                    base.CurJob.SetTarget(TargetIndex.B, Info.GetNextTrashSpotFor());
+                    var target = Info.GetNextTrashSpotFor(this.ThingToHaul, this.pawn);
+                    if (!target.IsValid)
+                    {
+                        base.EndJobWith(JobCondition.Errored);
+                    }
+                    CurJob.SetTarget(TargetIndex.B, target);
                 }
             };
         }

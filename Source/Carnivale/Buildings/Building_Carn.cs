@@ -49,6 +49,24 @@ namespace Carnivale
         }
 
 
+        public Building_Carn()
+        {
+            
+        }
+
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            if (Scribe.mode != LoadSaveMode.Inactive)
+            {
+                this.childBuildings.RemoveAll(c => c == null || c.Destroyed);
+            }
+
+            Scribe_Collections.Look(ref this.childBuildings, "childBuildings", LookMode.Reference);
+        }
+
+
         public override string GetInspectString()
         {
             StringBuilder sb = new StringBuilder();
@@ -130,16 +148,10 @@ namespace Carnivale
         }
 
 
-
-        public override void ExposeData()
+        public override void Tick()
         {
-            base.ExposeData();
-            if (Scribe.mode != LoadSaveMode.Inactive)
-            {
-                this.childBuildings.RemoveAll(c => c == null || c.Destroyed);
-            }
-
-            Scribe_Collections.Look(ref this.childBuildings, "childBuildings", LookMode.Reference);
+            childBuildings.RemoveAll(c => c.DestroyedOrNull() || !c.Spawned);
         }
+
     }
 }

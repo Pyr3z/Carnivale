@@ -13,6 +13,9 @@ namespace Carnivale
             }
         }
 
-
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            // todo : move Building_Carn spawn setup here?
+        }
     }
 }

@@ -48,24 +48,25 @@ namespace Carnivale
 
         // OVERRIDE METHODS //
 
-        public override void LordToilTick()
-        {
-            // Check if there are any things needing to be hauled to carriers or trash
-            if (this.lord.ticksInToil % 1009 == 0)
-            {
-                foreach (Thing thing in from t in GenRadial.RadialDistinctThingsAround(Info.setupCentre, this.Map, Info.baseRadius, true)
-                                        where (t.def.IsWithinCategory(ThingCategoryDefOf.Root))
-                                          && !t.def.IsWithinCategory(ThingCategoryDefOf.Chunks)
-                                          && (!(this.data is LordToilData_Setup) || ((LordToilData_Setup)this.data).availableCrates.Contains(t))
-                                          && !Info.thingsToHaul.Contains(t)
-                                        select t)
-                {
-                    if (Prefs.DevMode)
-                        Log.Warning("[Debug] Adding " + thing + " to CarnivalInfo.thingsToHaul.");
-                    Info.thingsToHaul.Add(thing);
-                }
-            }
-        }
+        // Do this in CarnivalInfo tick instead.
+        //public override void LordToilTick()
+        //{
+        //    // Check if there are any things needing to be hauled to carriers or trash
+        //    if (this.lord.ticksInToil % 1009 == 0)
+        //    {
+        //        foreach (Thing thing in from t in GenRadial.RadialDistinctThingsAround(Info.setupCentre, this.Map, Info.baseRadius, true)
+        //                                where (t.def.IsWithinCategory(ThingCategoryDefOf.Root))
+        //                                  && !t.def.IsWithinCategory(ThingCategoryDefOf.Chunks)
+        //                                  && (!(this.data is LordToilData_Setup) || ((LordToilData_Setup)this.data).availableCrates.Contains(t))
+        //                                  && !Info.thingsToHaul.Contains(t)
+        //                                select t)
+        //        {
+        //            if (Prefs.DevMode)
+        //                Log.Warning("[Debug] Adding " + thing + " to CarnivalInfo.thingsToHaul.");
+        //            Info.thingsToHaul.Add(thing);
+        //        }
+        //    }
+        //}
 
 
     }

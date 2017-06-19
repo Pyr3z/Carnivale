@@ -8,16 +8,17 @@ namespace Carnivale
 {
     public class JobGiver_HaulToCarrierOrTrash : ThinkNode_JobGiver
     {
-        public override float GetPriority(Pawn pawn)
-        {
-            return base.GetPriority(pawn);
-        }
+        //public override float GetPriority(Pawn pawn)
+        //{
+        //    return base.GetPriority(pawn);
+        //}
 
         protected override Job TryGiveJob(Pawn pawn)
         {
             var info = pawn.MapHeld.GetComponent<CarnivalInfo>();
-            if (info.currentLord == null
-                || !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
+            if (!info.Active
+                || !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation)
+                || pawn.story.WorkTagIsDisabled(WorkTags.Hauling))
                 return null;
 
             var lord = info.currentLord;
@@ -26,7 +27,10 @@ namespace Carnivale
             {
                 if (info.thingsToHaul.Any())
                 {
-                    var haulable = info.thingsToHaul.Last();
+                    var haulable = info.thingsToHaul.LastOrDefault(t => 
+                        pawn.carryTracker.MaxStackSpaceEver(t.def) > 0 &&
+                        HaulAIUtility.PawnCanAutomaticallyHaulFast(pawn, t, false)
+                    );
 
                     if (haulable != null)
                     {

@@ -1,9 +1,5 @@
-﻿using RimWorld;
-using System.Collections.Generic;
-using System.Xml;
-using Verse;
+﻿using Verse;
 using Verse.AI.Group;
-using System;
 
 namespace Carnivale
 {

@@ -5,6 +5,7 @@ using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
+using Xnope;
 
 namespace Carnivale
 {
@@ -33,7 +34,7 @@ namespace Carnivale
 
         public LordToil_SetupCarnival(CarnivalInfo info)
         {
-            this.data = new LordToilData_Setup(info);
+            this.data = new LordToilData_SetupCarnival(info);
         }
 
 
@@ -50,7 +51,7 @@ namespace Carnivale
             //    Log.Warning(pawn.NameStringShort + " --> " + pawn.kindDef.defName);
             //}
 
-            LordToilData_Setup data = (LordToilData_Setup)Data;
+            LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)Data;
 
             // Give workers tents (currently 8 carnies per tent), manager gets own tent
 
@@ -129,7 +130,7 @@ namespace Carnivale
                       where !frame.Destroyed
                       select frame).Any())
                 {
-                    LordToilData_Setup data = (LordToilData_Setup)Data;
+                    LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)Data;
                     if (!(from blue in data.blueprints
                           where !blue.Destroyed
                           select blue).Any())
@@ -158,6 +159,7 @@ namespace Carnivale
                             // No frames, blueprints, OR buildings
                             // Nothing is buildable. Was the carnival attacked?
                             this.lord.ReceiveMemo("NoBuildings");
+                            Log.Error("LordToil_SetupCarnival found no frames, blueprints, or buildings after " + lord.ticksInToil + " ticks.");
                             return;
                         }
                     }
@@ -219,7 +221,7 @@ namespace Carnivale
         {
             if (frame.Faction == this.lord.faction && newBlueprint != null)
             {
-                ((LordToilData_Setup)Data).blueprints.Add(newBlueprint);
+                ((LordToilData_SetupCarnival)Data).blueprints.Add(newBlueprint);
             }
         }
 
@@ -227,7 +229,7 @@ namespace Carnivale
         public override void Cleanup()
         {
             // Do more cleanup here?
-            LordToilData_Setup data = (LordToilData_Setup)Data;
+            LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)Data;
             data.availableCrates.RemoveAll(c => c.DestroyedOrNull());
             data.blueprints.RemoveAll(blue => blue.DestroyedOrNull());
         }

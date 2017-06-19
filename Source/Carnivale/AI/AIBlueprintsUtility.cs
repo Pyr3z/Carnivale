@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Verse;
+using Xnope;
 
 namespace Carnivale
 {
@@ -23,9 +24,9 @@ namespace Carnivale
             // Assign necessary values to this singleton (is this technically a singleton, or just static?)
             AIBlueprintsUtility.info = info;
             
-            if (info.currentLord.CurLordToil.data is LordToilData_Setup)
+            if (info.currentLord.CurLordToil.data is LordToilData_SetupCarnival)
             {
-                availableCrates = ((LordToilData_Setup)info.currentLord.CurLordToil.data).availableCrates;
+                availableCrates = ((LordToilData_SetupCarnival)info.currentLord.CurLordToil.data).availableCrates;
                 stallUsers = ((List<Pawn>)info.pawnsWithRole[CarnivalRole.Vendor]).ListFullCopyOrNull();
             }
             else
@@ -290,11 +291,12 @@ namespace Carnivale
 
             if (!trashPos.IsValid)
             {
-                Log.Error("Could not find any place for a trash spot. Defaulting to setupCentre.");
-                trashPos = info.setupCentre;
+                Log.Error("Could not find any place for a trash spot. Trash will not be hauled.");
+                info.TrashCell = IntVec3.Invalid;
+                return null;
             }
 
-            info.trashCell = trashPos;
+            info.TrashCell = trashPos;
 
             RemoveFirstCrateOf(ThingDefOf.WoodLog);
             Utilities.ClearThingsFor(info.map, trashPos, new IntVec2(4,4), default(Rot4));
