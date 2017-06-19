@@ -9,7 +9,7 @@ namespace Carnivale
 {
     public class Zone_NonPlayerStockpile : Zone, ISlotGroupParent
     {
-        public Faction owningFaction;
+        public CarnivalInfo info;
 
         public SlotGroup slotGroup;
 
@@ -32,6 +32,7 @@ namespace Carnivale
 
         public Zone_NonPlayerStockpile(string name, CarnivalInfo info) : base(name, info.zoneManager)
         {
+            this.info = info;
             this.slotGroup = new SlotGroup(this);
             this.settings = new StorageSettings(this); // no filters yet
         }
@@ -42,7 +43,7 @@ namespace Carnivale
         {
             base.ExposeData();
 
-            Scribe_References.Look(ref this.owningFaction, "owningFaction");
+            Scribe_References.Look(ref this.info, "info");
 
             Scribe_Deep.Look<StorageSettings>(ref this.settings, "settings", new object[]
             {

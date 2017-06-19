@@ -45,7 +45,7 @@ namespace Carnivale
         public override void Cleanup()
         {
             base.Cleanup();
-            info.Cleanup();
+            info.Cleanup(true);
         }
 
         public override StateGraph CreateGraph()

@@ -23,7 +23,7 @@ namespace Carnivale
 
         public ZoneManager zoneManager;
 
-        public IntVec3 setupCentre;
+        public IntVec3 setupCentre; // possibly use the same setup area for every carnival after initial calculation?
 
         public float baseRadius;
 
@@ -35,7 +35,7 @@ namespace Carnivale
 
         //public Stack<Thing> thingsToHaul = new Stack<Thing>();
 
-        public List<Thing> thingsToHaul = new List<Thing>();
+        public List<Thing> thingsToHaul = new List<Thing>(); // would a hashset be better?
 
         public List<Building> carnivalBuildings = new List<Building>();
 
@@ -132,6 +132,7 @@ namespace Carnivale
                     {
                         var coll = (ICollection<object>)oldVal;
                         coll.Clear();
+                        // don't nullify
                     }
                     else if (fi.FieldType == typeof(ZoneManager))
                     {
@@ -286,7 +287,7 @@ namespace Carnivale
             IntVec3 closestCell = carnivalArea.ClosestCellTo(colonistPos);
 
             if (Prefs.DevMode)
-                Log.Warning("[Debug] CarnivalInfo.bannerCell first pre pass: " + closestCell);
+                Log.Warning("[Debug] CarnivalInfo.bannerCell initial pass: " + closestCell);
 
 
 
@@ -420,7 +421,7 @@ namespace Carnivale
                     {
                         if (cell.GetTerrain(map).HasTag("Road")
                             //&& !cell.InNoBuildEdgeArea(map) // check redundant with ContractedBy(10)
-                            && cell.Standable(map))
+                            && cell.Walkable(map))
                         {
                             float tempDist = tempClosestCell.DistanceToSquared(cell);
                             if (tempDist < distSqrd)
@@ -473,7 +474,7 @@ namespace Carnivale
             }
 
             if (Prefs.DevMode)
-                Log.Warning("[Debug] CarnivalInfo.bannerCell final pre pass: " + closestCell);
+                Log.Warning("[Debug] CarnivalInfo.bannerCell pre pass: " + closestCell);
 
             return closestCell;
         }
