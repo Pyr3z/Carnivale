@@ -12,7 +12,6 @@ namespace Carnivale
 {
     public sealed class CarnivalInfo : MapComponent, ILoadReferenceable
     {
-
         private static IntRange addToRadius = new IntRange(13, 20);
 
         private const int TrashRadius = 5;
@@ -34,15 +33,14 @@ namespace Carnivale
 
         public IntVec3 bannerCell;
 
-        private IntVec3 trashCentre; // Assigned when blueprint is placed
+        public IntVec3 trashCentre; // Assigned when blueprint is placed
 
-        //public Stack<Thing> thingsToHaul = new Stack<Thing>();
-
-        public List<Thing> thingsToHaul = new List<Thing>(); // would a hashset be better?
+        [Unsaved]
+        public List<Thing> thingsToHaul = new List<Thing>();
 
         public List<Building> carnivalBuildings = new List<Building>();
 
-        public Dictionary<CarnivalRole, DeepReferenceableList<Pawn>> pawnsWithRole = new Dictionary<CarnivalRole, DeepReferenceableList<Pawn>>();
+        public Dictionary<CarnivalRole, DeepPawnList> pawnsWithRole = new Dictionary<CarnivalRole, DeepPawnList>();
 
         public Dictionary<Pawn, IntVec3> rememberedPositions = new Dictionary<Pawn, IntVec3>();
 
@@ -56,35 +54,9 @@ namespace Carnivale
 
         public bool Active { get { return currentLord != null; } }
 
-        public bool ShouldHaulTrash { get { return trashCentre != null && trashCentre.IsValid; } }
+        public bool ShouldHaulTrash { get { return Active && trashCentre.IsValid; } }
 
-        public IntVec3 TrashCentre
-        {
-            get
-            {
-                return trashCentre;
-            }
-            set
-            {
-                trashCentre = value;
-
-                if (value.IsValid)
-                {
-                    // cache trash cells
-
-                }
-            }
-        }
-
-        public bool AnyCarnyNeedsRest
-        {
-            get
-            {
-                if (anyCarnyNeedsRest && Prefs.DevMode)
-                    Log.Warning("[Debug] At least one carny needs rest. LordToil_RestCarnival should trigger now.");
-                return anyCarnyNeedsRest;
-            }
-        }
+        public bool AnyCarnyNeedsRest { get { return anyCarnyNeedsRest; } }
 
         public bool CanEntertainNow
         {
@@ -96,6 +68,8 @@ namespace Carnivale
         }
 
 
+        
+        //public CarnivalInfo() { }
 
         public CarnivalInfo(Map map) : base(map)
         {
@@ -108,85 +82,117 @@ namespace Carnivale
         {
             if (Scribe.mode == LoadSaveMode.Saving)
             {
-                // Clean up unusable elements in collections
-
-                carnivalBuildings.RemoveAll(b => b.DestroyedOrNull() || !b.Spawned);
-
-                foreach (var list in pawnsWithRole.Values)
+                if (Active)
                 {
-                    for (int i = list.Count - 1; i > -1; i--)
+                    // Clean up unusable elements in collections
+
+                    carnivalBuildings.RemoveAll(b => b.DestroyedOrNull() || !b.Spawned);
+
+                    //thingsToHaul.RemoveAll(t => t.DestroyedOrNull() || !t.Spawned);
+
+                    foreach (var list in pawnsWithRole.Values)
                     {
-                        var pawn = list[i];
-                        if (pawn.DestroyedOrNull() || !pawn.Spawned || pawn.Dead)
+                        for (int i = list.Count - 1; i > -1; i--)
                         {
-                            list.RemoveAt(i);
+                            var pawn = list[i];
+                            if (pawn.DestroyedOrNull() || !pawn.Spawned || pawn.Dead || pawn.Faction != currentLord.faction)
+                            {
+                                list.RemoveAt(i);
+                            }
+                        }
+                    }
+
+                    IEnumerator<Pawn> en = rememberedPositions.Keys.GetEnumerator();
+
+                    while (en.MoveNext())
+                    {
+                        var pawn = en.Current;
+                        if (pawn.DestroyedOrNull() || !pawn.Spawned || pawn.Dead || pawn.Faction != currentLord.faction)
+                        {
+                            rememberedPositions.Remove(pawn);
                         }
                     }
                 }
-
-                IEnumerator<Pawn> en = rememberedPositions.Keys.GetEnumerator();
-
-                while (en.MoveNext())
+                else
                 {
-                    var pawn = en.Current;
-                    if (pawn.DestroyedOrNull() || !pawn.Spawned || pawn.Dead)
-                    {
-                        rememberedPositions.Remove(pawn);
-                    }
+                    Cleanup();
                 }
             }
 
+
             Scribe_References.Look(ref this.currentLord, "currentLord");
 
-            Scribe_Values.Look(ref this.setupCentre, "setupCentre", default(IntVec3), false);
+            Scribe_Values.Look(ref this.setupCentre, "setupCentre", IntVec3.Invalid, false);
 
             Scribe_Values.Look(ref this.baseRadius, "baseRadius", 0f, false);
 
             Scribe_Values.Look(ref this.carnivalArea, "carnivalArea", default(CellRect), false);
 
-            Scribe_Values.Look(ref this.bannerCell, "bannerCell", default(IntVec3), false);
+            Scribe_Values.Look(ref this.bannerCell, "bannerCell", IntVec3.Invalid, false);
 
-            Scribe_Values.Look(ref this.trashCentre, "trashCell", default(IntVec3), false);
+            Scribe_Values.Look(ref this.trashCentre, "trashCell", IntVec3.Invalid, false);
 
-            Scribe_Collections.Look(ref this.thingsToHaul, "thingsToHaul", LookMode.Reference);
+            //Scribe_Collections.Look(ref this.thingsToHaul, "thingsToHaul", LookMode.Reference);
 
             Scribe_Collections.Look(ref this.carnivalBuildings, "carnivalBuildings", LookMode.Reference);
 
             Scribe_Collections.Look(ref this.pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
 
             Scribe_Collections.Look(ref this.rememberedPositions, "rememberedPositions", LookMode.Reference, LookMode.Value, ref pawnWorkingList, ref vec3WorkingList);
-
-            pawnWorkingList = null;
-
-            vec3WorkingList = null;
         }
 
 
-        public void Cleanup(bool debug = false)
+        public void Cleanup()
         {
             Utilities.cachedRoles.Clear();
-            if (debug)
-                Log.Message("[Debug] cleared Utilities.cachedRoles.");
 
             currentLord = null;
 
-            setupCentre = default(IntVec3);
+            setupCentre = IntVec3.Invalid;
 
             baseRadius = 0f;
 
             carnivalArea = default(CellRect);
 
-            bannerCell = default(IntVec3);
+            bannerCell = IntVec3.Invalid;
 
-            trashCentre = default(IntVec3);
+            trashCentre = IntVec3.Invalid;
 
-            thingsToHaul.Clear();
+            if (thingsToHaul != null)
+            {
+                thingsToHaul.Clear();
+            }
+            else
+            {
+                thingsToHaul = new List<Thing>();
+            }
 
-            carnivalBuildings.Clear();
+            if (carnivalBuildings != null)
+            {
+                carnivalBuildings.Clear();
+            }
+            else
+            {
+                carnivalBuildings = new List<Building>();
+            }
 
-            pawnsWithRole.Clear();
+            if (pawnsWithRole != null)
+            {
+                pawnsWithRole.Clear();
+            }
+            else
+            {
+                pawnsWithRole = new Dictionary<CarnivalRole, DeepPawnList>();
+            }
 
-            rememberedPositions.Clear();
+            if (rememberedPositions != null)
+            {
+                rememberedPositions.Clear();
+            }
+            else
+            {
+                rememberedPositions = new Dictionary<Pawn, IntVec3>();
+            }
     }
 
 
@@ -200,6 +206,8 @@ namespace Carnivale
         public CarnivalInfo ReInitWith(Lord lord, IntVec3 centre)
         {
             // MUST BE CALLED AFTER LordMaker.MakeNewLord()
+
+            this.Cleanup();
 
             this.currentLord = lord;
             this.setupCentre = centre;
@@ -237,7 +245,7 @@ namespace Carnivale
 
         public override void MapRemoved()
         {
-            this.Cleanup(false);
+            this.Cleanup();
 
             base.MapRemoved();
         }
@@ -265,7 +273,7 @@ namespace Carnivale
                         thingsToHaul.Add(thing);
                     }
                 }
-                else if (Find.TickManager.TicksGame % 509 == 0)
+                else if (Find.TickManager.TicksGame % 499 == 0)
                 {
                     // Check carny rest levels
                     this.anyCarnyNeedsRest = currentLord.ownedPawns
@@ -278,7 +286,7 @@ namespace Carnivale
 
         public Building GetFirstBuildingOf(ThingDef def)
         {
-            if (this.currentLord == null)
+            if (!Active)
             {
                 Log.Error("Cannot get carnival building: carnival is not in town.");
                 return null;
@@ -344,8 +352,8 @@ namespace Carnivale
                 return 0;
             });
 
-            if (Prefs.DevMode)
-                Log.Warning("[Debug] Things of def " + def.defName + " that " + claimant + " can reserve: " + num);
+            //if (Prefs.DevMode)
+            //    Log.Warning("[Debug] Things of def " + def.defName + " that " + claimant + " can reserve: " + num);
 
             return num;
         }
@@ -490,7 +498,7 @@ namespace Carnivale
                     if (attempts > 0 && roadCell.IsValid)
                     {
                         // after first pass, try an average of closestCell with setupCentre and closest roadCell
-                        tempClosestCell = CellsUtil.Average(roadCell, tempClosestCell, setupCentre);
+                        tempClosestCell = CellsUtil.Average(null, roadCell, tempClosestCell, setupCentre);
                         searchArea = CellRect.CenteredOn(tempClosestCell, searchRadius - 7*attempts).ClipInsideMap(map).ContractedBy(10);
                     }
 

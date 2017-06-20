@@ -7,7 +7,7 @@ namespace Carnivale
     public class Building_TentFlap : Building_Door
     {
         // List is more efficient than HashSet for element count under 20
-        private List<int> allowedColonistIDs = new List<int>(Find.VisibleMap.mapPawns.ColonistCount);
+        private List<int> allowedColonistIDs = new List<int>();
 
         public bool everAvailableToNonCarnies = false;
 

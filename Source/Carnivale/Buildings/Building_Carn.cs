@@ -8,8 +8,7 @@ namespace Carnivale
 {
     public class Building_Carn : Building
     {
-        [Unsaved]
-        private IntVec3 oldPosition = IntVec3.Invalid;
+        private IntVec3 oldPosition;
 
         protected List<Building> childBuildings = new List<Building>();
 
@@ -58,10 +57,12 @@ namespace Carnivale
         public override void ExposeData()
         {
             base.ExposeData();
-            if (Scribe.mode != LoadSaveMode.Inactive)
+            if (Scribe.mode == LoadSaveMode.Saving)
             {
                 this.childBuildings.RemoveAll(c => c == null || c.Destroyed);
             }
+
+            Scribe_Values.Look(ref this.oldPosition, "oldPos");
 
             Scribe_Collections.Look(ref this.childBuildings, "childBuildings", LookMode.Reference);
         }
@@ -141,6 +142,7 @@ namespace Carnivale
                     childBuildings.RemoveAt(i);
                     continue;
                 }
+
                 childBuildings[i].DeSpawn();
             }
 

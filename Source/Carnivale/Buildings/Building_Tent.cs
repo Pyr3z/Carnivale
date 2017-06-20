@@ -1,8 +1,6 @@
-﻿using RimWorld;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using Verse;
+using Xnope;
 
 namespace Carnivale
 {
@@ -42,7 +40,7 @@ namespace Carnivale
                 childBuildings.Add(door); 
 
                 // Build invisible walls
-                IEnumerable<IntVec3> edges = Utilities.CornerlessEdgeCells(this.OccupiedRect());
+                IEnumerable<IntVec3> edges = this.OccupiedRect().CornerlessEdgeCells();
                 foreach (var cell in edges)
                 {
                     if (cell == doorCell) continue;

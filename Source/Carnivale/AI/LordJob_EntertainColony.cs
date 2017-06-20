@@ -45,7 +45,7 @@ namespace Carnivale
         public override void Cleanup()
         {
             base.Cleanup();
-            info.Cleanup(true);
+            info.Cleanup();
         }
 
         public override StateGraph CreateGraph()
@@ -78,18 +78,18 @@ namespace Carnivale
             LordToil toil_Rest = new LordToil_RestCarnival(info);
             mainGraph.AddToil(toil_Rest);
 
+            Transition trans_ToRestFromSetup = new Transition(toil_Setup, toil_Rest);
+
+            trans_ToRestFromSetup.AddTrigger(new Trigger_Memo("SetupDoneRest"));
+            mainGraph.AddTransition(trans_ToRestFromSetup);
+
             Transition trans_ToRest = new Transition(toil_Entertain, toil_Rest);
 
-            //trans_ToRest.AddTrigger(new Trigger_TicksPassed(GenDate.TicksPerHour * 8));
-            trans_ToRest.AddTrigger(new Trigger_TickCondition(() => info.AnyCarnyNeedsRest));
-            trans_ToRest.AddTrigger(new Trigger_Memo("SetupDoneRest"));
-            trans_ToRest.AddPostAction(new TransitionAction_EndAllJobs());
+            trans_ToRest.AddTrigger(new Trigger_TickCondition(() => info.AnyCarnyNeedsRest || !info.CanEntertainNow));
             mainGraph.AddTransition(trans_ToRest);
 
             Transition trans_FromRest = new Transition(toil_Rest, toil_Entertain);
-            //trans_FromRest.AddTrigger(new Trigger_TicksPassed(GenDate.TicksPerHour * 16));
             trans_FromRest.AddTrigger(new Trigger_TickCondition(() => !info.AnyCarnyNeedsRest && info.CanEntertainNow));
-            trans_FromRest.AddPostAction(new TransitionAction_EndAllJobs());
             mainGraph.AddTransition(trans_FromRest);
 
             // Defend if attacked

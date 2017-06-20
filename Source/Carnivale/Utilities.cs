@@ -13,6 +13,12 @@ namespace Carnivale
         // Remember to flush this whenever a carnival exits the map
         public static Dictionary<Pawn, CarnivalRole> cachedRoles = new Dictionary<Pawn, CarnivalRole>();
 
+        public static ThingDef[] defaultTrashThings = new ThingDef[]
+        {
+            ThingDefOf.WoodLog,
+            ThingDefOf.Steel
+        };
+
 
 
         public static ThingDef RandomFabricByCheapness()
@@ -120,6 +126,12 @@ namespace Carnivale
         {
             byte bitFlaggedRoles = (byte)pawn.GetCarnivalRole();
 
+            if (bitFlaggedRoles == 0)
+            {
+                yield return CarnivalRole.None;
+                yield break;
+            }
+
             for (byte bitPos = 0; bitPos < 8; bitPos++)
             {
                 if ((bitFlaggedRoles & (1 << bitPos)) != 0)
@@ -127,7 +139,6 @@ namespace Carnivale
                     yield return (CarnivalRole)bitPos;
                 }
             }
-            // God damn this is elegant. Thx stackoverflow.com.
         }
 
         public static bool Is(this Pawn pawn, CarnivalRole role)
@@ -161,6 +172,10 @@ namespace Carnivale
             return false;
         }
 
+        public static bool IsOnly(this Pawn pawn, CarnivalRole role)
+        {
+            return pawn.GetCarnivalRole() == role;
+        }
 
 
 
@@ -180,31 +195,6 @@ namespace Carnivale
             return (type & other) == other;
         }
 
-
-
-
-        public static IEnumerable<IntVec3> CornerlessEdgeCells(CellRect rect)
-        {
-            int x = rect.minX + 1;
-            int z = rect.minZ;
-            while (x < rect.maxX)
-            {
-                yield return new IntVec3(x, 0, z);
-                x++;
-            }
-            for (z++; z < rect.maxZ; z++)
-            {
-                yield return new IntVec3(x, 0, z);
-            }
-            for (x--; x > rect.minX; x--)
-            {
-                yield return new IntVec3(x, 0, z);
-            }
-            for (z--; z > rect.minZ; z--)
-            {
-                yield return new IntVec3(x, 0, z);
-            }
-        }
 
 
         public static Thing SpawnThingNoWipe(Thing thing, IntVec3 loc, Map map, Rot4 rot, bool respawningAfterLoad = false)
@@ -356,6 +346,15 @@ namespace Carnivale
         }
 
 
+        /// <summary>
+        /// Clears a CellRect of plants and/or haulables, either forcibly or 'gently'.
+        /// </summary>
+        /// <param name="map"></param>
+        /// <param name="spot"></param>
+        /// <param name="size"></param>
+        /// <param name="rot"></param>
+        /// <param name="clearPlants">Forcibly destroys all plants if true, 'gently' designates them for cutting if false.</param>
+        /// <param name="teleportHaulables">Forcibly tries to teleport haulables outside the occupied rectangle if true.</param>
         public static void ClearThingsFor(Map map, IntVec3 spot, IntVec2 size, Rot4 rot, bool clearPlants = true, bool teleportHaulables = true)
         {
             if (!clearPlants && !teleportHaulables) return;
@@ -374,6 +373,15 @@ namespace Carnivale
                         plant.Destroy(DestroyMode.KillFinalize);
                     }
                 }
+                else
+                {
+                    Plant plant = cell.GetPlant(map);
+                    if (plant != null)
+                    {
+                        Designation des = new Designation(plant, DesignationDefOf.CutPlant);
+                        map.designationManager.AddDesignation(des);
+                    }
+                }
 
                 if (teleportHaulables)
                 {
@@ -381,22 +389,52 @@ namespace Carnivale
                     if (haulable != null)
                     {
                         IntVec3 moveToSpot = haulable.Position;
-                        for (int i = 0; i < 30; i++)
+                        IntVec3 tempSpot;
+                        for (int i = 0; i < 50; i++)
                         {
-                            IntVec3 tempSpot = moveToCells.RandomCell;
+                            if (i < 15)
+                            {
+                                 tempSpot = moveToCells.EdgeCells.RandomElement();
+                            }
+                            else
+                            {
+                                tempSpot = moveToCells.RandomCell;
+                            }
+
                             if (!removeCells.Contains(tempSpot))
                             {
-                                if (!tempSpot.GetThingList(map).Any())
+                                if (tempSpot.Standable(map))
                                 {
                                     moveToSpot = tempSpot;
                                     break;
                                 }
                             }
                         }
+                        if (moveToSpot == haulable.Position)
+                        {
+                            Log.Error("Found no spot to teleport " + haulable + " to.");
+                            continue;
+                        }
+
                         // Teleport the fucker
                         //haulable.Position = moveToSpot;
                         GenPlace.TryMoveThing(haulable, moveToSpot, map);
                     }
+                }
+            }
+        }
+
+        public static void DesignateAllPlantsForCut(this CellRect rect, Map map)
+        {
+            rect.ClipInsideMap(map);
+
+            foreach (var cell in rect)
+            {
+                Plant plant = cell.GetPlant(map);
+                if (plant != null)
+                {
+                    Designation des = new Designation(plant, DesignationDefOf.CutPlant);
+                    map.designationManager.AddDesignation(des);
                 }
             }
         }
@@ -422,7 +460,7 @@ namespace Carnivale
         {
             // there is a more elegant way to do this, but I'll do that later.
 
-            if (thing.def == ThingDefOf.WoodLog)
+            if (defaultTrashThings.Contains(thing.def))
             {
                 return HaulLocation.ToTrash;
             }

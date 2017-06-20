@@ -291,11 +291,11 @@ namespace Carnivale
             if (!trashPos.IsValid)
             {
                 Log.Error("Could not find any place for a trash spot. Trash will not be hauled.");
-                info.TrashCentre = IntVec3.Invalid;
+                info.trashCentre = IntVec3.Invalid;
                 return null;
             }
 
-            info.TrashCentre = trashPos;
+            info.trashCentre = trashPos;
 
             RemoveFirstCrateOf(ThingDefOf.WoodLog);
             Utilities.ClearThingsFor(info.map, trashPos, new IntVec2(4,4), default(Rot4));

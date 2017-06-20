@@ -5,59 +5,53 @@ using Verse;
 
 namespace Carnivale
 {
-    public sealed class DeepReferenceableList<T> : IEnumerable<T>, IExposable where T:ILoadReferenceable
+    /// <summary>
+    /// The use case for an inheriting type of this class is for exposing
+    /// Dictionaries whose values are Lists of IReferenceables.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class DeepReferenceableList<T> : IEnumerable<T>, IExposable where T:ILoadReferenceable
     {
-        private List<T> referenceableList;
+        protected List<T> referenceableList;
 
-        public int Count
+        public int Count { get { return referenceableList.Count; } }
+
+
+
+        public DeepReferenceableList()
         {
-            get
-            {
-                return referenceableList.Count;
-            }
+            this.referenceableList = new List<T>();
         }
 
-        public DeepReferenceableList<T> Concat(DeepReferenceableList<T> other)
+
+
+        public virtual void ExposeData()
         {
-            List<T> newList = new List<T>();
-
-            foreach (T p in this)
-            {
-                newList.Add(p);
-            }
-            foreach (T p in other)
-            {
-                newList.Add(p);
-            }
-
-            return new DeepReferenceableList<T>()
-            {
-                referenceableList = newList
-            };
+            Scribe_Collections.Look(ref referenceableList, "loadReferenceIDs", LookMode.Reference);
         }
 
-        public void Add(T pawn)
+        public IEnumerable<T> Concat(IEnumerable<T> other)
         {
-            referenceableList.Add(pawn);
+            foreach (var t in this)
+                yield return t;
+            foreach (var o in other)
+                yield return o;
         }
 
-        public bool Remove(T pawn)
+        public void Add(T t)
         {
-            return referenceableList.Remove(pawn);
+            referenceableList.Add(t);
+        }
+
+        public bool Remove(T t)
+        {
+            return referenceableList.Remove(t);
         }
 
         public void RemoveAt(int index)
         {
             referenceableList.RemoveAt(index);
         }
-
-        public void ExposeData()
-        {
-            Scribe_Collections.Look(ref referenceableList, "loadReferenceIDs", LookMode.Reference);
-        }
-
-
-
 
         public IEnumerator<T> GetEnumerator()
         {
@@ -68,6 +62,8 @@ namespace Carnivale
         {
             return ((IEnumerable<T>)referenceableList).GetEnumerator();
         }
+
+
 
         public T this[int index]
         {
@@ -86,12 +82,26 @@ namespace Carnivale
             return dpl.referenceableList;
         }
 
-        public static implicit operator DeepReferenceableList<T>(List<T> list)
+    }
+
+
+
+    public sealed class DeepPawnList : DeepReferenceableList<Pawn>
+    {
+        public override void ExposeData()
         {
-            return new DeepReferenceableList<T>()
+            Scribe_Collections.Look(ref referenceableList, "pawns", LookMode.Reference);
+        }
+
+        public static implicit operator DeepPawnList(List<Pawn> list)
+        {
+            return new DeepPawnList()
             {
                 referenceableList = list
             };
         }
     }
+
+
+
 }

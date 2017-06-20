@@ -215,7 +215,7 @@ namespace Carnivale
                     if (carryTracker.innerContainer.TryTransferToContainer(carriedThing, this.Carrier.inventory.innerContainer, carriedThing.stackCount, true))
                     {
                         if (Prefs.DevMode)
-                            Log.Warning("[Debug] Succesfully hauled " + carriedThing + " to " + this.Carrier + ".");
+                            Log.Warning("[Debug] " + this.pawn + " succesfully hauled " + carriedThing + " to " + this.Carrier + ". pos=" + this.Carrier.Position);
                     }
                 }
             };

@@ -109,6 +109,7 @@
 		  <treeDef>SatisfyBasicNeedsAndWork</treeDef>
 		</li>
 		
+		<!-- specialised hauling job giver -->
 		<li Class="Carnivale.JobGiver_HaulToCarrierOrTrash" />
 		
 		<!-- Get joy -->
