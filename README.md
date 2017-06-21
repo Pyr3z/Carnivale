@@ -9,14 +9,6 @@ My first content mod for Rimworld. Adds a new unique faction type: carnivals. My
 
 The shear variety of content this mod seeks to add (and partially already has added) to the vanilla game makes it one of the most expansive kinds of mods out there. Feel free to peruse the source if you want to see how this or that is accomplished; I make this available entirely because of how grateful I am to other modders who have made their mods open-source and thus allowed me to learn from their examples.
 
-## Texture artists welcomed!
-I'm a bit stronger on the coding side of things than the texturing side, so if you have a desire to help the mod along by drawing up textures of anything you think works with *Carnivale*'s goals, please do and contact me.
-
-## Some example textures
-![food stall](Textures/Carnivale/Building/Stall_Food.png)
-![lodging tent](Textures/Carnivale/Building/TentSquare_back.png)
-![entrance sign](Textures/Carnivale/Building/EntrySign_back.png)
-
 # Features, both Planned and Done:
 * Extended from XnopeCore:
   * New roaming faction (no settlements generated) type: Carnivals [DONE]
@@ -29,7 +21,7 @@ I'm a bit stronger on the coding side of things than the texturing side, so if y
   * Hauling of things either to carriers or to a trash zone that is up for colonist grabs [partially done]
   * Manning of positions at the approriate times [ongoing]
     * vendor positions (there are up to three different kinds of trader at a time!) [DONE]
-    * guard positions [DONE]
+    * guard positions [DONEish]
     * announcers / ticket (silver) takers [partially done]
   * Meandering, socialising, getting joy, eating, sleeping, etc [DONE]
 * New buildings
@@ -41,7 +33,7 @@ I'm a bit stronger on the coding side of things than the texturing side, so if y
 * New apparel, and maybe a few new weapons (baseball bats, anyone?)
 * New incidents
   * Carnivals request to visit your colony one day prior [DONE]
-  * Upon arrival, carnies will set up their buildings and prepare immediately for a show [partially done]. Then, they will put on an 8-hour show every 16 hours until they leave (usually only a couple of days total).
+  * Upon arrival, carnies will set up their buildings and prepare [DONEish, ongoing]. Then, they will either put on a show immediately, or rest until the next day if it took them a while to set up. They will cycle between entertaining and resting until they leave (usually only a couple of days total).
   * Other passing factions may visit to experience the carnival!
   * Fireball shows... not gonna explain
   * "Carnival Justice": how'd you get a band of goofballs to hate you so much?
@@ -59,6 +51,15 @@ I'm a bit stronger on the coding side of things than the texturing side, so if y
 
 ## Side note
 Holy cow AI and data scribing is intense. Thought I'd be done with this weeks ago. At least it's all still fun though :P
+
+## Texture artists welcomed!
+I'm a bit stronger on the coding side of things than the texturing side, so if you have a desire to help the mod along by drawing up textures of anything you think works with *Carnivale*'s goals, please do and contact me.
+
+## Some example textures
+![food stall](Textures/Carnivale/Building/Stall_Food.png)
+![lodging tent](Textures/Carnivale/Building/TentSquare_back.png)
+![chapiteau (centre-piece) tent](Textures/Carnivale/Building/TentHuge_back.png)
+![entrance sign](Textures/Carnivale/Building/EntrySign_back.png)
 
 # Screenies
 ![promo1](Imagework/Promo/promo_1.png)
