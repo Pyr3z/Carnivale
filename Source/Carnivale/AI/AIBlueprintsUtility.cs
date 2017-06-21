@@ -80,13 +80,36 @@ namespace Carnivale
 
         private static IEnumerable<Blueprint> PlaceTentBlueprints()
         {
-            ThingDef tentDef = _DefOf.Carn_TentMedBed;
+            // main chapiteau
+            ThingDef tentDef;
             Rot4 rot = Rot4.Random;
-            IntVec3 tentSpot = FindRandomPlacementFor(tentDef, rot, true, (int)info.baseRadius / 2);
+            IntVec3 tentSpot;
+
+            if (availableCrates.Any(c => c.def == _DefOf.Carn_Crate_TentHuge))
+            {
+                tentDef = _DefOf.Carn_TentHuge;
+                tentSpot = FindRadialPlacementFor(tentDef, rot, info.setupCentre, 11);
+                if (tentSpot.IsValid)
+                {
+                    RemoveFirstCrateOf(_DefOf.Carn_Crate_TentHuge);
+                    Utilities.ClearThingsFor(info.map, tentSpot, tentDef.size, rot, false, true);
+                    yield return PlaceBlueprint(tentDef, tentSpot, rot);
+                }
+                else
+                {
+                    Log.Error("Could not find placement for " + tentDef + ", which is a major attraction. Tell Xnope to get it together.");
+                }
+            }
+
+
+
+            // lodging tents
+            tentDef = _DefOf.Carn_TentMedBed;
+            rot = Rot4.Random;
+            tentSpot = FindRandomPlacementFor(tentDef, rot, true, (int)info.baseRadius / 2);
 
             IntVec3 lineDirection = rot.ToIntVec3(1); // shifted clockwise by 1
 
-            // Place lodging tents (8 pawns per medium sized tent)
             int numFailures = 0;
             bool firstNewPass = true;
             while (numFailures < 30 && availableCrates.Any(t => t.def == _DefOf.Carn_Crate_TentLodge))
@@ -134,7 +157,7 @@ namespace Carnivale
                 Log.Error("Tried too many times to place tents. Some may not be built.");
             }
 
-            // Place manager tent
+            // manager tent
             if (!availableCrates.Any(c => c.def == _DefOf.Carn_Crate_TentMan))
                 yield break;
 

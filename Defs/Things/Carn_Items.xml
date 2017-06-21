@@ -145,6 +145,21 @@
   </ThingDef>
   
   
+  <!-- Tent crate: chapiteau -->
+  <ThingDef ParentName="TentCrateLodge">
+    <defName>Carn_Crate_TentHuge</defName>
+	<label>crate, chapiteau</label>
+	<description>A crate filled with enough stakes, textile, rods, etcetera to erect the main attraction tent, the Chapiteau.</description>
+	
+	<costStuffCount>1000</costStuffCount>
+	<costList>
+	  <WoodLog>100</WoodLog>
+	  <Plasteel>10</Plasteel>
+	</costList>
+	
+  </ThingDef>
+  
+  
   <!-- Stall crate -->
   <ThingDef ParentName="StallCrateBase">
     <defName>Carn_Crate_Stall</defName>

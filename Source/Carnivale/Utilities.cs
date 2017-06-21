@@ -21,6 +21,11 @@ namespace Carnivale
 
 
 
+        public static ThingDef RandomFabric()
+        {
+            return _DefOf.Textiles.childThingDefs.RandomElement();
+        }
+
         public static ThingDef RandomFabricByCheapness()
         {
             return _DefOf.Textiles.childThingDefs.RandomElementByWeight(def => 10f / def.BaseMarketValue);
@@ -376,7 +381,7 @@ namespace Carnivale
                 else
                 {
                     Plant plant = cell.GetPlant(map);
-                    if (plant != null)
+                    if (plant != null && plant.def.plant.harvestWork >= 200f) // from GenConstruct.BlocksFramePlacement()
                     {
                         Designation des = new Designation(plant, DesignationDefOf.CutPlant);
                         map.designationManager.AddDesignation(des);

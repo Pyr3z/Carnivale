@@ -27,10 +27,19 @@ namespace Carnivale
             foreach (var pawn in lord.ownedPawns)
             {
                 CarnivalRole role = pawn.GetCarnivalRole();
+
+                if (role.Is(CarnivalRole.Worker))
+                {
+                    DutyUtility.MeanderAndHelp(pawn, Info.setupCentre, Info.baseRadius);
+                    continue;
+                }
+
                 if (!role.Is(CarnivalRole.Carrier))
                 {
                     DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
+                    continue;
                 }
+
             }
         }
 

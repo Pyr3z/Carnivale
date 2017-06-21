@@ -36,13 +36,13 @@ namespace Carnivale
         public IntVec3 trashCentre; // Assigned when blueprint is placed
 
         [Unsaved]
-        public List<Thing> thingsToHaul = new List<Thing>();
+        public List<Thing> thingsToHaul;
 
-        public List<Building> carnivalBuildings = new List<Building>();
+        public List<Building> carnivalBuildings;
 
-        public Dictionary<CarnivalRole, DeepPawnList> pawnsWithRole = new Dictionary<CarnivalRole, DeepPawnList>();
+        public Dictionary<CarnivalRole, DeepPawnList> pawnsWithRole;
 
-        public Dictionary<Pawn, IntVec3> rememberedPositions = new Dictionary<Pawn, IntVec3>();
+        public Dictionary<Pawn, IntVec3> rememberedPositions;
 
         [Unsaved]
         private bool anyCarnyNeedsRest = false;

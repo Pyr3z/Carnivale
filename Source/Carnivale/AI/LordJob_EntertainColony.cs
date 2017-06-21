@@ -31,15 +31,9 @@ namespace Carnivale
         {
             Scribe_References.Look(ref this.info, "info");
 
-            //Scribe_References.Look(ref this.faction, "faction", false);
-
             Scribe_Values.Look(ref this.setupCentre, "setupSpot", default(IntVec3), false);
 
             Scribe_Values.Look(ref this.durationTicks, "durationTicks", default(int), false);
-
-            //Scribe_Collections.Look(ref this.workersWithCrates, false, "workersWithCrates", LookMode.Reference);
-
-            //Scribe_Collections.Look(ref this.availableCrates, false, "availableCrates", LookMode.Reference);
         }
 
         public override void Cleanup()
@@ -74,7 +68,7 @@ namespace Carnivale
             trans_Entertain.AddTrigger(new Trigger_Memo("SetupDoneEntertain"));
             mainGraph.AddTransition(trans_Entertain);
 
-            // Rest the carnival for 16 hours after 8 hours of entertaining
+            // Rest the carnival between 22:00 and 10:00, or if anyone needs rest
             LordToil toil_Rest = new LordToil_RestCarnival(info);
             mainGraph.AddToil(toil_Rest);
 
@@ -111,6 +105,7 @@ namespace Carnivale
             Transition trans_Exit = new Transition(toil_Entertain, toil_Exit);
             trans_Exit.AddSources(new LordToil[]
             {
+                toil_Rest,
                 toil_Setup,
                 toil_Defend
             });

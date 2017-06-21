@@ -53,29 +53,34 @@ namespace Carnivale
 
             LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)Data;
 
-            // Give workers tents (currently 8 carnies per tent), manager gets own tent
+            // Give em a wood for trash sign
+            data.TryHaveWorkerCarry(ThingDefOf.WoodLog, 1);
+
+            // Give chapiteau
+            if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentHuge, 1, Utilities.RandomFabric()) != 1)
+            {
+                Log.Error("Could not give " + _DefOf.Carn_Crate_TentHuge + " to carnies of faction " + lord.faction + ". It will not be built.");
+            }
+
+
+            // Give workers lodging tents (currently 8 carnies per lodging tent)
 
             int numCarnies = this.lord.ownedPawns.Count - Info.pawnsWithRole[CarnivalRole.Carrier].Count;
 
             int numBedTents = numCarnies > 9 ? Mathf.CeilToInt(numCarnies / 8f) : 1;
 
-            bool errorFlag = data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentLodge, numBedTents, Utilities.RandomFabricByCheapness()) != numBedTents;
+            if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentLodge, numBedTents, Utilities.RandomFabricByCheapness()) != numBedTents)
+            {
+                Log.Error("Could not give " + _DefOf.Carn_Crate_TentLodge + " to carnies of faction " + lord.faction + ". It will not be built.");
+            }
 
             if (Info.pawnsWithRole[CarnivalRole.Manager].Any())
             {
                 if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentMan, 1, Utilities.RandomFabricByExpensiveness()) != 1)
                 {
-                    errorFlag = true;
+                    Log.Error("Could not give " + _DefOf.Carn_Crate_TentMan + " to carnies of faction " + lord.faction + ". It will not be built.");
                 }
             }
-
-            if (errorFlag)
-            {
-                Log.Warning("Could not give enough tent crates to workers of " + this.lord.faction);
-            }
-
-            // Give em a wood
-            data.TryHaveWorkerCarry(ThingDefOf.WoodLog, 1);
 
             // Give workers stalls + entry sign
 
