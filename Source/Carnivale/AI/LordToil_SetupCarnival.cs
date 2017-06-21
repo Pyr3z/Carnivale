@@ -57,7 +57,7 @@ namespace Carnivale
             data.TryHaveWorkerCarry(ThingDefOf.WoodLog, 1);
 
             // Give chapiteau
-            if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentHuge, 1, Utilities.RandomFabric()) != 1)
+            if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentHuge, 1, Utilities.RandomFabricByCheapness()) != 1)
             {
                 Log.Error("Could not give " + _DefOf.Carn_Crate_TentHuge + " to carnies of faction " + lord.faction + ". It will not be built.");
             }

@@ -88,9 +88,14 @@ namespace Carnivale
 
     public sealed class DeepPawnList : DeepReferenceableList<Pawn>
     {
+        public DeepPawnList()
+        {
+            this.referenceableList = new List<Pawn>();
+        }
+
         public override void ExposeData()
         {
-            Scribe_Collections.Look(ref referenceableList, "pawns", LookMode.Reference);
+            Scribe_Collections.Look(ref this.referenceableList, "pawns", LookMode.Reference);
         }
 
         public static implicit operator DeepPawnList(List<Pawn> list)

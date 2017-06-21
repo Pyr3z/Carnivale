@@ -73,7 +73,7 @@ namespace Carnivale
 
         public CarnivalInfo(Map map) : base(map)
         {
-            
+            Cleanup();
         }
 
 
@@ -132,8 +132,6 @@ namespace Carnivale
 
             Scribe_Values.Look(ref this.trashCentre, "trashCell", IntVec3.Invalid, false);
 
-            //Scribe_Collections.Look(ref this.thingsToHaul, "thingsToHaul", LookMode.Reference);
-
             Scribe_Collections.Look(ref this.carnivalBuildings, "carnivalBuildings", LookMode.Reference);
 
             Scribe_Collections.Look(ref this.pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
@@ -182,7 +180,7 @@ namespace Carnivale
             }
             else
             {
-                pawnsWithRole = new Dictionary<CarnivalRole, DeepPawnList>();
+                pawnsWithRole = new Dictionary<CarnivalRole, DeepPawnList>(9);
             }
 
             if (rememberedPositions != null)
