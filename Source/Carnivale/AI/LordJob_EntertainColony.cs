@@ -61,7 +61,7 @@ namespace Carnivale
             mainGraph.AddTransition(trans_Setup);
 
             // Meat of the event: entertaining the colony
-            LordToil toil_Entertain = new LordToil_EntertainColony(info);
+            LordToil toil_Entertain = new LordToil_EntertainColony();
             mainGraph.AddToil(toil_Entertain);
 
             Transition trans_Entertain = new Transition(toil_Setup, toil_Entertain);
@@ -69,7 +69,7 @@ namespace Carnivale
             mainGraph.AddTransition(trans_Entertain);
 
             // Rest the carnival between 22:00 and 10:00, or if anyone needs rest
-            LordToil toil_Rest = new LordToil_RestCarnival(info);
+            LordToil toil_Rest = new LordToil_RestCarnival();
             mainGraph.AddToil(toil_Rest);
 
             Transition trans_ToRestFromSetup = new Transition(toil_Setup, toil_Rest);

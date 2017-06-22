@@ -14,11 +14,6 @@ namespace Carnivale
 
         public LordToil_RestCarnival() { }
 
-        public LordToil_RestCarnival(CarnivalInfo info)
-        {
-            this.data = new LordToilData_Carnival(info);
-        }
-
 
         // OVERRIDE METHODS //
 
@@ -44,15 +39,9 @@ namespace Carnivale
         }
 
 
-        public override void LordToilTick()
-        {
-            base.LordToilTick();
-        }
-
-
         private void SwitchGuardDuties(Pawn guard, Pawn newGuard)
         {
-
+            // TODO
         }
 
     }

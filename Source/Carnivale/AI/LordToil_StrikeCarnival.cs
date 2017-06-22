@@ -11,11 +11,6 @@
 
         public LordToil_StrikeCarnival() { }
 
-        public LordToil_StrikeCarnival(LordToilData_Carnival data)
-        {
-            this.data = data;
-        }
-
 
         // OVERRIDE METHODS //
 

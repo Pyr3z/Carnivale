@@ -68,8 +68,7 @@
     <Compile Include="AI\JobGiver_GotoCarnivalArea.cs" />
     <Compile Include="AI\JobGiver_HaulToCarrierOrTrash.cs" />
     <Compile Include="AI\JobGiver_StandAtLoc.cs" />
-    <Compile Include="Data\Zone_NonPlayerStockpile.cs" />
-    <Compile Include="Data\LordToilData_Carnival.cs" />
+    <Compile Include="AI\LordToil_Leave.cs" />
     <Compile Include="Data\LordToilData_SetupCarnival.cs" />
     <Compile Include="AI\LordToil_Carn.cs" />
     <Compile Include="AI\LordToil_DefendCarnival.cs" />
@@ -109,7 +108,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Workers\PlaceWorker_CarnBuilding.cs" />
     <Compile Include="Workers\RoomRoleWorker_Tent.cs" />
-    <Compile Include="AI\WorkGiver_HaulToCarrierOrTrash.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

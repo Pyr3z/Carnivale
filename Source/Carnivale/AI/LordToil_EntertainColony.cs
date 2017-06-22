@@ -12,12 +12,6 @@ namespace Carnivale
 
         public LordToil_EntertainColony() { }
 
-        public LordToil_EntertainColony(CarnivalInfo info)
-        {
-            this.data = new LordToilData_Carnival(info);
-        }
-
-
         // OVERRIDE METHODS //
 
 

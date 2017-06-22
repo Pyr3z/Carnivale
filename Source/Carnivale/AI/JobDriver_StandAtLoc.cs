@@ -53,6 +53,9 @@ namespace Carnivale
                 {
                     stand.actor.pather.StopDead();
                     stand.actor.Rotation = Rot4.South;
+
+                    // BUG: loading game while carnies are setting up makes
+                    // traders not want to trade with colony, even if this toil fires
                     if (Type.Is(CarnivalRole.Vendor))
                         stand.actor.mindState.wantsToTradeWithColony = true;
                 };

@@ -51,7 +51,7 @@ namespace Carnivale
             //    Log.Warning(pawn.NameStringShort + " --> " + pawn.kindDef.defName);
             //}
 
-            LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)Data;
+            LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)this.data;
 
             // Give em a wood for trash sign
             data.TryHaveWorkerCarry(ThingDefOf.WoodLog, 1);
@@ -128,7 +128,7 @@ namespace Carnivale
                       where !frame.Destroyed
                       select frame).Any())
                 {
-                    LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)Data;
+                    LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)this.data;
                     if (!(from blue in data.blueprints
                           where !blue.Destroyed
                           select blue).Any())
@@ -227,7 +227,7 @@ namespace Carnivale
         {
             if (frame.Faction == this.lord.faction && newBlueprint != null)
             {
-                ((LordToilData_SetupCarnival)Data).blueprints.Add(newBlueprint);
+                ((LordToilData_SetupCarnival)this.data).blueprints.Add(newBlueprint);
             }
         }
 
@@ -235,7 +235,7 @@ namespace Carnivale
         public override void Cleanup()
         {
             // Do more cleanup here?
-            LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)Data;
+            LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)this.data;
             data.availableCrates.RemoveAll(c => c.DestroyedOrNull());
             data.blueprints.RemoveAll(blue => blue.DestroyedOrNull());
         }

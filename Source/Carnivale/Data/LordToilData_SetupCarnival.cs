@@ -1,20 +1,23 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using Verse;
+using Verse.AI.Group;
 
 namespace Carnivale
 {
-    public class LordToilData_SetupCarnival : LordToilData_Carnival
+    public class LordToilData_SetupCarnival : LordToilData
     {
+        private CarnivalInfo info;
+
         public List<Thing> availableCrates = new List<Thing>();
 
         public List<Blueprint> blueprints = new List<Blueprint>();
 
         public LordToilData_SetupCarnival() { }
 
-        public LordToilData_SetupCarnival(CarnivalInfo carnivalInfo) : base(carnivalInfo)
+        public LordToilData_SetupCarnival(CarnivalInfo carnivalInfo)
         {
-
+            this.info = carnivalInfo;
         }
 
 
@@ -100,14 +103,14 @@ namespace Carnivale
 
         public override void ExposeData()
         {
-            base.ExposeData();
-
             if (Scribe.mode == LoadSaveMode.Saving)
             {
                 // Clean up unusable elements in collections
                 this.availableCrates.RemoveAll(b => b.Destroyed);
                 this.blueprints.RemoveAll(b => b.Destroyed);
             }
+
+            Scribe_References.Look(ref this.info, "info");
 
             Scribe_Collections.Look(ref this.availableCrates, "availableCrates", LookMode.Reference, new object[0]);
 
