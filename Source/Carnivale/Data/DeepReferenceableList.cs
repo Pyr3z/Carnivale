@@ -53,6 +53,11 @@ namespace Carnivale
             referenceableList.RemoveAt(index);
         }
 
+        public T RandomElementOrNull()
+        {
+            return referenceableList.RandomElementWithFallback();
+        }
+
         public IEnumerator<T> GetEnumerator()
         {
             return ((IEnumerable<T>)referenceableList).GetEnumerator();

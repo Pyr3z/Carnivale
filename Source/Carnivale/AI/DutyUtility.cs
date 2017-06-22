@@ -26,7 +26,7 @@ namespace Carnivale
         {
             if (pawn.mindState != null)
             {
-                pawn.needs.rest.CurLevel = 0.35f;
+                pawn.needs.rest.CurLevel = 0.35f; //hacky?
                 pawn.mindState.duty = new PawnDuty(_DefOf.Duty_ForceRest);
             }
         }
@@ -47,9 +47,38 @@ namespace Carnivale
             }
         }
 
-        public static void LeaveMap(Pawn pawn)
+        public static void LeaveMap(Pawn pawn, Pawn toFollow = null)
         {
+            if (pawn.mindState != null)
+            {
+                if (toFollow != null && toFollow.Spawned)
+                {
+                    pawn.mindState.duty = new PawnDuty(DutyDefOf.Follow, toFollow, 5f);
+                }
+                else
+                {
+                    var duty = new PawnDuty(DutyDefOf.ExitMapBestAndDefendSelf);
+                    duty.radius = 18f;
+                    duty.locomotion = LocomotionUrgency.Jog;
 
+                    pawn.mindState.duty = duty;
+                }
+            }
+        }
+
+        public static void LeaveMapAndEscort(Pawn pawn, Pawn escortee)
+        {
+            if (pawn.mindState != null)
+            {
+                if (escortee != null && escortee.Spawned)
+                {
+                    pawn.mindState.duty = new PawnDuty(DutyDefOf.Escort, escortee, 14f);
+                }
+                else
+                {
+                    LeaveMap(pawn);
+                }
+            }
         }
 
         public static void Meander(Pawn pawn, IntVec3 centre, float radius)

@@ -46,51 +46,51 @@ namespace Carnivale
         {
             this.info = Map.GetComponent<CarnivalInfo>();
 
-            StateGraph mainGraph = new StateGraph();
+            var mainGraph = new StateGraph();
 
             // Use LordJob_Travel as starting toil for this graph:
-            LordToil toil_MoveToSetup = mainGraph.AttachSubgraph(new LordJob_Travel(this.setupCentre).CreateGraph()).StartingToil;
+            var toil_MoveToSetup = mainGraph.AttachSubgraph(new LordJob_Travel(this.setupCentre).CreateGraph()).StartingToil;
 
             // Next toil is to set up
-            LordToil toil_Setup = new LordToil_SetupCarnival(info);
+            var toil_Setup = new LordToil_SetupCarnival(info);
             mainGraph.AddToil(toil_Setup);
 
-            Transition trans_Setup = new Transition(toil_MoveToSetup, toil_Setup);
+            var trans_Setup = new Transition(toil_MoveToSetup, toil_Setup);
             trans_Setup.AddTrigger(new Trigger_Memo("TravelArrived"));
             trans_Setup.AddTrigger(new Trigger_TicksPassed(2500));
             mainGraph.AddTransition(trans_Setup);
 
             // Meat of the event: entertaining the colony
-            LordToil toil_Entertain = new LordToil_EntertainColony();
+            var toil_Entertain = new LordToil_EntertainColony();
             mainGraph.AddToil(toil_Entertain);
 
-            Transition trans_Entertain = new Transition(toil_Setup, toil_Entertain);
+            var trans_Entertain = new Transition(toil_Setup, toil_Entertain);
             trans_Entertain.AddTrigger(new Trigger_Memo("SetupDoneEntertain"));
             mainGraph.AddTransition(trans_Entertain);
 
             // Rest the carnival between 22:00 and 10:00, or if anyone needs rest
-            LordToil toil_Rest = new LordToil_RestCarnival();
+            var toil_Rest = new LordToil_RestCarnival();
             mainGraph.AddToil(toil_Rest);
 
-            Transition trans_ToRestFromSetup = new Transition(toil_Setup, toil_Rest);
+            var trans_ToRestFromSetup = new Transition(toil_Setup, toil_Rest);
 
             trans_ToRestFromSetup.AddTrigger(new Trigger_Memo("SetupDoneRest"));
             mainGraph.AddTransition(trans_ToRestFromSetup);
 
-            Transition trans_ToRest = new Transition(toil_Entertain, toil_Rest);
+            var trans_ToRest = new Transition(toil_Entertain, toil_Rest);
 
             trans_ToRest.AddTrigger(new Trigger_TickCondition(() => info.AnyCarnyNeedsRest || !info.CanEntertainNow));
             mainGraph.AddTransition(trans_ToRest);
 
-            Transition trans_FromRest = new Transition(toil_Rest, toil_Entertain);
+            var trans_FromRest = new Transition(toil_Rest, toil_Entertain);
             trans_FromRest.AddTrigger(new Trigger_TickCondition(() => !info.AnyCarnyNeedsRest && info.CanEntertainNow));
             mainGraph.AddTransition(trans_FromRest);
 
             // Defend if attacked
-            LordToil toil_Defend = new LordToil_DefendCarnival(this.setupCentre, 30f);
+            var toil_Defend = new LordToil_DefendCarnival(this.setupCentre, 30f);
             mainGraph.AddToil(toil_Defend);
 
-            Transition trans_Defend = new Transition(toil_Setup, toil_Defend);
+            var trans_Defend = new Transition(toil_Setup, toil_Defend);
             trans_Defend.AddSources(new LordToil[] {
                 toil_Entertain
             });
@@ -99,10 +99,10 @@ namespace Carnivale
             mainGraph.AddTransition(trans_Defend);
 
             // Normal exit map toil
-            LordToil_ExitMapAndEscortCarriers toil_Exit = new LordToil_ExitMapAndEscortCarriers();
+            var toil_Exit = new LordToil_Leave();
             mainGraph.AddToil(toil_Exit);
 
-            Transition trans_Exit = new Transition(toil_Entertain, toil_Exit);
+            var trans_Exit = new Transition(toil_Entertain, toil_Exit);
             trans_Exit.AddSources(new LordToil[]
             {
                 toil_Rest,
@@ -110,6 +110,7 @@ namespace Carnivale
                 toil_Defend
             });
             trans_Exit.AddTrigger(new Trigger_TicksPassed(this.durationTicks));
+            trans_Exit.AddPostAction(new TransitionAction_EndAllJobs());
             trans_Exit.AddPostAction(new TransitionAction_WakeAll());
             mainGraph.AddTransition(trans_Exit);
 

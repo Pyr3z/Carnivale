@@ -182,6 +182,7 @@ namespace Carnivale
             {
                 CarnivalRole pawnRole = pawn.GetCarnivalRole();
 
+                // can't use switch case because some roles have multiple bit-flags
                 if (pawnRole.Is(CarnivalRole.Worker))
                 {
                     DutyUtility.BuildCarnival(pawn, Info.setupCentre, Info.baseRadius);

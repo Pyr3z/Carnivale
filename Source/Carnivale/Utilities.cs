@@ -385,6 +385,8 @@ namespace Carnivale
                     {
                         Designation des = new Designation(plant, DesignationDefOf.CutPlant);
                         map.designationManager.AddDesignation(des);
+
+                        plant.SetForbiddenIfOutsideHomeArea();
                     }
                 }
 

@@ -29,5 +29,27 @@ namespace Carnivale
 
         public LordToil_Carn() { }
 
+
+        // PROTECTED METHODS
+
+        protected Pawn GetClosestCarrier(Pawn closestTo)
+        {
+            Pawn carrier = null;
+            float minDist = float.MaxValue;
+            foreach (var car in Info.pawnsWithRole[CarnivalRole.Carrier])
+            {
+                float tempDistSqrd = car.Position.DistanceToSquared(closestTo.Position);
+                if (tempDistSqrd < minDist)
+                {
+                    minDist = tempDistSqrd;
+                    carrier = car;
+                }
+            }
+
+            return carrier;
+        }
+
+
+
     }
 }
