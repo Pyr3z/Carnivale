@@ -9,7 +9,7 @@ My first content mod for Rimworld. Adds a new unique faction type: carnivals. My
 
 The shear variety of content this mod seeks to add (and partially already has added) to the vanilla game makes it one of the most expansive kinds of mods out there. Feel free to peruse the source if you want to see how this or that is accomplished; I make this available entirely because of how grateful I am to other modders who have made their mods open-source and thus allowed me to learn from their examples.
 
-# Features, both Planned and Done:
+# Feature dump, both Planned and Done:
 * Extended from XnopeCore:
   * New roaming faction (no settlements generated) type: Carnivals [DONE]
   * MANY new backstories reflecting carny lifestyles [DONE]
