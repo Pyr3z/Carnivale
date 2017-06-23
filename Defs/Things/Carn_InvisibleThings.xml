@@ -38,8 +38,10 @@
 	  <Flammability>1.5</Flammability>
 	</statBases>
 	
+	<holdsRoof>true</holdsRoof>
+	
 	<building>
-	  <isEdifice>false</isEdifice>
+	  <isEdifice>true</isEdifice>
 	  <isInert>true</isInert>
 	  <deconstructible>false</deconstructible>
 	  <claimable>false</claimable>
@@ -74,7 +76,7 @@
 	</statBases>
 	
 	<building>
-	  <isEdifice>false</isEdifice>
+	  <isEdifice>true</isEdifice>
 	  <isInert>true</isInert>
 	  <deconstructible>false</deconstructible>
 	  <claimable>false</claimable>

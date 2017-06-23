@@ -24,7 +24,16 @@ namespace Carnivale
 
         public override void DefsLoaded()
         {
-            // Inject implied Frame defs with Frame_Tent
+            InjectFrameStuffHack();
+
+            TheOne.Instantiate();
+        }
+
+
+
+        private static void InjectFrameStuffHack()
+        {
+            // Inject implied Frame defs with Frame_StuffHacked
             foreach (ThingDef def in from d in DefDatabase<ThingDef>.AllDefs
                                      where d.isFrame
                                         && d.entityDefToBuild.stuffCategories != null
@@ -36,27 +45,7 @@ namespace Carnivale
                 def.thingClass = typeof(Frame_StuffHacked);
                 def.tickerType = TickerType.Normal;
             }
-
-
-            TheOne.Instantiate();
         }
-
-        public override void MapLoaded(Map map)
-        {
-            //Debug.TestLineDraw(map, map.Center, CellRect.CenteredOn(map.Center, 10).RandomCell);
-
-            //Debug.TestLineDrawCardinal(map, map.Center, 7);
-
-            //Debug.TestLineDrawDiagonal(map, map.Center, 7);
-
-            //Debug.TestLineDraw8Way(map, map.Center, 21);
-
-            //Debug.TestLineDraw12Way(map, map.Center, 21);
-
-            //Debug.TestLineDraw16Way(map, map.Center, 26);
-        }
-
-
     }
 
 }

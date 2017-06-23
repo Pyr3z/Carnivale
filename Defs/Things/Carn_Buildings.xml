@@ -7,6 +7,9 @@
   <ThingDef Name="CarnBuilding" Abstract="True">
     <category>Building</category>
 	<thingClass>Building</thingClass>
+	<minifiedDef>MinifiedFurniture</minifiedDef>
+	
+	<blueprintClass>Carnivale.Blueprint_StuffHacked</blueprintClass>
 	
 	<tickerType>Rare</tickerType>
 	
@@ -19,10 +22,6 @@
     <filthLeaving>BuildingRubble</filthLeaving>
 	<scatterableOnMapGen>false</scatterableOnMapGen>
 	<isSaveable>true</isSaveable>
-	
-	<minifiedDef>MinifiedFurniture</minifiedDef>
-	
-	<blueprintClass>Carnivale.Blueprint_StuffHacked</blueprintClass>
 	
 	<placeWorkers>
 	  <li>Carnivale.PlaceWorker_CarnBuilding</li>
@@ -47,11 +46,8 @@
 	<hasInteractionCell>true</hasInteractionCell>
 	
 	<blockWind>true</blockWind>
-	<holdsRoof>true</holdsRoof>
-	<!--
-	<castEdgeShadows>true</castEdgeShadows>
-	<staticSunShadowHeight>1.0</staticSunShadowHeight>
-	-->
+	<holdsRoof>false</holdsRoof>
+	<castEdgeShadows>false</castEdgeShadows>
 	
 	<repairEffect>Sow</repairEffect>
 	<resourcesFractionWhenDeconstructed>1.0</resourcesFractionWhenDeconstructed>
@@ -162,12 +158,12 @@
 	
 	<graphicData>
 	  <texPath>Carnivale/Building/EntrySign</texPath>
-	  <graphicClass>Graphic_Multi</graphicClass>
+	  <graphicClass>Graphic_Single</graphicClass>
 	  <shaderType>CutoutComplex</shaderType>
 	  <drawSize>(6,3)</drawSize>
 	  
 	  <damageData>
-	    <rect>(1.15,1.15,5.85,1.85)</rect>
+	    <rect>(1.1,1.1,5.9,2.9)</rect>
 	  </damageData>
 	</graphicData>
 	
@@ -216,9 +212,10 @@
 	
 	<graphicData>
 	  <texPath>Carnivale/Building/TentSquare</texPath>
-	  <graphicClass>Graphic_Multi</graphicClass>
+	  <graphicClass>Graphic_Single</graphicClass>
 	  <shaderType>CutoutComplex</shaderType>
 	  <drawSize>(5.25,5.25)</drawSize>
+	  <drawRotated>false</drawRotated>
 	  <allowFlip>false</allowFlip>
 	  
 	  <damageData>
@@ -277,14 +274,20 @@
 	
 	<graphicData>
 	  <texPath>Carnivale/Building/TentSquare</texPath>
-	  <graphicClass>Graphic_Multi</graphicClass>
+	  <graphicClass>Graphic_Single</graphicClass>
 	  <shaderType>CutoutComplex</shaderType>
 	  <drawSize>(7.15,7.15)</drawSize>
+	  <drawRotated>false</drawRotated>
 	  <allowFlip>false</allowFlip>
 	  
 	  <damageData>
 	    <rect>(1,1,6,6)</rect>
 	  </damageData>
+	  
+	  <shadowData>
+	    <volume>(7,7,7)</volume>
+		<offset>(0,0,0)</offset>
+	  </shadowData>
 	</graphicData>
 	
 	<size>(7,7)</size>
@@ -345,9 +348,10 @@
 	
 	<graphicData>
 	  <texPath>Carnivale/Building/TentHuge</texPath>
-	  <graphicClass>Graphic_Multi</graphicClass>
+	  <graphicClass>Graphic_Single</graphicClass>
 	  <shaderType>CutoutComplex</shaderType>
 	  <drawSize>(13,13)</drawSize>
+	  <drawRotated>false</drawRotated>
 	  <allowFlip>false</allowFlip>
 	  
 	  <damageData>
@@ -405,7 +409,7 @@
 	  
 	  <drawSize>(3,3)</drawSize>
 	  <damageData>
-	    <rect>(0.2,0.2,2.8,0.8)</rect>
+	    <rect>(2.2,2.2,2.8,0.8)</rect>
 	  </damageData>
 	</graphicData>
 	
@@ -458,7 +462,7 @@
 	  
 	  <drawSize>(3,3)</drawSize>
 	  <damageData>
-	    <rect>(0.2,0.2,2.8,0.8)</rect>
+	    <rect>(2.2,2.2,2.8,0.8)</rect>
 	  </damageData>
 	</graphicData>
 	
@@ -478,7 +482,7 @@
 	  
 	  <drawSize>(3,3)</drawSize>
 	  <damageData>
-	    <rect>(0.2,0.2,2.8,0.8)</rect>
+	    <rect>(2.2,2.2,2.8,0.8)</rect>
 	  </damageData>
 	</graphicData>
 	
