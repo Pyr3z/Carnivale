@@ -57,9 +57,9 @@ I'm a bit stronger on the coding side of things than the texturing side, so if y
 
 ## Some example textures
 ![food stall](Textures/Carnivale/Building/Stall_Food.png)
-![lodging tent](Textures/Carnivale/Building/TentSquare_back.png)
-![chapiteau (centre-piece) tent](Textures/Carnivale/Building/TentHuge_back.png)
-![entrance sign](Textures/Carnivale/Building/EntrySign_back.png)
+![lodging tent](Textures/Carnivale/Building/TentSquare.png)
+![chapiteau (centre-piece) tent](Textures/Carnivale/Building/TentHuge.png)
+![entrance sign](Textures/Carnivale/Building/EntrySign.png)
 
 # Screenies
 ![promo1](Imagework/Promo/promo_1.png)
