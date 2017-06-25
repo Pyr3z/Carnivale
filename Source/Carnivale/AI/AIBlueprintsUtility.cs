@@ -15,7 +15,7 @@ namespace Carnivale
 
         private static List<Pawn> stallUsers;
 
-        private static List<IntVec3> cachedPos = new List<IntVec3>();
+        public static List<IntVec3> cachedPos = new List<IntVec3>();
 
         // The only public method; use this
         [DebuggerHidden]
@@ -74,7 +74,7 @@ namespace Carnivale
                 }
             }
 
-            cachedPos.Clear();
+            //cachedPos.Clear();
         }
 
 
@@ -314,11 +314,11 @@ namespace Carnivale
             if (!trashPos.IsValid)
             {
                 Log.Error("Could not find any place for a trash spot. Trash will not be hauled.");
-                info.trashCentre = IntVec3.Invalid;
+                info.TrashCentre = IntVec3.Invalid;
                 return null;
             }
 
-            info.trashCentre = trashPos;
+            info.TrashCentre = trashPos;
 
             RemoveFirstCrateOf(ThingDefOf.WoodLog);
             Utilities.ClearThingsFor(info.map, trashPos, new IntVec2(4,4), default(Rot4));

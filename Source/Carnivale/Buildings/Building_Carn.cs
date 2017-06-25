@@ -49,10 +49,7 @@ namespace Carnivale
         }
 
 
-        public Building_Carn()
-        {
-            
-        }
+        public Building_Carn() { }
 
 
         public override void ExposeData()
@@ -82,6 +79,18 @@ namespace Carnivale
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
+            // Forbid things so colonists can access them after they are hauled to trash
+            if (this.factionInt != Faction.OfPlayer)
+            {
+                foreach (var cell in this.OccupiedRect())
+                {
+                    foreach (var thing in cell.GetThingList(map).Where(t => t.def.EverHaulable))
+                    {
+                        thing.SetForbidden(true, false);
+                    }
+                }
+            }
+
             // Build interior
             if (Props.interiorThings.Any() && !childBuildings.Any(b => Props.interiorThings.Any(t => t.thingDef == b.def)))
             {
@@ -160,7 +169,12 @@ namespace Carnivale
 
                 int hitPoints = (HitPoints / MaxHitPoints) * crate.MaxHitPoints;
                 crate.HitPoints = hitPoints;
-;
+
+                if (this.factionInt != Faction.OfPlayer)
+                {
+                    crate.SetForbidden(true);
+                }
+
                 GenSpawn.Spawn(crate, Position, Map);
             }
 

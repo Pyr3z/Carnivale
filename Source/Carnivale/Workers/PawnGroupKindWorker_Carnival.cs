@@ -91,7 +91,7 @@ namespace Carnivale
             }
 
             // Generate one extra carrier carrying nothing
-            GenerateCarriers(parms, groupMaker, new List<Thing>(), outPawns);
+            GenerateCarriers(parms, groupMaker, null, outPawns);
 
             // Generate options
             GenerateGroup(parms, groupMaker.options, outPawns, true);
@@ -157,53 +157,52 @@ namespace Carnivale
 
         private void GenerateCarriers(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, List<Thing> wares, List<Pawn> outPawns)
         {
-            // disabling this more elegant solution in order to exclude overweight items
-            //var waresList = (from x in wares
-            //                 where !(x is Pawn)
-            //                 select x).ToList();
-            //var totalWeight = waresList.Sum(t => t.GetInnerIfMinified().GetStatValue(StatDefOf.Mass) * t.stackCount);
-
             var carrierList = new List<Pawn>();
 
             var carrierKind = (from x in groupMaker.carriers
                                where parms.tile == -1
                                      || Find.WorldGrid[parms.tile].biome.IsPackAnimalAllowed(x.kind.race)
                                select x).RandomElementByWeight(o => o.selectionWeight).kind;
-            float baseCapacity = carrierKind.RaceProps.baseBodySize * 34f; // Leaving some space for silvah, original calculation is 35f
 
             var totalWeight = 0f;
             var waresSansPawns = new List<Thing>();
+            var numCarriers = 1;
 
-            for (int j = wares.Count - 1; j > -1; j--) // required for iterative removing
+            if (!wares.NullOrEmpty())
             {
-                var thing = wares[j];
-                if (thing is Pawn) continue;
+                float baseCapacity = carrierKind.RaceProps.baseBodySize * 34f; // Leaving some space for silvah, original calculation is 35f
 
-                var mass = thing.Mass();
-
-                if (mass > baseCapacity)
+                for (int j = wares.Count - 1; j > -1; j--)
                 {
-                    if (Prefs.DevMode)
+                    var thing = wares[j];
+                    if (thing is Pawn) continue;
+
+                    var mass = thing.Mass();
+
+                    if (mass > baseCapacity)
                     {
-                        Log.Warning("[Debug] "
-                            + thing
-                            + " is too big for any carrier and will be removed from wares. mass="
-                            + mass
-                            + ", "
-                            + carrierKind.label
-                            + " capacity="
-                            + baseCapacity
-                        );
+                        if (Prefs.DevMode)
+                        {
+                            Log.Warning("[Debug] "
+                                + thing
+                                + " is too big for any carrier and will be removed from wares. mass="
+                                + mass
+                                + ", "
+                                + carrierKind.label
+                                + " capacity="
+                                + baseCapacity
+                            );
+                        }
+                        wares.RemoveAt(j);
+                        continue;
                     }
-                    wares.RemoveAt(j);
-                    continue;
+
+                    totalWeight += mass;
+                    waresSansPawns.Add(thing);
                 }
 
-                totalWeight += mass;
-                waresSansPawns.Add(thing);
+                numCarriers = Mathf.CeilToInt(totalWeight / baseCapacity);
             }
-
-            int numCarriers = Mathf.CeilToInt(totalWeight / baseCapacity);
 
             int i = 0;
             for (int j = 0; j < numCarriers; j++)

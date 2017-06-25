@@ -142,7 +142,7 @@ namespace Carnivale
                             // Add buildings to CarnivalInfo
                             if (building.GetComp<CompCarnBuilding>() != null)
                             {
-                                Info.carnivalBuildings.Add(building);
+                                Info.AddBuilding(building);
                             }
                         }
 
@@ -249,7 +249,7 @@ namespace Carnivale
             int countCarriers = Info.pawnsWithRole[CarnivalRole.Carrier].Count;
             int countSpots = 0;
             List<IntVec3> spots = new List<IntVec3>();
-            CellRect searchRect = CellRect.CenteredOn(Info.setupCentre, 8);
+            CellRect searchRect = CellRect.CenteredOn(AIBlueprintsUtility.cachedPos.Average(), 8);
 
             for (int i = 0; i < 50; i++)
             {
@@ -283,7 +283,7 @@ namespace Carnivale
                     directionalTries++;
                 }
 
-                offset = directionalTries.ToIntVec3(1);
+                offset = directionalTries.ToIntVec3(1) * 3;
 
                 newSpot += offset;
 

@@ -16,6 +16,8 @@ namespace Carnivale
 
         [Unsaved]
         private CarnivalInfo infoInt = null;
+        [Unsaved]
+        private HaulLocation destInt = 0;
 
         public Thing ThingToHaul
         {
@@ -45,14 +47,47 @@ namespace Carnivale
             }
         }
 
+        private HaulLocation DestType
+        {
+            get
+            {
+                if (destInt == 0)
+                {
+                    destInt = ThingToHaul.DefaultHaulLocation(true);
+                }
+
+                return destInt;
+            }
+        }
+
+        public override string GetReport()
+        {
+            if (DestType == HaulLocation.ToTrash)
+            {
+                return "hauling " + ThingToHaul.Label + " to trash.";
+            }
+
+            if (DestType == HaulLocation.ToCarriers)
+            {
+                if (Carrier != null)
+                {
+                    return "hauling " + ThingToHaul.Label + " to " + Carrier.Label + ".";
+                }
+                else
+                {
+                    return "hauling " + ThingToHaul.Label + " to carrier.";
+                }
+            }
+
+            return base.GetReport();
+        }
+
         [DebuggerHidden]
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            HaulLocation destType = ThingToHaul.DefaultHaulLocation(true);
-
             this.FailOn(delegate
             {
-                return destType == HaulLocation.None
+                return DestType == HaulLocation.None
                        || !Info.Active
                        || Info.currentLord != pawn.GetLord()
                        || (!Info.ShouldHaulTrash
@@ -69,17 +104,17 @@ namespace Carnivale
 
             yield return Toils_Haul.StartCarryThing(TargetIndex.A, false, true);
 
-            yield return this.RemoveCarriedThingFromThingsToHaul();
+            //yield return this.RemoveCarriedThingFromThingsToHaul();
 
             yield return Toils_Haul.CheckForGetOpportunityDuplicate(reserve, TargetIndex.A, TargetIndex.None, false, t => Info.thingsToHaul.Contains(t));
 
-            if (destType == HaulLocation.ToCarriers)
+            if (DestType == HaulLocation.ToCarriers)
             {
                 Toil findCarrier = FindCarrier();
 
                 yield return findCarrier;
 
-                yield return Toils_Reserve.Reserve(TargetIndex.B);
+                //yield return Toils_Reserve.Reserve(TargetIndex.B);
 
                 yield return Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.Touch)
                     .JumpIf(() => !JobDriver_PrepareCaravan_GatherItems.IsUsableCarrier(this.Carrier, this.pawn, false), findCarrier);
@@ -88,7 +123,7 @@ namespace Carnivale
 
                 yield return PlaceTargetInCarrierInventory();
             }
-            else if (destType == HaulLocation.ToTrash)
+            else if (DestType == HaulLocation.ToTrash)
             {
                 Toil findTrashSpot = FindTrashSpot();
 
@@ -100,6 +135,8 @@ namespace Carnivale
 
                 yield return Toils_Haul.PlaceHauledThingInCell(TargetIndex.B, findTrashSpot, false);
             }
+
+            yield return RemoveThingToHaulFromInfo();
         }
 
 
@@ -136,6 +173,7 @@ namespace Carnivale
 
         private Toil RemoveCarriedThingFromThingsToHaul()
         {
+            // deprecated: use RemoveThingToHaulFromInfo() instead
             return new Toil
             {
                 initAction = delegate
@@ -146,6 +184,23 @@ namespace Carnivale
                     {
                         if (Prefs.DevMode)
                             Log.Warning("[Debug] Removing " + haulable + " from CarnivalInfo.thingsToHaul.");
+                    }
+                }
+            };
+        }
+
+
+        private Toil RemoveThingToHaulFromInfo()
+        {
+            return new Toil
+            {
+                initAction = delegate
+                {
+                    if (ThingToHaul != null
+                        && Info.thingsToHaul.Remove(ThingToHaul))
+                    {
+                        if (Prefs.DevMode)
+                            Log.Warning("[Debug] Removing " + ThingToHaul + " from CarnivalInfo.thingsToHaul.");
                     }
                 }
             };

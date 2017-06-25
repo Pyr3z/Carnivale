@@ -33,12 +33,14 @@ namespace Carnivale
 
         public IntVec3 bannerCell;
 
-        public IntVec3 trashCentre; // Assigned when blueprint is placed
+        private IntVec3 trashCentre; // Assigned when blueprint is placed
 
         [Unsaved]
         public List<Thing> thingsToHaul;
 
         public List<Building> carnivalBuildings;
+
+        public List<IntVec3> checkForHaulableCells;
 
         public Dictionary<CarnivalRole, DeepPawnList> pawnsWithRole;
 
@@ -56,6 +58,18 @@ namespace Carnivale
 
 
         public bool Active { get { return currentLord != null; } }
+
+        public IntVec3 TrashCentre
+        {
+            set
+            {
+                this.trashCentre = value;
+                foreach (var trashCell in TrashCells())
+                {
+                    checkForHaulableCells.Remove(trashCell);
+                }
+            }
+        }
 
         public bool ShouldHaulTrash { get { return Active && trashCentre.IsValid; } }
 
@@ -80,7 +94,7 @@ namespace Carnivale
                     {
                         if (((Building)target.Thing).Is(CarnBuildingType.Bedroom))
                         {
-                            return 3;
+                            return 5;
                         }
                         return 1;
                     });
@@ -94,7 +108,6 @@ namespace Carnivale
         }
 
         
-        //public CarnivalInfo() { }
 
         public CarnivalInfo(Map map) : base(map)
         {
@@ -159,6 +172,8 @@ namespace Carnivale
 
             Scribe_Collections.Look(ref this.carnivalBuildings, "carnivalBuildings", LookMode.Reference);
 
+            Scribe_Collections.Look(ref this.checkForHaulableCells, "checkForHaulableCells", LookMode.Value);
+
             Scribe_Collections.Look(ref this.pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
 
             Scribe_Collections.Look(ref this.rememberedPositions, "rememberedPositions", LookMode.Reference, LookMode.Value, ref pawnWorkingList, ref vec3WorkingList);
@@ -167,8 +182,6 @@ namespace Carnivale
 
         public void Cleanup()
         {
-            Utilities.cachedRoles.Clear();
-
             currentLord = null;
 
             setupCentre = IntVec3.Invalid;
@@ -197,6 +210,15 @@ namespace Carnivale
             else
             {
                 carnivalBuildings = new List<Building>();
+            }
+
+            if (checkForHaulableCells != null)
+            {
+                checkForHaulableCells.Clear();
+            }
+            else
+            {
+                checkForHaulableCells = new List<IntVec3>();
             }
 
             if (pawnsWithRole != null)
@@ -238,6 +260,10 @@ namespace Carnivale
             // Set radius for carnies to stick to
             baseRadius = lord.ownedPawns.Count + addToRadius.RandomInRange;
             baseRadius = Mathf.Clamp(baseRadius, 15f, 35f);
+
+            // Set initial haul cells
+            checkForHaulableCells.AddRange(GenRadial.RadialCellsAround(setupCentre, baseRadius, true)
+                .Where(c => c.InBounds(map) && c.Walkable(map)));
 
             // Set carnival area
             carnivalArea = CellRect.CenteredOn(setupCentre, (int)baseRadius + 10).ClipInsideMap(map).ContractedBy(10);
@@ -296,19 +322,32 @@ namespace Carnivale
 
         public void CheckForHaulables(bool checkForCrates = false)
         {
-            foreach (var thing in from t in GenRadial.RadialDistinctThingsAround(setupCentre, this.map, baseRadius, true)
-                                  where t.DefaultHaulLocation(checkForCrates) != HaulLocation.None
-                                     && !TrashCells().Any(cell => cell == t.Position)
-                                     && !thingsToHaul.Contains(t)
-                                     && t.IsForbidden(Faction.OfPlayer) // dropped things are by default forbidden to the player
-                                  select t)
+            foreach (var cell in checkForHaulableCells)
             {
-                if (Prefs.DevMode)
-                    Log.Warning("[Debug] Adding " + thing + " to CarnivalInfo.thingsToHaul. pos=" + thing.Position);
-                thingsToHaul.Add(thing);
+                foreach (var thing in cell.GetThingList(map))
+                {
+                    if (HaulableValidator(thing, checkForCrates))
+                    {
+                        if (Prefs.DevMode)
+                            Log.Warning("[Debug] Adding " + thing + " to CarnivalInfo.thingsToHaul. pos=" + thing.Position);
+                        thingsToHaul.Add(thing);
+                    }
+                }
             }
         }
 
+
+        public void AddBuilding(Building building)
+        {
+            carnivalBuildings.Add(building);
+            foreach (var cell in building.OccupiedRect())
+            {
+                if (!checkForHaulableCells.Contains(cell))
+                {
+                    checkForHaulableCells.Add(cell);
+                }
+            }
+        }
 
         public Building GetFirstBuildingOf(ThingDef def)
         {
@@ -333,6 +372,8 @@ namespace Carnivale
 
         public IEnumerable<IntVec3> TrashCells()
         {
+            if (!trashCentre.IsValid) yield break;
+
             foreach (var cell in GenRadial.RadialCellsAround(trashCentre, TrashRadius, false))
             {
                 if (!cell.InBounds(map) || !cell.Walkable(map)) continue;
@@ -385,7 +426,13 @@ namespace Carnivale
         }
 
 
-
+        private bool HaulableValidator(Thing thing, bool checkForCrates)
+        {
+            return thing.DefaultHaulLocation(checkForCrates) != HaulLocation.None
+                   && !TrashCells().Any(cell => cell == thing.Position)
+                   && !thingsToHaul.Contains(thing)
+                   && thing.IsForbidden(Faction.OfPlayer); // dropped things are by default forbidden to the player
+        }
 
         private IntVec3 PreCalculateBannerCell()
         {

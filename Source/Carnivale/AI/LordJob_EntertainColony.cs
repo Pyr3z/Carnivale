@@ -40,6 +40,8 @@ namespace Carnivale
         {
             base.Cleanup();
             info.Cleanup();
+            AIBlueprintsUtility.cachedPos.Clear();
+            Utilities.cachedRoles.Clear();
         }
 
         public override StateGraph CreateGraph()

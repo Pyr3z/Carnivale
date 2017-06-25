@@ -64,6 +64,16 @@ namespace Carnivale
         }
 
 
+        public override string GetReport()
+        {
+            if (Building != null)
+            {
+                return "striking " + Building.Label + ".";
+            }
+
+            return base.GetReport();
+        }
+
 
         protected override IEnumerable<Toil> MakeNewToils()
         {

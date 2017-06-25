@@ -68,7 +68,7 @@
 	  </li>
 	  <li>
 	    <label>unlucky</label>
-		<description>Everywhere HE goes, NAME seems to get the shortest end of the stick. Important details tends to slip his attention, and HIS ailments often take a turn for the worse. It's really a wonder that HE is still alive.</description>
+		<description>Everywhere HE goes, NAME seems to get the shortest end of the stick. Important details tend to slip from his attention, and HIS ailments often take a turn for the worse. It's really a wonder that HE is still alive.</description>
 		<degree>-1</degree>
 		<statOffsets>
 		  <Carn_LuckinessStat>-0.2</Carn_LuckinessStat>

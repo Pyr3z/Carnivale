@@ -44,14 +44,16 @@ namespace Carnivale
 
         public override void LordToilTick()
         {
-            if (lord.ticksInToil % 743 == 0)
+            if (lord.ticksInToil % 1013 == 0)
             {
-                Info.CheckForHaulables(true);
-
-                if (Info.carnivalBuildings.NullOrEmpty()
-                    && !Info.thingsToHaul.Any(t => t.DefaultHaulLocation(true) == HaulLocation.ToCarriers))
+                if (Info.carnivalBuildings.NullOrEmpty())
                 {
-                    lord.ReceiveMemo("StrikeDone");
+                    Info.CheckForHaulables(true);
+
+                    if (!Info.thingsToHaul.Any(t => t.DefaultHaulLocation(true) == HaulLocation.ToCarriers))
+                    {
+                        lord.ReceiveMemo("StrikeDone");
+                    }
                 }
             }
         }

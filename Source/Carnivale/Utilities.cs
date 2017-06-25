@@ -477,8 +477,12 @@ namespace Carnivale
         {
             // there is a more elegant way to do this, but I'll do that later.
 
-            if (!thingDef.EverHaulable
-                || (!haulCrates && thingDef.IsCrate()))
+            if (haulCrates && thingDef.IsCrate())
+            {
+                return HaulLocation.ToCarriers;
+            }
+
+            if (!thingDef.EverHaulable)
             {
                 return HaulLocation.None;
             }
