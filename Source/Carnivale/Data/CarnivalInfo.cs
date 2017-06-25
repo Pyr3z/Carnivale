@@ -47,6 +47,9 @@ namespace Carnivale
         [Unsaved]
         private bool anyCarnyNeedsRest = false;
         [Unsaved]
+        private IntVec3 averageLodgeTentPos = IntVec3.Invalid;
+
+        [Unsaved]
         private List<Pawn> pawnWorkingList = null;
         [Unsaved]
         private List<IntVec3> vec3WorkingList = null;
@@ -67,6 +70,28 @@ namespace Carnivale
             }
         }
 
+        public IntVec3 AverageLodgeTentPos
+        {
+            get
+            {
+                if (!averageLodgeTentPos.IsValid)
+                {
+                    averageLodgeTentPos = carnivalBuildings.Select(b => new LocalTargetInfo(b)).Average(delegate(LocalTargetInfo target)
+                    {
+                        if (((Building)target.Thing).Is(CarnBuildingType.Bedroom))
+                        {
+                            return 3;
+                        }
+                        return 1;
+                    });
+
+                    if (Prefs.DevMode)
+                        Log.Warning("[Debug] Calculated weighted averageLodgeTentPos: " + averageLodgeTentPos);
+                }
+
+                return averageLodgeTentPos;
+            }
+        }
 
         
         //public CarnivalInfo() { }
@@ -256,29 +281,26 @@ namespace Carnivale
                 if (Find.TickManager.TicksGame % 1009 == 0)
                 {
                     // Check if there are any things needing to be hauled to carriers or trash
-                    CheckForHaulables();
+                    CheckForHaulables(false);
                 }
                 else if (Find.TickManager.TicksGame % 499 == 0)
                 {
                     // Check carny rest levels
                     this.anyCarnyNeedsRest = currentLord.ownedPawns
-                        .Where(p => !p.Is(CarnivalRole.Carrier))
+                        .Where(p => p.IsAny(CarnivalRole.Entertainer, CarnivalRole.Vendor))
                         .Any(c => c.needs.rest.CurCategory > RestCategory.Rested);
                 }
             }
         }
 
 
-        public void CheckForHaulables()
+        public void CheckForHaulables(bool checkForCrates = false)
         {
             foreach (var thing in from t in GenRadial.RadialDistinctThingsAround(setupCentre, this.map, baseRadius, true)
-                                  where !TrashCells().Any(cell => cell == t.Position)
-                                     && t.def.EverHaulable
-                                     && !t.def.IsWithinCategory(ThingCategoryDefOf.Chunks)
-                                     && t.IsForbidden(Faction.OfPlayer) // dropped things are by default forbidden to the player
-                                     && (!(currentLord.CurLordToil is LordToil_SetupCarnival)
-                                        || ((LordToilData_SetupCarnival)currentLord.CurLordToil.data).availableCrates.Contains(t))
+                                  where t.DefaultHaulLocation(checkForCrates) != HaulLocation.None
+                                     && !TrashCells().Any(cell => cell == t.Position)
                                      && !thingsToHaul.Contains(t)
+                                     && t.IsForbidden(Faction.OfPlayer) // dropped things are by default forbidden to the player
                                   select t)
             {
                 if (Prefs.DevMode)

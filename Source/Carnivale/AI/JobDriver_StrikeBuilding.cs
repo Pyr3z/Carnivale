@@ -101,9 +101,7 @@ namespace Carnivale
 
             doWork.defaultCompleteMode = ToilCompleteMode.Never;
 
-            doWork.WithProgressBar(TargetIndex.A, () => 1f - workLeft / initialNeededWork);
-
-            return doWork;
+            return doWork.WithProgressBar(TargetIndex.A, () => 1f - workLeft / initialNeededWork);
         }
         
 

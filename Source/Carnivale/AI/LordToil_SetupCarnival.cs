@@ -283,25 +283,7 @@ namespace Carnivale
                     directionalTries++;
                 }
 
-                switch (directionalTries)
-                {
-                    case 0:
-                        offset = IntVec3.East * 3;
-                        break;
-                    case 1:
-                        offset = IntVec3.North * 3;
-                        break;
-                    case 2:
-                        offset = IntVec3.West * 3;
-                        break;
-                    case 3:
-                        offset = IntVec3.South * 3;
-                        break;
-                    default:
-                        directionalTries = 1;
-                        offset = IntVec3.East * 3;
-                        break;
-                }
+                offset = directionalTries.ToIntVec3(1);
 
                 newSpot += offset;
 

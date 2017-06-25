@@ -48,12 +48,15 @@ namespace Carnivale
         [DebuggerHidden]
         protected override IEnumerable<Toil> MakeNewToils()
         {
+            HaulLocation destType = ThingToHaul.DefaultHaulLocation(true);
+
             this.FailOn(delegate
             {
-                return !Info.Active
+                return destType == HaulLocation.None
+                       || !Info.Active
                        || Info.currentLord != pawn.GetLord()
-                       || (!Info.AnyCarriersCanCarry(this.ThingToHaul)
-                          && !Info.ShouldHaulTrash);
+                       || (!Info.ShouldHaulTrash
+                          && !Info.AnyCarriersCanCarry(this.ThingToHaul));
             });
 
             Toil reserve = Toils_Reserve.Reserve(TargetIndex.A);
@@ -66,13 +69,9 @@ namespace Carnivale
 
             yield return Toils_Haul.StartCarryThing(TargetIndex.A, false, true);
 
-            //yield return this.AddCarriedThingToTransferable();
-
             yield return this.RemoveCarriedThingFromThingsToHaul();
 
             yield return Toils_Haul.CheckForGetOpportunityDuplicate(reserve, TargetIndex.A, TargetIndex.None, false, t => Info.thingsToHaul.Contains(t));
-
-            HaulLocation destType = Utilities.GetHaulToLocation(this.ThingToHaul);
 
             if (destType == HaulLocation.ToCarriers)
             {
@@ -80,7 +79,7 @@ namespace Carnivale
 
                 yield return findCarrier;
 
-                //yield return Toils_Reserve.Reserve(TargetIndex.B);
+                yield return Toils_Reserve.Reserve(TargetIndex.B);
 
                 yield return Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.Touch)
                     .JumpIf(() => !JobDriver_PrepareCaravan_GatherItems.IsUsableCarrier(this.Carrier, this.pawn, false), findCarrier);
@@ -89,13 +88,13 @@ namespace Carnivale
 
                 yield return PlaceTargetInCarrierInventory();
             }
-            else //if (destType == HaulLocation.ToTrash)
+            else if (destType == HaulLocation.ToTrash)
             {
                 Toil findTrashSpot = FindTrashSpot();
 
                 yield return findTrashSpot;
 
-                //yield return Toils_Reserve.Reserve(TargetIndex.B);
+                yield return Toils_Reserve.Reserve(TargetIndex.B);
 
                 yield return Toils_Goto.GotoCell(TargetIndex.B, PathEndMode.Touch);
 

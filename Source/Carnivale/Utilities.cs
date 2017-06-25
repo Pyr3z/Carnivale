@@ -13,10 +13,21 @@ namespace Carnivale
         // Remember to flush this whenever a carnival exits the map
         public static Dictionary<Pawn, CarnivalRole> cachedRoles = new Dictionary<Pawn, CarnivalRole>();
 
-        public static ThingDef[] defaultTrashThings = new ThingDef[]
+        public static int[] trashThingDefHashes = new int[]
         {
-            ThingDefOf.WoodLog,
-            ThingDefOf.Steel
+            ThingDefOf.WoodLog.GetHashCode(),
+            ThingDefOf.Steel.GetHashCode(),
+            ThingDefOf.RawBerries.GetHashCode()
+        };
+
+        public static int[] carrierThingCategoryDefHashes = new int[]
+        {
+            ThingCategoryDefOf.Foods.GetHashCode(),
+            ThingCategoryDefOf.Medicine.GetHashCode(),
+            ThingCategoryDefOf.Apparel.GetHashCode(),
+            ThingCategoryDefOf.Weapons.GetHashCode(),
+            _DefOf.Textiles.GetHashCode(),
+            _DefOf.CarnivalThings.GetHashCode()
         };
 
 
@@ -183,6 +194,10 @@ namespace Carnivale
         }
 
 
+        public static bool Is(this Building building, CarnBuildingType type)
+        {
+            return building.def.Is(type);
+        }
 
         public static bool Is(this ThingDef def, CarnBuildingType type)
         {
@@ -201,9 +216,14 @@ namespace Carnivale
         }
 
 
+        public static bool IsCrate(this ThingDef def)
+        {
+            return def.defName.StartsWith("Carn_Crate");
+        }
+
         public static bool IsCrate(this Thing thing)
         {
-            return thing.def.defName.StartsWith("Carn_Crate");
+            return thing.def.IsCrate();
         }
 
 
@@ -436,21 +456,6 @@ namespace Carnivale
             }
         }
 
-        public static void DesignateAllPlantsForCut(this CellRect rect, Map map)
-        {
-            rect.ClipInsideMap(map);
-
-            foreach (var cell in rect)
-            {
-                Plant plant = cell.GetPlant(map);
-                if (plant != null)
-                {
-                    Designation des = new Designation(plant, DesignationDefOf.CutPlant);
-                    map.designationManager.AddDesignation(des);
-                }
-            }
-        }
-
 
         public static float Mass(this Thing thing)
         {
@@ -468,25 +473,45 @@ namespace Carnivale
         }
 
 
-        public static HaulLocation GetHaulToLocation(Thing thing)
+        public static HaulLocation DefaultHaulLocation(this ThingDef thingDef, bool haulCrates = false)
         {
             // there is a more elegant way to do this, but I'll do that later.
 
-            if (defaultTrashThings.Contains(thing.def))
+            if (!thingDef.EverHaulable
+                || (!haulCrates && thingDef.IsCrate()))
+            {
+                return HaulLocation.None;
+            }
+
+            if (trashThingDefHashes.Contains(thingDef.GetHashCode()))
             {
                 return HaulLocation.ToTrash;
             }
 
-            if (thing.def.IsWithinCategory(ThingCategoryDefOf.Foods)
-                || thing.def.IsWithinCategory(ThingCategoryDefOf.ResourcesRaw)
-                || thing.IsCrate())
+            var categories = thingDef.thingCategories;
+
+            foreach (var cat in categories)
             {
-                return HaulLocation.ToCarriers;
+                if (carrierThingCategoryDefHashes.Contains(cat.GetHashCode()))
+                {
+                    return HaulLocation.ToCarriers;
+                }
+
+                foreach (var parentCat in cat.Parents)
+                {
+                    if (carrierThingCategoryDefHashes.Contains(parentCat.GetHashCode()))
+                    {
+                        return HaulLocation.ToCarriers;
+                    }
+                }
             }
 
-            
-
             return HaulLocation.None;
+        }
+
+        public static HaulLocation DefaultHaulLocation(this Thing thing, bool haulCrates = false)
+        {
+            return thing.def.DefaultHaulLocation(haulCrates);
         }
 
 

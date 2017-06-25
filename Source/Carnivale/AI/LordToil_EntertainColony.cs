@@ -61,6 +61,11 @@ namespace Carnivale
                     }
                 }
 
+                if (pawnRole.Is(CarnivalRole.Worker))
+                {
+                    DutyUtility.MeanderAndHelp(pawn, Info.AverageLodgeTentPos, 10f);
+                }
+
                 // Default
                 DutyUtility.MeanderAndHelp(pawn, Info.setupCentre, Info.baseRadius);
             }

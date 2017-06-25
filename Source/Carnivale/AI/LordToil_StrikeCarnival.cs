@@ -46,10 +46,10 @@ namespace Carnivale
         {
             if (lord.ticksInToil % 743 == 0)
             {
-                Info.CheckForHaulables();
+                Info.CheckForHaulables(true);
 
                 if (Info.carnivalBuildings.NullOrEmpty()
-                    && !Info.thingsToHaul.Any(t => t.def.defName.StartsWith("Carn_Crate")))
+                    && !Info.thingsToHaul.Any(t => t.DefaultHaulLocation(true) == HaulLocation.ToCarriers))
                 {
                     lord.ReceiveMemo("StrikeDone");
                 }
