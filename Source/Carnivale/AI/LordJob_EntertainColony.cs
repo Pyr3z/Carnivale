@@ -91,24 +91,24 @@ namespace Carnivale
             mainGraph.AddToil(toil_Defend);
 
             var trans_Defend = new Transition(toil_Setup, toil_Defend);
-            trans_Defend.AddSources(new LordToil[] {
-                toil_Entertain
-            });
+            trans_Defend.AddSources(toil_Entertain);
             trans_Defend.AddTrigger(new Trigger_BecameColonyEnemy());
             trans_Defend.AddTrigger(new Trigger_Memo("HostileConditions")); // TODO: make carnies actively attack
             mainGraph.AddTransition(trans_Defend);
+
+            // Strike buildings
+            var toil_Strike = new LordToil_StrikeCarnival();
+            mainGraph.AddToil(toil_Strike);
+
+            var trans_Strike = new Transition(toil_Entertain, toil_Strike);
+            trans_Strike.AddSources(toil_Rest, toil_Defend);
 
             // Normal exit map toil
             var toil_Exit = new LordToil_Leave();
             mainGraph.AddToil(toil_Exit);
 
-            var trans_Exit = new Transition(toil_Entertain, toil_Exit);
-            trans_Exit.AddSources(new LordToil[]
-            {
-                toil_Rest,
-                toil_Setup,
-                toil_Defend
-            });
+            var trans_Exit = new Transition(toil_Strike, toil_Exit);
+            //trans_Exit.AddSources(toil_Rest, toil_Defend, toil_Strike);
             trans_Exit.AddTrigger(new Trigger_TicksPassed(this.durationTicks));
             trans_Exit.AddPostAction(new TransitionAction_EndAllJobs());
             trans_Exit.AddPostAction(new TransitionAction_WakeAll());

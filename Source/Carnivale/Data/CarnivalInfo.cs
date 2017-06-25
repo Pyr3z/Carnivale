@@ -62,7 +62,7 @@ namespace Carnivale
         {
             get
             {
-                float curHour = GenDate.HourFloat((long)GenTicks.TicksAbs, Find.WorldGrid.LongLatOf(map.Tile).x);
+                float curHour = GenDate.HourFloat(GenTicks.TicksAbs, Find.WorldGrid.LongLatOf(map.Tile).x);
                 return curHour < MaxEntertainHour && curHour > MinEntertainHour;
             }
         }

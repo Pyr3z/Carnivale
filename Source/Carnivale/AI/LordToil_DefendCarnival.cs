@@ -13,26 +13,16 @@ namespace Carnivale
         public LordToil_DefendCarnival(IntVec3 defendPoint, float defendRadius) : base(defendPoint, defendRadius)
         { }
 
+        public override void Init()
+        {
+            
+        }
+
         public override void UpdateAllDuties()
         {
-            LordToilData_DefendPoint data = base.Data;
-
-            Pawn leader = this.lord.faction.leader;
-
-            if (leader != null)
+            foreach (var pawn in lord.ownedPawns)
             {
-                leader.mindState.duty = new PawnDuty(DutyDefOf.Defend, data.defendPoint, data.defendRadius);
-                
-                foreach (Pawn p in lord.ownedPawns)
-                {
-                    switch (p.GetCarnivalRole())
-                    {
-                        default:
-                            p.mindState.duty = new PawnDuty(DutyDefOf.Defend, data.defendPoint, data.defendRadius);
-                            break;
-                        
-                    }
-                }
+
             }
         }
 
