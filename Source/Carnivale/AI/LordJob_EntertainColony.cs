@@ -23,7 +23,7 @@ namespace Carnivale
         public LordJob_EntertainColony(IntVec3 setupCentre, int durationDays) : this()
         {
             this.setupCentre = setupCentre;
-            this.durationTicks = durationDays * GenDate.TicksPerDay;
+            this.durationTicks = GenDate.TicksPerDay; // limit to 1 day for testing purposes
         }
 
 
@@ -102,6 +102,8 @@ namespace Carnivale
 
             var trans_Strike = new Transition(toil_Entertain, toil_Strike);
             trans_Strike.AddSources(toil_Rest, toil_Defend);
+            trans_Strike.AddTrigger(new Trigger_TicksPassed(this.durationTicks));
+            mainGraph.AddTransition(trans_Strike);
 
             // Normal exit map toil
             var toil_Exit = new LordToil_Leave();
@@ -109,7 +111,7 @@ namespace Carnivale
 
             var trans_Exit = new Transition(toil_Strike, toil_Exit);
             //trans_Exit.AddSources(toil_Rest, toil_Defend, toil_Strike);
-            trans_Exit.AddTrigger(new Trigger_TicksPassed(this.durationTicks));
+            trans_Exit.AddTrigger(new Trigger_Memo("StrikeDone"));
             trans_Exit.AddPostAction(new TransitionAction_EndAllJobs());
             trans_Exit.AddPostAction(new TransitionAction_WakeAll());
             mainGraph.AddTransition(trans_Exit);

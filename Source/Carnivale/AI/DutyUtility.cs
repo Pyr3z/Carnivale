@@ -102,5 +102,13 @@ namespace Carnivale
                     pawn.workSettings.SetPriority(_DefOf.PlantCutting, 1);
             }
         }
+
+        public static void StrikeBuildings(Pawn pawn)
+        {
+            if (pawn.mindState != null)
+            {
+                pawn.mindState.duty = new PawnDuty(_DefOf.Duty_StrikeBuildings);
+            }
+        }
     }
 }

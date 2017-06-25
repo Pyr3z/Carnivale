@@ -21,6 +21,8 @@ namespace Carnivale
 
         public static DutyDef Duty_MeanderAndHelp;
 
+        public static DutyDef Duty_StrikeBuildings;
+
 
 
         public static FactionDef Carn_Faction_Roaming;
@@ -40,6 +42,8 @@ namespace Carnivale
         public static JobDef Job_HaulToCarrierOrTrash;
 
         public static JobDef Job_StandAtLoc;
+
+        public static JobDef Job_StrikeBuildings;
 
 
 

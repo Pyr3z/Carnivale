@@ -11,4 +11,9 @@
 	<driverClass>Carnivale.JobDriver_HaulToCarrierOrTrash</driverClass>
   </JobDef>
   
+  <JobDef>
+    <defName>Job_StrikeBuildings</defName>
+	<driverClass>Carnivale.JobDriver_StrikeBuilding</driverClass>
+  </JobDef>
+  
 </Defs>

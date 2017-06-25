@@ -65,9 +65,11 @@
     <Compile Include="AI\DutyUtility.cs" />
     <Compile Include="AI\JobDriver_HaulToCarrierOrTrash.cs" />
     <Compile Include="AI\JobDriver_StandAtLoc.cs" />
+    <Compile Include="AI\JobDriver_StrikeBuilding.cs" />
     <Compile Include="AI\JobGiver_GotoCarnivalArea.cs" />
     <Compile Include="AI\JobGiver_HaulToCarrierOrTrash.cs" />
     <Compile Include="AI\JobGiver_StandAtLoc.cs" />
+    <Compile Include="AI\JobGiver_StrikeBuildings.cs" />
     <Compile Include="AI\LordToil_Leave.cs" />
     <Compile Include="Data\LordToilData_SetupCarnival.cs" />
     <Compile Include="AI\LordToil_Carn.cs" />

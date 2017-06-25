@@ -28,6 +28,23 @@
   </DutyDef>
   
   
+  <!-- Strike carnival buildings -->
+  <DutyDef>
+    <defName>Duty_StrikeBuildings</defName>
+	<thinkNode Class="ThinkNode_Priority">
+	  <subNodes>
+	  
+	    <!-- Strike buildings -->
+	    <li Class="Carnivale.JobGiver_StrikeBuildings" />
+		
+		<!-- Haul dropped buildings to carriers -->
+		<li Class="Carnivale.JobGiver_HaulToCarrierOrTrash" />
+		
+	  </subNodes>
+	</thinkNode>
+  </DutyDef>
+  
+  
   <!-- Goto hitch position and stay -->
   <DutyDef>
     <defName>Duty_HitchToSpot</defName>

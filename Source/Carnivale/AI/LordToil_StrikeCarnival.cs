@@ -21,17 +21,38 @@ namespace Carnivale
         {
             foreach (var building in Info.carnivalBuildings)
             {
-                Designation des = new Designation(building, DesignationDefOf.Uninstall);
-                Map.designationManager.AddDesignation(des);
+                
             }
         }
 
 
         public override void UpdateAllDuties()
         {
-            foreach (var worker in Info.pawnsWithRole[CarnivalRole.Worker])
+            foreach (var pawn in lord.ownedPawns)
             {
-                DutyUtility.BuildCarnival(worker, Info.setupCentre, Info.baseRadius);
+                CarnivalRole role = pawn.GetCarnivalRole();
+
+                if (!role.Is(CarnivalRole.Carrier))
+                {
+                    DutyUtility.StrikeBuildings(pawn);
+                    continue;
+                }
+
+            }
+        }
+
+
+        public override void LordToilTick()
+        {
+            if (lord.ticksInToil % 743 == 0)
+            {
+                Info.CheckForHaulables();
+
+                if (Info.carnivalBuildings.NullOrEmpty()
+                    && !Info.thingsToHaul.Any(t => t.def.defName.StartsWith("Carn_Crate")))
+                {
+                    lord.ReceiveMemo("StrikeDone");
+                }
             }
         }
 

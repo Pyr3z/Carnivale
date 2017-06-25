@@ -201,6 +201,11 @@ namespace Carnivale
         }
 
 
+        public static bool IsCrate(this Thing thing)
+        {
+            return thing.def.defName.StartsWith("Carn_Crate");
+        }
+
 
         public static Thing SpawnThingNoWipe(Thing thing, IntVec3 loc, Map map, Rot4 rot, bool respawningAfterLoad = false)
         {
@@ -473,7 +478,8 @@ namespace Carnivale
             }
 
             if (thing.def.IsWithinCategory(ThingCategoryDefOf.Foods)
-                || thing.def.IsWithinCategory(ThingCategoryDefOf.ResourcesRaw))
+                || thing.def.IsWithinCategory(ThingCategoryDefOf.ResourcesRaw)
+                || thing.IsCrate())
             {
                 return HaulLocation.ToCarriers;
             }

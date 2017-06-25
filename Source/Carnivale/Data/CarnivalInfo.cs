@@ -256,20 +256,7 @@ namespace Carnivale
                 if (Find.TickManager.TicksGame % 1009 == 0)
                 {
                     // Check if there are any things needing to be hauled to carriers or trash
-                    foreach (var thing in from t in GenRadial.RadialDistinctThingsAround(setupCentre, this.map, baseRadius, true)
-                                          where !TrashCells().Any(cell => cell == t.Position)
-                                             && t.def.EverHaulable
-                                             && !t.def.IsWithinCategory(ThingCategoryDefOf.Chunks)
-                                             && t.IsForbidden(Faction.OfPlayer) // dropped things are by default forbidden to the player
-                                             && (!(currentLord.CurLordToil is LordToil_SetupCarnival)
-                                                || ((LordToilData_SetupCarnival)currentLord.CurLordToil.data).availableCrates.Contains(t))
-                                             && !thingsToHaul.Contains(t)
-                                          select t)
-                    {
-                        if (Prefs.DevMode)
-                            Log.Warning("[Debug] Adding " + thing + " to CarnivalInfo.thingsToHaul. pos=" + thing.Position);
-                        thingsToHaul.Add(thing);
-                    }
+                    CheckForHaulables();
                 }
                 else if (Find.TickManager.TicksGame % 499 == 0)
                 {
@@ -278,6 +265,25 @@ namespace Carnivale
                         .Where(p => !p.Is(CarnivalRole.Carrier))
                         .Any(c => c.needs.rest.CurCategory > RestCategory.Rested);
                 }
+            }
+        }
+
+
+        public void CheckForHaulables()
+        {
+            foreach (var thing in from t in GenRadial.RadialDistinctThingsAround(setupCentre, this.map, baseRadius, true)
+                                  where !TrashCells().Any(cell => cell == t.Position)
+                                     && t.def.EverHaulable
+                                     && !t.def.IsWithinCategory(ThingCategoryDefOf.Chunks)
+                                     && t.IsForbidden(Faction.OfPlayer) // dropped things are by default forbidden to the player
+                                     && (!(currentLord.CurLordToil is LordToil_SetupCarnival)
+                                        || ((LordToilData_SetupCarnival)currentLord.CurLordToil.data).availableCrates.Contains(t))
+                                     && !thingsToHaul.Contains(t)
+                                  select t)
+            {
+                if (Prefs.DevMode)
+                    Log.Warning("[Debug] Adding " + thing + " to CarnivalInfo.thingsToHaul. pos=" + thing.Position);
+                thingsToHaul.Add(thing);
             }
         }
 

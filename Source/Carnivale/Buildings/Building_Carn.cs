@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -147,6 +148,23 @@ namespace Carnivale
             }
 
             base.DeSpawn();
+        }
+
+
+        public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
+        {
+            if (mode == DestroyMode.Deconstruct)
+            {
+                var crateDef = this.def.costList[0].thingDef;
+                var crate = ThingMaker.MakeThing(crateDef, Stuff);
+
+                int hitPoints = (HitPoints / MaxHitPoints) * crate.MaxHitPoints;
+                crate.HitPoints = hitPoints;
+;
+                GenSpawn.Spawn(crate, Position, Map);
+            }
+
+            base.Destroy(mode);
         }
 
 

@@ -5,6 +5,7 @@ namespace Carnivale
 {
     public class Frame_StuffHacked : Frame
     {
+
         [Unsaved]
         private bool stuffHacked = false;
 
@@ -18,15 +19,15 @@ namespace Carnivale
 
             if (this.resourceContainer.Any)
             {
-                int index = resourceContainer.FirstIndexOf(t => t.Stuff != null);
+                int index = resourceContainer.FirstIndexOf(t => t.IsCrate());
 
                 if (index < resourceContainer.Count)
                 {
-                    ThingDef stuff = resourceContainer[index].Stuff;
+                    var stuff = resourceContainer[index].Stuff;
 
                     this.SetStuffDirect(stuff);
 
-                    Thing dummyThingToSatisfyTheGods = ThingMaker.MakeThing(stuff);
+                    var dummyThingToSatisfyTheGods = ThingMaker.MakeThing(stuff);
 
                     this.resourceContainer.TryAdd(dummyThingToSatisfyTheGods);
 
