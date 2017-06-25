@@ -1,4 +1,4 @@
-![banner](About/Preview.png)
+![sign](Imagework/Promo/EntrySign.png)
 
 ## NOT EVEN READY FOR ALPHA RELEASE. Download at your own risk.
 ### When an alpha or better is available, they will show up under releases.
