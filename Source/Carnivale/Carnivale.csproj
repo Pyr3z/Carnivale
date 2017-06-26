@@ -66,6 +66,7 @@
     <Compile Include="AI\JobDriver_HaulToCarrierOrTrash.cs" />
     <Compile Include="AI\JobDriver_StandAtLoc.cs" />
     <Compile Include="AI\JobDriver_StrikeBuilding.cs" />
+    <Compile Include="AI\JobGiver_ExitMapRoadOrBest.cs" />
     <Compile Include="AI\JobGiver_GotoCarnivalArea.cs" />
     <Compile Include="AI\JobGiver_HaulToCarrierOrTrash.cs" />
     <Compile Include="AI\JobGiver_StandAtLoc.cs" />

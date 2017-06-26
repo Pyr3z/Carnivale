@@ -69,7 +69,7 @@
 	  <subNodes>
 	  
 	    <li Class="JobGiver_FightFiresNearPoint">
-		  <maxDistFromPoint>38</maxDistFromPoint>
+		  <maxDistFromPoint>25</maxDistFromPoint>
 		</li>
 	    
 		<!-- satisfy needs -->
@@ -83,8 +83,15 @@
 		  <threshold>0.5</threshold>
 		  <invert>true</invert>
 		  <subNodes>
-		    <li Class="JobGiver_GetJoyInBed" />
-			<li Class="JobGiver_GetJoy" />
+		  
+		    <li Class="ThinkNode_ForbidOutsideFlagRadius">
+			  <maxDistToSquadFlag>30</maxDistToSquadFlag>
+			  <subNodes>
+			    <li Class="JobGiver_GetJoyInBed" />
+			    <li Class="JobGiver_GetJoy" />
+			  </subNodes>
+			</li>
+			
 		  </subNodes>
 		</li>
 		
@@ -103,7 +110,7 @@
 		
 		<!-- but mostly wander round -->
 		<li Class="JobGiver_WanderNearDutyLocation">
-		  <wanderRadius>12</wanderRadius>
+		  <wanderRadius>20</wanderRadius>
 		</li>
 		
 	  </subNodes>
@@ -118,7 +125,7 @@
 	  <subNodes>
 	  
 	    <li Class="JobGiver_FightFiresNearPoint">
-		  <maxDistFromPoint>38</maxDistFromPoint>
+		  <maxDistFromPoint>25</maxDistFromPoint>
 		</li>
 	    
 		<!-- satisfy needs or do work -->
@@ -135,8 +142,15 @@
 		  <threshold>0.5</threshold>
 		  <invert>true</invert>
 		  <subNodes>
-		    <li Class="JobGiver_GetJoyInBed" />
-			<li Class="JobGiver_GetJoy" />
+		  
+		    <li Class="ThinkNode_ForbidOutsideFlagRadius">
+			  <maxDistToSquadFlag>30</maxDistToSquadFlag>
+			  <subNodes>
+			    <li Class="JobGiver_GetJoyInBed" />
+			    <li Class="JobGiver_GetJoy" />
+			  </subNodes>
+			</li>
+			
 		  </subNodes>
 		</li>
 		
@@ -155,7 +169,7 @@
 		
 		<!-- but mostly wander round -->
 		<li Class="JobGiver_WanderNearDutyLocation">
-		  <wanderRadius>12</wanderRadius>
+		  <wanderRadius>20</wanderRadius>
 		</li>
 		
 	  </subNodes>
@@ -219,6 +233,28 @@
 		
 	  </subNodes>
 	</thinkNode>
+  </DutyDef>
+  
+  
+  <!-- Exit map road or best, and defend self -->
+  <DutyDef>
+    <defName>Duty_DefendAndExitMapRoadOrBest</defName>
+	<thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+	    <!-- defend self -->
+        <li Class="JobGiver_AIDefendSelf">
+          <targetAcquireRadius>35</targetAcquireRadius>
+          <targetKeepRadius>40</targetKeepRadius>
+        </li>
+		
+		<!-- Custom exit map -->
+        <li Class="Carnivale.JobGiver_ExitMapRoadOrBest">
+          <defaultLocomotion>Walk</defaultLocomotion>
+          <jobMaxDuration>200</jobMaxDuration>
+        </li>
+		
+      </subNodes>
+    </thinkNode>
   </DutyDef>
   
   

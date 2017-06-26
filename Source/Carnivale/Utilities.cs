@@ -27,7 +27,7 @@ namespace Carnivale
             ThingCategoryDefOf.Apparel.GetHashCode(),
             ThingCategoryDefOf.Weapons.GetHashCode(),
             _DefOf.Textiles.GetHashCode(),
-            _DefOf.CarnivalThings.GetHashCode()
+            //_DefOf.CarnivalThings.GetHashCode() // was causing crates to be hauled to carriers prematurely
         };
 
 

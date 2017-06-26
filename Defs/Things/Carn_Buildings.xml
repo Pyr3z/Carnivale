@@ -285,7 +285,7 @@
 	  </damageData>
 	  
 	  <shadowData>
-	    <volume>(7,7,7)</volume>
+	    <volume>(6,7,6)</volume>
 		<offset>(0,0,0)</offset>
 	  </shadowData>
 	</graphicData>

@@ -57,9 +57,9 @@ namespace Carnivale
                 }
                 else
                 {
-                    var duty = new PawnDuty(DutyDefOf.ExitMapBestAndDefendSelf);
+                    var duty = new PawnDuty(_DefOf.Duty_DefendAndExitMapRoadOrBest);
                     duty.radius = 18f;
-                    duty.locomotion = LocomotionUrgency.Jog;
+                    //duty.locomotion = LocomotionUrgency.Jog;
 
                     pawn.mindState.duty = duty;
                 }

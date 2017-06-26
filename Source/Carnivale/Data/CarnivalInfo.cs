@@ -35,12 +35,16 @@ namespace Carnivale
 
         private IntVec3 trashCentre; // Assigned when blueprint is placed
 
+        private int daysPassed;
+
+        public bool alreadyEntertainedToday;
+
         [Unsaved]
         public List<Thing> thingsToHaul;
 
         public List<Building> carnivalBuildings;
 
-        public List<IntVec3> checkForHaulableCells;
+        public List<IntVec3> checkForHaulableCells; // because num cells > 20, would a HashSet be better?
 
         public Dictionary<CarnivalRole, DeepPawnList> pawnsWithRole;
 
@@ -50,11 +54,6 @@ namespace Carnivale
         private bool anyCarnyNeedsRest = false;
         [Unsaved]
         private IntVec3 averageLodgeTentPos = IntVec3.Invalid;
-
-        [Unsaved]
-        private List<Pawn> pawnWorkingList = null;
-        [Unsaved]
-        private List<IntVec3> vec3WorkingList = null;
 
 
         public bool Active { get { return currentLord != null; } }
@@ -79,6 +78,8 @@ namespace Carnivale
         {
             get
             {
+                if (alreadyEntertainedToday) return false;
+
                 float curHour = GenDate.HourFloat(GenTicks.TicksAbs, Find.WorldGrid.LongLatOf(map.Tile).x);
                 return curHour < MaxEntertainHour && curHour > MinEntertainHour;
             }
@@ -115,6 +116,11 @@ namespace Carnivale
         }
 
 
+        // working lists solely for ExposeData()
+        [Unsaved]
+        private List<Pawn> pawnWorkingList = null;
+        [Unsaved]
+        private List<IntVec3> vec3WorkingList = null;
 
         public override void ExposeData()
         {
@@ -193,6 +199,10 @@ namespace Carnivale
             bannerCell = IntVec3.Invalid;
 
             trashCentre = IntVec3.Invalid;
+
+            daysPassed = 0;
+
+            alreadyEntertainedToday = false;
 
             if (thingsToHaul != null)
             {
@@ -286,6 +296,8 @@ namespace Carnivale
                 pawnsWithRole.Add(role, pawns);
             }
 
+            daysPassed = GenDate.DaysPassed;
+
             // The rest is assigned as the carnival goes along
 
             return this;
@@ -315,6 +327,16 @@ namespace Carnivale
                     this.anyCarnyNeedsRest = currentLord.ownedPawns
                         .Where(p => p.IsAny(CarnivalRole.Entertainer, CarnivalRole.Vendor))
                         .Any(c => c.needs.rest.CurCategory > RestCategory.Rested);
+                }
+                else if (Find.TickManager.TicksGame % 313 == 0)
+                {
+                    // Check for a new day
+                    var day = GenDate.DaysPassed;
+                    if (day > daysPassed)
+                    {
+                        daysPassed = day;
+                        alreadyEntertainedToday = false;
+                    }
                 }
             }
         }

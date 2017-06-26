@@ -1,8 +1,6 @@
 ﻿using Verse.AI.Group;
 using RimWorld;
 using Verse;
-using Verse.AI;
-using System.Collections.Generic;
 
 namespace Carnivale
 {
@@ -23,7 +21,7 @@ namespace Carnivale
         public LordJob_EntertainColony(IntVec3 setupCentre, int durationDays) : this()
         {
             this.setupCentre = setupCentre;
-            this.durationTicks = GenDate.TicksPerDay; // limit to 1 day for testing purposes
+            this.durationTicks = durationDays * GenDate.TicksPerDay;
         }
 
 
@@ -68,6 +66,7 @@ namespace Carnivale
 
             var trans_Entertain = new Transition(toil_Setup, toil_Entertain);
             trans_Entertain.AddTrigger(new Trigger_Memo("SetupDoneEntertain"));
+            trans_Entertain.AddPostAction(new TransitionAction_Message("CarnEntertainNow".Translate(this.lord.faction)));
             mainGraph.AddTransition(trans_Entertain);
 
             // Rest the carnival between 22:00 and 10:00, or if anyone needs rest
@@ -75,17 +74,19 @@ namespace Carnivale
             mainGraph.AddToil(toil_Rest);
 
             var trans_ToRestFromSetup = new Transition(toil_Setup, toil_Rest);
-
             trans_ToRestFromSetup.AddTrigger(new Trigger_Memo("SetupDoneRest"));
             mainGraph.AddTransition(trans_ToRestFromSetup);
 
             var trans_ToRest = new Transition(toil_Entertain, toil_Rest);
-
             trans_ToRest.AddTrigger(new Trigger_TickCondition(() => info.AnyCarnyNeedsRest || !info.CanEntertainNow));
+            trans_ToRest.AddPostAction(new TransitionAction_Message("CarnResting".Translate(this.lord.faction)));
+            trans_ToRest.AddPostAction(new TransitionAction_Custom(() => info.alreadyEntertainedToday = true));
             mainGraph.AddTransition(trans_ToRest);
 
             var trans_FromRest = new Transition(toil_Rest, toil_Entertain);
             trans_FromRest.AddTrigger(new Trigger_TickCondition(() => !info.AnyCarnyNeedsRest && info.CanEntertainNow));
+            trans_FromRest.AddPostAction(new TransitionAction_WakeAll());
+            trans_FromRest.AddPostAction(new TransitionAction_Message("CarnEntertainNow".Translate(this.lord.faction)));
             mainGraph.AddTransition(trans_FromRest);
 
             // Defend if attacked
@@ -102,9 +103,9 @@ namespace Carnivale
             var toil_Strike = new LordToil_StrikeCarnival();
             mainGraph.AddToil(toil_Strike);
 
-            var trans_Strike = new Transition(toil_Entertain, toil_Strike);
-            trans_Strike.AddSources(toil_Rest, toil_Defend);
+            var trans_Strike = new Transition(toil_Rest, toil_Strike);
             trans_Strike.AddTrigger(new Trigger_TicksPassed(this.durationTicks));
+            trans_Strike.AddPostAction(new TransitionAction_Message("CarnPackingUp".Translate(this.lord.faction)));
             mainGraph.AddTransition(trans_Strike);
 
             // Normal exit map toil
@@ -112,7 +113,6 @@ namespace Carnivale
             mainGraph.AddToil(toil_Exit);
 
             var trans_Exit = new Transition(toil_Strike, toil_Exit);
-            //trans_Exit.AddSources(toil_Rest, toil_Defend, toil_Strike);
             trans_Exit.AddTrigger(new Trigger_Memo("StrikeDone"));
             trans_Exit.AddPostAction(new TransitionAction_EndAllJobs());
             trans_Exit.AddPostAction(new TransitionAction_WakeAll());

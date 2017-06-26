@@ -9,11 +9,11 @@ namespace Carnivale
     {
         public static DutyDef Duty_BuildCarnival;
 
+        public static DutyDef Duty_DefendAndExitMapRoadOrBest;
+
         public static DutyDef Duty_ForceRest;
 
         public static DutyDef Duty_GuardSmallArea;
-
-        //public static DutyDef Duty_HaulToCarrierOrTrash;
 
         public static DutyDef Duty_HitchToSpot;
 
