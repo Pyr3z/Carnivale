@@ -62,7 +62,7 @@ namespace Carnivale
             }
 
             // You failed me.
-            Log.Warning("Found no suitable pawn or place to drop " + thing + ". Construction may halt.");
+            Log.Error("Found no suitable pawn or place to drop " + thing + ". Construction may halt.");
 
             return false;
         }
@@ -90,6 +90,8 @@ namespace Carnivale
                 {
                     count--;
                 }
+
+                newThing.SetForbidden(true);
 
                 if (TryHaveWorkerCarry(newThing))
                 {
