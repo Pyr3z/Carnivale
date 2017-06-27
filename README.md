@@ -65,3 +65,4 @@ I'm a bit stronger on the coding side of things than the texturing side, so if y
 ![promo1](Imagework/Promo/promo_1.png)
 ![promo2](Imagework/Promo/promo4.PNG)
 ![promo3](Imagework/Promo/promo9.PNG)
+![promo4](Imagework/Promo/joyupdate.png)
