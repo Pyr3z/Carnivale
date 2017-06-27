@@ -3,6 +3,7 @@ using RimWorld;
 using Verse;
 using System.Linq;
 using UnityEngine;
+using System;
 
 namespace Carnivale
 {
@@ -11,6 +12,9 @@ namespace Carnivale
         private const int MaxCarnies = 25; // not including carriers
 
         private const int MaxVendors = 3;
+
+        [Unsaved]
+        private Predicate<Pawn> genderValidator = null;
 
         public override float MinPointsToGenerateAnything(PawnGroupMaker groupMaker)
         {
@@ -44,7 +48,27 @@ namespace Carnivale
             }
             // End validation steps
 
-            // New approach
+            // Restrict gender of entertainers if it is in the name
+            if (parms.faction.Name.EndsWith("Boys"))
+            {
+                genderValidator = delegate (Pawn p)
+                {
+                    return p.gender == Gender.Male;
+                };
+            }
+            else if (parms.faction.Name.EndsWith("Girls")
+                     || parms.faction.Name.EndsWith("Gals"))
+            {
+                genderValidator = delegate (Pawn p)
+                {
+                    return p.gender == Gender.Female;
+                };
+            }
+
+
+
+
+            // New approach (TODO)
             //int numCarnies = 0;
             //int numVendors = 0;
             //while (parms.points > 1 && numCarnies < MaxCarnies)
@@ -52,6 +76,9 @@ namespace Carnivale
 
             //}
             // End new approach
+
+
+
 
             // Old approach
             // Generate vendors (first one is costless)
@@ -306,9 +333,14 @@ namespace Carnivale
                                 false,
                                 delegate (Pawn p)
                                 {
-                                    if (p.kindDef == _DefOf.CarnyWorker)
+                                    if (p.Is(CarnivalRole.Worker, false))
                                     {
                                         return !p.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction);
+                                    }
+
+                                    if (genderValidator != null && p.Is(CarnivalRole.Entertainer, false))
+                                    {
+                                        return genderValidator(p);
                                     }
 
                                     return true;

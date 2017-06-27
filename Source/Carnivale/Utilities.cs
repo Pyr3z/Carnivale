@@ -63,7 +63,7 @@ namespace Carnivale
 
 
 
-        public static CarnivalRole GetCarnivalRole(this Pawn pawn)
+        public static CarnivalRole GetCarnivalRole(this Pawn pawn, bool cache = true)
         {
             if (!pawn.Faction.IsCarnival())
             {
@@ -71,7 +71,7 @@ namespace Carnivale
                 return CarnivalRole.None;
             }
 
-            if (cachedRoles.ContainsKey(pawn))
+            if (cache && cachedRoles.ContainsKey(pawn))
             {
                 return cachedRoles[pawn];
             }
@@ -136,7 +136,7 @@ namespace Carnivale
                     break;
             }
 
-            cachedRoles.Add(pawn, role);
+            if (cache) cachedRoles.Add(pawn, role);
             return role;
         }
 
@@ -159,9 +159,9 @@ namespace Carnivale
             }
         }
 
-        public static bool Is(this Pawn pawn, CarnivalRole role)
+        public static bool Is(this Pawn pawn, CarnivalRole role, bool cache = true)
         {
-            return pawn.GetCarnivalRole().Is(role);
+            return pawn.GetCarnivalRole(cache).Is(role);
         }
 
         public static bool Is(this CarnivalRole roles, CarnivalRole role)
@@ -190,9 +190,9 @@ namespace Carnivale
             return false;
         }
 
-        public static bool IsOnly(this Pawn pawn, CarnivalRole role)
+        public static bool IsOnly(this Pawn pawn, CarnivalRole role, bool cache = true)
         {
-            return pawn.GetCarnivalRole() == role;
+            return pawn.GetCarnivalRole(cache) == role;
         }
 
 
