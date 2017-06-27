@@ -21,6 +21,16 @@ namespace Carnivale
                 return false;
             }
 
+            // check bad game conditions
+            foreach (var condition in map.GameConditionManager.ActiveConditions)
+            {
+                if (condition.def == GameConditionDefOf.PsychicSoothe
+                    || condition.def == GameConditionDefOf.ToxicFallout)
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
 
@@ -103,14 +113,9 @@ namespace Carnivale
                     p.needs.food.CurLevel = p.needs.food.MaxLevel;
             }
 
-            string label = "LetterLabelCarnivalArrival".Translate(new object[] {
-                parms.faction.Name
-            });
+            string label = "LetterLabelCarnivalArrival".Translate();
 
-            string text = "LetterCarnivalArrival".Translate(new object[] {
-                parms.faction.Name,
-                durationDays
-            });
+            string text = "LetterCarnivalArrival".Translate(parms.faction.Name, durationDays);
 
             if (vendors.Count > 0)
             {

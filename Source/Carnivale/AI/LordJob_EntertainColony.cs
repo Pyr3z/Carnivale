@@ -89,7 +89,7 @@ namespace Carnivale
             trans_FromRest.AddPostAction(new TransitionAction_Message("CarnEntertainNow".Translate(this.lord.faction)));
             mainGraph.AddTransition(trans_FromRest);
 
-            // Defend if attacked
+            // Defend if attacked (needs work)
             var toil_Defend = new LordToil_DefendCarnival(this.setupCentre, 30f);
             mainGraph.AddToil(toil_Defend);
 
@@ -108,6 +108,16 @@ namespace Carnivale
             trans_Strike.AddPostAction(new TransitionAction_Message("CarnPackingUp".Translate(this.lord.faction)));
             mainGraph.AddTransition(trans_Strike);
 
+            // Debug ender
+            if (Prefs.DevMode)
+            {
+                var trans_StrikeDebug = new Transition(toil_Rest, toil_Strike);
+                trans_StrikeDebug.AddSources(toil_Entertain);
+                trans_StrikeDebug.AddTrigger(new Trigger_TickCondition(() => info.thingsToHaul.Any(t => t.def == ThingDefOf.AIPersonaCore)));
+                trans_StrikeDebug.AddPostAction(new TransitionAction_Message("[Debug] " + "CarnPackingUp".Translate(this.lord.faction)));
+                mainGraph.AddTransition(trans_StrikeDebug);
+            }
+
             // Normal exit map toil
             var toil_Exit = new LordToil_Leave();
             mainGraph.AddToil(toil_Exit);
@@ -117,6 +127,8 @@ namespace Carnivale
             trans_Exit.AddPostAction(new TransitionAction_EndAllJobs());
             trans_Exit.AddPostAction(new TransitionAction_WakeAll());
             mainGraph.AddTransition(trans_Exit);
+
+            // TODO panic exit map
 
             return mainGraph;
         }

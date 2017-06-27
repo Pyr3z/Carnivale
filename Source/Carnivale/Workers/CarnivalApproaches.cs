@@ -21,6 +21,29 @@ namespace Carnivale
         }
 
 
+        protected override bool CanFireNowSub(IIncidentTarget target)
+        {
+            Map map = (Map)target;
+            if (map.GetComponent<CarnivalInfo>().Active)
+            {
+                // only one carnival per map
+                return false;
+            }
+
+            // check incompatible game conditions
+            foreach (var condition in map.GameConditionManager.ActiveConditions)
+            {
+                if (condition.def == GameConditionDefOf.PsychicSoothe
+                    || condition.def == GameConditionDefOf.ToxicFallout)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+
         public override bool TryExecute(IncidentParms parms)
         {
             Map map = (Map)parms.target;

@@ -80,7 +80,7 @@ namespace Carnivale
             {
                 if (alreadyEntertainedToday) return false;
 
-                float curHour = GenDate.HourFloat(GenTicks.TicksAbs, Find.WorldGrid.LongLatOf(map.Tile).x);
+                float curHour = GenLocalDate.HourFloat(map);
                 return curHour < MaxEntertainHour && curHour > MinEntertainHour;
             }
         }

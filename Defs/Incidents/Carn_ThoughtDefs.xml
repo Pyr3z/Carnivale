@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ThoughtDefs>
+  
+  <ThoughtDef>
+    <defName>Thought_CarnivalInTown</defName>
+	<thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>Carnivale.ThoughtWorker_CarnivalInTown</workerClass>
+	
+	<nullifiedIfNotColonist>false</nullifiedIfNotColonist> <!-- manual decision so visitors benefit as well -->
+	
+    <stages>
+      
+	  <li>
+        <label>Carnival in town</label>
+        <description>The Carnival brings new hope that there is more to life than the daily grind.</description>
+        <baseMoodEffect>10</baseMoodEffect>
+      </li>
+	  
+	  <li>
+	    <label>Carnival in town?</label>
+		<description>I don't really get what the fuss is about.</description>
+		<baseMoodEffect>1</baseMoodEffect>
+	  </li>
+	  
+    </stages>
+  </ThoughtDef>
+  
+</ThoughtDefs>

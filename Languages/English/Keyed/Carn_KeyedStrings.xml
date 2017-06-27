@@ -15,7 +15,7 @@
   
   
   <!-- Carnival Arrives -->
-  <LetterLabelCarnivalArrival>Carnival is in town!\n({0})\n</LetterLabelCarnivalArrival>
+  <LetterLabelCarnivalArrival>Carnival is in town!</LetterLabelCarnivalArrival>
   <LetterCarnivalArrival>The traveling carnival, {0}, is entering your territory and will begin to set up their attractions. They will remain for {1} days.</LetterCarnivalArrival>
   <CarnivalArrivalVendorsList>\n\nThere are several vendors with them:</CarnivalArrivalVendorsList>
   
@@ -38,5 +38,10 @@
   <CarnEntertainNow>{0} is now open!</CarnEntertainNow>
   <CarnResting>{0} is closed for the day.</CarnResting>
   <CarnPackingUp>{0} is packing up to leave.</CarnPackingUp>
+  
+  
+  <!-- Thought reasons (NOTE: these aren't working for some odd reason) -->
+  <CarnInTownThought0>The Carnival brings new hope that there is more to life than the daily grind.</CarnInTownThought0>
+  <CarnInTownThought1>As a {0}, {1} doesn't get what the fuss is about.</CarnInTownThought1>
   
 </LanguageData>

@@ -9,9 +9,9 @@
 	<targetType>MapPlayerHome</targetType>
 	
 	<minPopulation>3</minPopulation>
-	<baseChance>3</baseChance>
+	<baseChance>1</baseChance>
 	<pointsScaleable>true</pointsScaleable>
-	<minRefireDays>7</minRefireDays>
+	<minRefireDays>15</minRefireDays>
 	
 	<durationDays>
 	  <min>2</min>
