@@ -1,9 +1,6 @@
 ﻿using RimWorld;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
@@ -88,10 +85,9 @@ namespace Carnivale
             this.FailOn(delegate
             {
                 return DestType == HaulLocation.None
-                       || !Info.Active
+                       || !Info.ShouldHaulTrash
                        || Info.currentLord != pawn.GetLord()
-                       || (!Info.ShouldHaulTrash
-                          && !Info.AnyCarriersCanCarry(this.ThingToHaul));
+                       || !Info.AnyCarriersCanCarry(this.ThingToHaul);
             });
 
             Toil reserve = Toils_Reserve.Reserve(TargetIndex.A);
@@ -200,7 +196,7 @@ namespace Carnivale
                         && Info.thingsToHaul.Remove(ThingToHaul))
                     {
                         if (Prefs.DevMode)
-                            Log.Warning("[Debug] Removing " + ThingToHaul + " from CarnivalInfo.thingsToHaul.");
+                            Log.Warning("[Debug] thingsToHaul : Removing " + ThingToHaul + ".");
                     }
                 }
             };

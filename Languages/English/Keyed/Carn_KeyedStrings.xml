@@ -22,13 +22,27 @@
   
   <!-- Motes -->
   <StepRightUp>Step right up, folks!</StepRightUp>
+  <WelcomeCarnival>Welcome to the Carnival!</WelcomeCarnival>
   <EntryIsOnly>Entry is only {0} silver!</EntryIsOnly>
+  
+  <YouThere>Hey, you there!</YouThere>
   <BargainPrices>Bargain prices, guaranteed!</BargainPrices>
+  <CheckOut>Check out this {0}!</CheckOut>
+  
+  <FoodHere>Food! Fresh food here!</FoodHere>
+  <YouLookHungry>Boy, you look hungry.</YouLookHungry>
+  <HowAboutA>How about a {0}?</HowAboutA>
+  <GetYour>Get your {0}s, right here!</GetYour>
+  
+  <LikeNew>This like-new {0} could be all yours!</LikeNew>
+  <LightlyUsed>Lightly-used surplus items, prices reduced!</LightlyUsed>
+  
   <RareItems>Rare artifacts, you won't find these anywhere else!</RareItems>
-  <YouLookHungry>Boy, you look hungry. How about a {0}?</YouLookHungry>
-  <WeHave>We've got your {0}s and your {1}s, all right here!</WeHave>
-  <Prizes>Prizes, prizes, prizes! Do you have what it takes?</Prizes>
-  <YouThere>You there! This new {0} could be all yours!</YouThere>
+  <ThisCouldBeYours>This could be all yours!</ThisCouldBeYours>
+  <GetItWhile>{0} — get it while you still can!</GetItWhile>
+  
+  <Prizes>Prizes, prizes, prizes!</Prizes>
+  <HaveWhatItTakes>Do you have what it takes?</HaveWhatItTakes>
   
   
   <!-- Messages -->

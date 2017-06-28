@@ -267,7 +267,7 @@ namespace Carnivale
                 info.bannerCell = bannerSpot;
 
                 if (Prefs.DevMode)
-                    Log.Warning("[Debug] CarnivalInfo.bannerCell final pass: " + info.bannerCell.ToString());
+                    Log.Warning("[Debug] bannerCell final pass: " + info.bannerCell.ToString());
 
                 RemoveFirstCrateOf(_DefOf.Carn_Crate_Stall);
                 Utilities.ClearThingsFor(info.map, info.bannerCell, bannerDef.size, rot, false, true);
@@ -284,7 +284,7 @@ namespace Carnivale
                 info.bannerCell = bannerSpot;
 
                 if (Prefs.DevMode)
-                    Log.Warning("[Debug] CarnivalInfo.bannerCell final pass: " + info.bannerCell.ToString());
+                    Log.Warning("[Debug] bannerCell final pass: " + info.bannerCell.ToString());
 
                 RemoveFirstCrateOf(_DefOf.Carn_Crate_Stall);
                 Utilities.ClearThingsFor(info.map, bannerSpot, bannerDef.size, rot, false, true);

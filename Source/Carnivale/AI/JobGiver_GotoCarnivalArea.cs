@@ -10,7 +10,7 @@ namespace Carnivale
         public override float GetPriority(Pawn pawn)
         {
             var info = pawn.MapHeld.GetComponent<CarnivalInfo>();
-            if (info.currentLord == null) return 0f;
+            if (!info.Active) return 0f;
 
             return info.carnivalArea.Contains(pawn.PositionHeld) ? 0f : 10f; 
         }
@@ -18,7 +18,7 @@ namespace Carnivale
         public override ThinkResult TryIssueJobPackage(Pawn pawn, JobIssueParams jobParams)
         {
             var info = pawn.MapHeld.GetComponent<CarnivalInfo>();
-            if (info.currentLord == null || info.carnivalArea.Area < 1) return ThinkResult.NoJob;
+            if (!info.Active) return ThinkResult.NoJob;
 
             IntVec3 gotoSpot;
             if (CellFinder.TryFindRandomReachableCellNear(

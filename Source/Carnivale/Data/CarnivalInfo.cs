@@ -42,9 +42,12 @@ namespace Carnivale
         [Unsaved]
         public List<Thing> thingsToHaul;
 
+        [Unsaved]
+        public List<Pawn> colonistsInArea;
+
         public List<Building> carnivalBuildings;
 
-        public List<IntVec3> checkForHaulableCells; // because num cells > 20, would a HashSet be better?
+        public List<IntVec3> checkForCells; // because num cells > 20, would a HashSet be better?
 
         public Dictionary<CarnivalRole, DeepPawnList> pawnsWithRole;
 
@@ -65,7 +68,7 @@ namespace Carnivale
                 this.trashCentre = value;
                 foreach (var trashCell in TrashCells())
                 {
-                    checkForHaulableCells.Remove(trashCell);
+                    checkForCells.Remove(trashCell);
                 }
             }
         }
@@ -95,7 +98,7 @@ namespace Carnivale
                     {
                         if (((Building)target.Thing).Is(CarnBuildingType.Bedroom))
                         {
-                            return 5;
+                            return 10;
                         }
                         return 1;
                     });
@@ -178,7 +181,7 @@ namespace Carnivale
 
             Scribe_Collections.Look(ref this.carnivalBuildings, "carnivalBuildings", LookMode.Reference);
 
-            Scribe_Collections.Look(ref this.checkForHaulableCells, "checkForHaulableCells", LookMode.Value);
+            Scribe_Collections.Look(ref this.checkForCells, "checkForHaulableCells", LookMode.Value);
 
             Scribe_Collections.Look(ref this.pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
 
@@ -213,6 +216,15 @@ namespace Carnivale
                 thingsToHaul = new List<Thing>();
             }
 
+            if (colonistsInArea != null)
+            {
+                colonistsInArea.Clear();
+            }
+            else
+            {
+                colonistsInArea = new List<Pawn>();
+            }
+
             if (carnivalBuildings != null)
             {
                 carnivalBuildings.Clear();
@@ -222,13 +234,13 @@ namespace Carnivale
                 carnivalBuildings = new List<Building>();
             }
 
-            if (checkForHaulableCells != null)
+            if (checkForCells != null)
             {
-                checkForHaulableCells.Clear();
+                checkForCells.Clear();
             }
             else
             {
-                checkForHaulableCells = new List<IntVec3>();
+                checkForCells = new List<IntVec3>();
             }
 
             if (pawnsWithRole != null)
@@ -271,14 +283,14 @@ namespace Carnivale
             baseRadius = lord.ownedPawns.Count + addToRadius.RandomInRange;
             baseRadius = Mathf.Clamp(baseRadius, 15f, 35f);
 
-            // Set initial haul cells
-            checkForHaulableCells.AddRange(GenRadial.RadialCellsAround(setupCentre, baseRadius, true)
+            // Set initial check cells
+            checkForCells.AddRange(GenRadial.RadialCellsAround(setupCentre, baseRadius, true)
                 .Where(c => c.InBounds(map) && c.Walkable(map)));
 
             // Set carnival area
             carnivalArea = CellRect.CenteredOn(setupCentre, (int)baseRadius + 10).ClipInsideMap(map).ContractedBy(10);
 
-            // Set banner spot
+            // Set initial banner spot
             bannerCell = PreCalculateBannerCell();
 
             // Cache pawn roles to lists
@@ -321,6 +333,10 @@ namespace Carnivale
                     // Check if there are any things needing to be hauled to carriers or trash
                     CheckForHaulables(false);
                 }
+                else if (Find.TickManager.TicksGame % 757 == 0)
+                {
+                    CheckForColonists();
+                }
                 else if (Find.TickManager.TicksGame % 499 == 0)
                 {
                     // Check carny rest levels
@@ -344,29 +360,58 @@ namespace Carnivale
 
         public void CheckForHaulables(bool checkForCrates = false)
         {
-            foreach (var cell in checkForHaulableCells)
+            foreach (var cell in checkForCells)
             {
                 foreach (var thing in cell.GetThingList(map))
                 {
                     if (HaulableValidator(thing, checkForCrates))
                     {
                         if (Prefs.DevMode)
-                            Log.Warning("[Debug] Adding " + thing + " to CarnivalInfo.thingsToHaul. pos=" + thing.Position);
+                            Log.Warning("[Debug] thingsToHaul : Adding " + thing + ". pos=" + thing.Position);
                         thingsToHaul.Add(thing);
                     }
                 }
             }
         }
 
+        public void CheckForColonists()
+        {
+            for (int i = colonistsInArea.Count - 1; i > -1; i--)
+            {
+                var col = colonistsInArea[i];
+                if (!checkForCells.Contains(col.PositionHeld))
+                {
+                    if (colonistsInArea.Remove(col) && Prefs.DevMode)
+                        Log.Warning("[Debug] colonistsInArea : Removing " + col.NameStringShort + ".");
+                }
+            }
+
+            foreach (var cell in checkForCells)
+            {
+                var firstPawn = cell.GetFirstPawn(map);
+
+                if (firstPawn != null
+                    && firstPawn.IsColonistPlayerControlled
+                    && !colonistsInArea.Contains(firstPawn))
+                {
+                    if (Prefs.DevMode)
+                        Log.Warning("[Debug] colonistsInArea : Adding " + firstPawn.NameStringShort + ".");
+                    colonistsInArea.Add(firstPawn);
+                }
+            }
+        }
 
         public void AddBuilding(Building building)
         {
             carnivalBuildings.Add(building);
-            foreach (var cell in building.OccupiedRect())
+
+            if (building.def == _DefOf.Carn_SignTrash) return;
+
+            foreach (var cell in building.OccupiedRect().ExpandedBy(2))
             {
-                if (!checkForHaulableCells.Contains(cell))
+                if (!checkForCells.Contains(cell))
                 {
-                    checkForHaulableCells.Add(cell);
+                    checkForCells.Add(cell);
                 }
             }
         }
@@ -451,10 +496,10 @@ namespace Carnivale
         private bool HaulableValidator(Thing thing, bool checkForCrates)
         {
             return thing.DefaultHaulLocation(checkForCrates) != HaulLocation.None
-                   && !TrashCells().Any(cell => cell == thing.Position)
                    && !thingsToHaul.Contains(thing)
                    && thing.IsForbidden(Faction.OfPlayer); // dropped things are by default forbidden to the player
         }
+
 
         private IntVec3 PreCalculateBannerCell()
         {
@@ -467,7 +512,7 @@ namespace Carnivale
             IntVec3 closestCell = carnivalArea.ClosestCellTo(colonistPos);
 
             if (Prefs.DevMode)
-                Log.Warning("[Debug] CarnivalInfo.bannerCell initial pass: " + closestCell);
+                Log.Warning("[Debug] bannerCell initial pass: " + closestCell);
 
 
             // Mountain line of sight pass
@@ -532,11 +577,11 @@ namespace Carnivale
                 attempts++;
 
                 if (Prefs.DevMode)
-                    Log.Warning("[Debug] CarnivalInfo.bannerCell mountain line-of-sight pass #" + attempts + ": " + closestCell);
+                    Log.Warning("[Debug] bannerCell mountain line-of-sight pass #" + attempts + ": " + closestCell);
             }
 
             if (attempts == 10 && Prefs.DevMode)
-                Log.Warning("[Debug] CarnivalInfo.bannerCell mountain line-of-sight passes took too many tries. Leaving it at: " + closestCell);
+                Log.Warning("[Debug] bannerCell mountain line-of-sight passes took too many tries. Leaving it at: " + closestCell);
 
 
             // Mountain proximity pass
@@ -551,11 +596,11 @@ namespace Carnivale
                 attempts++;
 
                 if (Prefs.DevMode)
-                    Log.Warning("[Debug] CarnivalInfo.bannerCell mountain proximity pass #" + attempts + ": " + closestCell);
+                    Log.Warning("[Debug] bannerCell mountain proximity pass #" + attempts + ": " + closestCell);
             }
 
             if (attempts == 10 && Prefs.DevMode)
-                Log.Warning("[Debug] CarnivalInfo.bannerCell mountain proximity passes took too many tries. Leaving it at: " + closestCell);
+                Log.Warning("[Debug] bannerCell mountain proximity passes took too many tries. Leaving it at: " + closestCell);
 
 
             // Reachability pass
@@ -572,7 +617,7 @@ namespace Carnivale
                 }
 
                 if (Prefs.DevMode)
-                    Log.Warning("[Debug] CarnivalInfo.bannerCell reachability pass: " + closestCell);
+                    Log.Warning("[Debug] bannerCell reachability pass: " + closestCell);
             }
 
             
@@ -616,7 +661,7 @@ namespace Carnivale
                     attempts++;
 
                     if (Prefs.DevMode)
-                        Log.Warning("[Debug] CarnivalInfo.bannerCell road pass #" + attempts + ": " + roadCell);
+                        Log.Warning("[Debug] bannerCell road pass #" + attempts + ": " + roadCell);
                 }
 
                 if (roadCell.IsValid
@@ -642,20 +687,20 @@ namespace Carnivale
                     closestCell = adjustedCell.Walkable(map) ? adjustedCell : roadCell;
 
                     if (Prefs.DevMode)
-                        Log.Warning("[Debug] CarnivalInfo.bannerCell final road pass: " + closestCell);
+                        Log.Warning("[Debug] bannerCell final road pass: " + closestCell);
                 }
                 else
                 {
                     if (Prefs.DevMode)
                         if (!roadCell.IsValid)
-                            Log.Warning("[Debug] CarnivalInfo.bannerCell road pass was invalid. Reason: no road cell found in search area.");
+                            Log.Warning("[Debug] bannerCell road pass was invalid. Reason: no road cell found in search area.");
                         else
-                            Log.Warning("[Debug] CarnivalInfo.bannerCell road pass was invalid. Reason: found road cell too far from setupCentre.");
+                            Log.Warning("[Debug] bannerCell road pass was invalid. Reason: found road cell too far from setupCentre.");
                 }
             }
 
             if (Prefs.DevMode)
-                Log.Warning("[Debug] CarnivalInfo.bannerCell pre-buildability pass: " + closestCell);
+                Log.Warning("[Debug] bannerCell pre-buildability pass: " + closestCell);
 
             return closestCell;
         }

@@ -68,6 +68,14 @@
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
 	  
+		<!-- Goto carnival area if not already -->
+		<!-- <li Class="Carnivale.ThinkNode_InCarnivalArea"> -->
+		  <!-- <invert>true</invert> -->
+		  <!-- <subNodes> -->
+		    <!-- <li Class="Carnivale.JobGiver_GotoCarnivalArea" /> -->
+		  <!-- </subNodes> -->
+		<!-- </li> -->
+	  
 	    <li Class="JobGiver_FightFiresNearPoint">
 		  <maxDistFromPoint>25</maxDistFromPoint>
 		</li>
@@ -123,6 +131,14 @@
     <defName>Duty_MeanderAndHelp</defName>
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
+	  
+		<!-- Goto carnival area if not already -->
+		<!-- <li Class="Carnivale.ThinkNode_InCarnivalArea"> -->
+		  <!-- <invert>true</invert> -->
+		  <!-- <subNodes> -->
+		    <!-- <li Class="Carnivale.JobGiver_GotoCarnivalArea" /> -->
+		  <!-- </subNodes> -->
+		<!-- </li> -->
 	  
 	    <li Class="JobGiver_FightFiresNearPoint">
 		  <maxDistFromPoint>25</maxDistFromPoint>
@@ -205,38 +221,25 @@
 		
 	  </subNodes>
 	</thinkNode>
-	
   </DutyDef>
   
   
-  <!-- Rest -->
+  <!-- Force rest -->
   <DutyDef>
     <defName>Duty_ForceRest</defName>
-	<alwaysShowWeapon>false</alwaysShowWeapon>
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
-		
-		<!-- Goto carnival area if not already -->
-		<!-- <li Class="Carnivale.ThinkNode_InCarnivalArea"> -->
-		  <!-- <invert>true</invert> -->
-		  <!-- <subNodes> -->
-		    <!-- <li Class="Carnivale.JobGiver_GotoCarnivalArea" /> -->
-		  <!-- </subNodes> -->
-		<!-- </li> -->
-		
+
+		<!-- satisfy needs -->
 		<li Class="ThinkNode_Subtree">
 		  <treeDef>SatisfyBasicNeeds</treeDef>
 		</li>
-		
-		<!-- Force get rest -->
-		<!-- <li Class="Carnivale.JobGiver_ForceGetRest" /> -->
 		
 	  </subNodes>
 	</thinkNode>
   </DutyDef>
   
-  
-  <!-- Exit map road or best, and defend self -->
+  <!-- Exit map road or best, and defend self (really, this should be in vanilla) -->
   <DutyDef>
     <defName>Duty_DefendAndExitMapRoadOrBest</defName>
 	<thinkNode Class="ThinkNode_Priority">

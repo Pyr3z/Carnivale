@@ -7,8 +7,77 @@ namespace Carnivale
 {
     public class JobDriver_StandAtLoc : JobDriver
     {
+        private static string[] foodVendorMotes0Arg = new string[]
+        {
+            "YouThere",
+            "FoodHere",
+            "YouLookHungry"
+        };
+
+        private static string[] foodVendorMotes1Arg = new string[]
+        {
+            "HowAboutA",
+            "GetYour"
+        };
+
+        private static string[] surplusVendorMotes0Arg = new string[]
+        {
+            "YouThere",
+            "BargainPrices",
+            "LightlyUsed",
+            "ThisCouldBeYours"
+        };
+
+        private static string[] surplusVendorMotes1Arg = new string[]
+        {
+            "LikeNew",
+            "CheckOut"
+        };
+
+        private static string[] curiosVendorMotes0Arg = new string[]
+        {
+            "BargainPrices",
+            "ThisCouldBeYours",
+            "RareItems"
+        };
+
+        private static string[] curiosVendorMotes1Arg = new string[]
+        {
+            "CheckOut",
+            "GetItWhile"
+        };
+
+        private static string[] announcerMotes0Arg = new string[]
+        {
+            "StepRightUp",
+            "YouThere",
+            "WelcomeCarnival"
+        };
+
+
+        [Unsaved]
+        private bool moteArgs = false;
+
+        [Unsaved]
+        private CarnivalInfo infoInt = null;
+
         [Unsaved]
         private CarnivalRole typeInt = 0;
+
+
+
+        private CarnivalInfo Info
+        {
+            get
+            {
+                if (infoInt == null)
+                {
+                    infoInt = Map.GetComponent<CarnivalInfo>();
+                }
+
+                return infoInt;
+            }
+        }
 
         private CarnivalRole Type
         {
@@ -21,6 +90,7 @@ namespace Carnivale
                 return typeInt;
             }
         }
+
 
         public override string GetReport()
         {
@@ -45,61 +115,145 @@ namespace Carnivale
             Toil gotoCell = Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.OnCell);
             yield return gotoCell;
 
-            if (!Type.Is(CarnivalRole.Carrier))
+            if (Type.Is(CarnivalRole.Vendor))
             {
-                // Stand, no rotation, vendors want to trade, motes
-                Toil stand = new Toil();
-                stand.initAction = delegate
+                if (pawn.TraderKind == _DefOf.Carn_Trader_Curios)
                 {
-                    stand.actor.pather.StopDead();
-                    stand.actor.Rotation = Rot4.South;
-
-                    // BUG: loading game while carnies are setting up makes
-                    // traders not want to trade with colony, even if this toil fires
-                    if (Type.Is(CarnivalRole.Vendor))
-                        stand.actor.mindState.wantsToTradeWithColony = true;
-                };
-                stand.tickAction = delegate
+                    yield return VendorStandWithMotes(curiosVendorMotes0Arg, curiosVendorMotes1Arg);
+                }
+                else if (pawn.TraderKind == _DefOf.Carn_Trader_Surplus)
                 {
-                    if (Find.TickManager.TicksGame % (GenDate.TicksPerHour / 4) == 0)
-                    {
-                        // Throw motes
-
-                    }
-                };
-                stand.AddFinishAction(delegate
+                    yield return VendorStandWithMotes(surplusVendorMotes0Arg, surplusVendorMotes1Arg);
+                }
+                else
                 {
-                    if (Type.Is(CarnivalRole.Vendor))
-                        stand.actor.mindState.wantsToTradeWithColony = false;
-                });
-                stand.defaultDuration = GenDate.TicksPerHour;
-                stand.defaultCompleteMode = ToilCompleteMode.Delay;
-
-                yield return stand;
+                    yield return VendorStandWithMotes(foodVendorMotes0Arg, foodVendorMotes1Arg);
+                }
+            }
+            else if (Type.Is(CarnivalRole.Entertainer))
+            {
+                // TODO: differentiate between announcers and game masters
+                yield return StandWithMotes(announcerMotes0Arg);
             }
             else
             {
-                // Carrier stand
-                Toil standCarrier = new Toil();
-                standCarrier.initAction = delegate
-                {
-                    standCarrier.actor.pather.StopDead();
-                };
-                standCarrier.tickAction = delegate
-                {
-                    // Rotate randomly if carrier
-                    if (Find.TickManager.TicksGame % 307 == 0
-                        && Rand.Chance(0.4f))
-                    {
-                        standCarrier.actor.Rotation = Rot4.Random;
-                    }
-                };
-                standCarrier.defaultDuration = GenDate.TicksPerHour;
-                standCarrier.defaultCompleteMode = ToilCompleteMode.Delay;
-                yield return standCarrier;
+                yield return CarrierStand();
             }
             
         }
+
+
+        private Toil VendorStandWithMotes(string[] strings0Arg, string[] strings1Arg)
+        {
+            // Stand, no rotation, vendors want to trade, motes
+            Toil toil = new Toil().FailOn(delegate(Toil t)
+            {
+                return t.actor.TraderKind == null;
+            });
+
+            toil.initAction = delegate
+            {
+                toil.actor.pather.StopDead();
+                toil.actor.Rotation = Rot4.South;
+                toil.actor.mindState.wantsToTradeWithColony = true;
+            };
+            toil.tickAction = delegate
+            {
+                if (Find.TickManager.TicksGame % 307 == 0
+                    && Info.colonistsInArea.Any()
+                    && Rand.Chance(0.314f))
+                {
+                    if (!moteArgs)
+                    {
+                        MoteMaker.ThrowText(
+                            toil.actor.DrawPos,
+                            Map,
+                            strings0Arg.RandomElement().Translate(),
+                            5f
+                        );
+
+                        moteArgs = true;
+                    }
+                    else
+                    {
+                        var randomWare = toil.actor.trader.Goods
+                            .RandomElementByWeight(t => t.GetInnerIfMinified().MarketValue)
+                            .GetInnerIfMinified();
+
+                        MoteMaker.ThrowText(
+                            toil.actor.DrawPos,
+                            Map,
+                            strings1Arg.RandomElement().Translate(randomWare.LabelNoCount),
+                            5f
+                        );
+
+                        moteArgs = false;
+                    }
+                }
+            };
+            toil.AddFinishAction(delegate
+            {
+                toil.actor.mindState.wantsToTradeWithColony = false;
+            });
+            toil.defaultDuration = GenDate.TicksPerHour;
+            toil.defaultCompleteMode = ToilCompleteMode.Delay;
+
+            return toil;
+        }
+
+        private Toil StandWithMotes(string[] strings0Arg)
+        {
+            // Stand, no rotation, motes
+            Toil toil = new Toil();
+
+            toil.initAction = delegate
+            {
+                toil.actor.pather.StopDead();
+                toil.actor.Rotation = Rot4.South;
+            };
+            toil.tickAction = delegate
+            {
+                if (Find.TickManager.TicksGame % 307 == 0
+                    && Info.colonistsInArea.Any()
+                    && Rand.Chance(0.314f))
+                {
+                    MoteMaker.ThrowText(
+                        toil.actor.DrawPos,
+                        Map,
+                        strings0Arg.RandomElement().Translate(),
+                        5f
+                    );
+                }
+            };
+            toil.defaultDuration = GenDate.TicksPerHour;
+            toil.defaultCompleteMode = ToilCompleteMode.Delay;
+
+            return toil;
+        }
+
+        private Toil CarrierStand()
+        {
+            // stand, rotate randomly
+            Toil toil = new Toil();
+
+            toil.initAction = delegate
+            {
+                toil.actor.pather.StopDead();
+            };
+            toil.tickAction = delegate
+            {
+                if (Find.TickManager.TicksGame % 307 == 0
+                    && Rand.Chance(0.4f))
+                {
+                    toil.actor.Rotation = Rot4.Random;
+                }
+            };
+            toil.defaultDuration = GenDate.TicksPerHour;
+            toil.defaultCompleteMode = ToilCompleteMode.Delay;
+
+            return toil;
+        }
+
 
     }
 }
