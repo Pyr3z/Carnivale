@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<JoyGiverDefs>
+  
+  <JoyGiverDef>
+    <defName>Joy_PlayHighStriker</defName>
+    <giverClass>Carnivale.JoyGiver_CarnivalSkillGame</giverClass>
+    <baseChance>3.0</baseChance>
+	<unroofedOnly>true</unroofedOnly>
+    <thingDefs>
+      <li>Carn_GameHighStriker</li>
+    </thingDefs>
+    <jobDef>Job_PlayHighStriker</jobDef>
+    <joyKind>GamingDexterity</joyKind>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </JoyGiverDef>
+  
+</JoyGiverDefs>

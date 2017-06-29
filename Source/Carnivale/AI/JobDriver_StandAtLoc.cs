@@ -169,7 +169,7 @@ namespace Carnivale
                             toil.actor.DrawPos,
                             Map,
                             strings0Arg.RandomElement().Translate(),
-                            5f
+                            3f
                         );
 
                         moteArgs = true;
@@ -221,7 +221,7 @@ namespace Carnivale
                         toil.actor.DrawPos,
                         Map,
                         strings0Arg.RandomElement().Translate(),
-                        5f
+                        3f
                     );
                 }
             };

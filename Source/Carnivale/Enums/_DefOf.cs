@@ -41,6 +41,8 @@ namespace Carnivale
 
         public static JobDef Job_HaulToCarrierOrTrash;
 
+        public static JobDef Job_PlayHighStriker;
+
         public static JobDef Job_StandAtLoc;
 
         public static JobDef Job_StrikeBuildings;
@@ -87,6 +89,8 @@ namespace Carnivale
         public static ThingDef Carn_Crate_TentLodge;
 
         public static ThingDef Carn_Crate_TentMan;
+
+        public static ThingDef Carn_GameHighStriker;
 
         public static ThingDef Carn_SignEntry;
 

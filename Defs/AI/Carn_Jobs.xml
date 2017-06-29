@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
   
+  <!-- For carnies -->
+  
   <JobDef>
     <defName>Job_StandAtLoc</defName>
 	<driverClass>Carnivale.JobDriver_StandAtLoc</driverClass>
@@ -14,6 +16,28 @@
   <JobDef>
     <defName>Job_StrikeBuildings</defName>
 	<driverClass>Carnivale.JobDriver_StrikeBuilding</driverClass>
+  </JobDef>
+  
+  
+  
+  <!-- For colonists -->
+  
+  <!-- (general) -->
+  
+  
+  
+  <!-- (joy) -->
+  
+  <JobDef>
+    <defName>Job_PlayHighStriker</defName>
+    <driverClass>Carnivale.JobDriver_PlayHighStriker</driverClass>
+    <reportString>playing high striker.</reportString>
+    <joyDuration>1000</joyDuration>
+    <joyMaxParticipants>1</joyMaxParticipants>
+    <joyGainRate>1</joyGainRate>
+    <joySkill>Melee</joySkill>
+    <joyXpPerTick>0.030</joyXpPerTick>
+    <joyKind>GamingDexterity</joyKind>
   </JobDef>
   
 </Defs>
