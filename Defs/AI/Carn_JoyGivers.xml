@@ -4,7 +4,7 @@
   <JoyGiverDef>
     <defName>Joy_PlayHighStriker</defName>
     <giverClass>Carnivale.JoyGiver_CarnivalSkillGame</giverClass>
-    <baseChance>3.0</baseChance>
+    <baseChance>10.0</baseChance>
 	<unroofedOnly>true</unroofedOnly>
     <thingDefs>
       <li>Carn_GameHighStriker</li>

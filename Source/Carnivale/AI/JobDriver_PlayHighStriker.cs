@@ -17,5 +17,10 @@ namespace Carnivale
             base.WatchTickAction();
         }
 
+        protected override void GetPrizeInitAction()
+        {
+            
+        }
+
     }
 }

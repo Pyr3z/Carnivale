@@ -22,6 +22,9 @@ namespace Carnivale
             // Goto interaction cell
             yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.InteractionCell);
 
+            // Pay
+            // todo
+
             // "Watch" the building
             yield return WatchBuilding();
 
