@@ -15,7 +15,7 @@ namespace Carnivale
 
         private static List<Pawn> stallUsers;
 
-        public static List<IntVec3> cachedPos = new List<IntVec3>();
+        private static List<IntVec3> cachedPos = new List<IntVec3>();
 
         // The only public method; use this
         [DebuggerHidden]
@@ -43,7 +43,7 @@ namespace Carnivale
 
             if (!availableCrates.NullOrEmpty())
             {
-                foreach (Blueprint tent in PlaceTentBlueprints())
+                foreach (var tent in PlaceTentBlueprints())
                 {
                     cachedPos.Add(tent.Position);
                     yield return tent;
@@ -51,14 +51,14 @@ namespace Carnivale
 
                 if (!stallUsers.NullOrEmpty())
                 {
-                    foreach (Blueprint stall in PlaceStallBlueprints())
+                    foreach (var stall in PlaceStallBlueprints())
                     {
                         cachedPos.Add(stall.Position);
                         yield return stall;
                     }
                 }
 
-                Blueprint entrance = PlaceEntranceBlueprint();
+                var entrance = PlaceEntranceBlueprint();
 
                 if (entrance != null)
                 {
@@ -66,7 +66,13 @@ namespace Carnivale
                     yield return entrance;
                 }
 
-                Blueprint trashSign = PlaceTrashBlueprint();
+                foreach (var game in PlaceGameBlueprints())
+                {
+                    cachedPos.Add(game.Position);
+                    yield return game;
+                }
+
+                var trashSign = PlaceTrashBlueprint();
 
                 if (trashSign != null)
                 {
@@ -74,7 +80,7 @@ namespace Carnivale
                 }
             }
 
-            //cachedPos.Clear();
+            cachedPos.Clear();
         }
 
 
@@ -82,12 +88,12 @@ namespace Carnivale
         {
             // main chapiteau
             ThingDef tentDef;
-            Rot4 rot = Rot4.Random;
+            Rot4 rot = info.setupCentre.RotationFacing(info.bannerCell);
             IntVec3 tentSpot;
 
             if (availableCrates.Any(c => c.def == _DefOf.Carn_Crate_TentHuge))
             {
-                tentDef = _DefOf.Carn_TentHuge;
+                tentDef = _DefOf.Carn_TentChap;
                 tentSpot = FindRadialPlacementFor(tentDef, rot, info.setupCentre, 11);
                 if (tentSpot.IsValid)
                 {
@@ -104,9 +110,9 @@ namespace Carnivale
 
 
             // lodging tents
-            tentDef = _DefOf.Carn_TentMedBed;
+            tentDef = _DefOf.Carn_TentLodge;
             rot = Rot4.Random;
-            tentSpot = FindRandomPlacementFor(tentDef, rot, true, (int)info.baseRadius / 2);
+            tentSpot = FindRadialPlacementFor(tentDef, rot, info.carnivalArea.ContractedBy(9).FurthestCellFrom(info.bannerCell), 7);
 
             IntVec3 lineDirection = rot.ToIntVec3(1); // shifted clockwise by 1
 
@@ -162,11 +168,10 @@ namespace Carnivale
                 yield break;
 
             rot = Rot4.Random;
-            tentDef = _DefOf.Carn_TentSmallMan;
+            tentDef = _DefOf.Carn_TentLodgeMan;
 
             // Try to place near other tents
-            CellRect searchArea = CellRect.CenteredOn(tentSpot, 10);
-            tentSpot = FindRandomPlacementFor(tentDef, rot, searchArea, tentSpot);
+            tentSpot = FindRadialCardinalPlacementFor(tentDef, rot, tentSpot, 10);
 
             if (tentSpot.IsValid)
             {
@@ -200,29 +205,26 @@ namespace Carnivale
             Rot4 rot = default(Rot4);
             CellRect stallArea = info.carnivalArea;
 
-            foreach (Pawn stallUser in stallUsers)
+            foreach (Pawn stallUser in stallUsers.Where(p => p.TraderKind != null))
             {
-                if (stallUser.TraderKind != null)
-                {
-                    // Handle vendor stalls
+                // Handle different kinds of vendor stalls
 
-                    if (stallUser.TraderKind == _DefOf.Carn_Trader_Food)
-                    {
-                        stallDef = _DefOf.Carn_StallFood;
-                    }
-                    else if (stallUser.TraderKind == _DefOf.Carn_Trader_Surplus)
-                    {
-                        stallDef = _DefOf.Carn_StallSurplus;
-                    }
-                    else if (stallUser.TraderKind == _DefOf.Carn_Trader_Curios)
-                    {
-                        stallDef = _DefOf.Carn_StallCurios;
-                    }
-                    else
-                    {
-                        Log.Error("Trader " + stallUser.NameStringShort + " is not a carnival vendor and will get no stall.");
-                        continue;
-                    }
+                if (stallUser.TraderKind == _DefOf.Carn_Trader_Food)
+                {
+                    stallDef = _DefOf.Carn_StallFood;
+                }
+                else if (stallUser.TraderKind == _DefOf.Carn_Trader_Surplus)
+                {
+                    stallDef = _DefOf.Carn_StallSurplus;
+                }
+                else if (stallUser.TraderKind == _DefOf.Carn_Trader_Curios)
+                {
+                    stallDef = _DefOf.Carn_StallCurios;
+                }
+                else
+                {
+                    Log.Error("Trader " + stallUser.NameStringShort + " is not a carnival vendor and will get no stall.");
+                    continue;
                 }
 
 
@@ -230,20 +232,29 @@ namespace Carnivale
                 if (stallSpot.IsValid)
                 {
                     // Next spot should be close to last spot
-                    stallSpot = FindRandomPlacementFor(stallDef, rot, stallArea, stallSpot);
+                    stallSpot = FindRadialCardinalPlacementFor(stallDef, rot, stallSpot, 10);
                 }
                 else
                 {
                     // Find random initial spot
-                    stallSpot = FindRandomPlacementFor(stallDef, rot, false, (int)info.baseRadius / 3);
-                    stallArea = CellRect.CenteredOn(stallSpot, 8);
+                    //stallSpot = FindRandomPlacementFor(stallDef, rot, false, (int)info.baseRadius / 3);
+                    
+                    // Trying new approach:
+
+                    IntVec3[] points = new IntVec3[]
+                    {
+                        info.setupCentre,
+                        info.bannerCell
+                    };
+
+                    stallSpot = FindRadialPlacementFor(stallDef, rot, points.Average(), 10);
                 }
 
 
                 // Finally, spawn the f*cker
                 if (stallSpot.IsValid)
                 {
-                    RemoveFirstCrateOf(_DefOf.Carn_Crate_Stall);
+                    RemoveFirstCrateOf(stallDef);
                     Utilities.ClearThingsFor(info.map, stallSpot, stallDef.size, rot, false, true);
                     // Add spot to stall user's spot
                     info.rememberedPositions.Add(stallUser, stallSpot);
@@ -293,6 +304,48 @@ namespace Carnivale
 
             Log.Error("Couldn't find any place for " + bannerDef + ". Not retrying.");
             return null;
+        }
+
+        private static IEnumerable<Blueprint> PlaceGameBlueprints()
+        {
+            var gameMasters = stallUsers.Where(p => p.TraderKind == null).ToList();
+            // ListFullCopy() inefficient... but we have to copy because it's not thread-safe otherwise
+            var gameCrates = availableCrates.ListFullCopy().Where(c => c.def.entityDefToBuild != null);
+
+            IntVec3[] points = new IntVec3[]
+            {
+                info.setupCentre,
+                info.setupCentre,
+                info.bannerCell
+            };
+            var gameSpot = points.Average();
+
+            ThingDef gameDef;
+            int i = 0;
+            foreach (var crate in gameCrates)
+            {
+                gameDef = (ThingDef)crate.def.entityDefToBuild;
+
+                gameSpot = FindRadialPlacementFor(gameDef, default(Rot4), gameSpot, 10);
+
+                if (gameSpot.IsValid)
+                {
+                    RemoveFirstCrateOf(crate.def);
+                    Utilities.ClearThingsFor(info.map, gameSpot, gameDef.size, default(Rot4), false, true);
+
+                    if (i < gameMasters.Count)
+                    {
+                        IntVec3 gameMasterSpot = gameSpot + gameDef.interactionCellOffset + new IntVec3(-1, 0, 1);
+                        info.rememberedPositions.Add(gameMasters[i++], gameMasterSpot);
+                    }
+
+                    yield return PlaceBlueprint(gameDef, gameSpot);
+                }
+                else
+                {
+                    Log.Error("Found no place for " + gameDef + ". It will not be built.");
+                }
+            }
         }
 
         private static Blueprint PlaceTrashBlueprint()
@@ -375,32 +428,50 @@ namespace Carnivale
             return IntVec3.Invalid;
         }
 
-        private static IntVec3 FindRandomPlacementFor(ThingDef def, Rot4 rot, CellRect otherArea, IntVec3 preferCardinalAdjacentTo = default(IntVec3))
+        private static IntVec3 FindRandomPlacementFor(ThingDef def, Rot4 rot, CellRect searchArea)
         {
             for (int i = 0; i < 200; i++)
             {
-                IntVec3 randomCell = otherArea.RandomCell;
+                IntVec3 randomCell = searchArea.RandomCell;
 
                 if (info.map.reachability.CanReach(randomCell, info.carnivalArea.CenterCell, Verse.AI.PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
                 {
                     if (CanPlaceBlueprintAt(randomCell, def, rot))
                     {
-                        if (preferCardinalAdjacentTo != default(IntVec3))
-                        {
-                            return randomCell;
-                        }
+                        return randomCell;
+                    }
+                }
+            }
 
-                        if (randomCell.AdjacentToCardinal(preferCardinalAdjacentTo))
+            return IntVec3.Invalid;
+        }
+
+        private static IntVec3 FindRadialCardinalPlacementFor(ThingDef def, Rot4 rot, IntVec3 centre, int radius)
+        {
+            byte rotb = (byte)Rand.Range(0, 4);
+            
+            for (int i = 0; i < 4; i++)
+            {
+                rotb++;
+                var endpoint = centre + (rotb.ToIntVec3() * radius);
+
+                if (!endpoint.InBounds(info.map)) continue;
+
+                foreach (var cell in centre.CellsInLineTo(endpoint))
+                {
+                    // Try directly on line
+                    if (info.map.reachability.CanReach(cell, info.carnivalArea.CenterCell, Verse.AI.PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
+                    {
+                        if (CanPlaceBlueprintAt(cell, def, rot))
                         {
-                            return randomCell;
+                            return cell;
                         }
                     }
                 }
             }
+
             return IntVec3.Invalid;
         }
-
-
 
         private static IntVec3 FindRadialPlacementFor(ThingDef def, Rot4 rot, IntVec3 centre, int radius)
         {

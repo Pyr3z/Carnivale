@@ -53,8 +53,12 @@ namespace Carnivale
 
             LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)this.data;
 
+
             // Give em a wood for trash sign
-            data.TryHaveWorkerCarry(ThingDefOf.WoodLog, 1);
+            var log = ThingMaker.MakeThing(ThingDefOf.WoodLog);
+            log.stackCount = 1;
+            GenPlace.TryPlaceThing(log, Info.setupCentre, Map, ThingPlaceMode.Near);
+
 
             // Give chapiteau
             if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentHuge, 1, Utilities.RandomFabricByCheapness()) != 1)
@@ -63,7 +67,7 @@ namespace Carnivale
             }
 
 
-            // Give workers lodging tents (currently 8 carnies per lodging tent)
+            // Give lodging tents (currently 8 carnies per lodging tent)
 
             int numCarnies = this.lord.ownedPawns.Count - Info.pawnsWithRole[CarnivalRole.Carrier].Count;
 
@@ -71,7 +75,7 @@ namespace Carnivale
 
             if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentLodge, numBedTents, Utilities.RandomFabricByCheapness()) != numBedTents)
             {
-                Log.Error("Could not give " + _DefOf.Carn_Crate_TentLodge + " to carnies of faction " + lord.faction + ". It will not be built.");
+                Log.Error("Could not give enough " + _DefOf.Carn_Crate_TentLodge + " to carnies of faction " + lord.faction + ". Some will not be built.");
             }
 
             if (Info.pawnsWithRole[CarnivalRole.Manager].Any())
@@ -82,10 +86,15 @@ namespace Carnivale
                 }
             }
 
-            // Give workers stalls + entry sign
 
+            // Give vendor stalls + entry sign
             int numStallCrates = Info.pawnsWithRole[CarnivalRole.Vendor].Count + _DefOf.Carn_SignEntry.costList.First().count;
             data.TryHaveWorkerCarry(_DefOf.Carn_Crate_Stall, numStallCrates, ThingDefOf.WoodLog);
+
+
+            // Give game stalls
+            data.TryHaveWorkerCarry(_DefOf.Carn_Crate_GameHighStriker, 1, ThingDefOf.WoodLog);
+
 
             // Place blueprints
             foreach (Blueprint bp in AIBlueprintsUtility.PlaceCarnivalBlueprints(Info))
@@ -237,8 +246,10 @@ namespace Carnivale
         {
             // Do more cleanup here?
             LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)this.data;
-            data.availableCrates.RemoveAll(c => c.DestroyedOrNull());
-            data.blueprints.RemoveAll(blue => blue.DestroyedOrNull());
+
+            data.availableCrates.Clear();
+
+            data.blueprints.Clear();
         }
 
 
@@ -249,7 +260,13 @@ namespace Carnivale
             int countCarriers = Info.pawnsWithRole[CarnivalRole.Carrier].Count;
             int countSpots = 0;
             List<IntVec3> spots = new List<IntVec3>();
-            CellRect searchRect = CellRect.CenteredOn(AIBlueprintsUtility.cachedPos.Average(), 8);
+            CellRect searchRect = CellRect.CenteredOn(
+                ((LordToilData_SetupCarnival)data).blueprints
+                    .Where(b => b.def.defName.StartsWith("Carn_TentLodge"))
+                    .Select(b => b.Position)
+                    .Average(),
+                8
+            );
 
             for (int i = 0; i < 50; i++)
             {
@@ -369,7 +386,7 @@ namespace Carnivale
                 }
             }
 
-            IntVec3 offset = new IntVec3(-1, 0, -2);
+            var offset = new IntVec3(-1, 0, -2);
 
             Info.rememberedPositions.Add(announcer, Info.bannerCell + offset);
 

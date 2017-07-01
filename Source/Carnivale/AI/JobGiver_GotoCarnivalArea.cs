@@ -12,25 +12,25 @@ namespace Carnivale
             var info = pawn.MapHeld.GetComponent<CarnivalInfo>();
             if (!info.Active) return ThinkResult.NoJob;
 
-
-
-            IntVec3 gotoSpot;
             if (info.colonistsInArea.Contains(pawn))
             {
                 // sort of wander around
+                IntVec3 gotoSpot;
                 for (int i = 0; i < 10; i++)
                 {
                     if (CellFinder.TryFindRandomReachableCellNear(
-                        info.carnivalArea.ContractedBy(5).RandomCell,
+                        info.carnivalArea.ContractedBy(9).RandomCell,
                         pawn.MapHeld,
                         info.baseRadius,
                         TraverseParms.For(pawn, Danger.Some, TraverseMode.PassDoors),
-                        null,
+                        c => c.Walkable(pawn.Map),
                         null,
                         out gotoSpot
                     ))
                     {
-                        return new ThinkResult(new Job(JobDefOf.Goto, gotoSpot), this);
+                        var job = new Job(JobDefOf.Goto, gotoSpot);
+                        job.locomotionUrgency = LocomotionUrgency.Amble;
+                        return new ThinkResult(job, this);
                     }
                 }
 
@@ -43,7 +43,10 @@ namespace Carnivale
                 if (info.bannerCell.IsValid)
                 {
                     info.colonistsInArea.Add(pawn);
-                    return new ThinkResult(new Job(JobDefOf.Goto, info.bannerCell), this);
+
+                    var job = new Job(JobDefOf.Goto, info.bannerCell);
+                    job.locomotionUrgency = LocomotionUrgency.Walk;
+                    return new ThinkResult(job, this);
                 }
             }
 

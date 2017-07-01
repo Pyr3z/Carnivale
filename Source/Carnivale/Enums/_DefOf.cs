@@ -82,6 +82,8 @@ namespace Carnivale
 
 
 
+        public static ThingDef Carn_Crate_GameHighStriker;
+
         public static ThingDef Carn_Crate_Stall;
 
         public static ThingDef Carn_Crate_TentHuge;
@@ -102,11 +104,11 @@ namespace Carnivale
 
         public static ThingDef Carn_StallSurplus;
 
-        public static ThingDef Carn_TentHuge;
+        public static ThingDef Carn_TentChap;
 
-        public static ThingDef Carn_TentMedBed;
+        public static ThingDef Carn_TentLodge;
 
-        public static ThingDef Carn_TentSmallMan;
+        public static ThingDef Carn_TentLodgeMan;
 
         public static ThingDef Carn_TentDoor;
 

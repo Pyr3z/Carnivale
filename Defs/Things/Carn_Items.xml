@@ -191,9 +191,11 @@
   
   <!-- High Striker crate -->
   <ThingDef ParentName="StallCrateBase">
-    <defName>Carn_Crate_HighStriker</defName>
+    <defName>Carn_Crate_GameHighStriker</defName>
 	<label>crate, high striker</label>
 	<description>A crate with all the materials needed to set up the game 'High Striker'.</description>
+	
+	<entityDefToBuild>Carn_GameHighStriker</entityDefToBuild>
 	
 	<graphicData>
 	  <texPath>Carnivale/Items/Crate_Stall</texPath>

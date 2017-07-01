@@ -521,11 +521,5 @@ namespace Carnivale
         }
 
 
-        public static void TryThrowTextMotes(this Pawn pawn)
-        {
-
-        }
-
-
     }
 }

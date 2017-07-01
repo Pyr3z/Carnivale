@@ -114,9 +114,9 @@ namespace Carnivale
 
             Scribe_References.Look(ref this.info, "info");
 
-            Scribe_Collections.Look(ref this.availableCrates, "availableCrates", LookMode.Reference, new object[0]);
+            Scribe_Collections.Look(ref this.availableCrates, "availableCrates", LookMode.Reference);
 
-            Scribe_Collections.Look(ref this.blueprints, "blueprints", LookMode.Reference, new object[0]);
+            Scribe_Collections.Look(ref this.blueprints, "blueprints", LookMode.Reference);
         }
     }
 }

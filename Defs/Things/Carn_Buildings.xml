@@ -217,7 +217,7 @@
   
   <!-- Tent small (manager tent) -->
   <ThingDef ParentName="CarnTent">
-    <defName>Carn_TentSmallMan</defName>
+    <defName>Carn_TentLodgeMan</defName>
 	
 	<label>manager's tent</label>
 	<description>The tent where the manager sleeps.</description>
@@ -279,7 +279,7 @@
   
   <!-- Tent medium (beds) -->
   <ThingDef ParentName="CarnTent" Name="TentMedBed">
-    <defName>Carn_TentMedBed</defName>
+    <defName>Carn_TentLodge</defName>
 	
 	<label>lodging tent</label>
 	<description>A medium tent for carnies to sleep in. Contains 8 sleeping spots.</description>
@@ -353,10 +353,10 @@
   
   <!-- Tent huge -->
   <ThingDef ParentName="CarnTent">
-    <defName>Carn_TentHuge</defName>
+    <defName>Carn_TentChap</defName>
 	
 	<label>chapiteau</label>
-	<description>A large tent intended to house the main event.</description>
+	<description>A large tent intended to house the main events.</description>
 	
 	<graphicData>
 	  <texPath>Carnivale/Building/TentHuge</texPath>
@@ -523,7 +523,7 @@
 	</stuffCategories>
 	
 	<costList>
-	  <Carn_Crate_HighStriker>1</Carn_Crate_HighStriker>
+	  <Carn_Crate_GameHighStriker>1</Carn_Crate_GameHighStriker>
 	</costList>
 	
 	<statBases>

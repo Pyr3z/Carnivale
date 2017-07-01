@@ -14,7 +14,7 @@ namespace Carnivale
     {
         private static IntRange addToRadius = new IntRange(13, 20);
 
-        private const int TrashRadius = 5;
+        private const int TrashRadius = 4;
 
         public const float MaxEntertainHour = 22f;
 
@@ -41,25 +41,27 @@ namespace Carnivale
 
         public bool entertainingNow;
 
-        [Unsaved]
-        public List<Thing> thingsToHaul;
-
-        [Unsaved]
-        public List<Pawn> colonistsInArea;
-
         public List<Building> carnivalBuildings;
-
-        public List<IntVec3> checkForCells; // because num cells > 20, would a HashSet be better?
 
         public Dictionary<CarnivalRole, DeepPawnList> pawnsWithRole;
 
         public Dictionary<Pawn, IntVec3> rememberedPositions;
 
         [Unsaved]
+        public List<Thing> thingsToHaul;
+        [Unsaved]
+        public List<Pawn> colonistsInArea;
+        [Unsaved]
+        public List<IntVec3> checkForCells; // because num cells > 20, would a HashSet be better?
+
+        [Unsaved]
+        private bool checkRemoveColonists;
+        [Unsaved]
         private bool anyCarnyNeedsRest = false;
         [Unsaved]
         private IntVec3 averageLodgeTentPos = IntVec3.Invalid;
 
+        // Properties:
 
         public bool Active { get { return currentLord != null; } }
 
@@ -114,7 +116,7 @@ namespace Carnivale
         }
 
         
-
+        // Constructor
         public CarnivalInfo(Map map) : base(map)
         {
             Cleanup();
@@ -171,19 +173,23 @@ namespace Carnivale
 
             Scribe_References.Look(ref this.currentLord, "currentLord");
 
-            Scribe_Values.Look(ref this.setupCentre, "setupCentre", IntVec3.Invalid, false);
+            Scribe_Values.Look(ref this.setupCentre, "setupCentre", IntVec3.Invalid);
 
-            Scribe_Values.Look(ref this.baseRadius, "baseRadius", 0f, false);
+            Scribe_Values.Look(ref this.baseRadius, "baseRadius", 0f);
 
-            Scribe_Values.Look(ref this.carnivalArea, "carnivalArea", default(CellRect), false);
+            Scribe_Values.Look(ref this.carnivalArea, "carnivalArea", default(CellRect));
 
-            Scribe_Values.Look(ref this.bannerCell, "bannerCell", IntVec3.Invalid, false);
+            Scribe_Values.Look(ref this.bannerCell, "bannerCell", IntVec3.Invalid);
 
-            Scribe_Values.Look(ref this.trashCentre, "trashCell", IntVec3.Invalid, false);
+            Scribe_Values.Look(ref this.trashCentre, "trashCell", IntVec3.Invalid);
+
+            Scribe_Values.Look(ref this.alreadyEntertainedToday, "alreadyEntertainedToday");
+
+            Scribe_Values.Look(ref this.entertainingNow, "entertainingNow");
 
             Scribe_Collections.Look(ref this.carnivalBuildings, "carnivalBuildings", LookMode.Reference);
 
-            Scribe_Collections.Look(ref this.checkForCells, "checkForHaulableCells", LookMode.Value);
+            //Scribe_Collections.Look(ref this.checkForCells, "checkForHaulableCells", LookMode.Value);
 
             Scribe_Collections.Look(ref this.pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
 
@@ -213,6 +219,10 @@ namespace Carnivale
             daysPassed = 0;
 
             alreadyEntertainedToday = false;
+
+            entertainingNow = false;
+
+            checkRemoveColonists = false;
 
             if (thingsToHaul != null)
             {
@@ -276,15 +286,15 @@ namespace Carnivale
         }
 
 
-
+        // Main way to initialise a carnival in town
         public CarnivalInfo ReInitWith(Lord lord, IntVec3 centre)
         {
             // MUST BE CALLED AFTER LordMaker.MakeNewLord()
 
-            this.Cleanup();
+            Cleanup();
 
-            this.currentLord = lord;
-            this.setupCentre = centre;
+            currentLord = lord;
+            setupCentre = centre;
 
             // Set radius for carnies to stick to
             baseRadius = lord.ownedPawns.Count + addToRadius.RandomInRange;
@@ -323,6 +333,7 @@ namespace Carnivale
         }
 
 
+
         public override void MapRemoved()
         {
             this.Cleanup();
@@ -338,20 +349,7 @@ namespace Carnivale
                 {
                     // Check if there are any things needing to be hauled to carriers or trash
                     CheckForHaulables(false);
-                }
-                else if (Find.TickManager.TicksGame % 757 == 0)
-                {
-                    CheckForColonists();
-                }
-                else if (Find.TickManager.TicksGame % 499 == 0)
-                {
-                    // Check carny rest levels
-                    this.anyCarnyNeedsRest = currentLord.ownedPawns
-                        .Where(p => p.IsAny(CarnivalRole.Entertainer, CarnivalRole.Vendor))
-                        .Any(c => c.needs.rest.CurCategory > RestCategory.Rested);
-                }
-                else if (Find.TickManager.TicksGame % 313 == 0)
-                {
+
                     // Check for a new day
                     var day = GenDate.DaysPassed;
                     if (day > daysPassed)
@@ -360,11 +358,24 @@ namespace Carnivale
                         alreadyEntertainedToday = false;
                     }
                 }
+                else if (Find.TickManager.TicksGame % 757 == 0)
+                {
+                    // Check for colonists in area. They are kept in the list for roughly an hour.
+                    CheckForColonists(checkRemoveColonists);
+                    checkRemoveColonists = !checkRemoveColonists;
+                }
+                else if (Find.TickManager.TicksGame % 499 == 0)
+                {
+                    // Check carny rest levels
+                    this.anyCarnyNeedsRest = currentLord.ownedPawns
+                        .Where(p => p.IsAny(CarnivalRole.Entertainer, CarnivalRole.Vendor))
+                        .Any(c => c.needs.rest.CurCategory > RestCategory.Rested);
+                }
             }
         }
 
 
-        public void CheckForHaulables(bool checkForCrates = false)
+        public void CheckForHaulables(bool checkForCrates)
         {
             foreach (var cell in checkForCells)
             {
@@ -380,15 +391,18 @@ namespace Carnivale
             }
         }
 
-        public void CheckForColonists()
+        public void CheckForColonists(bool removeColonists)
         {
-            for (int i = colonistsInArea.Count - 1; i > -1; i--)
+            if (removeColonists)
             {
-                var col = colonistsInArea[i];
-                if (!checkForCells.Contains(col.PositionHeld))
+                for (int i = colonistsInArea.Count - 1; i > -1; i--)
                 {
-                    if (colonistsInArea.Remove(col) && Prefs.DevMode)
-                        Log.Warning("[Debug] colonistsInArea : Removing " + col.NameStringShort + ".");
+                    var col = colonistsInArea[i];
+                    if (!checkForCells.Contains(col.PositionHeld))
+                    {
+                        if (colonistsInArea.Remove(col) && Prefs.DevMode)
+                            Log.Warning("[Debug] colonistsInArea : Removing " + col.NameStringShort + ".");
+                    }
                 }
             }
 
@@ -523,9 +537,6 @@ namespace Carnivale
                     return t.stackCount;
                 return 0;
             });
-
-            //if (Prefs.DevMode)
-            //    Log.Warning("[Debug] Things of def " + def.defName + " that " + claimant + " can reserve: " + num);
 
             return num;
         }
@@ -685,20 +696,21 @@ namespace Carnivale
                     Log.Warning("[Debug] bannerCell reachability pass: " + closestCell);
             }
 
-            
+
             // Road pass
 
             if (map.roadInfo.roadEdgeTiles.Any())
             {
-                int searchRadius = (int)(baseRadius * 1.5f) + 10;
+                int searchRadius = (int)(baseRadius) + 10;
                 CellRect searchArea = CellRect.CenteredOn(closestCell, searchRadius).ClipInsideMap(map).ContractedBy(10);
                 float distSqrd = float.MaxValue;
-                float minDistSqrdToCentre = baseRadius * baseRadius * 4f;
+                float maxDistSqrdToCentre = baseRadius * baseRadius * 4f;
+                float minDistSqrdToCentre = (baseRadius / 2) * (baseRadius / 2);
                 IntVec3 tempClosestCell = closestCell;
                 IntVec3 roadCell = IntVec3.Invalid;
                 attempts = 0;
 
-                while (attempts < 3 && (!roadCell.IsValid || roadCell.DistanceToSquared(setupCentre) > minDistSqrdToCentre))
+                while (attempts < 3 && (!roadCell.IsValid || roadCell.DistanceToSquared(setupCentre) > maxDistSqrdToCentre))
                 {
                     if (attempts > 0 && roadCell.IsValid)
                     {
@@ -717,8 +729,11 @@ namespace Carnivale
                             float tempDist = tempClosestCell.DistanceToSquared(cell);
                             if (tempDist < distSqrd)
                             {
-                                distSqrd = tempDist;
-                                roadCell = cell;
+                                if (setupCentre.DistanceToSquared(cell) >= minDistSqrdToCentre)
+                                {
+                                    distSqrd = tempDist;
+                                    roadCell = cell;
+                                }
                             }
                         }
                     }
@@ -729,38 +744,46 @@ namespace Carnivale
                         Log.Warning("[Debug] bannerCell road pass #" + attempts + ": " + roadCell);
                 }
 
-                if (roadCell.IsValid
-                    && roadCell.DistanceToSquared(setupCentre) < minDistSqrdToCentre)
+                if (roadCell.IsValid)
                 {
-                    // Found the edge of a road,
-                    // try to centre it if it is diagonal or vertical
-                    IntVec3 adjustedCell = roadCell;
+                    var distSqrdToCentre = roadCell.DistanceToSquared(setupCentre);
+                    if (distSqrdToCentre < maxDistSqrdToCentre && distSqrdToCentre > minDistSqrdToCentre)
+                    {
+                        // Found the edge of a road,
+                        // try to centre it if it is diagonal or vertical
+                        IntVec3 adjustedCell = roadCell;
 
-                    if ((adjustedCell + IntVec3.East * 2).GetTerrain(map).HasTag("Road"))
-                    {
-                        adjustedCell += IntVec3.East * 2;
-                    }
-                    else if ((adjustedCell + IntVec3.West * 2).GetTerrain(map).HasTag("Road"))
-                    {
-                        adjustedCell += IntVec3.West * 2;
+                        if ((adjustedCell + IntVec3.East * 2).GetTerrain(map).HasTag("Road"))
+                        {
+                            adjustedCell += IntVec3.East * 2;
+                        }
+                        else if ((adjustedCell + IntVec3.West * 2).GetTerrain(map).HasTag("Road"))
+                        {
+                            adjustedCell += IntVec3.West * 2;
+                        }
+                        else
+                        {
+                            adjustedCell += IntVec3.North;
+                        }
+
+                        closestCell = adjustedCell.Walkable(map) ? adjustedCell : roadCell;
+
+                        if (Prefs.DevMode)
+                            Log.Warning("[Debug] bannerCell final road pass: " + closestCell);
                     }
                     else
                     {
-                        adjustedCell += IntVec3.North;
+                        if (Prefs.DevMode)
+                            Log.Warning("[Debug] bannerCell road pass was invalid. Reason: road cell not within acceptable range of setupCentre. roadCell=" + roadCell +
+                                ", distSqrdToCentre=" + distSqrdToCentre +
+                                ", minDistSqrdToCentre=" + minDistSqrdToCentre +
+                                ", maxDistSqrdToCentre=" + maxDistSqrdToCentre);
                     }
-
-                    closestCell = adjustedCell.Walkable(map) ? adjustedCell : roadCell;
-
-                    if (Prefs.DevMode)
-                        Log.Warning("[Debug] bannerCell final road pass: " + closestCell);
                 }
                 else
                 {
                     if (Prefs.DevMode)
-                        if (!roadCell.IsValid)
-                            Log.Warning("[Debug] bannerCell road pass was invalid. Reason: no road cell found in search area.");
-                        else
-                            Log.Warning("[Debug] bannerCell road pass was invalid. Reason: found road cell too far from setupCentre.");
+                        Log.Warning("[Debug] bannerCell road pass was invalid. Reason: no road cell found in search area.");
                 }
             }
 

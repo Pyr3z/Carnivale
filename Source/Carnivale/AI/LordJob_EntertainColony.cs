@@ -39,7 +39,6 @@ namespace Carnivale
         {
             base.Cleanup();
             info.Cleanup();
-            AIBlueprintsUtility.cachedPos.Clear();
             Utilities.cachedRoles.Clear();
         }
 
@@ -110,6 +109,7 @@ namespace Carnivale
             mainGraph.AddToil(toil_Strike);
 
             var trans_Strike = new Transition(toil_Rest, toil_Strike);
+            trans_Strike.AddSources(toil_Entertain);
             trans_Strike.AddTrigger(new Trigger_TicksPassed(this.durationTicks));
             trans_Strike.AddPostAction(new TransitionAction_Message("CarnPackingUp".Translate(this.lord.faction)));
             trans_Strike.AddPostAction(new TransitionAction_Custom(() => info.entertainingNow = false));
@@ -122,6 +122,7 @@ namespace Carnivale
                 trans_StrikeDebug.AddSources(toil_Entertain);
                 trans_StrikeDebug.AddTrigger(new Trigger_TickCondition(() => info.thingsToHaul.Any(t => t.def == ThingDefOf.AIPersonaCore)));
                 trans_StrikeDebug.AddPostAction(new TransitionAction_Message("[Debug] " + "CarnPackingUp".Translate(this.lord.faction)));
+                trans_StrikeDebug.AddPostAction(new TransitionAction_Custom(() => info.entertainingNow = false));
                 mainGraph.AddTransition(trans_StrikeDebug);
             }
 
