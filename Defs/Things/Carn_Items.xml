@@ -189,4 +189,36 @@
   </ThingDef>
   
   
+  <!-- High Striker crate -->
+  <ThingDef ParentName="StallCrateBase">
+    <defName>Carn_Crate_HighStriker</defName>
+	<label>crate, high striker</label>
+	<description>A crate with all the materials needed to set up the game 'High Striker'.</description>
+	
+	<graphicData>
+	  <texPath>Carnivale/Items/Crate_Stall</texPath>
+	  <graphicClass>Graphic_Single</graphicClass>
+	  <drawSize>(0.7,0.7)</drawSize>
+	</graphicData>
+	
+	<stuffCategories>
+	  <li>Woody</li>
+	</stuffCategories>
+	
+	<costStuffCount>500</costStuffCount>
+	<costList>
+	  <Steel>50</Steel>
+	</costList>
+	
+	<statBases>
+	  <MaxHitPoints>250</MaxHitPoints>
+	  <Flammability>1.5</Flammability>
+	  <WorkToMake>2500</WorkToMake>
+	  <Mass>10</Mass>
+	  <MarketValue>2000</MarketValue>
+	</statBases>
+	
+  </ThingDef>
+  
+  
 </Defs>

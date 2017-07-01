@@ -39,6 +39,8 @@ namespace Carnivale
 
         public bool alreadyEntertainedToday;
 
+        public bool entertainingNow;
+
         [Unsaved]
         public List<Thing> thingsToHaul;
 
@@ -186,6 +188,11 @@ namespace Carnivale
             Scribe_Collections.Look(ref this.pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
 
             Scribe_Collections.Look(ref this.rememberedPositions, "rememberedPositions", LookMode.Reference, LookMode.Value, ref pawnWorkingList, ref vec3WorkingList);
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                RecalculateCheckForCells();
+            }
         }
 
 
@@ -323,7 +330,6 @@ namespace Carnivale
             base.MapRemoved();
         }
 
-
         public override void MapComponentTick()
         {
             if (Active)
@@ -407,7 +413,7 @@ namespace Carnivale
 
             if (building.def == _DefOf.Carn_SignTrash) return;
 
-            foreach (var cell in building.OccupiedRect().ExpandedBy(2))
+            foreach (var cell in building.OccupiedRect().ExpandedBy(1))
             {
                 if (!checkForCells.Contains(cell))
                 {
@@ -416,7 +422,7 @@ namespace Carnivale
             }
         }
 
-        public Building GetFirstBuildingOf(ThingDef def)
+        public Building GetFirstBuildingOf(CarnBuildingType type)
         {
             if (!Active)
             {
@@ -426,14 +432,46 @@ namespace Carnivale
 
             foreach (var building in this.carnivalBuildings)
             {
-                if (building.def == def)
+                if (building.Is(type))
                 {
                     return building;
                 }
             }
 
-            Log.Warning("[Debug] Tried to find any building of def " + def + " in CarnivalInfo, but none exists.");
+            if (Prefs.DevMode)
+                Log.Warning("[Debug] Tried to find any building of type " + type + " in CarnivalInfo, but none exists.");
             return null;
+        }
+
+        public Building GetRandomBuildingOf(CarnBuildingType type)
+        {
+            if (!Active)
+            {
+                Log.Error("Cannot get carnival building: carnival is not in town.");
+                return null;
+            }
+
+            Building building;
+
+            if (carnivalBuildings.Where(b => b.Is(type)).TryRandomElement(out building))
+            {
+                return building;
+            }
+
+            if (Prefs.DevMode)
+                Log.Warning("[Debug] Tried to find any building of type " + type + " in CarnivalInfo, but none exists.");
+            return null;
+        }
+
+        public IEnumerable<Building> GetBuildingsOf(CarnBuildingType type)
+        {
+            foreach (var building in carnivalBuildings)
+            {
+                if (building.Is(type))
+                {
+                    yield return building;
+                }
+            }
         }
 
 
@@ -500,6 +538,33 @@ namespace Carnivale
                    && thing.IsForbidden(Faction.OfPlayer); // dropped things are by default forbidden to the player
         }
 
+
+        private void RecalculateCheckForCells()
+        {
+            if (!Active) return;
+
+            checkForCells.Clear();
+
+            HashSet<IntVec3> tcellSet = new HashSet<IntVec3>();
+
+            foreach (var tcell in TrashCells())
+            {
+                tcellSet.Add(tcell);
+            }
+
+            checkForCells.AddRange(GenRadial.RadialCellsAround(setupCentre, baseRadius, true)
+                .Where(c => c.InBounds(map) && c.Walkable(map) && !tcellSet.Contains(c)));
+
+            foreach (var building in carnivalBuildings.Where(b => b.def != _DefOf.Carn_SignTrash))
+            {
+                foreach (var bcell in building.OccupiedRect().ExpandedBy(1))
+                {
+                    if (!checkForCells.Contains(bcell))
+                        checkForCells.Add(bcell);
+                }
+            }
+
+        }
 
         private IntVec3 PreCalculateBannerCell()
         {

@@ -1,6 +1,7 @@
 ﻿using Verse.AI.Group;
 using RimWorld;
 using Verse;
+using System;
 
 namespace Carnivale
 {
@@ -67,6 +68,7 @@ namespace Carnivale
             var trans_Entertain = new Transition(toil_Setup, toil_Entertain);
             trans_Entertain.AddTrigger(new Trigger_Memo("SetupDoneEntertain"));
             trans_Entertain.AddPostAction(new TransitionAction_Message("CarnEntertainNow".Translate(this.lord.faction)));
+            trans_Entertain.AddPostAction(new TransitionAction_Custom(() => info.entertainingNow = true));
             mainGraph.AddTransition(trans_Entertain);
 
             // Rest the carnival between 22:00 and 10:00, or if anyone needs rest
@@ -80,7 +82,11 @@ namespace Carnivale
             var trans_ToRest = new Transition(toil_Entertain, toil_Rest);
             trans_ToRest.AddTrigger(new Trigger_TickCondition(() => info.AnyCarnyNeedsRest || !info.CanEntertainNow));
             trans_ToRest.AddPostAction(new TransitionAction_Message("CarnResting".Translate(this.lord.faction)));
-            trans_ToRest.AddPostAction(new TransitionAction_Custom(() => info.alreadyEntertainedToday = true));
+            trans_ToRest.AddPostAction(new TransitionAction_Custom(delegate ()
+            {
+                info.entertainingNow = false;
+                info.alreadyEntertainedToday = true;
+            }));
             mainGraph.AddTransition(trans_ToRest);
 
             var trans_FromRest = new Transition(toil_Rest, toil_Entertain);
@@ -106,6 +112,7 @@ namespace Carnivale
             var trans_Strike = new Transition(toil_Rest, toil_Strike);
             trans_Strike.AddTrigger(new Trigger_TicksPassed(this.durationTicks));
             trans_Strike.AddPostAction(new TransitionAction_Message("CarnPackingUp".Translate(this.lord.faction)));
+            trans_Strike.AddPostAction(new TransitionAction_Custom(() => info.entertainingNow = false));
             mainGraph.AddTransition(trans_Strike);
 
             // Debug ender

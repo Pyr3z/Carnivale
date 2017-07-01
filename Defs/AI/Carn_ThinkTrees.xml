@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ThinkTreeDefs>
+  
+  <!-- Colonist tree -->
+  <ThinkTreeDef>
+    <defName>NonCarnyAI</defName>
+	<insertTag>Humanlike_PostMain</insertTag>
+	<insertPriority>100</insertPriority>
+	<thinkRoot Class="Carnivale.ThinkNode_CarnivalInTown">
+	  <subNodes>
+	    <li Class="Carnivale.ThinkNode_ConditionalCarny">
+		  <invert>true</invert>
+		  <subNodes>
+	        <li Class="ThinkNode_Priority_GetJoy">
+		      <subNodes>
+		    
+			    <!-- Go to carnival area / sort of wander -->
+			    <li Class="Carnivale.JobGiver_GotoCarnivalArea" />
+			
+			    <!-- Play carnival games -->
+			    <li Class="Carnivale.JobGiver_PlayCarnGame" />
+			
+		      </subNodes>
+		    </li>
+	      </subNodes>
+		</li>
+	  </subNodes>
+	</thinkRoot>
+  </ThinkTreeDef>
+  
+</ThinkTreeDefs>

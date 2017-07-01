@@ -2,16 +2,11 @@
 using System.Linq;
 using Verse;
 using Verse.AI;
-using Verse.AI.Group;
 
 namespace Carnivale
 {
     public class JobGiver_HaulToCarrierOrTrash : ThinkNode_JobGiver
     {
-        //public override float GetPriority(Pawn pawn)
-        //{
-        //    return base.GetPriority(pawn);
-        //}
 
         protected override Job TryGiveJob(Pawn pawn)
         {
