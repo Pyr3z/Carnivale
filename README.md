@@ -18,16 +18,17 @@ The shear variety of content this mod seeks to add (and partially already has ad
   * Highly specific and versatile placement logic for buildings etcetera [DONE, ongoing]
   * Construction of carnival buildings [DONE]
   * Cutting of plants where buildings should go [DONE]
-  * Hauling of things either to carriers or to a trash zone that is up for colonist grabs [partially done]
+  * Hauling of things either to carriers or to a trash zone that is up for colonist grabs [DONE]
   * Manning of positions at the approriate times [ongoing]
     * vendor positions (there are up to three different kinds of trader at a time!) [DONE]
     * guard positions [DONEish]
     * announcers / ticket (silver) takers [partially done]
+    * game masters [started]
   * Meandering, socialising, getting joy, eating, sleeping, etc [DONE]
 * New buildings
   * Tents: lodging tents for carnies to sleep [DONE], chapiteau tent [DONE], kitchen tents?
     * YES! BUILDINGS YOU CAN GO INSIDE OF!
-  * Stalls: vendor stalls [DONE], game stalls
+  * Stalls: vendor stalls [DONE], game stalls [one is done]
   * "CARNIVALE" Entrance Banner [DONE]
   * A trash sign designating items that are unwanted by the carnies and are up for grabs. This is great because carnies may cut plants that you've been wanting to cut for a while, but they won't (usually) steal the resources. [DONE]
 * New apparel, and maybe a few new weapons (baseball bats, anyone?)
@@ -48,9 +49,6 @@ The shear variety of content this mod seeks to add (and partially already has ad
     * Unlucky - ...quite the opposite.
   * A secret, rare trait that only one pawn in the game can have, with a devastating yet unique mechanic... look for this pawn amongst carnies.
 * And absolutely (eventually), the ability for players to run their own carnival caravans
-
-## Side note
-Holy cow AI and data scribing is intense. Thought I'd be done with this weeks ago. At least it's all still fun though :P
 
 ## Texture artists welcomed!
 I'm a bit stronger on the coding side of things than the texturing side, so if you have a desire to help the mod along by drawing up textures of anything you think works with *Carnivale*'s goals, please do and contact me.
