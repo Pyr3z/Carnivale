@@ -54,6 +54,7 @@ namespace Carnivale
             "WelcomeCarnival"
         };
 
+        private static IntRange tickRange = new IntRange(400, 650);
 
         [Unsaved]
         private bool moteArgs = false;
@@ -64,6 +65,8 @@ namespace Carnivale
         [Unsaved]
         private CarnivalRole typeInt = 0;
 
+        [Unsaved]
+        private int tick = tickRange.RandomInRange;
 
 
         private CarnivalInfo Info
@@ -159,9 +162,8 @@ namespace Carnivale
             };
             toil.tickAction = delegate
             {
-                if (Find.TickManager.TicksGame % 307 == 0
-                    && Info.colonistsInArea.Any()
-                    && Rand.Chance(0.314f))
+                if (Find.TickManager.TicksGame % tick == 0
+                    && Info.colonistsInArea.Any())
                 {
                     if (!moteArgs)
                     {
@@ -171,24 +173,28 @@ namespace Carnivale
                             strings0Arg.RandomElement().Translate(),
                             3f
                         );
-
-                        moteArgs = true;
                     }
                     else
                     {
-                        var randomWare = toil.actor.trader.Goods
+                        var randomWareLabel = toil.actor.trader.Goods
                             .RandomElementByWeight(t => t.GetInnerIfMinified().MarketValue)
-                            .GetInnerIfMinified();
+                            .GetInnerIfMinified()
+                            .LabelNoCount;
+                        int index = randomWareLabel.FirstIndexOf(c => c == '(') - 1;
+                        if (index > 0)
+                        {
+                            randomWareLabel = randomWareLabel.Substring(0, index);
+                        }
 
                         MoteMaker.ThrowText(
                             toil.actor.DrawPos,
                             Map,
-                            strings1Arg.RandomElement().Translate(randomWare.LabelNoCount),
+                            strings1Arg.RandomElement().Translate(randomWareLabel),
                             5f
                         );
-
-                        moteArgs = false;
                     }
+
+                    moteArgs = !moteArgs;
                 }
             };
             toil.AddFinishAction(delegate
@@ -213,9 +219,8 @@ namespace Carnivale
             };
             toil.tickAction = delegate
             {
-                if (Find.TickManager.TicksGame % 307 == 0
-                    && Info.colonistsInArea.Any()
-                    && Rand.Chance(0.314f))
+                if (Find.TickManager.TicksGame % tick == 0
+                    && Info.colonistsInArea.Any())
                 {
                     MoteMaker.ThrowText(
                         toil.actor.DrawPos,
@@ -242,8 +247,7 @@ namespace Carnivale
             };
             toil.tickAction = delegate
             {
-                if (Find.TickManager.TicksGame % 307 == 0
-                    && Rand.Chance(0.4f))
+                if (Find.TickManager.TicksGame % tick == 0)
                 {
                     toil.actor.Rotation = Rot4.Random;
                 }

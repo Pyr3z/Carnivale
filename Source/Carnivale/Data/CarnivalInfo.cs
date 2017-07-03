@@ -554,7 +554,14 @@ namespace Carnivale
         {
             if (!Active) return;
 
-            checkForCells.Clear();
+            if (checkForCells != null)
+            {
+                checkForCells.Clear();
+            }
+            else
+            {
+                checkForCells = new List<IntVec3>();
+            }
 
             HashSet<IntVec3> tcellSet = new HashSet<IntVec3>();
 

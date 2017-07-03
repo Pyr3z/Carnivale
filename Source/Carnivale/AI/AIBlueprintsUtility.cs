@@ -88,7 +88,7 @@ namespace Carnivale
         {
             // main chapiteau
             ThingDef tentDef;
-            Rot4 rot = info.setupCentre.RotationFacing(info.bannerCell);
+            Rot4 rot = info.setupCentre.RotationFacing(info.bannerCell).Opposite;
             IntVec3 tentSpot;
 
             if (availableCrates.Any(c => c.def == _DefOf.Carn_Crate_TentHuge))

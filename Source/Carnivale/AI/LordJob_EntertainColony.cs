@@ -1,7 +1,6 @@
 ﻿using Verse.AI.Group;
 using RimWorld;
 using Verse;
-using System;
 
 namespace Carnivale
 {
