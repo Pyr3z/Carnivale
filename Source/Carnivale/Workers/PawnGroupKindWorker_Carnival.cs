@@ -11,7 +11,7 @@ namespace Carnivale
     {
         private const int MaxCarnies = 25; // not including carriers
 
-        private const int MaxVendors = 3;
+        private const int MaxVendors = 5;
 
         [Unsaved]
         private Predicate<Pawn> genderValidator = null;
@@ -48,6 +48,7 @@ namespace Carnivale
             }
             // End validation steps
 
+
             // Restrict gender of entertainers if it is in the name
             if (parms.faction.Name.EndsWith("Boys"))
             {
@@ -66,35 +67,44 @@ namespace Carnivale
             }
 
 
+            // New approach
 
+            parms.points += _DefOf.CarnyTrader.combatPower;
 
-            // New approach (TODO)
-            //int numCarnies = 0;
-            //int numVendors = 0;
-            //while (parms.points > 1 && numCarnies < MaxCarnies)
-            //{
+            int numCarnies = 0;
+            int maxVendors = Mathf.Clamp(groupMaker.traders.First().selectionWeight, 1, MaxVendors);
 
-            //}
-            // End new approach
-
-
-
-
-            // Old approach
-            // Generate vendors (first one is costless)
-            for (int i = 0;  i < groupMaker.traders.First().selectionWeight; i++)
+            // Generate vendors
+            for (int i = 0; i < maxVendors; i++)
             {
-                // Get a traderkind by commonality:
-                TraderKindDef traderKind = parms.faction.def.caravanTraderKinds.RandomElementByWeight(k => k.commonality);
+                if (i > 0 && parms.points < _DefOf.CarnyTrader.combatPower * 3) break;
 
-                // Generate vendor
-                if (i == 0) parms.points += _DefOf.CarnyTrader.combatPower;
-                else if (parms.points < _DefOf.CarnyTrader.combatPower) break;
+                TraderKindDef traderKind = null;
 
+                int t = i % 3;
+                switch (t)
+                {
+                    case 0:
+                        traderKind = _DefOf.Carn_Trader_Food;
+                        break;
+                    case 1:
+                        traderKind = _DefOf.Carn_Trader_Surplus;
+                        break;
+                    case 2:
+                        traderKind = _DefOf.Carn_Trader_Curios;
+                        break;
+                    default:
+                        traderKind = _DefOf.Carn_Trader_Food;
+                        Log.Error("PawnGroupKindWorker_Carnival reached a bad place in code.");
+                        break;
+                }
+
+                // Subtracts points:
                 GenerateVendor(parms, groupMaker, traderKind, outPawns, true);
+                numCarnies++;
 
                 // Generate wares
-                ItemCollectionGeneratorParams waresParms = default(ItemCollectionGeneratorParams);
+                var waresParms = default(ItemCollectionGeneratorParams);
                 waresParms.traderDef = traderKind;
                 waresParms.forTile = parms.tile;
                 waresParms.forFaction = parms.faction;
@@ -107,7 +117,8 @@ namespace Carnivale
 
                     return true;
                 };
-                List<Thing> wares = ItemCollectionGeneratorDefOf.TraderStock.Worker.Generate(waresParms).InRandomOrder(null).ToList();
+
+                var wares = ItemCollectionGeneratorDefOf.TraderStock.Worker.Generate(waresParms).InRandomOrder().ToList();
 
                 // Spawn pawns that are for sale (if any)
                 foreach (Pawn sellable in GetPawnsFromWares(parms, wares))
@@ -120,15 +131,23 @@ namespace Carnivale
             // Generate one extra carrier carrying nothing
             GenerateCarriers(parms, groupMaker, null, outPawns);
 
-            // Generate options
-            GenerateGroup(parms, groupMaker.options, outPawns, true);
-
             // Generate guards (first one is costless)
             parms.points += _DefOf.CarnyGuard.combatPower;
             GenerateGroup(parms, groupMaker.guards, outPawns, true);
 
             // Generate manager (costless)
             GenerateLeader(parms, outPawns);
+
+            // Generate others
+            while (parms.points > 1 && numCarnies < MaxCarnies)
+            {
+                int tempNumCarnies = outPawns.Count;
+
+                GenerateGroup(parms, groupMaker.options, outPawns, true);
+
+                numCarnies += outPawns.Count - tempNumCarnies;
+            }
+            //End new approach
 
         }
 
@@ -191,13 +210,14 @@ namespace Carnivale
                                      || Find.WorldGrid[parms.tile].biome.IsPackAnimalAllowed(x.kind.race)
                                select x).RandomElementByWeight(o => o.selectionWeight).kind;
 
-            var totalWeight = 0f;
             var waresSansPawns = new List<Thing>();
             var numCarriers = 1;
 
             if (!wares.NullOrEmpty())
             {
-                float baseCapacity = carrierKind.RaceProps.baseBodySize * 34f; // Leaving some space for silvah, original calculation is 35f
+                var totalWeight = 0f;
+
+                var baseCapacity = carrierKind.RaceProps.baseBodySize * 34f; // Leaving some space for silvah, original calculation is 35f
 
                 for (int j = wares.Count - 1; j > -1; j--)
                 {
@@ -301,7 +321,8 @@ namespace Carnivale
         private void GenerateGroup(PawnGroupMakerParms parms, List<PawnGenOption> options, List<Pawn> outPawns, bool subtractPoints = false)
         {
             int counter = 0;
-            while (counter < options.Max(o => o.selectionWeight))
+            int maxIterations = options.Max(o => o.selectionWeight);
+            while (counter < maxIterations)
             {
                 foreach (var option in options)
                 {

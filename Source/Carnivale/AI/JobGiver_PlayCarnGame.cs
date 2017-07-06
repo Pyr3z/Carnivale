@@ -31,7 +31,7 @@ namespace Carnivale
                 }
             }
 
-            return ThinkResult.NoJob;
+            return parent.subNodes[0].TryIssueJobPackage(pawn, jobParams);
         }
 
     }

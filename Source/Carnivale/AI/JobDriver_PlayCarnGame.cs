@@ -1,12 +1,16 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
 using Verse.AI;
+using Verse;
 
 namespace Carnivale
 {
     public abstract class JobDriver_PlayCarnGame : JobDriver
     {
-
+        public override string GetReport()
+        {
+            return "playing " + TargetThingA.LabelCap + ".";
+        }
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
@@ -62,7 +66,7 @@ namespace Carnivale
 
         protected virtual void WatchTickAction()
         {
-            this.pawn.Drawer.rotator.FaceCell(TargetA.Cell);
+            this.pawn.Rotation = Rot4.East;
             this.pawn.GainComfortFromCellIfPossible();
 
             // Do this?

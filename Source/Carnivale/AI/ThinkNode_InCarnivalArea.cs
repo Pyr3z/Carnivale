@@ -8,7 +8,7 @@ namespace Carnivale
         protected override bool Satisfied(Pawn pawn)
         {
             CarnivalInfo info = pawn.Map.GetComponent<CarnivalInfo>();
-            if (info != null && info.currentLord != null)
+            if (info.Active)
             {
                 return info.carnivalArea.Contains(pawn.PositionHeld);
             }

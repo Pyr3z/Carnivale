@@ -19,11 +19,11 @@ namespace Carnivale
                 for (int i = 0; i < 10; i++)
                 {
                     if (CellFinder.TryFindRandomReachableCellNear(
-                        info.carnivalArea.ContractedBy(9).RandomCell,
+                        info.carnivalBuildings.RandomElement().Position,
                         pawn.MapHeld,
                         info.baseRadius,
                         TraverseParms.For(pawn, Danger.Some, TraverseMode.PassDoors),
-                        c => c.Walkable(pawn.Map),
+                        c => c.Walkable(pawn.Map) && c.DistanceToSquared(pawn.Position) > 16,
                         null,
                         out gotoSpot
                     ))

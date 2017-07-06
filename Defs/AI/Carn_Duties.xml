@@ -118,7 +118,7 @@
 		
 		<!-- but mostly wander round -->
 		<li Class="JobGiver_WanderNearDutyLocation">
-		  <wanderRadius>20</wanderRadius>
+		  <wanderRadius>12</wanderRadius>
 		</li>
 		
 	  </subNodes>
@@ -185,7 +185,7 @@
 		
 		<!-- but mostly wander round -->
 		<li Class="JobGiver_WanderNearDutyLocation">
-		  <wanderRadius>20</wanderRadius>
+		  <wanderRadius>12</wanderRadius>
 		</li>
 		
 	  </subNodes>

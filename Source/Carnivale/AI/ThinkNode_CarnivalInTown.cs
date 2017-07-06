@@ -10,7 +10,7 @@ namespace Carnivale
         {
             var info = pawn.MapHeld.GetComponent<CarnivalInfo>();
 
-            return info == null ? false : info.Active && info.entertainingNow;
+            return info.Active && info.entertainingNow && !pawn.IsCarny();
         }
 
     }

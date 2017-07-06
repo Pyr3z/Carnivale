@@ -77,6 +77,7 @@
     <Compile Include="AI\LordToil_Leave.cs" />
     <Compile Include="AI\ThinkNode_CarnivalInTown.cs" />
     <Compile Include="AI\ThinkNode_ConditionalCarny.cs" />
+    <Compile Include="AI\ThinkNode_Priority_GotoCarnival.cs" />
     <Compile Include="Data\LordToilData_SetupCarnival.cs" />
     <Compile Include="AI\LordToil_Carn.cs" />
     <Compile Include="AI\LordToil_DefendCarnival.cs" />
