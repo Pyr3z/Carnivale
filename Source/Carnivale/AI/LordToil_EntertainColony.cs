@@ -4,16 +4,16 @@ namespace Carnivale
 {
     public class LordToil_EntertainColony : LordToil_Carn
     {
-        // FIELDS + PROPERTIES //
-
-
-
-        // CONSTRUCTORS //
 
         public LordToil_EntertainColony() { }
 
-        // OVERRIDE METHODS //
 
+        public override void Init()
+        {
+            base.Init();
+
+            Info.entertainingNow = true;
+        }
 
         public override void UpdateAllDuties()
         {
@@ -72,5 +72,12 @@ namespace Carnivale
         }
 
 
+        public override void Cleanup()
+        {
+            base.Cleanup();
+
+            Info.entertainingNow = false;
+            Info.alreadyEntertainedToday = true;
+        }
     }
 }

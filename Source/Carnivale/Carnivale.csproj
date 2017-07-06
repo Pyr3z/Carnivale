@@ -75,9 +75,8 @@
     <Compile Include="AI\JobGiver_StrikeBuildings.cs" />
     <Compile Include="AI\JobDriver_PlayHighStriker.cs" />
     <Compile Include="AI\LordToil_Leave.cs" />
-    <Compile Include="AI\ThinkNode_CarnivalInTown.cs" />
+    <Compile Include="AI\ThinkNode_GotoCarnival.cs" />
     <Compile Include="AI\ThinkNode_ConditionalCarny.cs" />
-    <Compile Include="AI\ThinkNode_Priority_GotoCarnival.cs" />
     <Compile Include="Data\LordToilData_SetupCarnival.cs" />
     <Compile Include="AI\LordToil_Carn.cs" />
     <Compile Include="AI\LordToil_DefendCarnival.cs" />
@@ -95,7 +94,7 @@
     <Compile Include="Buildings\CompProperties_CarnBuilding.cs" />
     <Compile Include="Buildings\Frame_StuffHacked.cs" />
     <Compile Include="CarnivaleMod.cs" />
-    <Compile Include="Data\CarnivalInfo.cs" />
+    <Compile Include="CarnivalInfo.cs" />
     <Compile Include="Data\DeepReferenceableList.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="Enums\CarnBuildingType.cs" />

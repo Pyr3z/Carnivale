@@ -4,22 +4,22 @@
   <!-- Colonist tree -->
   <ThinkTreeDef>
     <defName>NonCarnyAI</defName>
-	<insertTag>Humanlike_PreMain</insertTag>
+	<insertTag>Humanlike_PostMain</insertTag>
 	<insertPriority>100</insertPriority>
 	
-	<thinkRoot Class="Carnivale.ThinkNode_CarnivalInTown">
+	<thinkRoot Class="Carnivale.ThinkNode_GotoCarnival">
 	  <subNodes>
-	    <li Class="Carnivale.ThinkNode_Priority_GotoCarnival">
+		
+		<li Class="ThinkNode_ConditionalNeedPercentageAbove">
+		  <need>Joy</need>
+		  <threshold>0.8</threshold>
+		  <invert>true</invert>
 		  <subNodes>
-		
-			<!-- Go to carnival area / sort of wander -->
-			<!-- <li Class="Carnivale.JobGiver_GotoCarnivalArea" /> -->
-		
-			<!-- Play carnival games -->
+		    <!-- Play carnival games -->
 			<li Class="Carnivale.JobGiver_PlayCarnGame" />
-		
 		  </subNodes>
 		</li>
+	
 	  </subNodes>
 	</thinkRoot>
   </ThinkTreeDef>

@@ -4,7 +4,7 @@ using Verse.AI;
 
 namespace Carnivale
 {
-    public class JobGiver_PlayCarnGame : ThinkNode
+    public class JobGiver_PlayCarnGame : ThinkNode_JobGiver
     {
         public override float GetPriority(Pawn pawn)
         {
@@ -14,10 +14,10 @@ namespace Carnivale
             return info.carnivalArea.Contains(pawn.PositionHeld) ? 0f : ThinkNodePriority.AssignedJoy; 
         }
 
-        public override ThinkResult TryIssueJobPackage(Pawn pawn, JobIssueParams jobParams)
+        protected override Job TryGiveJob(Pawn pawn)
         {
             var info = pawn.MapHeld.GetComponent<CarnivalInfo>();
-            if (!info.Active) return ThinkResult.NoJob;
+            if (!info.Active || pawn.skills == null) return null;
 
             var meleeSkill = pawn.skills.GetSkill(SkillDefOf.Melee).Level;
             var shootingSkill = pawn.skills.GetSkill(SkillDefOf.Shooting).Level;
@@ -25,13 +25,14 @@ namespace Carnivale
             foreach (var gameStall in info.GetBuildingsOf(CarnBuildingType.Stall | CarnBuildingType.Attraction))
             {
                 if (gameStall.def == _DefOf.Carn_GameHighStriker
-                    && meleeSkill >= shootingSkill)
+                    && meleeSkill >= shootingSkill
+                    && pawn.CanReserve(gameStall))
                 {
-                    return new ThinkResult(new Job(_DefOf.Job_PlayHighStriker, gameStall, gameStall.InteractionCell), this);
+                    return new Job(_DefOf.Job_PlayHighStriker, gameStall, gameStall.InteractionCell);
                 }
             }
 
-            return parent.subNodes[0].TryIssueJobPackage(pawn, jobParams);
+            return null;
         }
 
     }

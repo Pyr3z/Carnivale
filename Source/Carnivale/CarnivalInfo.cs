@@ -57,7 +57,7 @@ namespace Carnivale
         [Unsaved]
         private bool checkRemoveColonists;
         [Unsaved]
-        private bool anyCarnyNeedsRest = false;
+        private bool anyCarnyNeedsRest;
         [Unsaved]
         private IntVec3 averageLodgeTentPos = IntVec3.Invalid;
 
@@ -139,8 +139,6 @@ namespace Carnivale
 
                     carnivalBuildings.RemoveAll(b => b.DestroyedOrNull() || !b.Spawned);
 
-                    //thingsToHaul.RemoveAll(t => t.DestroyedOrNull() || !t.Spawned);
-
                     foreach (var list in pawnsWithRole.Values)
                     {
                         for (int i = list.Count - 1; i > -1; i--)
@@ -183,13 +181,11 @@ namespace Carnivale
 
             Scribe_Values.Look(ref this.trashCentre, "trashCell", IntVec3.Invalid);
 
-            Scribe_Values.Look(ref this.alreadyEntertainedToday, "alreadyEntertainedToday");
+            Scribe_Values.Look(ref this.alreadyEntertainedToday, "alreadyEntertainedToday", false, true);
 
-            Scribe_Values.Look(ref this.entertainingNow, "entertainingNow");
+            Scribe_Values.Look(ref this.entertainingNow, "entertainingNow", false, true);
 
             Scribe_Collections.Look(ref this.carnivalBuildings, "carnivalBuildings", LookMode.Reference);
-
-            //Scribe_Collections.Look(ref this.checkForCells, "checkForHaulableCells", LookMode.Value);
 
             Scribe_Collections.Look(ref this.pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
 
@@ -223,6 +219,8 @@ namespace Carnivale
             entertainingNow = false;
 
             checkRemoveColonists = false;
+
+            anyCarnyNeedsRest = false;
 
             if (thingsToHaul != null)
             {
@@ -563,7 +561,7 @@ namespace Carnivale
                 checkForCells = new List<IntVec3>();
             }
 
-            HashSet<IntVec3> tcellSet = new HashSet<IntVec3>();
+            var tcellSet = new HashSet<IntVec3>();
 
             foreach (var tcell in TrashCells())
             {
@@ -577,7 +575,7 @@ namespace Carnivale
             {
                 foreach (var bcell in building.OccupiedRect().ExpandedBy(1))
                 {
-                    if (!checkForCells.Contains(bcell))
+                    if (!checkForCells.Contains(bcell) && !tcellSet.Contains(bcell))
                         checkForCells.Add(bcell);
                 }
             }
@@ -588,11 +586,11 @@ namespace Carnivale
         {
             // Yo stop working on this. If it ain't broke don't fix it.
 
-            IntVec3 colonistPos = map.listerBuildings.allBuildingsColonist.NullOrEmpty() ?
+            var colonistPos = map.listerBuildings.allBuildingsColonist.NullOrEmpty() ?
                 map.mapPawns.FreeColonistsSpawned.RandomElement().Position : map.listerBuildings.allBuildingsColonist.RandomElement().Position;
 
             // Initial pass
-            IntVec3 closestCell = carnivalArea.ClosestCellTo(colonistPos);
+            var closestCell = carnivalArea.ClosestCellTo(colonistPos);
 
             if (Prefs.DevMode)
                 Log.Warning("[Debug] bannerCell initial pass: " + closestCell);
@@ -603,7 +601,7 @@ namespace Carnivale
             int attempts = 0;
             //IntVec3 quadPos = setupCentre - map.Center;
             // using colonistPos instead to get edges closest to colonists, rather than the map centre
-            IntVec3 quadPos = setupCentre - colonistPos;
+            var quadPos = setupCentre - colonistPos;
             Rot4 rot;
             while (attempts < 10 && setupCentre.CountMineableCellsTo(closestCell, map, true) > 4)
             {
@@ -672,7 +670,7 @@ namespace Carnivale
             attempts = 0;
             IntVec3 nearestMineable;
             while (attempts < 10
-                   && closestCell.DistanceSquaredToNearestMineable(map, 12, out nearestMineable) > 16
+                   && closestCell.DistanceSquaredToNearestMineable(map, 12, out nearestMineable) >= 16
                    && nearestMineable.IsValid)
             {
                 closestCell = CellRect.CenteredOn(closestCell, 2).FurthestCellFrom(nearestMineable);
@@ -723,14 +721,13 @@ namespace Carnivale
                     {
                         // after first pass, try an average of closestCell with setupCentre and closest roadCell
                         tempClosestCell = CellsUtil.Average(null, roadCell, tempClosestCell, setupCentre);
-                        searchArea = CellRect.CenteredOn(tempClosestCell, searchRadius - 7*attempts).ClipInsideMap(map).ContractedBy(10);
+                        searchArea = CellRect.CenteredOn(tempClosestCell, searchRadius - 5*attempts).ClipInsideMap(map).ContractedBy(10);
                     }
 
                     // Find nearest roadcell in area
                     foreach (var cell in searchArea)
                     {
                         if (cell.GetTerrain(map).HasTag("Road")
-                            //&& !cell.InNoBuildEdgeArea(map) // check redundant with ContractedBy(10)
                             && cell.Walkable(map))
                         {
                             float tempDist = tempClosestCell.DistanceToSquared(cell);

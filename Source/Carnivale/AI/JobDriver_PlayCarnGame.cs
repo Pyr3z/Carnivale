@@ -2,6 +2,7 @@
 using RimWorld;
 using Verse.AI;
 using Verse;
+using Xnope;
 
 namespace Carnivale
 {
@@ -40,6 +41,11 @@ namespace Carnivale
         {
             var toil = new Toil();
 
+            toil.initAction = delegate
+            {
+                pawn.Rotation = pawn.Position.RotationFacing(TargetLocA);
+            };
+
             toil.AddPreTickAction(delegate
             {
                 this.WatchTickAction();
@@ -57,6 +63,7 @@ namespace Carnivale
             toil.initAction = delegate
             {
                 this.GetPrizeInitAction();
+                EndJobWith(JobCondition.Succeeded);
             };
             toil.defaultCompleteMode = ToilCompleteMode.Instant;
 
@@ -66,10 +73,8 @@ namespace Carnivale
 
         protected virtual void WatchTickAction()
         {
-            this.pawn.Rotation = Rot4.East;
-            this.pawn.GainComfortFromCellIfPossible();
+            //this.pawn.GainComfortFromCellIfPossible();
 
-            // Do this?
             var extraJoyGainFactor = TargetThingA.GetStatValue(StatDefOf.EntertainmentStrengthFactor);
             JoyUtility.JoyTickCheckEnd(this.pawn, JoyTickFullJoyAction.GoToNextToil, extraJoyGainFactor);
         }
