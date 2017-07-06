@@ -9,7 +9,7 @@ namespace Carnivale
 {
     public class PawnGroupKindWorker_Carnival : PawnGroupKindWorker
     {
-        private const int MaxCarnies = 25; // not including carriers
+        private const int MaxCarnies = 15; // not including carriers, guards, manager
 
         private const int MaxVendors = 5;
 
@@ -21,7 +21,7 @@ namespace Carnivale
             // NOTE: Just figured out that this would never be used for the
             // Carnival GroupKind. Leaving it here in case I can use it elsewhere.
 
-            return groupMaker.options.Min(o => o.Cost);
+            return _DefOf.CarnyTrader.combatPower;
         }
 
 
@@ -39,6 +39,8 @@ namespace Carnivale
 
         protected override void GeneratePawns(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, List<Pawn> outPawns, bool errorOnZeroResults = true)
         {
+            genderValidator = null;
+
             // Validation steps
             if (!CanGenerateFrom(parms, groupMaker) || !ValidateTradersList(groupMaker) || !ValidateCarriers(groupMaker))
             {
@@ -54,7 +56,7 @@ namespace Carnivale
             {
                 genderValidator = delegate (Pawn p)
                 {
-                    return p.gender == Gender.Male;
+                    return p.Is(CarnivalRole.Entertainer, false) && p.gender == Gender.Male;
                 };
             }
             else if (parms.faction.Name.EndsWith("Girls")
@@ -62,23 +64,23 @@ namespace Carnivale
             {
                 genderValidator = delegate (Pawn p)
                 {
-                    return p.gender == Gender.Female;
+                    return p.Is(CarnivalRole.Entertainer, false) && p.gender == Gender.Female;
                 };
             }
 
 
             // New approach
 
-            parms.points += _DefOf.CarnyTrader.combatPower;
+            // Spawn manager (costless)
+            outPawns.Add(parms.faction.leader);
 
+            // Generate vendors (first is costless)
+            var allWares = new List<Thing>();
             int numCarnies = 0;
             int maxVendors = Mathf.Clamp(groupMaker.traders.First().selectionWeight, 1, MaxVendors);
 
-            // Generate vendors
-            for (int i = 0; i < maxVendors; i++)
+            for (int i = 0; i < maxVendors && numCarnies < MaxCarnies; i++)
             {
-                if (i > 0 && parms.points < _DefOf.CarnyTrader.combatPower * 3) break;
-
                 TraderKindDef traderKind = null;
 
                 int t = i % 3;
@@ -100,8 +102,17 @@ namespace Carnivale
                 }
 
                 // Subtracts points:
-                GenerateVendor(parms, groupMaker, traderKind, outPawns, true);
-                numCarnies++;
+                var vendor = GenerateVendor(parms, groupMaker, traderKind, i > 0);
+                if (vendor != null)
+                {
+                    outPawns.Add(vendor);
+                    numCarnies++;
+                }
+                else
+                {
+                    break;
+                }
+                
 
                 // Generate wares
                 var waresParms = default(ItemCollectionGeneratorParams);
@@ -118,36 +129,31 @@ namespace Carnivale
                     return true;
                 };
 
-                var wares = ItemCollectionGeneratorDefOf.TraderStock.Worker.Generate(waresParms).InRandomOrder().ToList();
+                allWares.AddRange(ItemCollectionGeneratorDefOf.TraderStock.Worker.Generate(waresParms));
 
-                // Spawn pawns that are for sale (if any)
-                foreach (Pawn sellable in GetPawnsFromWares(parms, wares))
-                    outPawns.Add(sellable);
+                // Generate carnies for each trader
+                foreach (var carny in GenerateGroup(parms, groupMaker.options, i > 0))
+                {
+                    outPawns.Add(carny);
+                    numCarnies++;
+                }
 
-                // Carriers are costless.
-                GenerateCarriers(parms, groupMaker, wares, outPawns);
+                // Generate guards for each trader
+                foreach (var guard in GenerateGroup(parms, groupMaker.guards, i > 0))
+                {
+                    outPawns.Add(guard);
+                }
             }
 
-            // Generate one extra carrier carrying nothing
-            GenerateCarriers(parms, groupMaker, null, outPawns);
+            // Spawn pawns that are for sale (if any)
+            foreach (Pawn sellable in GetPawnsFromWares(parms, allWares))
+                outPawns.Add(sellable);
 
-            // Generate guards (first one is costless)
-            parms.points += _DefOf.CarnyGuard.combatPower;
-            GenerateGroup(parms, groupMaker.guards, outPawns, true);
-
-            // Generate manager (costless)
-            GenerateLeader(parms, outPawns);
-
-            // Generate others
-            while (parms.points > 1 && numCarnies < MaxCarnies)
-            {
-                int tempNumCarnies = outPawns.Count;
-
-                GenerateGroup(parms, groupMaker.options, outPawns, true);
-
-                numCarnies += outPawns.Count - tempNumCarnies;
-            }
-            //End new approach
+            // Generate carriers
+            outPawns.AddRange(
+                GenerateCarriers(parms, groupMaker, allWares)       // carriers w/ traders' wares
+                .Concat(GenerateCarriers(parms, groupMaker, null))  // carrier w/ 100 silver
+            );
 
         }
 
@@ -155,17 +161,17 @@ namespace Carnivale
         /* Private Methods */
 
 
-        private void GenerateVendor(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, TraderKindDef traderKind, List<Pawn> outPawns, bool subtractPoints = false)
+        private Pawn GenerateVendor(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, TraderKindDef traderKind,  bool subtractPoints = false)
         {
             if (subtractPoints)
-                if (parms.points < _DefOf.CarnyTrader.combatPower)
-                    return;
+                if (parms.points < _DefOf.CarnyTrader.combatPower * 2)
+                    return null;
                 else
-                    parms.points -= _DefOf.CarnyTrader.combatPower;
+                    parms.points -= _DefOf.CarnyTrader.combatPower * 2;
 
             // Generate new vendor
             PawnGenerationRequest request = new PawnGenerationRequest(
-                groupMaker.traders.RandomElement().kind,
+                _DefOf.CarnyTrader,
                 parms.faction,
                 PawnGenerationContext.NonPlayer,
                 parms.tile,
@@ -196,12 +202,12 @@ namespace Carnivale
             PawnComponentsUtility.AddAndRemoveDynamicComponents(vendor, true);
             vendor.trader.traderKind = traderKind;
 
-            outPawns.Add(vendor);
+            return vendor;
         }
 
 
 
-        private void GenerateCarriers(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, List<Thing> wares, List<Pawn> outPawns)
+        private IEnumerable<Pawn> GenerateCarriers(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, List<Thing> wares)
         {
             var carrierList = new List<Pawn>();
 
@@ -250,6 +256,12 @@ namespace Carnivale
 
                 numCarriers = Mathf.CeilToInt(totalWeight / baseCapacity);
             }
+            else
+            {
+                var silver = ThingMaker.MakeThing(ThingDefOf.Silver);
+                silver.stackCount = 100;
+                waresSansPawns.Add(silver);
+            }
 
             int i = 0;
             for (int j = 0; j < numCarriers; j++)
@@ -279,20 +291,23 @@ namespace Carnivale
                     null,
                     null
                 );
+
                 var carrier = PawnGenerator.GeneratePawn(request);
+
                 if (i < waresSansPawns.Count)
                 {
                     // Add initial few items to carrier
                     if (carrier.inventory.innerContainer.TryAdd(waresSansPawns[i], true))
                         i++;
                 }
+
                 carrierList.Add(carrier);
-                outPawns.Add(carrier);
+                yield return carrier;
             }
 
             // Finally, fill up all the carriers' inventories
             int numFailures = 0;
-            while (i < waresSansPawns.Count && numFailures < 15)
+            while (i < waresSansPawns.Count && numFailures < 18)
             {
                 var ware = waresSansPawns[i];
                 Pawn randCarrier;
@@ -318,10 +333,11 @@ namespace Carnivale
 
 
 
-        private void GenerateGroup(PawnGroupMakerParms parms, List<PawnGenOption> options, List<Pawn> outPawns, bool subtractPoints = false)
+        private IEnumerable<Pawn> GenerateGroup(PawnGroupMakerParms parms, List<PawnGenOption> options, bool subtractPoints = false)
         {
             int counter = 0;
             int maxIterations = options.Max(o => o.selectionWeight);
+            // traverses the list of options so at least 1 of each is generated before looping
             while (counter < maxIterations)
             {
                 foreach (var option in options)
@@ -336,58 +352,51 @@ namespace Carnivale
 
 
                         PawnGenerationRequest request = new PawnGenerationRequest(
-                                option.kind,
-                                parms.faction,
-                                PawnGenerationContext.NonPlayer,
-                                parms.tile,
-                                false,
-                                false,
-                                false,
-                                false,
-                                true,
-                                true,
-                                1f,
-                                true, // Force free warm layers if needed
-                                true,
-                                true,
-                                parms.inhabitants,
-                                false,
-                                delegate (Pawn p)
+                            option.kind,
+                            parms.faction,
+                            PawnGenerationContext.NonPlayer,
+                            parms.tile,
+                            false,
+                            false,
+                            false,
+                            false,
+                            true,
+                            option.kind == _DefOf.CarnyGuard, // must be capable of violence
+                            1f,
+                            true, // Force free warm layers if needed
+                            true,
+                            true,
+                            parms.inhabitants,
+                            false,
+                            delegate (Pawn p)
+                            {
+                                if (p.Is(CarnivalRole.Worker, false))
                                 {
-                                    if (p.Is(CarnivalRole.Worker, false))
-                                    {
-                                        return !p.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction);
-                                    }
+                                    return !p.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction);
+                                }
 
-                                    if (genderValidator != null && p.Is(CarnivalRole.Entertainer, false))
-                                    {
-                                        return genderValidator(p);
-                                    }
+                                if (genderValidator != null)
+                                {
+                                    return genderValidator(p);
+                                }
 
-                                    return true;
-                                },
-                                null,
-                                null,
-                                null,
-                                null,
-                                null
-                            );
+                                return true;
+                            },
+                            null,
+                            null,
+                            null,
+                            null,
+                            null
+                        );
 
                         var pawn = PawnGenerator.GeneratePawn(request);
 
-                        outPawns.Add(pawn);
+                        yield return pawn;
                     }
                 }
 
                 counter++;
             }
-        }
-
-
-        private void GenerateLeader(PawnGroupMakerParms parms, List<Pawn> outPawns)
-        {
-            if (parms.faction.leader != null)
-                outPawns.Add(parms.faction.leader);
         }
 
 
@@ -400,7 +409,7 @@ namespace Carnivale
                 if (p != null)
                 {
                     if (p.Faction != parms.faction)
-                        p.SetFaction(parms.faction, null);
+                        p.SetFaction(parms.faction);
                     yield return p;
                 }
             }

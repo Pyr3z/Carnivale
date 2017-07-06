@@ -75,16 +75,16 @@
 	  <li>
 	    <kindDef>Carnival</kindDef>
 		<commonality>100</commonality>
-		<!-- These values are not treated as selection weights by the code, but as maximum counts. -->
+		<!-- These values are not treated as selection weights by the code. -->
 		<options>
-		  <Carny>4</Carny> <!-- Cost: 33 * 4 = 132 -->
-		  <CarnyWorker>3</CarnyWorker> <!-- Cost: 45 * 3 = 135 -->
-		  <CarnyRare>2</CarnyRare> <!-- Cost: 45 * 2 = 90 -->
-		  <!-- Cost for full group: 357 -->
+		  <!-- how many per trader -->
+		  <Carny>2</Carny>
+		  <CarnyWorker>1</CarnyWorker>
+		  <CarnyRare>1</CarnyRare>
 		</options>
 		
 		<traders>
-		  <!-- First is treated as costless -->
+		  <!-- How many traders; first is treated as costless -->
 		  <CarnyTrader>3</CarnyTrader>
 		</traders>
 		
@@ -95,8 +95,8 @@
 		</carriers>
 		
 		<guards>
-		  <!-- First is treated as costless -->
-		  <CarnyGuard>3</CarnyGuard>
+		  <!-- how many per trader -->
+		  <CarnyGuard>1</CarnyGuard>
 		</guards>
 	  </li>
 	  
