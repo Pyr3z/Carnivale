@@ -6,6 +6,8 @@ namespace Carnivale
 {
     public class JobGiver_PlayCarnGame : ThinkNode_JobGiver
     {
+        // Deprecate? //
+
         public override float GetPriority(Pawn pawn)
         {
             var info = pawn.MapHeld.GetComponent<CarnivalInfo>();
@@ -28,8 +30,10 @@ namespace Carnivale
                     && meleeSkill >= shootingSkill
                     && pawn.CanReserve(gameStall))
                 {
-                    return new Job(_DefOf.Job_PlayHighStriker, gameStall, gameStall.InteractionCell);
+                    return new Job(_DefOf.Job_PlayHighStriker, gameStall);
                 }
+
+
             }
 
             return null;

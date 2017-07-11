@@ -24,6 +24,11 @@
   
   <!-- (general) -->
   
+  <JobDef>
+    <defName>Job_PayEntryFee</defName>
+	<driverClass>Carnivale.JobDriver_PayEntryFee</driverClass>
+	<reportString>paying entry fee.</reportString>
+  </JobDef>
   
   
   <!-- (joy) -->

@@ -62,6 +62,9 @@ namespace Carnivale
                     parms.spawnCenter = tempSpot;
                 else if (Prefs.DevMode)
                     Log.Warning("[Debug] Failed to resolve spawn center for CarnivalArrives. Defaulting.");
+
+                int feePerColonist = (int)(parms.points / (20f + map.mapPawns.FreeColonistsCount * 2)) + Rand.Range(-5, 5);
+                map.GetComponent<CarnivalInfo>().feePerColonist = -feePerColonist;
             }
             
             PawnGroupMakerParms defaultMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(parms);

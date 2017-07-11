@@ -7,7 +7,7 @@ namespace Carnivale
     public class Building_TentFlap : Building_Door
     {
         // List is more efficient than HashSet for element count under 20
-        private List<int> allowedColonistIDs = new List<int>();
+        private List<Pawn> allowedColonists = new List<Pawn>();
 
         public bool everAvailableToNonCarnies = false;
 
@@ -16,7 +16,7 @@ namespace Carnivale
 
         public void Notify_ColonistPaidEntry(Pawn col)
         {
-            allowedColonistIDs.Add(col.thingIDNumber);
+            allowedColonists.Add(col);
         }
 
         public override bool PawnCanOpen(Pawn p)
@@ -27,8 +27,9 @@ namespace Carnivale
 
             if (p.Faction.HostileTo(this.Faction)) return false;
 
-            if (allowedColonistIDs.Contains(p.thingIDNumber)) return true;
-            else return false;
+            if (allowedColonists.Contains(p)) return true;
+
+            return false;
         }
 
 
@@ -36,7 +37,7 @@ namespace Carnivale
         {
             base.ExposeData();
 
-            Scribe_Collections.Look(ref this.allowedColonistIDs, "allowedColonistsIDs", LookMode.Value);
+            Scribe_Collections.Look(ref this.allowedColonists, "allowedColonists", LookMode.Reference);
 
             Scribe_Values.Look(ref this.everAvailableToNonCarnies, "availableToNonCarnies", false);
         }

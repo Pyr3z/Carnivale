@@ -547,6 +547,9 @@
 			</placementOffsets>
 		  </li>
 		</interiorThings>
+		
+		<useJob>Job_PlayHighStriker</useJob>
+		<useLabel>Play high striker</useLabel>
 	  </li>
 	</comps>
   </ThingDef>

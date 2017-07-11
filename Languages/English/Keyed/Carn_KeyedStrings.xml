@@ -6,7 +6,7 @@
   
   <!-- Carnival Approaches -->
   <CarnivalApproachesTitle>{0} contacts you via short range radio.</CarnivalApproachesTitle>
-  <CarnivalApproachesInitial>A traveling carnival by the name of {0} is nearby and wishes to set up their show on your land.\n\nThey would like to stay for {1} days to provide your people with premium entertainment and unique trading opportunities.\n\nWould you like to welcome them to {2}?</CarnivalApproachesInitial>
+  <CarnivalApproachesInitial>A traveling carnival by the name of {0} is nearby and wishes to set up their show on your land.\n\nThey would like to stay for {1} days to provide your people with premium entertainment and unique trading opportunities. The fee they ask is {2} per colonist.\n\nWould you like to welcome them to {3}?</CarnivalApproachesInitial>
   <CarnivalApproachesAccept>Yes!</CarnivalApproachesAccept>
   <CarnivalApproachesReject>Sorry, no.</CarnivalApproachesReject>
   <CarnivalApproachesAcceptMessage>{0}, the manager, excitedly thanks you and informs you that they will arrive in one day.</CarnivalApproachesAcceptMessage>

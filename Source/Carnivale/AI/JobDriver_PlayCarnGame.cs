@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
 using Verse.AI;
-using Verse;
 using Xnope;
 
 namespace Carnivale
@@ -10,7 +9,7 @@ namespace Carnivale
     {
         public override string GetReport()
         {
-            return "playing " + TargetThingA.LabelCap + ".";
+            return "playing " + TargetThingA.LabelShort + ".";
         }
 
         protected override IEnumerable<Toil> MakeNewToils()
@@ -19,9 +18,6 @@ namespace Carnivale
 
             // Reserve the building
             yield return Toils_Reserve.Reserve(TargetIndex.A);
-
-            // Reserve the interaction cell
-            yield return Toils_Reserve.Reserve(TargetIndex.B);
 
             // Goto interaction cell
             yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.InteractionCell);

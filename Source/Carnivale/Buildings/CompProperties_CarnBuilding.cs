@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using RimWorld;
+using System.Collections.Generic;
 using Verse;
 
 namespace Carnivale
 {
-    public class CompProperties_CarnBuilding : CompProperties
+    public class CompProperties_CarnBuilding : CompProperties_Usable
     {
         public CarnBuildingType type = 0;
 

@@ -41,6 +41,8 @@ namespace Carnivale
 
         public bool entertainingNow;
 
+        public int feePerColonist;
+
         public List<Building> carnivalBuildings;
 
         public Dictionary<CarnivalRole, DeepPawnList> pawnsWithRole;
@@ -104,7 +106,7 @@ namespace Carnivale
                         {
                             return 10;
                         }
-                        return 1;
+                        return 0;
                     });
 
                     if (Prefs.DevMode)
@@ -185,6 +187,8 @@ namespace Carnivale
 
             Scribe_Values.Look(ref this.entertainingNow, "entertainingNow", false, true);
 
+            Scribe_Values.Look(ref this.feePerColonist, "feePerColonist", -1);
+
             Scribe_Collections.Look(ref this.carnivalBuildings, "carnivalBuildings", LookMode.Reference);
 
             Scribe_Collections.Look(ref this.pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
@@ -221,6 +225,15 @@ namespace Carnivale
             checkRemoveColonists = false;
 
             anyCarnyNeedsRest = false;
+
+            if (feePerColonist > 0)
+            {
+                feePerColonist = -1;
+            }
+            else if (feePerColonist < -1)
+            {
+                feePerColonist = -feePerColonist;
+            }
 
             if (thingsToHaul != null)
             {

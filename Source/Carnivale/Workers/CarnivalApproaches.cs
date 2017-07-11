@@ -65,12 +65,15 @@ namespace Carnivale
                 return false;
             }
 
+            int feePerColonist = (int)(parms.points / (20f + map.mapPawns.FreeColonistsCount * 2)) + Rand.Range(-5, 5);
+
             // Main dialog node
             string title = "CarnivalApproachesTitle".Translate(parms.faction.Name);
             DiaNode initialNode = new DiaNode("CarnivalApproachesInitial".Translate(new object[]
             {
                 parms.faction.Name,
                 durationDays,
+                feePerColonist + " " + ThingDefOf.Silver.label,
                 map.info.parent.Label == "Colony" ? "your colony" : map.info.parent.Label
             }));
 
@@ -94,6 +97,9 @@ namespace Carnivale
                 // This is super cheaty, but there is no other field to pass this to.
                 arrivalParms.raidPodOpenDelay = durationDays;
                 // End cheaty.
+
+                // Assign fee per colonist to CarnivalInfo
+                map.GetComponent<CarnivalInfo>().feePerColonist = -feePerColonist;
 
                 QueuedIncident qi = new QueuedIncident(new FiringIncident(_DefOf.CarnivalArrives, null, arrivalParms), Find.TickManager.TicksGame + GenDate.TicksPerDay);
                 Find.Storyteller.incidentQueue.Add(qi);
