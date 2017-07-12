@@ -21,6 +21,8 @@
   
   
   <!-- Motes -->
+  <EnjoyCarnival>Enjoy the carnival!</EnjoyCarnival>
+  
   <StepRightUp>Step right up, folks!</StepRightUp>
   <WelcomeCarnival>Welcome to the Carnival!</WelcomeCarnival>
   <EntryIsOnly>Entry is only {0} silver!</EntryIsOnly>

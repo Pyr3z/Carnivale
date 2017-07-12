@@ -114,6 +114,13 @@ namespace Carnivale
                     
                     if (carryTracker.innerContainer.TryTransferToContainer(carriedThing, TicketTaker.inventory.innerContainer, carriedThing.stackCount, true))
                     {
+                        MoteMaker.ThrowText(
+                            TicketTaker.DrawPos,
+                            Map,
+                            "EnjoyCarnival".Translate(),
+                            3f
+                        );
+
                         if (Prefs.DevMode)
                             Log.Warning("[Debug] " + this.pawn + " succesfully payed " + carriedThing.stackCount + " silver to " + TicketTaker.NameStringShort);
                     }

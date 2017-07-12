@@ -589,7 +589,7 @@ namespace Carnivale
                 return ticketTaker;
             }
 
-            if (!(from p in currentLord.ownedPawns
+            if (!(from p in pawnsWithRole[CarnivalRole.Entertainer]
                   where p.story != null && p.story.adulthood != null
                     && p.story.adulthood.TitleShort == "Announcer"
                     && !withoutAssignedPostions || !rememberedPositions.ContainsKey(p)
@@ -598,8 +598,8 @@ namespace Carnivale
                 // If no pawns have the announcer backstory
                 if (!pawnsWithRole[CarnivalRole.Entertainer].Where(p => !withoutAssignedPostions || !rememberedPositions.ContainsKey(p)).TryRandomElement(out ticketTaker))
                 {
-                    // No entertainers either
-                    return null;
+                    // No entertainers either, use leader
+                    return currentLord.faction.leader;
                 }
             }
 
