@@ -65,7 +65,7 @@ namespace Carnivale
                 return false;
             }
 
-            int feePerColonist = (int)(parms.points / (20f + map.mapPawns.FreeColonistsCount * 2)) + Rand.Range(-5, 5);
+            int feePerColonist = Utilities.CalculateFeePerColonist(parms.points);
 
             // Main dialog node
             string title = "CarnivalApproachesTitle".Translate(parms.faction.Name);

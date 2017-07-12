@@ -536,7 +536,6 @@ namespace Carnivale
         {
             if (thing != null && ShouldHaulTrash)
             {
-                // a better way to do this might be to cache the radial
                 foreach (var cell in TrashCells())
                 {
                     if (StoreUtility.IsGoodStoreCell(cell, map, thing, carrier, currentLord.faction))

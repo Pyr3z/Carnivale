@@ -40,21 +40,25 @@ namespace Carnivale
 
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn pawn)
         {
-            if (Props.useJob == null)
+            if (Props.useJob == null || !Info.Active)
             {
+                // No use jobs specified in def, or carnival is not in town for whatever reason
                 yield break;
             }
 
             if (parent.Faction != pawn.Faction && !Info.entertainingNow)
             {
+                // Carnival is closed
                 yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (Carnival closed)", null);
             }
             else if (!pawn.CanReserve(this.parent))
             {
+                // Already reserved
                 yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (" + "Reserved".Translate() + ")", null);
             }
             else if (Props.useJob == _DefOf.Job_PayEntryFee)
             {
+                // Pay entry fee
                 yield return new FloatMenuOption(this.FloatMenuOptionLabel, delegate
                 {
                     var silverCount = new ThingCountClass(ThingDefOf.Silver, Info.feePerColonist);
@@ -69,10 +73,12 @@ namespace Carnivale
             }
             else if (!Info.allowedColonists.Contains(pawn))
             {
+                // Pawn hasn't payed entry fee
                 yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (Must pay fee at entrance)", null);
             }
             else if (Props.type.Is(CarnBuildingType.Stall | CarnBuildingType.Attraction))
             {
+                // Do use job (mostly for games)
                 yield return new FloatMenuOption(this.FloatMenuOptionLabel, delegate
                 {
                     if (pawn.CanReserveAndReach(this.parent, PathEndMode.InteractionCell, Danger.None))

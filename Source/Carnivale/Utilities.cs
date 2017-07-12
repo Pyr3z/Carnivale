@@ -379,6 +379,16 @@ namespace Carnivale
         }
 
 
+        public static int CalculateFeePerColonist(float points)
+        {
+            int fee = (int)(points / (20f + Find.VisibleMap.mapPawns.FreeColonistsCount * 2)) + Rand.Range(-5, 5);
+
+            Mathf.Clamp(fee, 9, 30);
+
+            return fee;
+        }
+
+
         /// <summary>
         /// Clears a CellRect of plants and/or haulables, either forcibly or 'gently'.
         /// </summary>
