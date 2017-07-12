@@ -20,6 +20,10 @@ namespace Carnivale
 
         public const float MinEntertainHour = 10f;
 
+        public const float MinRadius = 15f;
+
+        public const float MaxRadius = 35f;
+
 
         // Fields
 
@@ -56,7 +60,7 @@ namespace Carnivale
         [Unsaved]
         public List<Pawn> colonistsInArea;
         [Unsaved]
-        public List<IntVec3> checkForCells; // because num cells > 20, would a HashSet be better?
+        public List<IntVec3> checkForCells; // because num cells > 20, would a HashSet be better? No, because we iterate through it a lot.
 
         [Unsaved]
         private bool checkRemoveColonists;
@@ -322,7 +326,7 @@ namespace Carnivale
 
             // Set radius for carnies to stick to
             baseRadius = lord.ownedPawns.Count + addToRadius.RandomInRange;
-            baseRadius = Mathf.Clamp(baseRadius, 15f, 35f);
+            baseRadius = Mathf.Clamp(baseRadius, MinRadius, MaxRadius);
 
             // Set initial check cells
             checkForCells.AddRange(GenRadial.RadialCellsAround(setupCentre, baseRadius, true)

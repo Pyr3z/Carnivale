@@ -199,11 +199,9 @@ namespace Carnivale
 
         private static IEnumerable<Blueprint> PlaceStallBlueprints()
         {
-            // Default stall is food for now
             ThingDef stallDef = _DefOf.Carn_StallFood;
             IntVec3 stallSpot = IntVec3.Invalid;
             Rot4 rot = default(Rot4);
-            CellRect stallArea = info.carnivalArea;
 
             foreach (Pawn stallUser in stallUsers.Where(p => p.TraderKind != null))
             {
@@ -231,19 +229,29 @@ namespace Carnivale
 
                 if (stallSpot.IsValid)
                 {
-                    // Next spot should be close to last spot
-                    stallSpot = FindRadialCardinalPlacementFor(stallDef, rot, stallSpot, 10);
+                    if (Rand.Chance(0.5f))
+                    {
+                        // Next spot should be close to last spot
+                        stallSpot = FindRadialCardinalPlacementFor(stallDef, rot, stallSpot, 10);
+                    }
+                    else
+                    {
+                        // Next spot should be random
+                        IntVec3[] points = new IntVec3[]
+                        {
+                            info.setupCentre,
+                            info.carnivalArea.EdgeCells.RandomElement()
+                        };
+
+                        stallSpot = FindRadialPlacementFor(stallDef, rot, points.Average(), 10);
+                    }
                 }
                 else
                 {
-                    // Find random initial spot
-                    //stallSpot = FindRandomPlacementFor(stallDef, rot, false, (int)info.baseRadius / 3);
-                    
-                    // Trying new approach:
-
                     IntVec3[] points = new IntVec3[]
                     {
                         info.setupCentre,
+                        info.bannerCell,
                         info.bannerCell
                     };
 
@@ -254,7 +262,7 @@ namespace Carnivale
                 // Finally, spawn the f*cker
                 if (stallSpot.IsValid)
                 {
-                    RemoveFirstCrateOf(stallDef);
+                    RemoveFirstCrateOf(_DefOf.Carn_Crate_Stall);
                     Utilities.ClearThingsFor(info.map, stallSpot, stallDef.size, rot, false, true);
                     // Add spot to stall user's spot
                     info.rememberedPositions.Add(stallUser, stallSpot);
@@ -309,14 +317,13 @@ namespace Carnivale
         private static IEnumerable<Blueprint> PlaceGameBlueprints()
         {
             var gameMasters = stallUsers.Where(p => p.TraderKind == null).ToList();
-            // ListFullCopy() inefficient... but we have to copy because it's not thread-safe otherwise
             var gameCrates = availableCrates.ListFullCopy().Where(c => c.def.entityDefToBuild != null);
 
             IntVec3[] points = new IntVec3[]
             {
                 info.setupCentre,
-                info.setupCentre,
-                info.bannerCell
+                info.bannerCell,
+                info.carnivalArea.EdgeCells.RandomElement()
             };
             var gameSpot = points.Average();
 

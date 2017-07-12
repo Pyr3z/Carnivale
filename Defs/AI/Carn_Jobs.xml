@@ -41,7 +41,7 @@
     <joyMaxParticipants>1</joyMaxParticipants>
     <joyGainRate>1</joyGainRate>
     <joySkill>Melee</joySkill>
-    <joyXpPerTick>0.030</joyXpPerTick>
+    <joyXpPerTick>0.100</joyXpPerTick>
     <joyKind>GamingDexterity</joyKind>
   </JobDef>
   
