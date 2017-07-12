@@ -582,16 +582,21 @@ namespace Carnivale
                 return null;
             }
 
-            Pawn ticketTaker;
+            Pawn ticketTaker = (bannerCell + new IntVec3(-1, 0, -2)).GetFirstPawn(map);
+
+            if (ticketTaker != null && (!withoutAssignedPostions || !rememberedPositions.ContainsKey(ticketTaker)))
+            {
+                return ticketTaker;
+            }
 
             if (!(from p in currentLord.ownedPawns
                   where p.story != null && p.story.adulthood != null
                     && p.story.adulthood.TitleShort == "Announcer"
-                    && !withoutAssignedPostions == !rememberedPositions.ContainsKey(p)
+                    && !withoutAssignedPostions || !rememberedPositions.ContainsKey(p)
                   select p).TryRandomElement(out ticketTaker))
             {
                 // If no pawns have the announcer backstory
-                if (!pawnsWithRole[CarnivalRole.Entertainer].Where(p => !withoutAssignedPostions == !rememberedPositions.ContainsKey(p)).TryRandomElement(out ticketTaker))
+                if (!pawnsWithRole[CarnivalRole.Entertainer].Where(p => !withoutAssignedPostions || !rememberedPositions.ContainsKey(p)).TryRandomElement(out ticketTaker))
                 {
                     // No entertainers either
                     return null;

@@ -71,7 +71,7 @@ namespace Carnivale
             {
                 yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (Must pay fee at entrance)", null);
             }
-            else if (Props.type.Is(CarnBuildingType.Attraction))
+            else if (Props.type.Is(CarnBuildingType.Stall | CarnBuildingType.Attraction))
             {
                 yield return new FloatMenuOption(this.FloatMenuOptionLabel, delegate
                 {

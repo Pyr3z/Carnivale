@@ -41,25 +41,22 @@ namespace Carnivale
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            this.EndOnDespawnedOrNull(TargetIndex.A, JobCondition.Incompletable);
+            //this.EndOnDespawnedOrNull(TargetIndex.A, JobCondition.Incompletable);
 
-            // Reserve silver
             var reserve = Toils_Reserve.Reserve(TargetIndex.A);
             yield return reserve;
 
-            // Goto silver
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
 
             yield return this.DetermineNumToHaul();
 
-            yield return Toils_Haul.StartCarryThing(TargetIndex.A, false, false);
+            yield return Toils_Haul.StartCarryThing(TargetIndex.A, false, true);
 
-            yield return Toils_Haul.CheckForGetOpportunityDuplicate(reserve, TargetIndex.A, TargetIndex.None, false);
+            yield return Toils_Haul.CheckForGetOpportunityDuplicate(reserve, TargetIndex.A, TargetIndex.None);
+
 
             var findTicketTaker = FindTicketTaker();
             yield return findTicketTaker;
-
-
 
             yield return Toils_Reserve.Reserve(TargetIndex.B);
 
@@ -98,6 +95,8 @@ namespace Carnivale
                         Log.Error("Found no ticket taker to give silver to.");
                         base.EndJobWith(JobCondition.Errored);
                     }
+
+                    DutyUtility.HitchToSpot(ticketTaker, ticketTaker.Position);
 
                     CurJob.SetTarget(TargetIndex.B, ticketTaker);
                 }
