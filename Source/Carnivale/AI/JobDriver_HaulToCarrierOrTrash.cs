@@ -100,8 +100,6 @@ namespace Carnivale
 
             yield return Toils_Haul.StartCarryThing(TargetIndex.A, false, true);
 
-            //yield return this.RemoveCarriedThingFromThingsToHaul();
-
             yield return Toils_Haul.CheckForGetOpportunityDuplicate(reserve, TargetIndex.A, TargetIndex.None, false, t => Info.thingsToHaul.Contains(t));
 
             if (DestType == HaulLocation.ToCarriers)
@@ -163,25 +161,6 @@ namespace Carnivale
                 },
                 defaultCompleteMode = ToilCompleteMode.Instant,
                 atomicWithPrevious = true
-            };
-        }
-
-
-        private Toil RemoveCarriedThingFromThingsToHaul()
-        {
-            // deprecated: use RemoveThingToHaulFromInfo() instead
-            return new Toil
-            {
-                initAction = delegate
-                {
-                    var haulable = this.pawn.carryTracker.CarriedThing;
-                    if (haulable != null
-                        && Info.thingsToHaul.Remove(haulable))
-                    {
-                        if (Prefs.DevMode)
-                            Log.Warning("[Debug] Removing " + haulable + " from CarnivalInfo.thingsToHaul.");
-                    }
-                }
             };
         }
 

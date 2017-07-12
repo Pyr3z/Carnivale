@@ -64,6 +64,7 @@
     <Compile Include="AI\AIBlueprintsUtility.cs" />
     <Compile Include="AI\DutyUtility.cs" />
     <Compile Include="AI\JobDriver_HaulToCarrierOrTrash.cs" />
+    <Compile Include="AI\JobDriver_PayEntryFee.cs" />
     <Compile Include="AI\JobDriver_PlayCarnGame.cs" />
     <Compile Include="AI\JobDriver_StandAtLoc.cs" />
     <Compile Include="AI\JobDriver_StrikeBuilding.cs" />

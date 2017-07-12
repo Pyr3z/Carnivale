@@ -7,6 +7,7 @@ namespace Carnivale
 {
     public class CompCarnBuilding : CompUsable
     {
+        [Unsaved]
         private CarnivalInfo infoInt = null;
 
         private CarnivalInfo Info
@@ -39,6 +40,11 @@ namespace Carnivale
 
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn pawn)
         {
+            if (Props.useJob == null)
+            {
+                yield break;
+            }
+
             if (parent.Faction != pawn.Faction && !Info.entertainingNow)
             {
                 yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (Carnival closed)", null);
@@ -47,7 +53,25 @@ namespace Carnivale
             {
                 yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (" + "Reserved".Translate() + ")", null);
             }
-            else
+            else if (Props.useJob == _DefOf.Job_PayEntryFee)
+            {
+                yield return new FloatMenuOption(this.FloatMenuOptionLabel, delegate
+                {
+                    var silverCount = new ThingCountClass(ThingDefOf.Silver, Info.feePerColonist);
+                    var silverStack = Utilities.FindClosestThings(pawn, silverCount);
+
+                    if (silverStack != null && pawn.CanReserveAndReach(silverStack, PathEndMode.Touch, pawn.NormalMaxDanger()))
+                    {
+                        var job = new Job(Props.useJob, silverStack);
+                        pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                    }
+                });
+            }
+            else if (!Info.allowedColonists.Contains(pawn))
+            {
+                yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (Must pay fee at entrance)", null);
+            }
+            else if (Props.type.Is(CarnBuildingType.Attraction))
             {
                 yield return new FloatMenuOption(this.FloatMenuOptionLabel, delegate
                 {

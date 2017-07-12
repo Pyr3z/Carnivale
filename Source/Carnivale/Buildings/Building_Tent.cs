@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Verse;
 using Xnope;
 
@@ -69,5 +70,10 @@ namespace Carnivale
         }
 
 
+        public Building_TentFlap GetTentFlap()
+        {
+            var flap = (Building_TentFlap)childBuildings.First(c => c is Building_TentFlap);
+            return flap;
+        }
     }
 }

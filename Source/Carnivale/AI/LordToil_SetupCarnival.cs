@@ -370,21 +370,9 @@ namespace Carnivale
 
         private bool TryGiveAnnouncerPosition()
         {
-            Pawn announcer;
+            Pawn announcer = Info.GetBestTicketTaker(true);
 
-            if (!(from p in lord.ownedPawns
-                  where p.story != null && p.story.adulthood != null
-                    && p.story.adulthood.TitleShort == "Announcer"
-                    && !Info.rememberedPositions.ContainsKey(p)
-                  select p).TryRandomElement(out announcer))
-            {
-                // If no pawns have the announcer backstory
-                if (!Info.pawnsWithRole[CarnivalRole.Entertainer].Where(p => !Info.rememberedPositions.ContainsKey(p)).TryRandomElement(out announcer))
-                {
-                    // No entertainers either
-                    return false;
-                }
-            }
+            if (announcer == null) return false;
 
             var offset = new IntVec3(-1, 0, -2);
 

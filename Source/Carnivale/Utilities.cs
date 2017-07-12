@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -521,5 +522,15 @@ namespace Carnivale
         }
 
 
+        public static Thing FindClosestThings(Pawn pawn, ThingCountClass things)
+        {
+            if (!Find.VisibleMap.itemAvailability.ThingsAvailableAnywhere(things, pawn))
+            {
+                return null;
+            }
+
+            Predicate<Thing> validator = t => !t.IsForbidden(pawn) && pawn.CanReserve(t, 1);
+            return GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForDef(things.thingDef), PathEndMode.InteractionCell, TraverseParms.For(pawn, pawn.NormalMaxDanger()), 9999f, validator);
+        }
     }
 }

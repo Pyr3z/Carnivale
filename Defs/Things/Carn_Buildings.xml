@@ -209,6 +209,9 @@
 			</placementOffsets>
 		  </li>
 		</interiorThings>
+		
+		<useJob>Job_PayEntryFee</useJob>
+		<useLabel>Pay entry fee</useLabel>
 	  </li>
 	</comps>
 	

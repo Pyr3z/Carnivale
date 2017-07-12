@@ -43,6 +43,8 @@ namespace Carnivale
 
         public int feePerColonist;
 
+        public List<Pawn> allowedColonists;
+
         public List<Building> carnivalBuildings;
 
         public Dictionary<CarnivalRole, DeepPawnList> pawnsWithRole;
@@ -189,6 +191,8 @@ namespace Carnivale
 
             Scribe_Values.Look(ref this.feePerColonist, "feePerColonist", -1);
 
+            Scribe_Collections.Look(ref this.allowedColonists, "allowedColonists", LookMode.Reference);
+
             Scribe_Collections.Look(ref this.carnivalBuildings, "carnivalBuildings", LookMode.Reference);
 
             Scribe_Collections.Look(ref this.pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
@@ -233,6 +237,15 @@ namespace Carnivale
             else if (feePerColonist < -1)
             {
                 feePerColonist = -feePerColonist;
+            }
+
+            if (allowedColonists != null)
+            {
+                allowedColonists.Clear();
+            }
+            else
+            {
+                allowedColonists = new List<Pawn>();
             }
 
             if (thingsToHaul != null)
@@ -367,6 +380,8 @@ namespace Carnivale
                     {
                         daysPassed = day;
                         alreadyEntertainedToday = false;
+                        // Colonists must pay every day
+                        allowedColonists.Clear();
                     }
                 }
                 else if (Find.TickManager.TicksGame % 757 == 0)
@@ -560,6 +575,31 @@ namespace Carnivale
                    && thing.IsForbidden(Faction.OfPlayer); // dropped things are by default forbidden to the player
         }
 
+        public Pawn GetBestTicketTaker(bool withoutAssignedPostions = true)
+        {
+            if (!Active)
+            {
+                return null;
+            }
+
+            Pawn ticketTaker;
+
+            if (!(from p in currentLord.ownedPawns
+                  where p.story != null && p.story.adulthood != null
+                    && p.story.adulthood.TitleShort == "Announcer"
+                    && !withoutAssignedPostions == !rememberedPositions.ContainsKey(p)
+                  select p).TryRandomElement(out ticketTaker))
+            {
+                // If no pawns have the announcer backstory
+                if (!pawnsWithRole[CarnivalRole.Entertainer].Where(p => !withoutAssignedPostions == !rememberedPositions.ContainsKey(p)).TryRandomElement(out ticketTaker))
+                {
+                    // No entertainers either
+                    return null;
+                }
+            }
+
+            return ticketTaker;
+        }
 
         private void RecalculateCheckForCells()
         {
