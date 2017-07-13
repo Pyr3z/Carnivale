@@ -2,11 +2,22 @@
 using RimWorld;
 using Verse.AI;
 using Xnope;
+using Verse;
 
 namespace Carnivale
 {
     public abstract class JobDriver_PlayCarnGame : JobDriver
     {
+        protected bool victory = false;
+
+        protected Building GameBuilding
+        {
+            get
+            {
+                return TargetThingA as Building;
+            }
+        }
+
         public override string GetReport()
         {
             return "playing " + TargetThingA.LabelShort + ".";
@@ -21,9 +32,6 @@ namespace Carnivale
 
             // Goto interaction cell
             yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.InteractionCell);
-
-            // Pay
-            // todo
 
             // "Watch" the building
             yield return WatchBuilding();
@@ -69,8 +77,6 @@ namespace Carnivale
 
         protected virtual void WatchTickAction()
         {
-            //this.pawn.GainComfortFromCellIfPossible();
-
             var extraJoyGainFactor = TargetThingA.GetStatValue(StatDefOf.EntertainmentStrengthFactor);
             JoyUtility.JoyTickCheckEnd(this.pawn, JoyTickFullJoyAction.GoToNextToil, extraJoyGainFactor);
         }

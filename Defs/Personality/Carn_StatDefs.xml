@@ -2,7 +2,7 @@
 <StatDefs>
   
   <StatDef>
-    <defName>Carn_LuckinessStat</defName>
+    <defName>Stat_Luckiness</defName>
 	<label>luckiness</label>
 	<description>An offset of how lucky someone is.</description>
 	<category>PawnMisc</category>

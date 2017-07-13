@@ -55,7 +55,7 @@
 		<description>The stars have always smiled on NAME. Seemingly by pure chance, critical details seldom escape HIS attention, HE finds more useful stuffs when harvesting or mining, and HE tends to survive more than HE should.</description>
 		<degree>1</degree>
 		<statOffsets>
-		  <Carn_LuckinessStat>0.2</Carn_LuckinessStat>
+		  <Stat_Luckiness>0.2</Stat_Luckiness>
 		  <MiningYield>0.03</MiningYield>
 		  <PlantHarvestYield>0.05</PlantHarvestYield>
 		  <ConstructSuccessChance>0.03</ConstructSuccessChance>
@@ -71,7 +71,7 @@
 		<description>Everywhere HE goes, NAME seems to get the shortest end of the stick. Important details tend to slip from his attention, and HIS ailments often take a turn for the worse. It's really a wonder that HE is still alive.</description>
 		<degree>-1</degree>
 		<statOffsets>
-		  <Carn_LuckinessStat>-0.2</Carn_LuckinessStat>
+		  <Stat_Luckiness>-0.2</Stat_Luckiness>
 		  <MiningYield>-0.05</MiningYield>
 		  <PlantHarvestYield>-0.03</PlantHarvestYield>
 		  <ConstructSuccessChance>-0.03</ConstructSuccessChance>

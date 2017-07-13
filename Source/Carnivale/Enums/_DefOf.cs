@@ -75,6 +75,10 @@ namespace Carnivale
 
 
 
+        public static StatDef Stat_Luckiness;
+
+
+
         public static StuffCategoryDef StuffedCrate;
 
 
