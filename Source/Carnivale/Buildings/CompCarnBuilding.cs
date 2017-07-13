@@ -59,7 +59,7 @@ namespace Carnivale
             else if (Props.useJob == _DefOf.Job_PayEntryFee)
             {
                 // Pay entry fee
-                yield return new FloatMenuOption(this.FloatMenuOptionLabel, delegate
+                yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (" + Info.feePerColonist + ")", delegate
                 {
                     var silverCount = new ThingCountClass(ThingDefOf.Silver, Info.feePerColonist);
                     var silverStack = Utilities.FindClosestThings(pawn, silverCount);
@@ -70,6 +70,20 @@ namespace Carnivale
                         pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                     }
                 });
+
+                // Ask to wander carnival
+                //if (Info.allowedColonists.Contains(pawn))
+                //{
+                //    yield return new FloatMenuOption("WanderCarnival".Translate(), delegate
+                //    {
+                //        var job = new Job(_DefOf.Job_WanderCarnival, GenDate.TicksPerHour);
+                //        pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                //    });
+                //}
+                //else
+                //{
+                //    yield return new FloatMenuOption("WanderCarnival".Translate() + " (Must pay entry fee)", null);
+                //}
             }
             else if (!Info.allowedColonists.Contains(pawn))
             {

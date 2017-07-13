@@ -138,8 +138,11 @@ namespace Carnivale
 
             base.SpawnSetup(map, respawningAfterLoad);
 
-            // Necessary for reinstalling properly
-            this.oldPosition = this.Position;
+            if (childBuildings.Any())
+            {
+                // Necessary for reinstalling properly
+                this.oldPosition = this.Position;
+            }
         }
 
 

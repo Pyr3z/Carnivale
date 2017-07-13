@@ -49,6 +49,8 @@ namespace Carnivale
 
         public static JobDef Job_StrikeBuildings;
 
+        public static JobDef Job_WanderCarnival;
+
 
 
         public static PawnGroupKindDef Carnival;

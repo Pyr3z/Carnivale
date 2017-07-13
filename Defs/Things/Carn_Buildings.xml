@@ -554,6 +554,8 @@
 		<useJob>Job_PlayHighStriker</useJob>
 		<useLabel>Play high striker</useLabel>
 	  </li>
+	  
+	  <li Class="Carnivale.CompProperties_HighStriker" />
 	</comps>
   </ThingDef>
   

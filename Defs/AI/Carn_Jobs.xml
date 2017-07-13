@@ -34,6 +34,12 @@
   <!-- (joy) -->
   
   <JobDef>
+    <defName>Job_WanderCarnival</defName>
+	<driverClass>Carnivale.JobDriver_WanderCarnival</driverClass>
+	<reportString>attending carnival.</reportString>
+  </JobDef>
+  
+  <JobDef>
     <defName>Job_PlayHighStriker</defName>
     <driverClass>Carnivale.JobDriver_PlayHighStriker</driverClass>
     <reportString>playing high striker.</reportString>
