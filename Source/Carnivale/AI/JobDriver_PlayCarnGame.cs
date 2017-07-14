@@ -100,7 +100,7 @@ namespace Carnivale
 
             toil.AddPreTickAction(delegate
             {
-                if (WatchTickAction())
+                if (WatchTickAction() && GameBuilding.Faction != pawn.Faction)
                 {
                     this.victory = true;
                     this.ReadyForNextToil();
@@ -142,7 +142,7 @@ namespace Carnivale
                 {
                     if (this.prize != null)
                     {
-                        Messages.Message("PawnWonPrize".Translate(pawn, PrizeLabelShort), MessageSound.Benefit);
+                        Messages.Message("PawnWonPrize".Translate(pawn, PrizeLabelShort, GameBuilding.LabelShort), MessageSound.Benefit);
                         var carrierInventory = this.prize.holdingOwner;
                         
                         if (!carrierInventory.TryDrop(prize, ThingPlaceMode.Near, out this.prize))

@@ -22,7 +22,7 @@
   
   <!-- Motes -->
   <EnjoyCarnival>Enjoy the carnival!</EnjoyCarnival>
-  <YouWon>You won {0}!</YouWon>
+  <YouWon>You won a {0}!</YouWon>
   
   <StepRightUp>Step right up, folks!</StepRightUp>
   <WelcomeCarnival>Welcome to the Carnival!</WelcomeCarnival>
@@ -56,7 +56,7 @@
   <CarnResting>{0} is closed for the day.</CarnResting>
   <CarnPackingUp>{0} is packing up to leave.</CarnPackingUp>
   
-  <PawnWonPrize>{0} won {1} as a prize!</PawnWonPrize>
+  <PawnWonPrize>{0} won {1} in a game of {2}!</PawnWonPrize>
   
   
   <!-- Float menu options (when not in defs) -->
