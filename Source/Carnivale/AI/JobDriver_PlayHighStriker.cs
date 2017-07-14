@@ -39,7 +39,7 @@ namespace Carnivale
                 // Make striker jump
                 var meleeSkillOffset = pawn.skills.GetSkill(SkillDefOf.Melee).Level / 100;
                 var luckiness = pawn.GetStatValue(_DefOf.Stat_Luckiness);
-                var heightPercent = Rand.Range(0.09f, 1.1f) + luckiness + meleeSkillOffset;
+                var heightPercent = Rand.Range(0.0f, 1.0f) + luckiness + meleeSkillOffset;
                 heightPercent = Mathf.Clamp(heightPercent, 0.10f, 1.0f);
 
                 Comp.TriggerStrikerJump(heightPercent);

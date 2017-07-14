@@ -79,7 +79,6 @@ namespace Carnivale
                 }
                 else
                 {
-                    curTick = 0;
                     jumpingNow = false;
                 }
             }
@@ -97,16 +96,19 @@ namespace Carnivale
             var trsMatrix = default(Matrix4x4);
             trsMatrix.SetTRS(pos, Quaternion.identity, Vector111);
 
-            Graphics.DrawMesh(MeshPool.plane025, trsMatrix, StrikerMat, 0);
+            Graphics.DrawMesh(MeshPool.plane10, trsMatrix, StrikerMat, 0);
         }
 
         public void TriggerStrikerJump(float maxHeightPercent)
         {
-            curHeightPercent = 0f;
             curMaxHeightPercent = maxHeightPercent;
+
             curTickDuration = (int)Mathf.Lerp(MinJumpTickDuration, MaxJumpTickDuration, curMaxHeightPercent);
+            curHeightPercent = 0f;
+            curTick = 0;
             jumpingNow = true;
-            Log.Warning("Reached striker jump trigger. jumpingNow=" + jumpingNow + ", curMaxHeightPercent=" + curMaxHeightPercent);
+
+            //Log.Warning("Reached striker jump trigger. jumpingNow=" + jumpingNow + ", curMaxHeightPercent=" + curMaxHeightPercent);
         }
 
     }
