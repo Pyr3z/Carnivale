@@ -1,7 +1,7 @@
 ![sign](Imagework/Promo/EntrySign.png)
 
-## NOT EVEN READY FOR ALPHA RELEASE. Download at your own risk.
-### When an alpha or better is available, they will show up under releases.
+## A tentative alpha is ready.
+Major features are implemented, but further testing is needed before a full release.
 Requires [XnopeCore](https://github.com/Xnope/XnopeCore)
 
 # CARNIVÀLE
@@ -64,3 +64,6 @@ I'm a bit stronger on the coding side of things than the texturing side, so if y
 ![promo2](Imagework/Promo/promo4.PNG)
 ![promo3](Imagework/Promo/promo9.PNG)
 ![promo4](Imagework/Promo/joyupdate.png)
+![joke](Imagework/Promo/offersafetyjoke.png)
+![payment](Imagework/Promo/payment.png)
+![gamewin1](Imagework/Promo/gamewin1.png)
