@@ -162,7 +162,7 @@ namespace Carnivale
             };
             toil.tickAction = delegate
             {
-                if (Find.TickManager.TicksGame % tick == 0
+                if (toil.actor.IsHashIntervalTick(tick)
                     && Info.colonistsInArea.Any())
                 {
                     if (!moteArgs)
@@ -181,7 +181,7 @@ namespace Carnivale
                             .GetInnerIfMinified()
                             .LabelNoCount;
                         int index = randomWareLabel.FirstIndexOf(c => c == '(') - 1;
-                        if (index > 0)
+                        if (index > 0 && index < randomWareLabel.Length - 1)
                         {
                             randomWareLabel = randomWareLabel.Substring(0, index);
                         }
@@ -219,7 +219,7 @@ namespace Carnivale
             };
             toil.tickAction = delegate
             {
-                if (Find.TickManager.TicksGame % tick == 0
+                if (toil.actor.IsHashIntervalTick(tick)
                     && Info.colonistsInArea.Any())
                 {
                     MoteMaker.ThrowText(
@@ -247,7 +247,7 @@ namespace Carnivale
             };
             toil.tickAction = delegate
             {
-                if (Find.TickManager.TicksGame % tick == 0)
+                if (toil.actor.IsHashIntervalTick(tick))
                 {
                     toil.actor.Rotation = Rot4.Random;
                 }

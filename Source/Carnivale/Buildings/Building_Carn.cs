@@ -187,6 +187,8 @@ namespace Carnivale
 
         public override void Tick()
         {
+            base.Tick();
+
             childBuildings.RemoveAll(c => c.DestroyedOrNull() || !c.Spawned);
         }
 

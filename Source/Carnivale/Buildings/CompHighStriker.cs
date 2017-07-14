@@ -3,9 +3,12 @@ using Verse;
 
 namespace Carnivale
 {
-    public class CompHighStriker : ThingComp
+    [StaticConstructorOnStartup]
+    public class CompHighStriker : CompCarnBuilding
     {
-        private const int JumpTickDuration = 100;
+        private const int MinJumpTickDuration = 20;
+
+        private const int MaxJumpTickDuration = 100;
 
         private const float MinOffset = -2.171875f;
 
@@ -19,9 +22,11 @@ namespace Carnivale
 
         private bool jumpingNow = false;
 
-        private float curPosZ = -1f;
+        private int curTick = 0;
 
-        private float minPosZ = -1f;
+        private int curTickDuration = 20;
+
+        private float curPosZ = -1f;
 
         private float curHeightPercent = 0f;
 
@@ -48,12 +53,15 @@ namespace Carnivale
         {
             get
             {
-                if (minPosZ == -1f)
-                {
-                    minPosZ = parent.TrueCenter().z + MinOffset;
-                }
+                return parent.TrueCenter().z + MinOffset;
+            }
+        }
 
-                return minPosZ;
+        private float MaxPosZ
+        {
+            get
+            {
+                return MinPosZ + MaxJumpHeight * curMaxHeightPercent;
             }
         }
 
@@ -63,51 +71,54 @@ namespace Carnivale
 
             if (jumpingNow)
             {
-                // Lerp up
-                CurPosZ = Mathf.Lerp(MinPosZ, MinPosZ + MaxJumpHeight * curHeightPercent, curHeightPercent);
+                CurPosZ = Mathf.Lerp(MinPosZ, MaxPosZ, curHeightPercent);
                 
-                if (curHeightPercent < curMaxHeightPercent)
+                if (curTick < curTickDuration / 2)
                 {
-                    curHeightPercent += MaxJumpHeight * curHeightPercent / JumpTickDuration;
+                    curHeightPercent = (++curTick / (curTickDuration / 2f));
                 }
                 else
                 {
-                    curHeightPercent = MaxJumpHeight;
                     jumpingNow = false;
                 }
             }
-            else if (CurPosZ > 0f)
+            else if (CurPosZ > MinPosZ)
             {
-                // Lerp down
-                CurPosZ = Mathf.Lerp(MinPosZ + MaxJumpHeight * curHeightPercent, MinPosZ, curHeightPercent);
+                CurPosZ = Mathf.Lerp(MinPosZ, MaxPosZ, curHeightPercent);
 
-                if (curHeightPercent > 0f)
+                if (curTick > 0)
                 {
-                    curHeightPercent -= MaxJumpHeight * curHeightPercent / JumpTickDuration;
+                    curHeightPercent = (--curTick / (curTickDuration / 2f));
                 }
                 else
                 {
-                    curHeightPercent = 0f;
+                    CurPosZ = MinPosZ;
                 }
             }
+
         }
 
         public override void PostDraw()
         {
             base.PostDraw();
 
-            var jumpPos = new Vector3(this.parent.TrueCenter().x, 1f, CurPosZ);
+            var pos = this.parent.TrueCenter();
+            pos.y += 0.046875f;
+            pos.z = CurPosZ;
 
             var trsMatrix = default(Matrix4x4);
-            trsMatrix.SetTRS(jumpPos, default(Rot4).AsQuat, Vector111);
+            trsMatrix.SetTRS(pos, Quaternion.identity, Vector111);
 
             Graphics.DrawMesh(MeshPool.plane025, trsMatrix, StrikerMat, 0);
         }
 
         public void TriggerStrikerJump(float maxHeightPercent)
         {
+            curHeightPercent = 0f;
             curMaxHeightPercent = maxHeightPercent;
+            curTickDuration = (int)Mathf.Lerp(MinJumpTickDuration, MaxJumpTickDuration, curMaxHeightPercent);
             jumpingNow = true;
+            Log.Warning("Reached striker jump trigger. jumpingNow=" + jumpingNow + ", curMaxHeightPercent=" + curMaxHeightPercent);
         }
 
     }

@@ -510,6 +510,8 @@
 	<label>high striker</label>
 	<description>'Who among you are the badasses of the bunch?'\n\nA test of physical strength, this game was popularised on Earth by various Western festivities in the 19th - 20th centuries of the Ancient Era.</description>
 	
+	<tickerType>Normal</tickerType>
+	
 	<graphicData>
 	  <texPath>Carnivale/Building/HighStrike</texPath>
 	  <graphicClass>Graphic_Single</graphicClass>
@@ -541,6 +543,7 @@
 	
 	<comps>
 	  <li Class="Carnivale.CompProperties_CarnBuilding">
+	    <compClass>Carnivale.CompHighStriker</compClass>
 	    <type>10</type> <!-- Stall | Attraction == 10 -->
 		<interiorThings>
 		  <li>
@@ -554,8 +557,6 @@
 		<useJob>Job_PlayHighStriker</useJob>
 		<useLabel>Play high striker</useLabel>
 	  </li>
-	  
-	  <li Class="Carnivale.CompProperties_HighStriker" />
 	</comps>
   </ThingDef>
   

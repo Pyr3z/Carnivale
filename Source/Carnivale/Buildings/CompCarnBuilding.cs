@@ -40,55 +40,64 @@ namespace Carnivale
 
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn pawn)
         {
-            if (Props.useJob == null || !Info.Active)
+            if (Props.useJob == null)
             {
-                // No use jobs specified in def, or carnival is not in town for whatever reason
+                // no useJob specified
                 yield break;
             }
 
-            if (parent.Faction != pawn.Faction && !Info.entertainingNow)
+            if (parent.Faction != pawn.Faction)
             {
-                // Carnival is closed
-                yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (Carnival closed)", null);
+                if (!Info.Active)
+                {
+                    // carnival is not in town for whatever reason
+                    yield break;
+                }
+                else if (!Info.entertainingNow)
+                {
+                    // Carnival is closed
+                    yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (Carnival closed)", null);
+                }
+                else if (Props.useJob == _DefOf.Job_PayEntryFee)
+                {
+                    // Pay entry fee
+                    yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (" + Info.feePerColonist + ")", delegate
+                    {
+                        var silverCount = new ThingCountClass(ThingDefOf.Silver, Info.feePerColonist);
+                        var silverStack = Utilities.FindClosestThings(pawn, silverCount);
+
+                        if (silverStack != null && pawn.CanReserveAndReach(silverStack, PathEndMode.Touch, pawn.NormalMaxDanger()))
+                        {
+                            var job = new Job(Props.useJob, silverStack);
+                            pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                        }
+                    });
+
+                    // Ask to wander carnival
+                    //if (Info.allowedColonists.Contains(pawn))
+                    //{
+                    //    yield return new FloatMenuOption("WanderCarnival".Translate(), delegate
+                    //    {
+                    //        var job = new Job(_DefOf.Job_WanderCarnival, GenDate.TicksPerHour);
+                    //        pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                    //    });
+                    //}
+                    //else
+                    //{
+                    //    yield return new FloatMenuOption("WanderCarnival".Translate() + " (Must pay entry fee)", null);
+                    //}
+                }
+                else if (!Info.allowedColonists.Contains(pawn))
+                {
+                    // Pawn hasn't payed entry fee
+                    yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (Must pay fee at entrance)", null);
+                }
             }
-            else if (!pawn.CanReserve(this.parent))
+            
+            if (!pawn.CanReserve(this.parent))
             {
                 // Already reserved
                 yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (" + "Reserved".Translate() + ")", null);
-            }
-            else if (Props.useJob == _DefOf.Job_PayEntryFee)
-            {
-                // Pay entry fee
-                yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (" + Info.feePerColonist + ")", delegate
-                {
-                    var silverCount = new ThingCountClass(ThingDefOf.Silver, Info.feePerColonist);
-                    var silverStack = Utilities.FindClosestThings(pawn, silverCount);
-
-                    if (silverStack != null && pawn.CanReserveAndReach(silverStack, PathEndMode.Touch, pawn.NormalMaxDanger()))
-                    {
-                        var job = new Job(Props.useJob, silverStack);
-                        pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                    }
-                });
-
-                // Ask to wander carnival
-                //if (Info.allowedColonists.Contains(pawn))
-                //{
-                //    yield return new FloatMenuOption("WanderCarnival".Translate(), delegate
-                //    {
-                //        var job = new Job(_DefOf.Job_WanderCarnival, GenDate.TicksPerHour);
-                //        pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                //    });
-                //}
-                //else
-                //{
-                //    yield return new FloatMenuOption("WanderCarnival".Translate() + " (Must pay entry fee)", null);
-                //}
-            }
-            else if (!Info.allowedColonists.Contains(pawn))
-            {
-                // Pawn hasn't payed entry fee
-                yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (Must pay fee at entrance)", null);
             }
             else if (Props.type.Is(CarnBuildingType.Stall | CarnBuildingType.Attraction))
             {
