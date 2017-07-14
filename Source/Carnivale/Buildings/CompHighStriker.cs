@@ -6,15 +6,15 @@ namespace Carnivale
     [StaticConstructorOnStartup]
     public class CompHighStriker : CompCarnBuilding
     {
-        private const int MinJumpTickDuration = 20;
+        private const int MinJumpTickDuration = 50;
 
         private const int MaxJumpTickDuration = 100;
 
-        private const float MinOffset = -2.171875f;
+        private const float MinZOffset = -2.171875f;
 
-        private const float MaxOffset = 2.3125f;
+        private const float MaxZOffset = 2.3125f;
 
-        private const float MaxJumpHeight = -MinOffset + MaxOffset;
+        private const float MaxJumpHeight = -MinZOffset + MaxZOffset;
 
         private static readonly Vector3 Vector111 = new Vector3(1f, 1f, 1f);
 
@@ -53,7 +53,7 @@ namespace Carnivale
         {
             get
             {
-                return parent.TrueCenter().z + MinOffset;
+                return parent.TrueCenter().z + MinZOffset;
             }
         }
 
@@ -73,26 +73,14 @@ namespace Carnivale
             {
                 CurPosZ = Mathf.Lerp(MinPosZ, MaxPosZ, curHeightPercent);
                 
-                if (curTick < curTickDuration / 2)
+                if (curTick < curTickDuration)
                 {
-                    curHeightPercent = (++curTick / (curTickDuration / 2f));
+                    curHeightPercent = Mathf.Sin(Mathf.PI * (++curTick / (float)curTickDuration));
                 }
                 else
                 {
+                    curTick = 0;
                     jumpingNow = false;
-                }
-            }
-            else if (CurPosZ > MinPosZ)
-            {
-                CurPosZ = Mathf.Lerp(MinPosZ, MaxPosZ, curHeightPercent);
-
-                if (curTick > 0)
-                {
-                    curHeightPercent = (--curTick / (curTickDuration / 2f));
-                }
-                else
-                {
-                    CurPosZ = MinPosZ;
                 }
             }
 

@@ -510,8 +510,6 @@
 	<label>high striker</label>
 	<description>'Who among you are the badasses of the bunch?'\n\nA test of physical strength, this game was popularised on Earth by various Western festivities in the 19th - 20th centuries of the Ancient Era.</description>
 	
-	<tickerType>Normal</tickerType>
-	
 	<graphicData>
 	  <texPath>Carnivale/Building/HighStrike</texPath>
 	  <graphicClass>Graphic_Single</graphicClass>
