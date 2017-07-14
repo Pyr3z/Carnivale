@@ -42,7 +42,7 @@ namespace Carnivale
 
         public static ThingDef RandomFabricByCheapness()
         {
-            return _DefOf.Textiles.childThingDefs.RandomElementByWeight(def => 10f / def.BaseMarketValue);
+            return _DefOf.Textiles.childThingDefs.RandomElementByWeight(def => 1f / def.BaseMarketValue);
         }
 
         public static ThingDef RandomFabricByExpensiveness()

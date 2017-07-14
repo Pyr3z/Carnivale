@@ -200,6 +200,7 @@
 	<comps>
 	  <li Class="Carnivale.CompProperties_CarnBuilding">
 	    <type>128</type> <!-- Sign == 128 -->
+		<announcerCellOffset>(-1, 0, -2)</announcerCellOffset>
 		<interiorThings>
 		  <li>
 		    <thingDef>TorchLamp</thingDef>
@@ -545,6 +546,7 @@
 	  <li Class="Carnivale.CompProperties_CarnBuilding">
 	    <compClass>Carnivale.CompHighStriker</compClass>
 	    <type>10</type> <!-- Stall | Attraction == 10 -->
+		<announcerCellOffset>(-1, 0, -1)</announcerCellOffset>
 		<interiorThings>
 		  <li>
 		    <thingDef>TorchLamp</thingDef>

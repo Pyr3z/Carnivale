@@ -88,7 +88,7 @@ namespace Carnivale
             {
                 initAction = delegate
                 {
-                    var ticketTaker = Info.GetBestTicketTaker(false);
+                    var ticketTaker = Info.GetBestAnnouncer(false);
 
                     if (ticketTaker == null)
                     {

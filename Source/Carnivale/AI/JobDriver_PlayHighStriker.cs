@@ -42,8 +42,8 @@ namespace Carnivale
                 var heightPercent = Rand.Range(0.09f, 0.96f) + luckiness + meleeSkillOffset;
                 heightPercent = Mathf.Clamp(heightPercent, 0.10f, 1.0f);
 
-                //if (Prefs.DevMode)
-                //    heightPercent = 1.0f;
+                if (Prefs.DevMode)
+                    heightPercent = 1.0f;
 
                 Comp.TriggerStrikerJump(heightPercent);
 
@@ -51,13 +51,6 @@ namespace Carnivale
             }
 
             return base.WatchTickAction();
-        }
-
-        protected override void GetPrizeInitAction()
-        {
-            Log.Warning("\tReached GetPrizeInitAction()");
-
-
         }
 
     }

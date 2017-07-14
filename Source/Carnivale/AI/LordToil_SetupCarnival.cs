@@ -45,12 +45,6 @@ namespace Carnivale
         {
             base.Init();
 
-            //foreach (var pawn in lord.ownedPawns)
-            //{
-            //    if (!pawn.RaceProps.Humanlike) continue;
-            //    Log.Warning(pawn.NameStringShort + " --> " + pawn.kindDef.defName);
-            //}
-
             LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)this.data;
 
 
@@ -119,9 +113,6 @@ namespace Carnivale
                     guard.inventory.TryAddItemNotForSale(kib);
                 }
             }
-
-            // Set announcer pos at entrance sign
-            TryGiveAnnouncerPosition();
         }
 
 
@@ -250,6 +241,8 @@ namespace Carnivale
             data.availableCrates.Clear();
 
             data.blueprints.Clear();
+
+            TryAssignTicketTaker();
         }
 
 
@@ -368,15 +361,13 @@ namespace Carnivale
         }
 
 
-        private bool TryGiveAnnouncerPosition()
+        private bool TryAssignTicketTaker()
         {
-            Pawn announcer = Info.GetBestTicketTaker(true);
+            Pawn announcer = Info.GetBestAnnouncer(true);
 
             if (announcer == null) return false;
 
-            var offset = new IntVec3(-1, 0, -2);
-
-            Info.rememberedPositions.Add(announcer, Info.bannerCell + offset);
+            Info.AssignAnnouncerToBuilding(announcer, Info.Entrance);
 
             return true;
         }

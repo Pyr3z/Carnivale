@@ -72,20 +72,6 @@ namespace Carnivale
                             pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                         }
                     });
-
-                    // Ask to wander carnival
-                    //if (Info.allowedColonists.Contains(pawn))
-                    //{
-                    //    yield return new FloatMenuOption("WanderCarnival".Translate(), delegate
-                    //    {
-                    //        var job = new Job(_DefOf.Job_WanderCarnival, GenDate.TicksPerHour);
-                    //        pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                    //    });
-                    //}
-                    //else
-                    //{
-                    //    yield return new FloatMenuOption("WanderCarnival".Translate() + " (Must pay entry fee)", null);
-                    //}
                 }
                 else if (!Info.allowedColonists.Contains(pawn))
                 {

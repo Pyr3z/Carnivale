@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using System.Linq;
+using Verse;
 
 namespace Carnivale
 {
@@ -13,10 +14,13 @@ namespace Carnivale
             base.Init();
 
             Info.entertainingNow = true;
+
+            TryAssignEntertainersToGames();
         }
 
         public override void UpdateAllDuties()
         {
+            var wanderRect = CellRect.CenteredOn(Info.setupCentre, 8);
             int countCarriers = Info.pawnsWithRole[CarnivalRole.Carrier].Count;
             IntVec3 pos;
 
@@ -67,7 +71,7 @@ namespace Carnivale
                 }
 
                 // Default
-                DutyUtility.MeanderAndHelp(pawn, Info.setupCentre, Info.baseRadius);
+                DutyUtility.MeanderAndHelp(pawn, wanderRect.RandomCell, Info.baseRadius);
             }
         }
 
@@ -83,7 +87,14 @@ namespace Carnivale
 
         private void TryAssignEntertainersToGames()
         {
-
+            foreach (var game in Info.GetBuildingsOf(CarnBuildingType.Attraction | CarnBuildingType.Stall).Select(g => g as Building_Carn))
+            {
+                var announcer = Info.GetBestAnnouncer();
+                if (announcer != null)
+                {
+                    Info.AssignAnnouncerToBuilding(announcer, game, true);
+                }
+            }
         }
     }
 }

@@ -9,6 +9,8 @@ namespace Carnivale
 {
     public class Building_Carn : Building
     {
+        public Pawn assignedPawn = null;
+
         private IntVec3 oldPosition;
 
         protected List<Building> childBuildings = new List<Building>();
@@ -190,6 +192,16 @@ namespace Carnivale
             base.Tick();
 
             childBuildings.RemoveAll(c => c.DestroyedOrNull() || !c.Spawned);
+        }
+
+        public IntVec3 GetAnnouncerCell()
+        {
+            if (Props.announcerCellOffset.IsValid)
+            {
+                return this.Position + Props.announcerCellOffset;
+            }
+
+            return IntVec3.Invalid;
         }
 
     }

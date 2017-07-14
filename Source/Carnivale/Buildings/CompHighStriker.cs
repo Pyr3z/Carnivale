@@ -24,13 +24,13 @@ namespace Carnivale
 
         private int curTick = 0;
 
-        private int curTickDuration = 20;
-
-        private float curPosZ = -1f;
+        private int curTickDuration = 0;
 
         private float curHeightPercent = 0f;
 
         private float curMaxHeightPercent = 0f;
+
+        private float curPosZ = -1f;
 
         private float CurPosZ
         {
@@ -79,6 +79,10 @@ namespace Carnivale
                 }
                 else
                 {
+                    curTick = 0;
+                    curTickDuration = 0;
+                    curHeightPercent = 0f;
+                    curMaxHeightPercent = 0f;
                     jumpingNow = false;
                 }
             }
@@ -101,10 +105,8 @@ namespace Carnivale
 
         public void TriggerStrikerJump(float maxHeightPercent)
         {
-            curHeightPercent = 0f;
             curMaxHeightPercent = maxHeightPercent;
 
-            curTick = 0;
             curTickDuration = (int)Mathf.Lerp(MinJumpTickDuration, MaxJumpTickDuration, curMaxHeightPercent);
 
             jumpingNow = true;
@@ -112,5 +114,17 @@ namespace Carnivale
             //Log.Warning("Reached striker jump trigger. jumpingNow=" + jumpingNow + ", curMaxHeightPercent=" + curMaxHeightPercent);
         }
 
+
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+
+            Scribe_Values.Look(ref this.jumpingNow, "jumpingNow", false);
+            Scribe_Values.Look(ref this.curTick, "tick", 0);
+            Scribe_Values.Look(ref this.curTickDuration, "tickDuration", 0);
+            Scribe_Values.Look(ref this.curHeightPercent, "heighPercent", 0f);
+            Scribe_Values.Look(ref this.curMaxHeightPercent, "maxHeightPercent", 0f);
+            Scribe_Values.Look(ref this.curPosZ, "strikerPosZ", -1f, true);
+        }
     }
 }

@@ -8,6 +8,8 @@ namespace Carnivale
     {
         public CarnBuildingType type = 0;
 
+        public IntVec3 announcerCellOffset = IntVec3.Invalid;
+
         public List<ThingPlacement> interiorThings = new List<ThingPlacement>();
 
         public CompProperties_CarnBuilding()

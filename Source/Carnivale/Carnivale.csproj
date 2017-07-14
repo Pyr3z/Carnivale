@@ -99,7 +99,6 @@
     <Compile Include="CarnivaleMod.cs" />
     <Compile Include="CarnivalInfo.cs" />
     <Compile Include="Data\DeepReferenceableList.cs" />
-    <Compile Include="Debug.cs" />
     <Compile Include="Enums\CarnBuildingType.cs" />
     <Compile Include="Enums\CarnivalRole.cs" />
     <Compile Include="Enums\HaulLocation.cs" />

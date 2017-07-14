@@ -68,6 +68,8 @@ namespace Carnivale
         private bool anyCarnyNeedsRest;
         [Unsaved]
         private IntVec3 averageLodgeTentPos = IntVec3.Invalid;
+        [Unsaved]
+        private Building_Carn entranceInt = null;
 
         // Properties:
 
@@ -120,6 +122,19 @@ namespace Carnivale
                 }
 
                 return averageLodgeTentPos;
+            }
+        }
+
+        public Building_Carn Entrance
+        {
+            get
+            {
+                if (entranceInt == null)
+                {
+                    entranceInt = GetFirstBuildingOf(_DefOf.Carn_SignEntry) as Building_Carn;
+                }
+
+                return entranceInt;
             }
         }
 
@@ -487,6 +502,27 @@ namespace Carnivale
             return null;
         }
 
+        public Building GetFirstBuildingOf(ThingDef def)
+        {
+            if (!Active)
+            {
+                Log.Error("Cannot get carnival building: carnival is not in town.");
+                return null;
+            }
+
+            foreach (var building in this.carnivalBuildings)
+            {
+                if (building.def == def)
+                {
+                    return building;
+                }
+            }
+
+            if (Prefs.DevMode)
+                Log.Warning("[Debug] Tried to find any building of def " + def + " in CarnivalInfo, but none exists.");
+            return null;
+        }
+
         public Building GetRandomBuildingOf(CarnBuildingType type)
         {
             if (!Active)
@@ -578,19 +614,20 @@ namespace Carnivale
                    && thing.IsForbidden(Faction.OfPlayer); // dropped things are by default forbidden to the player
         }
 
-        public Pawn GetBestTicketTaker(bool withoutAssignedPostions = true)
+        public Pawn GetBestAnnouncer(bool withoutAssignedPostions = true)
         {
             if (!Active)
             {
                 return null;
             }
 
-            Pawn ticketTaker = (bannerCell + new IntVec3(-1, 0, -2)).GetFirstPawn(map);
 
-            if (ticketTaker != null && (!withoutAssignedPostions || !rememberedPositions.ContainsKey(ticketTaker)))
+            if (Entrance != null && Entrance.assignedPawn != null && (!withoutAssignedPostions || !rememberedPositions.ContainsKey(Entrance.assignedPawn)))
             {
-                return ticketTaker;
+                return Entrance.assignedPawn;
             }
+
+            Pawn ticketTaker;
 
             if (!(from p in pawnsWithRole[CarnivalRole.Entertainer]
                   where p.story != null && p.story.adulthood != null
@@ -607,6 +644,39 @@ namespace Carnivale
             }
 
             return ticketTaker;
+        }
+
+        public bool AssignAnnouncerToBuilding(Pawn announcer, Building_Carn building, bool relieveExistingPawn = false)
+        {
+            var cell = building.GetAnnouncerCell();
+
+            if (cell.IsValid)
+            {
+                if (building.assignedPawn != null)
+                {
+                    if (relieveExistingPawn)
+                    {
+                        rememberedPositions.Remove(building.assignedPawn);
+                        building.assignedPawn = announcer;
+                        rememberedPositions.Add(announcer, cell);
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    building.assignedPawn = announcer;
+                    rememberedPositions.Add(announcer, cell);
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private void RecalculateCheckForCells()
