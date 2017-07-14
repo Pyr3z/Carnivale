@@ -20,7 +20,7 @@ namespace Carnivale
             int countCarriers = Info.pawnsWithRole[CarnivalRole.Carrier].Count;
             IntVec3 pos;
 
-            foreach (Pawn pawn in this.lord.ownedPawns)
+            foreach (var pawn in this.lord.ownedPawns)
             {
                 CarnivalRole pawnRole = pawn.GetCarnivalRole();
 
@@ -78,6 +78,12 @@ namespace Carnivale
 
             Info.entertainingNow = false;
             Info.alreadyEntertainedToday = true;
+        }
+
+
+        private void TryAssignEntertainersToGames()
+        {
+
         }
     }
 }

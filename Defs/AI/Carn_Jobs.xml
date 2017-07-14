@@ -43,7 +43,7 @@
     <defName>Job_PlayHighStriker</defName>
     <driverClass>Carnivale.JobDriver_PlayHighStriker</driverClass>
     <reportString>playing high striker.</reportString>
-    <joyDuration>1000</joyDuration>
+    <joyDuration>1150</joyDuration>
     <joyMaxParticipants>1</joyMaxParticipants>
     <joyGainRate>1</joyGainRate>
     <joySkill>Melee</joySkill>

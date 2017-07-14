@@ -29,28 +29,35 @@ namespace Carnivale
             }
         }
 
-        protected override void WatchTickAction()
+        protected override bool WatchTickAction()
         {
             if (this.pawn.IsHashIntervalTick(RingerJumpInterval))
             {
                 // Do strike effect
-                strikeEffect.Trigger(pawn, new TargetInfo(pawn.Position + IntVec3.East, Map));
+                strikeEffect.Trigger(pawn, new TargetInfo(pawn.Position + IntVec3.East * 2, Map));
 
                 // Make striker jump
-                var meleeSkillOffset = pawn.skills.GetSkill(SkillDefOf.Melee).Level / 100;
+                var meleeSkillOffset = pawn.skills.GetSkill(SkillDefOf.Melee).Level / 100f;
                 var luckiness = pawn.GetStatValue(_DefOf.Stat_Luckiness);
-                var heightPercent = Rand.Range(0.0f, 1.0f) + luckiness + meleeSkillOffset;
+                var heightPercent = Rand.Range(0.09f, 0.96f) + luckiness + meleeSkillOffset;
                 heightPercent = Mathf.Clamp(heightPercent, 0.10f, 1.0f);
 
+                //if (Prefs.DevMode)
+                //    heightPercent = 1.0f;
+
                 Comp.TriggerStrikerJump(heightPercent);
+
+                return heightPercent >= 0.985f;
             }
 
-            base.WatchTickAction();
+            return base.WatchTickAction();
         }
 
         protected override void GetPrizeInitAction()
         {
-            
+            Log.Warning("\tReached GetPrizeInitAction()");
+
+
         }
 
     }

@@ -52,7 +52,11 @@ namespace Carnivale
 
             toil.AddPreTickAction(delegate
             {
-                this.WatchTickAction();
+                if (WatchTickAction())
+                {
+                    this.victory = true;
+                    this.ReadyForNextToil();
+                }
             });
             toil.defaultCompleteMode = ToilCompleteMode.Delay;
             toil.defaultDuration = base.CurJob.def.joyDuration;
@@ -66,7 +70,11 @@ namespace Carnivale
 
             toil.initAction = delegate
             {
-                this.GetPrizeInitAction();
+                if (this.victory)
+                {
+                    this.GetPrizeInitAction();
+                }
+
                 EndJobWith(JobCondition.Succeeded);
             };
             toil.defaultCompleteMode = ToilCompleteMode.Instant;
@@ -75,10 +83,12 @@ namespace Carnivale
         }
 
 
-        protected virtual void WatchTickAction()
+        protected virtual bool WatchTickAction()
         {
             var extraJoyGainFactor = TargetThingA.GetStatValue(StatDefOf.EntertainmentStrengthFactor);
-            JoyUtility.JoyTickCheckEnd(this.pawn, JoyTickFullJoyAction.GoToNextToil, extraJoyGainFactor);
+            JoyUtility.JoyTickCheckEnd(this.pawn, JoyTickFullJoyAction.None, extraJoyGainFactor);
+
+            return false;
         }
 
         protected abstract void GetPrizeInitAction();

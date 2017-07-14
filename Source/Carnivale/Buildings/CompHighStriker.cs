@@ -12,7 +12,7 @@ namespace Carnivale
 
         private const float MinZOffset = -2.171875f;
 
-        private const float MaxZOffset = 2.3125f;
+        private const float MaxZOffset = 2.109375f; //2.3125f;
 
         private const float MaxJumpHeight = -MinZOffset + MaxZOffset;
 
@@ -101,11 +101,12 @@ namespace Carnivale
 
         public void TriggerStrikerJump(float maxHeightPercent)
         {
+            curHeightPercent = 0f;
             curMaxHeightPercent = maxHeightPercent;
 
-            curTickDuration = (int)Mathf.Lerp(MinJumpTickDuration, MaxJumpTickDuration, curMaxHeightPercent);
-            curHeightPercent = 0f;
             curTick = 0;
+            curTickDuration = (int)Mathf.Lerp(MinJumpTickDuration, MaxJumpTickDuration, curMaxHeightPercent);
+
             jumpingNow = true;
 
             //Log.Warning("Reached striker jump trigger. jumpingNow=" + jumpingNow + ", curMaxHeightPercent=" + curMaxHeightPercent);

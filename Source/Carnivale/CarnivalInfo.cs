@@ -29,7 +29,7 @@ namespace Carnivale
 
         public Lord currentLord;
 
-        public IntVec3 setupCentre; // possibly use the same setup area for every carnival after initial calculation?
+        public IntVec3 setupCentre;
 
         public float baseRadius;
 
@@ -60,7 +60,7 @@ namespace Carnivale
         [Unsaved]
         public List<Pawn> colonistsInArea;
         [Unsaved]
-        public List<IntVec3> checkForCells; // because num cells > 20, would a HashSet be better? No, because we iterate through it a lot.
+        public List<IntVec3> checkForCells;
 
         [Unsaved]
         private bool checkRemoveColonists;
@@ -632,11 +632,13 @@ namespace Carnivale
             checkForCells.AddRange(GenRadial.RadialCellsAround(setupCentre, baseRadius, true)
                 .Where(c => c.InBounds(map) && c.Walkable(map) && !tcellSet.Contains(c)));
 
-            foreach (var building in carnivalBuildings.Where(b => b.def != _DefOf.Carn_SignTrash))
+            foreach (var building in carnivalBuildings)
             {
+                if (building.def == _DefOf.Carn_SignTrash) continue;
+
                 foreach (var bcell in building.OccupiedRect().ExpandedBy(1))
                 {
-                    if (!checkForCells.Contains(bcell) && !tcellSet.Contains(bcell))
+                    if (!tcellSet.Contains(bcell) && !checkForCells.Contains(bcell))
                         checkForCells.Add(bcell);
                 }
             }
@@ -660,10 +662,9 @@ namespace Carnivale
             // Mountain line of sight pass
 
             int attempts = 0;
-            //IntVec3 quadPos = setupCentre - map.Center;
-            // using colonistPos instead to get edges closest to colonists, rather than the map centre
             var quadPos = setupCentre - colonistPos;
             Rot4 rot;
+
             while (attempts < 10 && setupCentre.CountMineableCellsTo(closestCell, map, true) > 4)
             {
                 if (quadPos.x > 0 && quadPos.z > 0)
