@@ -32,6 +32,7 @@ namespace Carnivale
 
                 Building_TentFlap door = ThingMaker.MakeThing(_DefOf.Carn_TentDoor) as Building_TentFlap;
                 door.SetFaction(this.Faction);
+                door.parent = this;
                 door.Position = doorCell;
 
                 if (Props.type.Is(CarnBuildingType.Attraction))

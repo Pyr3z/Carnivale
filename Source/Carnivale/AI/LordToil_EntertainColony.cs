@@ -15,6 +15,14 @@ namespace Carnivale
 
             Info.entertainingNow = true;
 
+            if (Info.Entrance.assignedPawn == null)
+            {
+                if (!Info.AssignAnnouncerToBuilding(Info.GetBestAnnouncer(true), Info.Entrance))
+                {
+                    Log.Error("Unable to assign a ticket taker to carnival entrance.");
+                }
+            }
+
             TryAssignEntertainersToGames();
         }
 

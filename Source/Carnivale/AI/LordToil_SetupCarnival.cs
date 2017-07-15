@@ -238,11 +238,9 @@ namespace Carnivale
             // Do more cleanup here?
             LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)this.data;
 
-            data.availableCrates.Clear();
+            data.availableCrates.RemoveAll(c => c.DestroyedOrNull() || !c.Spawned);
 
-            data.blueprints.Clear();
-
-            TryAssignTicketTaker();
+            data.blueprints.RemoveAll(c => c.DestroyedOrNull() || !c.Spawned);
         }
 
 
@@ -359,19 +357,6 @@ namespace Carnivale
                 Log.Error("Not enough spots found for carnival carriers to chill.");
             }
         }
-
-
-        private bool TryAssignTicketTaker()
-        {
-            Pawn announcer = Info.GetBestAnnouncer(true);
-
-            if (announcer == null) return false;
-
-            Info.AssignAnnouncerToBuilding(announcer, Info.Entrance);
-
-            return true;
-        }
-
 
 
     }

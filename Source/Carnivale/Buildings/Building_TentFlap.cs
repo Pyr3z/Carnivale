@@ -7,9 +7,13 @@ namespace Carnivale
     {
         public bool everAvailableToNonCarnies = false;
 
+        public Building_Tent parent;
+
         public override bool PawnCanOpen(Pawn p)
         {
             if (p.Faction == this.Faction) return true;
+
+            if (parent.OccupiedRect().Contains(p.Position)) return true;
 
             if (!everAvailableToNonCarnies) return false;
 

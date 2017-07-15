@@ -648,6 +648,8 @@ namespace Carnivale
 
         public bool AssignAnnouncerToBuilding(Pawn announcer, Building_Carn building, bool relieveExistingPawn = false)
         {
+            if (announcer == null || building == null) return false;
+
             var cell = building.GetAnnouncerCell();
 
             if (cell.IsValid)
@@ -673,10 +675,8 @@ namespace Carnivale
                     return true;
                 }
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         private void RecalculateCheckForCells()
