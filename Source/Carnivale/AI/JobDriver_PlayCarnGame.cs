@@ -203,8 +203,8 @@ namespace Carnivale
         protected bool ChooseApparel()
         {
             return Info.pawnsWithRole[CarnivalRole.Vendor].First().trader.Goods
-                   .Where(t => t is Apparel)
-                   .TryRandomElement(out this.prize);
+                   .Where(t => t is Apparel && t.MarketValue < 100)
+                   .TryRandomElementByWeight(e => 1 / e.MarketValue, out this.prize);
         }
     }
 }

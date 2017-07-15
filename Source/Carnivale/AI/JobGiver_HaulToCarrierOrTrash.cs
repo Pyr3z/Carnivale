@@ -39,6 +39,12 @@ namespace Carnivale
                             return null;
                         }
 
+                        if (!info.AnyCarriersCanCarry(haulable))
+                        {
+                            Log.Error("No carriers have space for " + haulable + ". If they are packing up crates, they may never leave.");
+                            return null;
+                        }
+
                         pawn.Reserve(haulable);
 
                         return new Job(_DefOf.Job_HaulToCarrierOrTrash, haulable)

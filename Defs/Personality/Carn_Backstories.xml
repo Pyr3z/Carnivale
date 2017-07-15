@@ -27,11 +27,12 @@
 	  <li><defName>Melee</defName><degree>1</degree></li>
 	  <li><defName>Intellectual</defName><degree>-5</degree></li>
 	  <li><defName>Mining</defName><degree>-5</degree></li>
-	  <li><defName>Growing</defName><degree>-5</degree></li>
+	  <li><defName>Growing</defName><degree>-1</degree></li>
 	</skillGains>
 	
 	<spawnCategories>
 	  <li>Carnivale</li>
+	  <li>CarnivaleRare</li>
 	  <li>CarnivaleTrader</li>
 	  <li>CarnivaleFighter</li>
 	  <li>Raider</li>
@@ -53,7 +54,7 @@
 	
 	<skillGains>
 	  <li><defName>Animals</defName><degree>2</degree></li>
-	  <li><defName>Intellectual</defName><degree>1</degree></li>
+	  <li><defName>Intellectual</defName><degree>3</degree></li>
 	  <li><defName>Artistic</defName><degree>4</degree></li>
 	</skillGains>
 	
@@ -114,7 +115,7 @@
 	<slot>Adulthood</slot>
 	<title>Carnival announcer</title>
 	<titleShort>Announcer</titleShort>
-	<baseDescription>It was NAME's job to be a constant stream of shiny talk and information in order to hold the rubes' attentions. HECAP is adept at thinking quickly on the spot, and always seems to know just what to say.</baseDescription>
+	<baseDescription>It was NAME's job to be a constant stream of shiny-talk and information in order to hold the rubes' attentions. HECAP is adept at thinking quickly on the spot, and always seems to know just what to say.</baseDescription>
 	
 	<skillGains>
 	  <li><defName>Social</defName><degree>5</degree></li>
@@ -144,12 +145,13 @@
   <Xnope.Defs.BackstoryDef>
     <defName>XnopeBS_AnnouncerSweetTalker</defName>
 	<slot>Adulthood</slot>
-	<title>Carnival announcer</title>
+	<title>Prideful announcer</title>
 	<titleShort>Announcer</titleShort>
-	<baseDescription>Due to an injury sustained by raiders on the road, NAME was no longer able to perform in the traveling carnival HE called home. Determined to remain an important figure in the carnival hierarchy, NAME fulfilled the job of an announcer instead of a performer. After a few seasons, HE learned how to sling shiny talk proficiently as well as control the attentions of anyone within earshot.</baseDescription>
+	<baseDescription>Due to an injury sustained by raiders on the road, NAME was no longer able to perform in the traveling carnival HE called home. Determined to remain an important figure in the carnival hierarchy, NAME fulfilled the job of an announcer instead of a performer. After a few seasons, HE learned how to sling shiny-talk proficiently as well as control the attentions of anyone within earshot.</baseDescription>
 	
 	<skillGains>
 	  <li><defName>Social</defName><degree>5</degree></li>
+	  <li><defName>Artistic</defName><degree>3</degree></li>
 	</skillGains>
 	
 	<disallowedTraits>
@@ -181,7 +183,7 @@
   <Xnope.Defs.BackstoryDef>
     <defName>XnopeBS_Weirdo</defName>
 	<slot>Adulthood</slot>
-	<title>Carny weirdo</title>
+	<title>Professional weirdo</title>
 	<titleShort>Weirdo</titleShort>
 	<baseDescription>NAME has traveled with a rimworld carnival for many years, where all HE had to do for HIS act was be HIMself. When hands were short, HE made HIMself useful by being quite the eccentric in the kitchen tent. Ever hear of muffalo burger lasagna? Yeah. That was NAME.</baseDescription>
 	
@@ -205,7 +207,7 @@
 	</forcedTraits>
 	
 	<spawnCategories>
-	  <li>Carnivale</li>
+	  <li>CarnivaleRare</li>
 	  <li>Slave</li>
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>
@@ -231,6 +233,7 @@
 	
 	<spawnCategories>
 	  <li>Carnivale</li>
+	  <li>CarnivaleFighter</li>
 	  <li>Uncommon</li>
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>
@@ -330,27 +333,32 @@
   <Xnope.Defs.BackstoryDef>
     <defName>XnopeBS_Razorback</defName>
 	<slot>Adulthood</slot>
-	<title>Carnival razorback</title>
+	<title>Morose razorback</title>
 	<titleShort>Razorback</titleShort>
-	<baseDescription>Either nobody remembers, or nobody is permitted to remember why NAME was permanently demoted to a razorback, a grunt in the carnival workforce. Loading and unloading pack animals and carriages have made HIM strong, as well as a regular contender whenever a brawl breaks out.</baseDescription>
+	<baseDescription>Rumour has it that NAME was once a performer, with HIS very own act and private tent. Either nobody remembers, or nobody is permitted to remember why HE was permanently demoted to a razorback — a grunt in the carnival workforce. Loading and unloading carnival gear has made HIM strong, as well as a regular contender whenever a brawl breaks out.</baseDescription>
 	
 	<skillGains>
+	  <li><defName>Shooting</defName><degree>1</degree></li>
 	  <li><defName>Melee</defName><degree>3</degree></li>
-	  <li><defName>Construction</defName><degree>5</degree></li>
+	  <li><defName>Construction</defName><degree>4</degree></li>
+	  <li><defName>Artistic</defName><degree>1</degree></li>
+	  <li><defName>Medicine</defName><degree>-4</degree></li>
+	  <li><defName>Cooking</defName><degree>-4</degree></li>
 	</skillGains>
 	
 	<requiredWorkTags>
 	  <li>Hauling</li>
 	  <li>ManualSkilled</li>
+	  <li>PlantWork</li>
+	  <li>Violent</li>
 	</requiredWorkTags>
 	
 	<bodyTypeMale>Hulk</bodyTypeMale>
 	<bodyTypeFemale>Female</bodyTypeFemale>
 	
 	<spawnCategories>
-	  <li>Carnivale</li>
 	  <li>CarnivaleWorker</li>
-	  <li>CarnivaleFigher</li>
+	  <li>CarnivaleFighter</li>
 	</spawnCategories>
   </Xnope.Defs.BackstoryDef>
   
@@ -363,15 +371,18 @@
 	<baseDescription>NAME ran away from HIS urbworld problems to join an interstellar carnival, but struggled to make HIS mark for many years. HECAP was kept as a Razorback, a carnival grunt who earns their keep by simply being dumb muscle. Loading and unloading carnival gear has made NAME strong, as well as a regular contender whenever a brawl breaks out.</baseDescription>
 	
 	<skillGains>
-	  <li><defName>Shooting</defName><degree>3</degree></li>
+	  <li><defName>Shooting</defName><degree>2</degree></li>
 	  <li><defName>Melee</defName><degree>4</degree></li>
-	  <li><defName>Construction</defName><degree>6</degree></li>
+	  <li><defName>Construction</defName><degree>5</degree></li>
+	  <li><defName>Artistic</defName><degree>-4</degree></li>
+	  <li><defName>Intellectual</defName><degree>-4</degree></li>
 	</skillGains>
 	
 	<requiredWorkTags>
 	  <li>Hauling</li>
 	  <li>ManualSkilled</li>
 	  <li>PlantWork</li>
+	  <li>Violent</li>
 	</requiredWorkTags>
 	
 	<bodyTypeMale>Hulk</bodyTypeMale>
@@ -391,7 +402,7 @@
   <Xnope.Defs.BackstoryDef>
     <defName>XnopeBS_Gypsy</defName>
 	<slot>Adulthood</slot>
-	<title>Rim world gypsy</title>
+	<title>Rimworld gypsy</title>
 	<titleShort>Gypsy</titleShort>
 	<baseDescription>Folks used to say that gypsies are an ancient human culture often gifted with powers of foresight, and that is why they have been fortunate enough in their wanderlust to have survived the eons since their genesis on Earth. NAME identifies as a gypsy, though whether that is true remains to be known.</baseDescription>
 	
@@ -429,7 +440,7 @@
 	
 	<skillGains>
 	  <li><defName>Cooking</defName><degree>2</degree></li>
-	  <li><defName>Medicine</defName><degree>3</degree></li>
+	  <li><defName>Medicine</defName><degree>4</degree></li>
 	  <li><defName>Growing</defName><degree>3</degree></li>
 	</skillGains>
 	
@@ -458,7 +469,7 @@
 	<slot>Adulthood</slot>
 	<title>Carnival dancer</title>
 	<titleShort>Dancer</titleShort>
-	<baseDescription>NAME was always lauded for HIS beauty and grace, and when HE dances, the crowd goes into a mesmerised trance. Albeit, it doesn't take much to be a thing of beauty on a rimworld...</baseDescription>
+	<baseDescription>NAME was always lauded for HIS beauty and grace, and when HE dances, the crowd goes into a mesmerised trance. Albeit, it doesn't take much to be a thing of beauty on a rimworld... but don't let NAME hear you say such a thing.</baseDescription>
 	
 	<skillGains>
 	  <li><defName>Artistic</defName><degree>6</degree></li>
@@ -494,7 +505,7 @@
 	<slot>Adulthood</slot>
 	<title>Carnival beastmaster</title>
 	<titleShort>Beastmaster</titleShort>
-	<baseDescription>NAME handled pack animals for many years, and eventually got HIS own show demonstrating HIS beasts doing incredible tricks.</baseDescription>
+	<baseDescription>NAME handled pack animals for many years, and eventually got HIS own show demonstrating HIS beasts doing incredible tricks. HISCAP skills with animals have only improved with time; HE is famous among carnies to have once saved the caravan from a berserking muffalo.</baseDescription>
 	
 	<requiredWorkTags>
 	  <li>Animals</li>
@@ -526,7 +537,8 @@
 	  <li><defName>Social</defName><degree>4</degree></li>
 	  <li><defName>Cooking</defName><degree>2</degree></li>
 	  <li><defName>Artistic</defName><degree>2</degree></li>
-	  <li><defName>Medicine</defName><degree>-2</degree></li>
+	  <li><defName>Medicine</defName><degree>-3</degree></li>
+	  <li><defName>Growing</defName><degree>-2</degree></li>
 	</skillGains>
 	
 	<spawnCategories>
@@ -576,7 +588,8 @@
 	<skillGains>
 	  <li><defName>Shooting</defName><degree>2</degree></li>
 	  <li><defName>Melee</defName><degree>2</degree></li>
-	  <li><defName>Social</defName><degree>-2</degree></li>
+	  <li><defName>Construction</defName><degree>1</degree></li>
+	  <li><defName>Social</defName><degree>-3</degree></li>
 	</skillGains>
 	
 	<forcedTraits>
@@ -620,7 +633,6 @@
 	</skillGains>
 	
 	<spawnCategories>
-	  <li>CarnivaleRare</li>
 	  <li>CarnivaleWorker</li>
 	  <li>Slave</li>
 	  <li>Traveler</li>
@@ -636,7 +648,7 @@
 	<slot>Adulthood</slot>
 	<title>Carnival roustabout</title>
 	<titleShort>Rousty</titleShort>
-	<baseDescription>Also referred to lovingly as a 'Tentperson', NAME had the single job of taking packed tents from razorbacks (the less nuanced cousin of the rousty), and constructing them into sound textile structures. NAME spends HIS off-time enjoying long walks on the beach, reading what few books can be found on the rimworlds, and of course, beer.</baseDescription>
+	<baseDescription>Also referred to lovingly as a 'Tentperson', NAME had the single job of taking packed tents from razorbacks (the less nuanced cousin of the rousty), and constructing them into sound textile structures. NAME spends HIS off-time enjoying long walks on the beach, reading what few books can be found on the rimworlds, and of course, drinking copious amounts of beer.</baseDescription>
 	
 	<requiredWorkTags>
 	  <li>Hauling</li>
@@ -667,7 +679,7 @@
 	<slot>Adulthood</slot>
 	<title>Tough cookie</title>
 	<titleShort>Cookie</titleShort>
-	<baseDescription>Rumoured to be on the run after HIS urbworld restaurant was exposed as a crime family den, NAME is nonetheless a seasoned veteran when it comes to feeding large numbers of mouths. Be careful not to tick HIM off; HE is a force of nature with a frying pan.</baseDescription>
+	<baseDescription>Rumoured to be on the run after HIS urbworld restaurant was exposed as a crime den, NAME is nonetheless a seasoned veteran when it comes to feeding large numbers of mouths. Be careful not to tick HIM off; HE is a force of nature with a frying pan, and has a certain affinity for finding new uses for fire.</baseDescription>
 	
 	<requiredWorkTags>
 	  <li>Cooking</li>
@@ -677,6 +689,10 @@
 	<workDisables>
 	  <li>Artistic</li>
 	</workDisables>
+	
+	<forcedTraits>
+	  <li><defName>Pyromaniac</defName><degree>0</degree></li>
+	</forcedTraits>
 	
 	<skillGains>
 	  <li><defName>Cooking</defName><degree>5</degree></li>
@@ -696,11 +712,10 @@
 	<slot>Adulthood</slot>
 	<title>Lumberjack</title>
 	<titleShort>Jack</titleShort>
-	<baseDescription>When asked what skills HE could offer in working for a rimworld carnival, NAME simply replied, 'I like chopping wood.' HE's been chopping wood ever since. I guess they say do what you love.</baseDescription>
+	<baseDescription>When asked what skills HE could offer in working for a rimworld carnival, NAME simply replied, 'I love axes. I hate wood.' HE's been chopping wood ever since. I guess they say do what you love... or... chop what you hate? Whatever.</baseDescription>
 	
 	<requiredWorkTags>
 	  <li>PlantWork</li>
-	  <li>Social</li>
 	  <li>ManualSkilled</li>
 	  <li>ManualDumb</li>
 	</requiredWorkTags>

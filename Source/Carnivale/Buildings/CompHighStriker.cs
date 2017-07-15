@@ -94,7 +94,7 @@ namespace Carnivale
             base.PostDraw();
 
             var pos = this.parent.TrueCenter();
-            pos.y += 0.046875f;
+            pos.y += 0.046875f; // 3 'pixels' toward camera
             pos.z = CurPosZ;
 
             var trsMatrix = default(Matrix4x4);
