@@ -45,7 +45,7 @@ namespace Carnivale
 
         public bool entertainingNow;
 
-        public int feePerColonist;
+        public int feePerColonist = -1;
 
         public List<Pawn> allowedColonists;
 
@@ -204,9 +204,9 @@ namespace Carnivale
 
             Scribe_Values.Look(ref this.trashCentre, "trashCell", IntVec3.Invalid);
 
-            Scribe_Values.Look(ref this.alreadyEntertainedToday, "alreadyEntertainedToday", false, true);
+            Scribe_Values.Look(ref this.alreadyEntertainedToday, "alreadyEntertainedToday", false);
 
-            Scribe_Values.Look(ref this.entertainingNow, "entertainingNow", false, true);
+            Scribe_Values.Look(ref this.entertainingNow, "entertainingNow", false);
 
             Scribe_Values.Look(ref this.feePerColonist, "feePerColonist", -1);
 

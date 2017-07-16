@@ -5,18 +5,27 @@
     <defName>CarnivalApproaches</defName>
 	<label>carnival approaches</label>
 	<workerClass>Carnivale.IncidentWorker_CarnivalApproaches</workerClass>
-	<category>AllyArrival</category>
+	<category>Misc</category>
 	<targetType>MapPlayerHome</targetType>
 	
-	<minPopulation>3</minPopulation>
+	<!-- <minPopulation>3</minPopulation> -->
 	<baseChance>1</baseChance>
 	<pointsScaleable>true</pointsScaleable>
-	<minRefireDays>15</minRefireDays>
+	<minRefireDays>12</minRefireDays>
 	
 	<durationDays>
 	  <min>2</min>
 	  <max>4</max>
 	</durationDays>
+	
+	<chanceFactorByPopulationCurve>
+	  <points>
+	    <li>(2,0)</li>
+		<li>(5,1)</li>
+		<li>(7,1.5)</li>
+		<li>(12,2)</li>
+	  </points>
+	</chanceFactorByPopulationCurve>
   </IncidentDef>
   
   <IncidentDef>

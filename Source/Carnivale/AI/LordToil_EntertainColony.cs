@@ -42,13 +42,13 @@ namespace Carnivale
                     {
                         // more carriers = more radius
                         DutyUtility.GuardSmallArea(pawn, pos, countCarriers);
-                        continue;
                     }
                     else
                     {
                         // rest on the off shift if not assigned a position
                         DutyUtility.ForceRest(pawn);
                     }
+                    continue;
                 }
 
                 if (pawnRole.IsAny(CarnivalRole.Vendor, CarnivalRole.Carrier))
@@ -69,13 +69,14 @@ namespace Carnivale
                     if (Info.rememberedPositions.TryGetValue(pawn, out pos))
                     {
                         DutyUtility.HitchToSpot(pawn, pos);
-                        continue;
                     }
+                    continue;
                 }
 
                 if (pawnRole.Is(CarnivalRole.Worker))
                 {
                     DutyUtility.MeanderAndHelp(pawn, Info.AverageLodgeTentPos, 10f);
+                    continue;
                 }
 
                 // Default
