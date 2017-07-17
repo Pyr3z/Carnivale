@@ -11,7 +11,7 @@
 	<!-- <minPopulation>3</minPopulation> -->
 	<baseChance>1</baseChance>
 	<pointsScaleable>true</pointsScaleable>
-	<minRefireDays>12</minRefireDays>
+	<minRefireDays>15</minRefireDays>
 	
 	<durationDays>
 	  <min>2</min>

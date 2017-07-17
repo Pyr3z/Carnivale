@@ -354,10 +354,13 @@ namespace Carnivale
             bannerCell = PreCalculateBannerCell();
 
             // Cache pawn roles to lists
-            foreach (CarnivalRole role in Enum.GetValues(typeof(CarnivalRole)))
+            var roles = Enum.GetValues(typeof(CarnivalRole));
+            for (int i = 0; i < roles.Length; i++)
             {
+                var role = (CarnivalRole)roles.GetValue(i);
+
                 List<Pawn> pawns = (from p in currentLord.ownedPawns
-                                    where p.Is(role)
+                                    where i == 0 ? p.IsOnly(role) : p.Is(role)
                                     select p).ToList();
                 if (role == CarnivalRole.Vendor)
                 {
@@ -436,6 +439,13 @@ namespace Carnivale
             }
         }
 
+        private bool HaulableValidator(Thing thing, bool checkForCrates)
+        {
+            return thing.DefaultHaulLocation(checkForCrates) != HaulLocation.None
+                   && !thingsToHaul.Contains(thing)
+                   && thing.IsForbidden(Faction.OfPlayer); // dropped things are by default forbidden to the player
+        }
+
         public void CheckForColonists(bool removeColonists)
         {
             if (removeColonists)
@@ -465,6 +475,43 @@ namespace Carnivale
                 }
             }
         }
+
+        private void RecalculateCheckForCells()
+        {
+            if (!Active) return;
+
+            if (checkForCells != null)
+            {
+                checkForCells.Clear();
+            }
+            else
+            {
+                checkForCells = new List<IntVec3>();
+            }
+
+            var tcellSet = new HashSet<IntVec3>();
+
+            foreach (var tcell in TrashCells())
+            {
+                tcellSet.Add(tcell);
+            }
+
+            checkForCells.AddRange(GenRadial.RadialCellsAround(setupCentre, baseRadius, true)
+                .Where(c => c.InBounds(map) && c.Walkable(map) && !tcellSet.Contains(c)));
+
+            foreach (var building in carnivalBuildings)
+            {
+                if (building.def == _DefOf.Carn_SignTrash) continue;
+
+                foreach (var bcell in building.OccupiedRect().ExpandedBy(1))
+                {
+                    if (!tcellSet.Contains(bcell) && !checkForCells.Contains(bcell))
+                        checkForCells.Add(bcell);
+                }
+            }
+
+        }
+
 
         public void AddBuilding(Building building)
         {
@@ -567,7 +614,6 @@ namespace Carnivale
             }
         }
 
-
         public IntVec3 GetNextTrashCellFor(Thing thing, Pawn carrier = null)
         {
             if (thing != null && ShouldHaulTrash)
@@ -587,12 +633,10 @@ namespace Carnivale
             return trashCentre;
         }
 
-
         public bool AnyCarriersCanCarry(Thing thing)
         {
             return pawnsWithRole[CarnivalRole.Carrier].Any(c => c.HasSpaceFor(thing));
         }
-
 
         public int UnreservedThingsToHaulOf(ThingDef def, Pawn claimant)
         {
@@ -607,14 +651,7 @@ namespace Carnivale
         }
 
 
-        private bool HaulableValidator(Thing thing, bool checkForCrates)
-        {
-            return thing.DefaultHaulLocation(checkForCrates) != HaulLocation.None
-                   && !thingsToHaul.Contains(thing)
-                   && thing.IsForbidden(Faction.OfPlayer); // dropped things are by default forbidden to the player
-        }
-
-        public Pawn GetBestAnnouncer(bool withoutAssignedPostions = true)
+        public Pawn GetBestAnnouncer(bool withoutAssignedPostion = true)
         {
             if (!Active)
             {
@@ -622,7 +659,7 @@ namespace Carnivale
             }
 
 
-            if (Entrance != null && Entrance.assignedPawn != null && (!withoutAssignedPostions || !rememberedPositions.ContainsKey(Entrance.assignedPawn)))
+            if (Entrance != null && Entrance.assignedPawn != null && (!withoutAssignedPostion || !rememberedPositions.ContainsKey(Entrance.assignedPawn)))
             {
                 return Entrance.assignedPawn;
             }
@@ -632,11 +669,11 @@ namespace Carnivale
             if (!(from p in pawnsWithRole[CarnivalRole.Entertainer]
                   where p.story != null && p.story.adulthood != null
                     && p.story.adulthood.TitleShort == "Announcer"
-                    && !withoutAssignedPostions || !rememberedPositions.ContainsKey(p)
+                    && !withoutAssignedPostion || !rememberedPositions.ContainsKey(p)
                   select p).TryRandomElement(out ticketTaker))
             {
                 // If no pawns have the announcer backstory
-                if (!pawnsWithRole[CarnivalRole.Entertainer].Where(p => !withoutAssignedPostions || !rememberedPositions.ContainsKey(p)).TryRandomElement(out ticketTaker))
+                if (!pawnsWithRole[CarnivalRole.Entertainer].Where(p => !withoutAssignedPostion || !rememberedPositions.ContainsKey(p)).TryRandomElement(out ticketTaker))
                 {
                     // No entertainers either, use leader
                     return currentLord.faction.leader;
@@ -679,41 +716,23 @@ namespace Carnivale
             return false;
         }
 
-        private void RecalculateCheckForCells()
+        public Pawn GetBestGuard(bool withoutAssignedPosition = true)
         {
-            if (!Active) return;
-
-            if (checkForCells != null)
+            Pawn guard = null;
+            if (!pawnsWithRole[CarnivalRole.Guard]
+                .Where(g => g.needs.rest.CurCategory == RestCategory.Rested
+                            && (!withoutAssignedPosition || !rememberedPositions.ContainsKey(g)))
+                .TryRandomElement(out guard))
             {
-                checkForCells.Clear();
-            }
-            else
-            {
-                checkForCells = new List<IntVec3>();
-            }
-
-            var tcellSet = new HashSet<IntVec3>();
-
-            foreach (var tcell in TrashCells())
-            {
-                tcellSet.Add(tcell);
-            }
-
-            checkForCells.AddRange(GenRadial.RadialCellsAround(setupCentre, baseRadius, true)
-                .Where(c => c.InBounds(map) && c.Walkable(map) && !tcellSet.Contains(c)));
-
-            foreach (var building in carnivalBuildings)
-            {
-                if (building.def == _DefOf.Carn_SignTrash) continue;
-
-                foreach (var bcell in building.OccupiedRect().ExpandedBy(1))
+                if (!pawnsWithRole[CarnivalRole.Guard].TryRandomElementByWeight((Pawn p) => 1f / ((float)p.needs.rest.CurCategory + 1f), out guard))
                 {
-                    if (!tcellSet.Contains(bcell) && !checkForCells.Contains(bcell))
-                        checkForCells.Add(bcell);
+                    guard = pawnsWithRole[CarnivalRole.Any].Where(p => !p.Is(CarnivalRole.Carrier) && !p.IsOnly(CarnivalRole.None)).FirstOrDefault();
                 }
             }
 
+            return guard;
         }
+
 
         private IntVec3 PreCalculateBannerCell()
         {

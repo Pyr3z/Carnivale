@@ -97,11 +97,11 @@ namespace Carnivale
             }
 
             // Find spots for carriers to chill + a guard spot
-            IntVec3 guardSpot = GetCarrierSpots().Average();
+            var guardSpot = GetCarrierSpots().Average();
 
             // Assign guard spot at carriers
-            Pawn guard;
-            if (Info.pawnsWithRole[CarnivalRole.Guard].Where(g => !Info.rememberedPositions.ContainsKey(g)).TryRandomElement(out guard))
+            Pawn guard = Info.GetBestGuard();
+            if (guard != null)
             {
                 Info.rememberedPositions.Add(guard, guardSpot);
 

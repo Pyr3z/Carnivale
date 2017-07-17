@@ -85,7 +85,7 @@ namespace Carnivale
                 // Already reserved
                 yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (" + "Reserved".Translate() + ")", null);
             }
-            else if (Props.type.Is(CarnBuildingType.Stall | CarnBuildingType.Attraction))
+            else if (Info.entertainingNow && Props.type.Is(CarnBuildingType.Stall | CarnBuildingType.Attraction))
             {
                 // Do use job (mostly for games)
                 yield return new FloatMenuOption(this.FloatMenuOptionLabel, delegate

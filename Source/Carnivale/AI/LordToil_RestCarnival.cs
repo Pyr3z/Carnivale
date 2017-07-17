@@ -29,6 +29,12 @@ namespace Carnivale
                     continue;
                 }
 
+                if (role.IsAny(CarnivalRole.Entertainer, CarnivalRole.Vendor))
+                {
+                    DutyUtility.ForceRest(pawn);
+                    continue;
+                }
+
                 if (!role.Is(CarnivalRole.Carrier))
                 {
                     DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
