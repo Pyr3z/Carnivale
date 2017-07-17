@@ -67,3 +67,4 @@ I'm a bit stronger on the coding side of things than the texturing side, so if y
 ![joke](Imagework/Promo/offersafetyjoke.png)
 ![payment](Imagework/Promo/payment.png)
 ![gamewin1](Imagework/Promo/gamewin1.png)
+![populationCurve](Imagework/Promo/chanceByPopulationCurve.png)
