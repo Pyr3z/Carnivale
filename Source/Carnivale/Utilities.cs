@@ -320,15 +320,55 @@ namespace Carnivale
 
         public static IntVec3 FindCarnivalSetupPositionFrom(IntVec3 entrySpot, Map map)
         {
-            // Copy of internal methods from RCellFinder (why the feck are they internal??)
-            for (int minDistToColony = 70; minDistToColony >= 20; minDistToColony -= 10)
+            if (entrySpot.x == 0)
+            {
+                entrySpot.x += 10;
+            }
+            if (entrySpot.y == 0)
+            {
+                entrySpot.y += 10;
+            }
+            if (entrySpot.x == map.Size.x)
+            {
+                entrySpot.x -= 10;
+            }
+            if (entrySpot.y == map.Size.y)
+            {
+                entrySpot.y -= 10;
+            }
+
+            var colonistThingsLocList = new List<IntVec3>();
+            foreach (var pawn in map.mapPawns.FreeColonistsSpawned)
+            {
+                colonistThingsLocList.Add(pawn.Position);
+            }
+            foreach (var building in map.listerBuildings.allBuildingsColonist.Where(b => b.def == ThingDefOf.Wall || b is IAttackTarget))
+            {
+                colonistThingsLocList.Add(building.Position);
+            }
+
+            var averageColPos = colonistThingsLocList.Average();
+
+            for (int minDistToColony = Mathf.RoundToInt(map.Size.x / 3.5f); minDistToColony >= 40 ; minDistToColony -= 10)
             {
                 IntVec3 result;
-                if (TryFindCarnivalSetupPosition(entrySpot, minDistToColony, map, out result))
+                if (!TryFindCarnivalSetupPosition(entrySpot, averageColPos, minDistToColony, map, out result))
+                {
+                    if (Prefs.DevMode)
+                        Log.Warning("[Debug] Original method for setupSpot failed. Trying iterative algorithm.");
+
+                    if (TryFindCarnivalSetupPositionIteratively(entrySpot, averageColPos, minDistToColony, map, out result))
+                    {
+                        return result;
+                    }
+                }
+                else
                 {
                     return result;
                 }
             }
+
+
             Log.Error(string.Concat(new object[]
             {
                 "Could not find carnival setup spot from ",
@@ -339,36 +379,55 @@ namespace Carnivale
             return entrySpot;
         }
 
-        private static bool TryFindCarnivalSetupPosition(IntVec3 entrySpot, float minDistToColony, Map map, out IntVec3 result)
+        private static bool TryFindCarnivalSetupPosition(IntVec3 entrySpot, IntVec3 averageColPos, float minDistToColony, Map map, out IntVec3 result)
         {
-            CellRect cellRect = CellRect.CenteredOn(entrySpot, 80);
+            var firstPass = entrySpot.CellsInLineTo(averageColPos)
+                            .LimitBetween(10, (int)minDistToColony)
+                            .RandomGroup(10)
+                            .MaxBy(c => c.DistanceSquaredToNearestMineable(map, 16));
+
+            IntVec3 secondPass;
+            if (!firstPass.TryFindNearestRoadCell(map, 25, out secondPass))
+            {
+                secondPass = firstPass;
+            }
+
+            var finalPass = CellsUtil.Average(null, firstPass, secondPass);
+
+            if (finalPass.Standable(map)
+                && !finalPass.Roofed(map)
+                && finalPass.SupportsStructureType(map, TerrainAffordance.Light)
+                && map.reachability.CanReach(finalPass, entrySpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some)
+                && map.reachability.CanReachColony(finalPass)
+                && !finalPass.IsAroundTerrainOfTag(map, 16, "Water"))
+            {
+                result = firstPass;
+                return true;
+            }
+
+            result = IntVec3.Invalid;
+            return false;
+        }
+
+        private static bool TryFindCarnivalSetupPositionIteratively(IntVec3 entrySpot, IntVec3 averageColPos, float minDistToColony, Map map, out IntVec3 result)
+        {
+            var minSqrDistToColony = minDistToColony * minDistToColony;
+
+            var cellRect = CellRect.CenteredOn(entrySpot, (int)entrySpot.DistanceTo(averageColPos));
             cellRect.ClipInsideMap(map);
-            cellRect = cellRect.ContractedBy(16);
-
-            List<IntVec3> colonistThingsLocList = new List<IntVec3>();
-            foreach (Pawn pawn in map.mapPawns.FreeColonistsSpawned)
-            {
-                colonistThingsLocList.Add(pawn.Position);
-            }
-            foreach (Building building in map.listerBuildings.allBuildingsColonistCombatTargets)
-            {
-                colonistThingsLocList.Add(building.Position);
-            }
-
-            IntVec3 averageColonyPos = colonistThingsLocList.Average();
-            float minDistToColonySquared = minDistToColony * minDistToColony;
+            cellRect = cellRect.ContractedBy(10);
 
             IntVec3 randomCell;
             for (int attempt = 0; attempt < 200; attempt++)
             {
                 randomCell = cellRect.RandomCell;
                 if (randomCell.Standable(map)
-                    && (averageColonyPos - randomCell).LengthHorizontalSquared > minDistToColonySquared
+                    && (averageColPos - randomCell).LengthHorizontalSquared <= minSqrDistToColony
                     && !randomCell.Roofed(map)
                     && randomCell.SupportsStructureType(map, TerrainAffordance.Light)
                     && map.reachability.CanReach(randomCell, entrySpot, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some)
                     && map.reachability.CanReachColony(randomCell)
-                    && (map.roadInfo.roadEdgeTiles.Any() || !randomCell.IsAroundTerrainOfTag(map, 12, "Water")))
+                    && attempt > 100 || ((map.roadInfo.roadEdgeTiles.Any() && randomCell.IsAroundTerrainOfTag(map, 16, "Road") || !randomCell.IsAroundTerrainOfTag(map, 16, "Water"))))
                 {
                     result = randomCell;
                     return true;

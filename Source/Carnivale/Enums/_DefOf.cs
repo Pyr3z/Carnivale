@@ -13,6 +13,8 @@ namespace Carnivale
 
         public static DutyDef Duty_ForceRest;
 
+        public static DutyDef Duty_GuardCircuit;
+
         public static DutyDef Duty_GuardSmallArea;
 
         public static DutyDef Duty_HitchToSpot;

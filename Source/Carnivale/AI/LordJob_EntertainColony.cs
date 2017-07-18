@@ -123,6 +123,7 @@ namespace Carnivale
 
             var trans_Exit = new Transition(toil_Strike, toil_Exit);
             trans_Exit.AddTrigger(new Trigger_Memo("StrikeDone"));
+            trans_Exit.AddTrigger(new Trigger_Memo("NoBuildings"));
             trans_Exit.AddPostAction(new TransitionAction_EndAllJobs());
             trans_Exit.AddPostAction(new TransitionAction_WakeAll());
             mainGraph.AddTransition(trans_Exit);

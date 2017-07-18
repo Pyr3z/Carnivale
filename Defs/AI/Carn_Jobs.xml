@@ -45,7 +45,7 @@
     <reportString>playing high striker.</reportString>
     <joyDuration>1150</joyDuration>
     <joyMaxParticipants>1</joyMaxParticipants>
-    <joyGainRate>1</joyGainRate>
+    <joyGainRate>0.5</joyGainRate>
     <joySkill>Melee</joySkill>
     <joyXpPerTick>0.100</joyXpPerTick>
     <joyKind>GamingDexterity</joyKind>

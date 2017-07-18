@@ -58,6 +58,11 @@ namespace Carnivale
                     // Carnival is closed
                     yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (Carnival closed)", null);
                 }
+                else if (!pawn.CanReserve(this.parent))
+                {
+                    // Already reserved
+                    yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (" + "Reserved".Translate() + ")", null);
+                }
                 else if (Props.useJob == _DefOf.Job_PayEntryFee)
                 {
                     // Pay entry fee
@@ -68,7 +73,10 @@ namespace Carnivale
 
                         if (silverStack != null && pawn.CanReserveAndReach(silverStack, PathEndMode.Touch, pawn.NormalMaxDanger()))
                         {
-                            var job = new Job(Props.useJob, silverStack);
+                            var job = new Job(Props.useJob, silverStack)
+                            {
+                                expiryInterval = GenDate.TicksPerHour
+                            };
                             pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                         }
                     });
@@ -78,24 +86,19 @@ namespace Carnivale
                     // Pawn hasn't payed entry fee
                     yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (Must pay fee at entrance)", null);
                 }
+                else if (Props.type.Is(CarnBuildingType.Stall | CarnBuildingType.Attraction))
+                {
+                    // Do use job (mostly for games)
+                    yield return new FloatMenuOption(this.FloatMenuOptionLabel, delegate
+                    {
+                        if (pawn.CanReserveAndReach(this.parent, PathEndMode.InteractionCell, Danger.None))
+                        {
+                            this.TryStartUseJob(pawn);
+                        }
+                    });
+                }
             }
             
-            if (!pawn.CanReserve(this.parent))
-            {
-                // Already reserved
-                yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (" + "Reserved".Translate() + ")", null);
-            }
-            else if (Info.entertainingNow && Props.type.Is(CarnBuildingType.Stall | CarnBuildingType.Attraction))
-            {
-                // Do use job (mostly for games)
-                yield return new FloatMenuOption(this.FloatMenuOptionLabel, delegate
-                {
-                    if (pawn.CanReserveAndReach(this.parent, PathEndMode.InteractionCell, Danger.None))
-                    {
-                        this.TryStartUseJob(pawn);
-                    }
-                });
-            }
         }
     }
 }

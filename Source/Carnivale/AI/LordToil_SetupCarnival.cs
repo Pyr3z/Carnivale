@@ -104,6 +104,7 @@ namespace Carnivale
             if (guard != null)
             {
                 Info.rememberedPositions.Add(guard, guardSpot);
+                Info.guardPositions.Add(guardSpot);
 
                 // if can feed animals, give em kibble
                 if (!guard.story.WorkTypeIsDisabled(WorkTypeDefOf.Handling))
@@ -125,12 +126,12 @@ namespace Carnivale
             if (this.lord.ticksInToil % 601 == 0)
             {
                 if (!(from frame in this.Frames
-                      where !frame.Destroyed
+                      where !frame.DestroyedOrNull()
                       select frame).Any())
                 {
                     LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)this.data;
                     if (!(from blue in data.blueprints
-                          where !blue.Destroyed
+                          where !blue.DestroyedOrNull()
                           select blue).Any())
                     {
                         bool anyBuildings = false;
@@ -140,7 +141,7 @@ namespace Carnivale
                         {
                             anyBuildings = true;
                             // Add buildings to CarnivalInfo
-                            if (building.GetComp<CompCarnBuilding>() != null)
+                            if (building is Building_Carn)
                             {
                                 Info.AddBuilding(building);
                             }
@@ -148,6 +149,8 @@ namespace Carnivale
 
                         if (anyBuildings)
                         {
+                            Info.guardPositions.Add(Info.AverageLodgeTentPos);
+
                             // Buildings are there. Next toil.
                             if (Info.CanEntertainNow)
                             {

@@ -229,7 +229,7 @@ namespace Carnivale
 
                 if (stallSpot.IsValid)
                 {
-                    if (Rand.Chance(0.5f))
+                    if (Rand.Chance(0.8f))
                     {
                         // Next spot should be close to last spot
                         stallSpot = FindRadialCardinalPlacementFor(stallDef, rot, stallSpot, 10);
@@ -319,13 +319,7 @@ namespace Carnivale
             var gameMasters = stallUsers.Where(p => p.TraderKind == null).ToList();
             var gameCrates = availableCrates.ListFullCopy().Where(c => c.def.entityDefToBuild != null);
 
-            IntVec3[] points = new IntVec3[]
-            {
-                info.setupCentre,
-                info.bannerCell,
-                info.carnivalArea.EdgeCells.RandomElement()
-            };
-            var gameSpot = points.Average();
+            var gameSpot = CellRect.CenteredOn(info.setupCentre, 16).ClosestCellTo(info.carnivalArea.EdgeCells.RandomElement());
 
             ThingDef gameDef;
             int i = 0;

@@ -136,6 +136,7 @@ namespace Carnivale
                 {
                     //TargetThingB.SetForbidden(true, true);
                     Info.allowedColonists.Add(this.pawn);
+                    EndJobWith(JobCondition.Succeeded);
                 },
                 defaultCompleteMode = ToilCompleteMode.Instant,
                 atomicWithPrevious = true

@@ -121,6 +121,11 @@ namespace Carnivale
                 waresParms.forFaction = parms.faction;
                 waresParms.validator = delegate (ThingDef def)
                 {
+                    if (def.stackLimit > 1)
+                    {
+                        return def.statBases.GetStatValueFromList(StatDefOf.Mass, 0f) * def.stackLimit / 2 < 70f;
+                    }
+
                     if (def.stackLimit == 1)
                     {
                         return def.statBases.GetStatValueFromList(StatDefOf.Mass, 0f) < 70f;
@@ -232,7 +237,7 @@ namespace Carnivale
 
                     var mass = thing.Mass();
 
-                    if (mass > baseCapacity)
+                    if (thing.stackCount == 1 && mass > baseCapacity)
                     {
                         if (Prefs.DevMode)
                         {
@@ -248,6 +253,34 @@ namespace Carnivale
                         }
                         wares.RemoveAt(j);
                         continue;
+                    }
+
+                    if (thing.def.stackLimit > 1)
+                    {
+                        byte attempts = 0;
+                        while (attempts++ < 6 && mass > baseCapacity && thing.stackCount >= 2)
+                        {
+                            thing.stackCount /= 2;
+                            mass = thing.Mass();
+                        }
+
+                        if (mass > baseCapacity)
+                        {
+                            if (Prefs.DevMode)
+                            {
+                                Log.Warning("[Debug] "
+                                    + thing.LabelShort
+                                    + " is too big for any carrier and will be removed from wares. mass="
+                                    + mass
+                                    + ", "
+                                    + carrierKind.label
+                                    + " capacity="
+                                    + baseCapacity
+                                );
+                            }
+                            wares.RemoveAt(j);
+                            continue;
+                        }
                     }
 
                     totalWeight += mass;
@@ -306,7 +339,7 @@ namespace Carnivale
             }
 
             // Finally, fill up all the carriers' inventories
-            int numFailures = 0;
+            byte numFailures = 0;
             while (i < waresSansPawns.Count && numFailures < 18)
             {
                 var ware = waresSansPawns[i];
@@ -326,7 +359,7 @@ namespace Carnivale
             {
                 // Remove things that could not fit for whatever reason
                 if (Prefs.DevMode)
-                    Log.Warning("[Debug] Could not fit " + waresSansPawns[i] + " in any carrier. Removing.");
+                    Log.Warning("[Debug] Could not fit " + waresSansPawns[i].LabelShort + " in any carrier. Removing.");
                 wares.Remove(waresSansPawns[i++]);
             }
         }

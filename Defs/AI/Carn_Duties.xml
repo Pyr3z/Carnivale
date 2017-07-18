@@ -204,15 +204,51 @@
 		  <maxDistFromPoint>8</maxDistFromPoint>
 		</li>
 	    
-		<!-- satisfy needs -->
-		<li Class="ThinkNode_Subtree">
-		  <treeDef>SatisfyBasicNeeds</treeDef>
+		<!-- satisfy the basic needs, no sleep -->
+		<li Class="ThinkNode_PrioritySorter">
+		  <subNodes>
+		    <li Class="JobGiver_GetFood" />
+		    <li Class="JobGiver_SatisfyChemicalNeed" />
+		  </subNodes>
 		</li>
 		
 		<!-- guard area -->
 	    <li Class="JobGiver_WanderNearDutyLocation">
 	      <wanderRadius>4</wanderRadius>
 	    </li>
+	    
+		<!-- TODO: feed animals -->
+	    <li Class="Carnivale.ThinkNode_CanInteractWithAnimals">
+	      
+	    </li>
+		
+	  </subNodes>
+	</thinkNode>
+  </DutyDef>
+  
+  
+  <!-- Guard circuit -->
+  <DutyDef>
+    <defName>Duty_GuardCircuit</defName>
+	<alwaysShowWeapon>true</alwaysShowWeapon>
+	<thinkNode Class="ThinkNode_Priority">
+	  <subNodes>
+		
+		<!-- Goto next guard area -->
+		<li Class="Carnivale.JobGiver_GotoNextGuardSpot" />
+		
+		<!-- guard area -->
+	    <li Class="JobGiver_WanderNearDutyLocation">
+	      <wanderRadius>4</wanderRadius>
+	    </li>
+		
+		<!-- satisfy the basic needs, no sleep -->
+		<li Class="ThinkNode_PrioritySorter">
+		  <subNodes>
+		    <li Class="JobGiver_GetFood" />
+		    <li Class="JobGiver_SatisfyChemicalNeed" />
+		  </subNodes>
+		</li>
 	    
 		<!-- TODO: feed animals -->
 	    <li Class="Carnivale.ThinkNode_CanInteractWithAnimals">

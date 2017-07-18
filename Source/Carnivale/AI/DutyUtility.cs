@@ -31,6 +31,14 @@ namespace Carnivale
             }
         }
 
+        public static void GuardCircuit(Pawn pawn)
+        {
+            if (pawn.mindState != null)
+            {
+                pawn.mindState.duty = new PawnDuty(_DefOf.Duty_GuardCircuit);
+            }
+        }
+
         public static void GuardSmallArea(Pawn pawn, IntVec3 centre, float radius)
         {
             if (pawn.mindState != null)

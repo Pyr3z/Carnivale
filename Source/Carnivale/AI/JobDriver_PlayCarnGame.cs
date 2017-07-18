@@ -140,9 +140,10 @@ namespace Carnivale
             {
                 initAction = delegate
                 {
+                    Messages.Message("PawnWonPrize".Translate(pawn, PrizeLabelShort, GameBuilding.LabelShort), MessageSound.Benefit);
+
                     if (this.prize != null)
                     {
-                        Messages.Message("PawnWonPrize".Translate(pawn, PrizeLabelShort, GameBuilding.LabelShort), MessageSound.Benefit);
                         var carrierInventory = this.prize.holdingOwner;
                         
                         if (!carrierInventory.TryDrop(prize, ThingPlaceMode.Near, out this.prize))
@@ -164,29 +165,11 @@ namespace Carnivale
             };
         }
 
-        //private Toil WaitToGivePrize()
-        //{
-        //    var toil = new Toil
-        //    {
-        //        initAction = delegate
-        //        {
-        //            this.pawn.pather.StartPath(AssignedCarny, PathEndMode.Touch);
-        //        },
-        //        defaultCompleteMode = ToilCompleteMode.Delay,
-        //        defaultDuration = 30
-        //    };
 
-        //    toil.AddFinishAction(delegate
-        //    {
-        //        Thing prize;
-        //        AssignedCarny.carryTracker.TryDropCarriedThing(pawn.Rotation.FacingCell, ThingPlaceMode.Direct, out prize);
-        //        this.pawn.inventory.innerContainer.TryAdd(prize);
-        //    });
-
-        //    return toil;
-        //}
-
-
+        /// <summary>
+        /// What happens while the game is being played. Make it return true if the player wins.
+        /// </summary>
+        /// <returns></returns>
         protected virtual bool WatchTickAction()
         {
             var extraJoyGainFactor = TargetThingA.GetStatValue(StatDefOf.EntertainmentStrengthFactor);
@@ -197,14 +180,21 @@ namespace Carnivale
 
         protected virtual bool ChoosePrize()
         {
-            return ChooseApparel();
+            return ChooseApparel() || ChooseBeer();
         }
 
         protected bool ChooseApparel()
         {
             return Info.pawnsWithRole[CarnivalRole.Vendor].First().trader.Goods
-                   .Where(t => t is Apparel && t.MarketValue < 100)
+                   .Where(t => t is Apparel && t.MarketValue < 150)
                    .TryRandomElementByWeight(e => 1 / e.MarketValue, out this.prize);
+        }
+
+        protected bool ChooseBeer()
+        {
+            return Info.pawnsWithRole[CarnivalRole.Vendor].First().trader.Goods
+                   .Where(t => t.def == ThingDefOf.Beer)
+                   .TryRandomElementByWeight(e => 1 / e.stackCount, out this.prize);
         }
     }
 }

@@ -24,32 +24,40 @@
 		  <li>EggsFertilized</li>
 		</excludedCategories>
         <thingDefCountRange>
-          <min>2</min>
-          <max>7</max>
+          <min>0</min>
+          <max>4</max>
         </thingDefCountRange>
         <totalPriceRange>
-          <min>100</min>
-          <max>500</max>
+          <min>25</min>
+          <max>100</max>
         </totalPriceRange>
       </li>
 	  
 	  <li Class="StockGenerator_Category">
 	    <categoryDef>FoodMeals</categoryDef>
 		<thingDefCountRange>
-		  <min>3</min>
+		  <min>2</min>
 		  <max>4</max>
 		</thingDefCountRange>
 		<countRange>
-		  <min>6</min>
-		  <max>24</max>
+		  <min>10</min>
+		  <max>40</max>
+		</countRange>
+	  </li>
+	  
+	  <li Class="StockGenerator_SingleDef">
+		<thingDef>Chocolate</thingDef>
+		<countRange>
+		  <min>5</min>
+		  <max>75</max>
 		</countRange>
 	  </li>
 	  
 	  <li Class="StockGenerator_SingleDef">
 		<thingDef>Beer</thingDef>
 		<countRange>
-		  <min>64</min>
-		  <max>128</max>
+		  <min>10</min>
+		  <max>75</max>
 		</countRange>
 	  </li>
 	  
@@ -146,16 +154,16 @@
 	  <li Class="StockGenerator_SingleDef">
         <thingDef>Component</thingDef>
         <countRange>
-          <min>1</min>
-          <max>16</max>
+          <min>0</min>
+          <max>12</max>
         </countRange>
       </li>
 	  
 	  <li Class="StockGenerator_SingleDef">
         <thingDef>Steel</thingDef>
         <countRange>
-          <min>35</min>
-          <max>150</max>
+          <min>0</min>
+          <max>75</max>
         </countRange>
       </li>
 	  
@@ -177,27 +185,46 @@
 	  
 	  <li Class="StockGenerator_Category">
 		<categoryDef>Textiles</categoryDef>
+		<thingDefCountRange>
+		  <min>0</min>
+		  <max>3</max>
+		</thingDefCountRange>
+		<totalPriceRange>
+		  <min>50</min>
+		  <max>200</max>
+		</totalPriceRange>
 	  </li>
 	  
 	  <li Class="StockGenerator_SingleDef">
 		<thingDef>Chemfuel</thingDef>
 		<countRange>
-		  <min>50</min>
+		  <min>0</min>
 		  <max>200</max>
 	    </countRange>
 	  </li>
 	  
 	  <li Class="StockGenerator_MultiDef">
         <thingDefs>
-          <li>Chocolate</li>
           <li>Kibble</li>
           <li>Pemmican</li>
         </thingDefs>
       </li>
 	  
+	  <li Class="StockGenerator_Category">
+	    <categoryDef>Drugs</categoryDef>
+		<thingDefCountRange>
+		  <min>1</min>
+		  <max>3</max>
+		</thingDefCountRange>
+		<totalPriceRange>
+		  <min>50</min>
+		  <max>125</max>
+		</totalPriceRange>
+	  </li>
+	  
 	  <li Class="StockGenerator_Clothes">
         <countRange>
-          <min>1</min>
+          <min>3</min>
           <max>12</max>
         </countRange>
       </li>
@@ -206,7 +233,7 @@
         <tradeTag>Furniture</tradeTag>
         <thingDefCountRange>
           <min>0</min>
-          <max>3</max>
+          <max>2</max>
         </thingDefCountRange>
         <countRange>
           <min>0</min>

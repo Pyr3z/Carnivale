@@ -70,13 +70,14 @@
     <Compile Include="AI\JobDriver_StrikeBuilding.cs" />
     <Compile Include="AI\JobDriver_WanderCarnival.cs" />
     <Compile Include="AI\JobGiver_ExitMapRoadOrBest.cs" />
+    <Compile Include="AI\JobGiver_GotoNextGuardSpot.cs" />
     <Compile Include="AI\JobGiver_PlayCarnGame.cs" />
-    <Compile Include="AI\JobGiver_GotoCarnivalArea.cs" />
     <Compile Include="AI\JobGiver_HaulToCarrierOrTrash.cs" />
     <Compile Include="AI\JobGiver_StandAtLoc.cs" />
     <Compile Include="AI\JobGiver_StrikeBuildings.cs" />
     <Compile Include="AI\JobDriver_PlayHighStriker.cs" />
     <Compile Include="AI\LordToil_Leave.cs" />
+    <Compile Include="AI\JobGiver_Carn.cs" />
     <Compile Include="AI\ThinkNode_GotoCarnival.cs" />
     <Compile Include="AI\ThinkNode_ConditionalCarny.cs" />
     <Compile Include="Buildings\CompHighStriker.cs" />

@@ -53,6 +53,8 @@ namespace Carnivale
 
         public Dictionary<CarnivalRole, DeepPawnList> pawnsWithRole;
 
+        public List<IntVec3> guardPositions;
+
         public Dictionary<Pawn, IntVec3> rememberedPositions;
 
         [Unsaved]
@@ -67,7 +69,7 @@ namespace Carnivale
         [Unsaved]
         private bool anyCarnyNeedsRest;
         [Unsaved]
-        private IntVec3 averageLodgeTentPos = IntVec3.Invalid;
+        private IntVec3 averageLodgeTentPosInt = IntVec3.Invalid;
         [Unsaved]
         private Building_Carn entranceInt = null;
 
@@ -106,22 +108,22 @@ namespace Carnivale
         {
             get
             {
-                if (!averageLodgeTentPos.IsValid)
+                if (!averageLodgeTentPosInt.IsValid)
                 {
-                    averageLodgeTentPos = carnivalBuildings.Select(b => new LocalTargetInfo(b)).Average(delegate(LocalTargetInfo target)
+                    averageLodgeTentPosInt = carnivalBuildings.Select(b => new LocalTargetInfo(b)).Average(delegate(LocalTargetInfo target)
                     {
                         if (((Building)target.Thing).Is(CarnBuildingType.Bedroom))
                         {
-                            return 10;
+                            return 15;
                         }
-                        return 0;
-                    });
+                        return 1;
+                    }).NearestStandableCell(map, 5);
 
                     if (Prefs.DevMode)
-                        Log.Warning("[Debug] Calculated weighted averageLodgeTentPos: " + averageLodgeTentPos);
+                        Log.Warning("[Debug] Calculated weighted averageLodgeTentPos: " + averageLodgeTentPosInt);
                 }
 
-                return averageLodgeTentPos;
+                return averageLodgeTentPosInt;
             }
         }
 
@@ -215,6 +217,8 @@ namespace Carnivale
             Scribe_Collections.Look(ref this.carnivalBuildings, "carnivalBuildings", LookMode.Reference);
 
             Scribe_Collections.Look(ref this.pawnsWithRole, "pawnsWithRoles", LookMode.Value, LookMode.Deep);
+
+            Scribe_Collections.Look(ref this.guardPositions, "guardPositions", LookMode.Value);
 
             Scribe_Collections.Look(ref this.rememberedPositions, "rememberedPositions", LookMode.Reference, LookMode.Value, ref pawnWorkingList, ref vec3WorkingList);
 
@@ -310,6 +314,15 @@ namespace Carnivale
             else
             {
                 pawnsWithRole = new Dictionary<CarnivalRole, DeepPawnList>(9);
+            }
+
+            if (guardPositions != null)
+            {
+                guardPositions.Clear();
+            }
+            else
+            {
+                guardPositions = new List<IntVec3>();
             }
 
             if (rememberedPositions != null)
@@ -519,6 +532,11 @@ namespace Carnivale
 
             if (building.def == _DefOf.Carn_SignTrash) return;
 
+            if (!(building is Building_Tent))
+            {
+
+            }
+
             foreach (var cell in building.OccupiedRect().ExpandedBy(1))
             {
                 if (!checkForCells.Contains(cell))
@@ -698,6 +716,7 @@ namespace Carnivale
                         rememberedPositions.Remove(building.assignedPawn);
                         building.assignedPawn = announcer;
                         rememberedPositions.Add(announcer, cell);
+                        guardPositions.Add(cell);
                         return true;
                     }
                     else
@@ -709,6 +728,7 @@ namespace Carnivale
                 {
                     building.assignedPawn = announcer;
                     rememberedPositions.Add(announcer, cell);
+                    guardPositions.Add(cell);
                     return true;
                 }
             }
