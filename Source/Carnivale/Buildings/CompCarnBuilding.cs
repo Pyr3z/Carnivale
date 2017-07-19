@@ -90,6 +90,25 @@ namespace Carnivale
                     });
                 }
             }
+            else
+            {
+                if (!pawn.CanReserve(this.parent))
+                {
+                    // Already reserved
+                    yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (" + "Reserved".Translate() + ")", null);
+                }
+                else if (Props.type.Is(CarnBuildingType.Stall | CarnBuildingType.Attraction))
+                {
+                    // Do use job (mostly for games)
+                    yield return new FloatMenuOption(this.FloatMenuOptionLabel, delegate
+                    {
+                        if (pawn.CanReserveAndReach(this.parent, PathEndMode.InteractionCell, Danger.None))
+                        {
+                            this.TryStartUseJob(pawn);
+                        }
+                    });
+                }
+            }
             
         }
     }

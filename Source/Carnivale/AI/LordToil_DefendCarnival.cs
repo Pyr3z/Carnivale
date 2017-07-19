@@ -3,11 +3,20 @@ using System.Linq;
 using Verse;
 using Verse.AI;
 using Xnope;
+using Verse.AI.Group;
 
 namespace Carnivale
 {
     public class LordToil_DefendCarnival : LordToil_Carn
     {
+        public override bool AllowSatisfyLongNeeds
+        {
+            get
+            {
+                return false;
+            }
+        }
+
 
         public LordToil_DefendCarnival() { }
 
@@ -30,21 +39,28 @@ namespace Carnivale
                 .Select(targ => targ.Thing.PositionHeld)
                 .Average();
 
-            if (!nearHostilesPos.IsValid)
+            IntVec3 closestGuardSpot;
+
+            if (nearHostilesPos.IsValid)
             {
-                lord.ReceiveMemo("NoThreats");
-                return;
+                closestGuardSpot = Info.guardPositions.MinBy(c => c.DistanceToSquared(nearHostilesPos));
+            }
+            else if (Info.guardPositions.Count > 2)
+            {
+                closestGuardSpot = CellsUtil.Average(Info.guardPositions.RandomConsecutiveGroup(3));
+            }
+            else
+            {
+                closestGuardSpot = Info.bannerCell;
             }
 
-            var closestGuardSpot = Info.guardPositions.MinBy(c => c.DistanceToSquared(nearHostilesPos));
+            
 
             foreach (var pawn in lord.ownedPawns)
             {
-                if (pawn.Dead) continue;
+                if (pawn.Dead || pawn.Downed) continue;
 
                 CarnivalRole role = pawn.GetCarnivalRole();
-
-                pawn.mindState.duty = null;
 
                 if (role.Is(CarnivalRole.Manager))
                 {
@@ -78,13 +94,13 @@ namespace Carnivale
                 else if (pawn.equipment != null && pawn.equipment.Primary != null)
                 {
                     var carny = RandomCarnyByHealth();
-                    LocalTargetInfo tentDoor;
+                    IntVec3 tentDoor;
 
                     if (carny != null)
                     {
                         DutyUtility.DefendPoint(pawn, carny);
                     }
-                    else if (Rand.Bool && (tentDoor = Info.GetRandomTentDoor()).IsValid)
+                    else if (Rand.Bool && (tentDoor = Info.GetRandomTentDoor().Cell).IsValid)
                     {
                         DutyUtility.DefendPoint(pawn, tentDoor);
                     }
@@ -102,6 +118,13 @@ namespace Carnivale
                 }
 
             }
+        }
+
+        public override void Notify_PawnLost(Pawn victim, PawnLostCondition cond)
+        {
+            base.Notify_PawnLost(victim, cond);
+
+            UpdateAllDuties();
         }
 
 

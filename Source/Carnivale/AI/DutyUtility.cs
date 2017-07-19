@@ -82,36 +82,42 @@ namespace Carnivale
             }
         }
 
-        public static void LeaveMap(Pawn pawn, Pawn toFollow = null)
+        public static void LeaveMap(Pawn pawn, Pawn toFollow = null, LocomotionUrgency urgency = LocomotionUrgency.Walk)
         {
             if (pawn.mindState != null)
             {
                 if (toFollow != null && toFollow.Spawned)
                 {
-                    pawn.mindState.duty = new PawnDuty(DutyDefOf.Follow, toFollow, 5f);
+                    pawn.mindState.duty = new PawnDuty(DutyDefOf.Follow, toFollow, 5f)
+                    {
+                        locomotion = urgency
+                    };
                 }
                 else
                 {
-                    var duty = new PawnDuty(_DefOf.Duty_DefendAndExitMapRoadOrBest);
-                    duty.radius = 18f;
-                    //duty.locomotion = LocomotionUrgency.Jog;
-
-                    pawn.mindState.duty = duty;
+                    pawn.mindState.duty = new PawnDuty(_DefOf.Duty_DefendAndExitMapRoadOrBest)
+                    {
+                        radius = 18f,
+                        locomotion = urgency
+                    };
                 }
             }
         }
 
-        public static void LeaveMapAndEscort(Pawn pawn, Pawn escortee)
+        public static void LeaveMapAndEscort(Pawn pawn, Pawn escortee, LocomotionUrgency urgency = LocomotionUrgency.Walk)
         {
             if (pawn.mindState != null)
             {
                 if (escortee != null && escortee.Spawned)
                 {
-                    pawn.mindState.duty = new PawnDuty(DutyDefOf.Escort, escortee, 14f);
+                    pawn.mindState.duty = new PawnDuty(DutyDefOf.Escort, escortee, 14f)
+                    {
+                        locomotion = urgency
+                    };
                 }
                 else
                 {
-                    LeaveMap(pawn);
+                    LeaveMap(pawn, null, urgency);
                 }
             }
         }

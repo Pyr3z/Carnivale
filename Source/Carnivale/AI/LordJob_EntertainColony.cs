@@ -1,6 +1,7 @@
 ﻿using Verse.AI.Group;
 using RimWorld;
 using Verse;
+using Verse.AI;
 
 namespace Carnivale
 {
@@ -56,7 +57,7 @@ namespace Carnivale
 
             var trans_Setup = new Transition(toil_MoveToSetup, toil_Setup);
             trans_Setup.AddTrigger(new Trigger_Memo("TravelArrived"));
-            trans_Setup.AddTrigger(new Trigger_TicksPassed(2500));
+            trans_Setup.AddTrigger(new Trigger_TicksPassed(GenDate.TicksPerHour));
             mainGraph.AddTransition(trans_Setup);
 
             // Meat of the event: entertaining the colony
@@ -97,14 +98,14 @@ namespace Carnivale
             trans_Strike.AddPostAction(new TransitionAction_Message("CarnPackingUp".Translate(this.lord.faction)));
             mainGraph.AddTransition(trans_Strike);
 
-            // Defend if attacked (needs work)
+            // Defend if attacked
             var toil_Defend = new LordToil_DefendCarnival();
             mainGraph.AddToil(toil_Defend);
 
-            var trans_Defend = new Transition(toil_Setup, toil_Defend);
-            trans_Defend.AddSources(toil_Entertain, toil_Rest, toil_Strike);
-            trans_Defend.AddTrigger(new Trigger_BecameColonyEnemy());
-            trans_Defend.AddTrigger(new Trigger_TickCondition(delegate
+            var trans_ToDefend = new Transition(toil_Setup, toil_Defend);
+            trans_ToDefend.AddSources(toil_Entertain, toil_Rest, toil_Strike);
+            trans_ToDefend.AddTrigger(new Trigger_BecameColonyEnemy());
+            trans_ToDefend.AddTrigger(new Trigger_TickCondition(delegate
             {
                 if (Find.TickManager.TicksGame % 331 == 0)
                 {
@@ -120,23 +121,38 @@ namespace Carnivale
 
                 return false;
             }));
-            trans_Defend.AddPreAction(new TransitionAction_EndAllJobs());
-            trans_Defend.AddPreAction(new TransitionAction_WakeAll());
-            trans_Defend.AddPostAction(new TransitionAction_Message("CarnDefending".Translate(this.lord.faction)));
-            mainGraph.AddTransition(trans_Defend);
+            trans_ToDefend.AddPreAction(new TransitionAction_WakeAll());
+            trans_ToDefend.AddPostAction(new TransitionAction_EndAllJobs());
+            trans_ToDefend.AddPostAction(new TransitionAction_Message("CarnDefending".Translate(this.lord.faction)));
+            mainGraph.AddTransition(trans_ToDefend);
 
-            // Normal exit map toil
+            var trans_FromDefend = new Transition(toil_Defend, toil_Strike);
+            trans_FromDefend.AddTrigger(new Trigger_TicksPassedWithoutHarm(GenDate.TicksPerHour));
+            trans_FromDefend.AddPreAction(new TransitionAction_EndAllJobs());
+            trans_FromDefend.AddPostAction(new TransitionAction_Message("CarnPackingUpHostile".Translate(this.lord.faction)));
+            mainGraph.AddTransition(trans_FromDefend);
+
+
+
+            // exit map toil
             var toil_Exit = new LordToil_Leave();
             mainGraph.AddToil(toil_Exit);
 
             var trans_Exit = new Transition(toil_Strike, toil_Exit);
+            trans_Exit.AddSource(toil_Setup);
             trans_Exit.AddTrigger(new Trigger_Memo("StrikeDone"));
             trans_Exit.AddTrigger(new Trigger_Memo("NoBuildings"));
             trans_Exit.AddPostAction(new TransitionAction_EndAllJobs());
             trans_Exit.AddPostAction(new TransitionAction_WakeAll());
             mainGraph.AddTransition(trans_Exit);
 
-            // TODO panic exit map
+            // panic exit map
+            var trans_ExitPanic = new Transition(toil_Defend, toil_Exit);
+            trans_ExitPanic.AddSources(toil_Strike, toil_Entertain, toil_Rest);
+            trans_ExitPanic.AddTrigger(new Trigger_FractionPawnsLost(0.5f));
+            trans_ExitPanic.AddPreAction(new TransitionAction_Custom(() => info.leavingUrgency = LocomotionUrgency.Sprint));
+            trans_ExitPanic.AddPostAction(new TransitionAction_Message("CarnFleeing".Translate(lord.faction)));
+            mainGraph.AddTransition(trans_ExitPanic);
 
             return mainGraph;
         }

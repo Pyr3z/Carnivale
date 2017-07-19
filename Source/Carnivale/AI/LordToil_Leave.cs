@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Verse;
+using Verse.AI;
+using Verse.AI.Group;
 
 namespace Carnivale
 {
@@ -10,39 +12,45 @@ namespace Carnivale
 
         public override bool AllowSatisfyLongNeeds { get { return false; } }
 
-
-
         public override void UpdateAllDuties()
         {
+            LocomotionUrgency urg = Utilities.CarnivalInfo.leavingUrgency;
+
             foreach (var pawn in this.lord.ownedPawns)
             {
                 CarnivalRole role = pawn.GetCarnivalRole();
 
                 if (role.Is(CarnivalRole.Carrier))
                 {
-                    DutyUtility.LeaveMap(pawn, Info.pawnsWithRole[CarnivalRole.Vendor].RandomElementOrNull());
+                    var vendor = Info.pawnsWithRole[CarnivalRole.Vendor].RandomElementOrNull();
+                    DutyUtility.LeaveMap(pawn, vendor, urg);
                 }
                 else if (role.Is(CarnivalRole.Guard))
                 {
-                    DutyUtility.LeaveMapAndEscort(pawn, GetClosestCarrier(pawn));
+                    DutyUtility.LeaveMapAndEscort(pawn, GetClosestCarrier(pawn), urg);
                 }
                 else
                 {
-                    DutyUtility.LeaveMap(pawn);
+                    DutyUtility.LeaveMap(pawn, null, urg);
                 }
             }
         }
 
+        public override void Notify_PawnLost(Pawn victim, PawnLostCondition cond)
+        {
+            base.Notify_PawnLost(victim, cond);
 
+            if (cond == PawnLostCondition.IncappedOrKilled)
+            {
+                Utilities.CarnivalInfo.leavingUrgency = LocomotionUrgency.Sprint;
+            }
+        }
 
         public override void LordToilTick()
         {
-            if (Find.TickManager.TicksGame % 499 == 0)
+            if (Find.TickManager.TicksGame % 373 == 0)
             {
-                if (!((List<Pawn>)Info.pawnsWithRole[CarnivalRole.Vendor]).Any(v => v.Spawned))
-                {
-                    UpdateAllDuties();
-                }
+                UpdateAllDuties();
             }
         }
     }

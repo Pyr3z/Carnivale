@@ -56,6 +56,8 @@
   <CarnResting>{0} is closed for the day.</CarnResting>
   <CarnPackingUp>{0} is packing up to leave.</CarnPackingUp>
   <CarnDefending>{0} is defending themselves!</CarnDefending>
+  <CarnPackingUpHostile>{0} is packing up due to recent events.</CarnPackingUpHostile>
+  <CarnFleeing>{0} is fleeing.</CarnFleeing>
   
   <PawnWonPrize>{0} won {1} in a game of {2}!</PawnWonPrize>
   

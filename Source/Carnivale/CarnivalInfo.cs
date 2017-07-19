@@ -63,6 +63,8 @@ namespace Carnivale
         public List<Pawn> colonistsInArea;
         [Unsaved]
         public List<IntVec3> checkForCells;
+        [Unsaved]
+        public LocomotionUrgency leavingUrgency = LocomotionUrgency.Walk;
 
         [Unsaved]
         private bool checkRemoveColonists;
@@ -382,9 +384,6 @@ namespace Carnivale
             }
 
             daysPassed = GenDate.DaysPassed;
-
-            if (Prefs.DevMode)
-                Log.Warning("———— [Carnivale] Initialised incident with: " + lord.faction + " ————");
 
             // The rest is assigned as the carnival goes along
 

@@ -234,6 +234,11 @@
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
 		
+		<li Class="JobGiver_AIFightEnemies">
+          <targetAcquireRadius>40</targetAcquireRadius>
+          <targetKeepRadius>72</targetKeepRadius>
+        </li>
+		
 		<!-- Goto next guard area -->
 		<li Class="Carnivale.JobGiver_GotoNextGuardSpot" />
 		
@@ -267,7 +272,7 @@
         </li>
 		
 		<li Class="JobGiver_AIFightEnemies">
-          <targetAcquireRadius>65</targetAcquireRadius>
+          <targetAcquireRadius>40</targetAcquireRadius>
           <targetKeepRadius>72</targetKeepRadius>
         </li>
 		
@@ -301,7 +306,7 @@
         </li>
 		
         <li Class="JobGiver_AIDefendPoint">
-          <targetAcquireRadius>40</targetAcquireRadius>
+          <targetAcquireRadius>30</targetAcquireRadius>
           <targetKeepRadius>55</targetKeepRadius>
         </li>
 		

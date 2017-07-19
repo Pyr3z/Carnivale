@@ -110,31 +110,38 @@ namespace Carnivale
             Toil gotoCell = Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.OnCell);
             yield return gotoCell;
 
+            Toil standToil;
+
             if (Type.Is(CarnivalRole.Vendor))
             {
                 if (pawn.TraderKind == _DefOf.Carn_Trader_Curios)
                 {
-                    yield return VendorStandWithMotes(curiosVendorMotes0Arg, curiosVendorMotes1Arg);
+                    standToil = VendorStandWithMotes(curiosVendorMotes0Arg, curiosVendorMotes1Arg);
                 }
                 else if (pawn.TraderKind == _DefOf.Carn_Trader_Surplus)
                 {
-                    yield return VendorStandWithMotes(surplusVendorMotes0Arg, surplusVendorMotes1Arg);
+                    standToil = VendorStandWithMotes(surplusVendorMotes0Arg, surplusVendorMotes1Arg);
                 }
                 else
                 {
-                    yield return VendorStandWithMotes(foodVendorMotes0Arg, foodVendorMotes1Arg);
+                    standToil = VendorStandWithMotes(foodVendorMotes0Arg, foodVendorMotes1Arg);
                 }
             }
             else if (Type.Is(CarnivalRole.Entertainer))
             {
                 // TODO: differentiate between announcers and game masters
-                yield return StandWithMotes(announcerMotes0Arg);
+                standToil = StandWithMotes(announcerMotes0Arg);
             }
             else
             {
-                yield return CarrierStand();
+                standToil = CarrierStand();
             }
-            
+
+            standToil.socialMode = RandomSocialMode.SuperActive;
+            standToil.defaultDuration = GenDate.TicksPerHour / 2;
+            standToil.defaultCompleteMode = ToilCompleteMode.Delay;
+
+            yield return standToil;
         }
 
 
@@ -193,8 +200,6 @@ namespace Carnivale
             {
                 toil.actor.mindState.wantsToTradeWithColony = false;
             });
-            toil.defaultDuration = GenDate.TicksPerHour;
-            toil.defaultCompleteMode = ToilCompleteMode.Delay;
 
             return toil;
         }
@@ -222,8 +227,6 @@ namespace Carnivale
                     );
                 }
             };
-            toil.defaultDuration = GenDate.TicksPerHour;
-            toil.defaultCompleteMode = ToilCompleteMode.Delay;
 
             return toil;
         }
@@ -244,8 +247,6 @@ namespace Carnivale
                     toil.actor.Rotation = Rot4.Random;
                 }
             };
-            toil.defaultDuration = GenDate.TicksPerHour;
-            toil.defaultCompleteMode = ToilCompleteMode.Delay;
 
             return toil;
         }
