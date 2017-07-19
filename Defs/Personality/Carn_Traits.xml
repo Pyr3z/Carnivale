@@ -25,7 +25,7 @@
   
   <TraitDef>
     <defName>Carn_SweetTalkerTrait</defName>
-	<commonality>0.25</commonality>
+	<commonality>0.15</commonality>
 	<degreeDatas>
 	  <li>
 	    <label>sweet talker</label>
@@ -48,7 +48,7 @@
   
   <TraitDef>
     <defName>Carn_LuckinessTrait</defName>
-	<commonality>0.1</commonality>
+	<commonality>0.25</commonality>
 	<degreeDatas>
 	  <li>
 	    <label>lucky</label>
@@ -68,7 +68,7 @@
 	  </li>
 	  <li>
 	    <label>unlucky</label>
-		<description>Everywhere HE goes, NAME seems to get the shortest end of the stick. Important details tend to slip from his attention, and HIS ailments often take a turn for the worse. It's really a wonder that HE is still alive.</description>
+		<description>NAME seems to always get the shortest end of the stick. It's really a wonder that HE is still alive.</description>
 		<degree>-1</degree>
 		<statOffsets>
 		  <Stat_Luckiness>-0.2</Stat_Luckiness>

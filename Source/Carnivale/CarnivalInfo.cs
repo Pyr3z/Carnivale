@@ -825,11 +825,11 @@ namespace Carnivale
                 attempts++;
 
                 if (Prefs.DevMode)
-                    Log.Warning("[Carnivale] bannerCell mountain line-of-sight pass #" + attempts + ": " + closestCell);
+                    Log.Warning("\t[Carnivale] bannerCell mountain line-of-sight pass #" + attempts + ": " + closestCell);
             }
 
             if (attempts == 10 && Prefs.DevMode)
-                Log.Warning("[Carnivale] bannerCell mountain line-of-sight passes took too many tries. Leaving it at: " + closestCell);
+                Log.Warning("\t[Carnivale] bannerCell mountain line-of-sight passes took too many tries. Leaving it at: " + closestCell);
 
 
             // Mountain proximity pass
@@ -843,11 +843,11 @@ namespace Carnivale
                 attempts++;
 
                 if (Prefs.DevMode)
-                    Log.Warning("[Carnivale] bannerCell mountain proximity pass #" + attempts + ": " + closestCell);
+                    Log.Warning("\t[Carnivale] bannerCell mountain proximity pass #" + attempts + ": " + closestCell);
             }
 
             if (attempts == 10 && Prefs.DevMode)
-                Log.Warning("[Carnivale] bannerCell mountain proximity passes took too many tries. Leaving it at: " + closestCell);
+                Log.Warning("\t[Carnivale] bannerCell mountain proximity passes took too many tries. Leaving it at: " + closestCell);
 
 
             // Reachability pass
@@ -864,7 +864,7 @@ namespace Carnivale
                 }
 
                 if (Prefs.DevMode)
-                    Log.Warning("[Carnivale] bannerCell reachability pass: " + closestCell);
+                    Log.Warning("\t[Carnivale] bannerCell reachability pass: " + closestCell);
             }
 
 
@@ -879,8 +879,7 @@ namespace Carnivale
                 int distSqrdToCentre = road.DistanceToSquared(setupCentre);
                 if (distSqrdToCentre < maxDistSqrdToCentre && distSqrdToCentre > minDistSqrdToCentre)
                 {
-                    // Found the edge of a road,
-                    // try to centre it if it is diagonal or vertical
+                    // Found the edge of a road, try to centre it
                     var adjustedCell = road;
 
                     if ((adjustedCell + IntVec3.East * 2).GetTerrain(map).HasTag("Road"))
@@ -896,19 +895,19 @@ namespace Carnivale
                         adjustedCell += IntVec3.North;
                     }
 
-                    closestCell = adjustedCell.Walkable(map) ? adjustedCell : road;
+                    closestCell = adjustedCell;
 
                     if (Prefs.DevMode)
-                        Log.Warning("[Carnivale] bannerCell road pass: " + closestCell);
+                        Log.Warning("\t[Carnivale] bannerCell road pass: " + closestCell);
                 }
                 else if (Prefs.DevMode)
                 {
-                    Log.Warning("[Carnivale] bannerCell road pass failed. Reason: out of range from setupCentre.");
+                    Log.Warning("\t[Carnivale] bannerCell road pass failed. Reason: out of range from setupCentre.");
                 }
             }
             else if (map.roadInfo.roadEdgeTiles.Any() && Prefs.DevMode)
             {
-                Log.Warning("[Carnivale] bannerCell road pass failed. Reason: no roads found in search radius. searchRadius=" + (baseRadius - 10));
+                Log.Warning("\t[Carnivale] bannerCell road pass failed. Reason: no roads found in search radius. searchRadius=" + (baseRadius - 10));
             }
 
             //if (map.roadInfo.roadEdgeTiles.Any())
@@ -1000,7 +999,7 @@ namespace Carnivale
             //}
 
             if (Prefs.DevMode)
-                Log.Warning("[Carnivale] bannerCell pre-buildability pass: " + closestCell);
+                Log.Warning("\t[Carnivale] bannerCell pre-buildability pass: " + closestCell);
 
             return closestCell;
         }
