@@ -21,7 +21,7 @@ namespace Carnivale
             {
                 if (!Info.AssignAnnouncerToBuilding(Info.GetBestAnnouncer(false), Info.Entrance))
                 {
-                    Log.Error("Unable to assign a ticket taker to carnival entrance.");
+                    Log.Warning("Unable to assign a ticket taker to carnival entrance.");
                 }
             }
 

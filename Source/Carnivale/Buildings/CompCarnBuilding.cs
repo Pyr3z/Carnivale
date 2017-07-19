@@ -7,19 +7,11 @@ namespace Carnivale
 {
     public class CompCarnBuilding : CompUsable
     {
-        [Unsaved]
-        private CarnivalInfo infoInt = null;
-
         private CarnivalInfo Info
         {
             get
             {
-                if (infoInt == null)
-                {
-                    infoInt = parent.Map.GetComponent<CarnivalInfo>();
-                }
-
-                return infoInt;
+                return Utilities.CarnivalInfo;
             }
         }
 

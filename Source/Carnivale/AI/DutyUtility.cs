@@ -22,6 +22,33 @@ namespace Carnivale
             }
         }
 
+        public static void DefendPoint(Pawn pawn, LocalTargetInfo defendPoint)
+        {
+            if (pawn.mindState != null && pawn.equipment.Primary != null && defendPoint.IsValid)
+            {
+                var defendRadius = Utilities.CarnivalInfo.baseRadius / 2f;
+
+                if (!pawn.equipment.Primary.def.IsMeleeWeapon)
+                {
+                    pawn.mindState.duty = new PawnDuty(_DefOf.Duty_DefendRanged, defendPoint)
+                    {
+                        focusSecond = defendPoint,
+                        radius = defendRadius,
+                        locomotion = LocomotionUrgency.Sprint
+                    };
+                }
+                else
+                {
+                    pawn.mindState.duty = new PawnDuty(_DefOf.Duty_DefendMelee, defendPoint)
+                    {
+                        focusSecond = defendPoint,
+                        radius = defendRadius / 2,
+                        locomotion = LocomotionUrgency.Sprint
+                    };
+                }
+            }
+        }
+
         public static void ForceRest(Pawn pawn)
         {
             if (pawn.mindState != null)

@@ -73,8 +73,8 @@ namespace Carnivale
 
         public Building_TentFlap GetTentFlap()
         {
-            var flap = (Building_TentFlap)childBuildings.First(c => c is Building_TentFlap);
-            return flap;
+            var flap = childBuildings.First(c => c is Building_TentFlap);
+            return flap as Building_TentFlap;
         }
     }
 }

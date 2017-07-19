@@ -60,9 +60,6 @@ namespace Carnivale
         private bool moteArgs = false;
 
         [Unsaved]
-        private CarnivalInfo infoInt = null;
-
-        [Unsaved]
         private CarnivalRole typeInt = 0;
 
         [Unsaved]
@@ -73,12 +70,7 @@ namespace Carnivale
         {
             get
             {
-                if (infoInt == null)
-                {
-                    infoInt = Map.GetComponent<CarnivalInfo>();
-                }
-
-                return infoInt;
+                return Utilities.CarnivalInfo;
             }
         }
 
@@ -189,7 +181,7 @@ namespace Carnivale
                         MoteMaker.ThrowText(
                             toil.actor.DrawPos,
                             Map,
-                            strings1Arg.RandomElement().Translate(randomWareLabel),
+                            strings1Arg.RandomElement().Translate(randomWareLabel).CapitalizeFirst(),
                             5f
                         );
                     }
@@ -225,7 +217,7 @@ namespace Carnivale
                     MoteMaker.ThrowText(
                         toil.actor.DrawPos,
                         Map,
-                        strings0Arg.RandomElement().Translate(),
+                        strings0Arg.RandomElement().Translate(pawn.Faction),
                         3f
                     );
                 }

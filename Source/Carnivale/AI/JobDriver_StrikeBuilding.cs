@@ -11,9 +11,6 @@ namespace Carnivale
 
         private float initialNeededWork;
 
-        [Unsaved]
-        private CarnivalInfo infoInt = null;
-
         private Thing Target
         {
             get
@@ -44,12 +41,7 @@ namespace Carnivale
         {
             get
             {
-                if (infoInt == null)
-                {
-                    infoInt = Map.GetComponent<CarnivalInfo>();
-                }
-
-                return infoInt;
+                return Utilities.CarnivalInfo;
             }
         }
 

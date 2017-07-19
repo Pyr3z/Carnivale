@@ -13,18 +13,12 @@ namespace Carnivale
         protected bool victory = false;
         [Unsaved]
         protected Thing prize = null;
-        [Unsaved]
-        private CarnivalInfo infoInt;
 
         private CarnivalInfo Info
         {
             get
             {
-                if (infoInt == null)
-                {
-                    infoInt = Map.GetComponent<CarnivalInfo>();
-                }
-                return infoInt;
+                return Utilities.CarnivalInfo;
             }
         }
 

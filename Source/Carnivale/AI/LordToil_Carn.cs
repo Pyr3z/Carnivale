@@ -7,18 +7,11 @@ namespace Carnivale
     {
         // FIELDS + PROPERTIES //
 
-        [Unsaved]
-        private CarnivalInfo infoInt = null;
-
         protected CarnivalInfo Info
         {
             get
             {
-                if (infoInt == null)
-                {
-                    infoInt = this.Map.GetComponent<CarnivalInfo>();
-                }
-                return infoInt;
+                return Utilities.CarnivalInfo;
             }
         }
 

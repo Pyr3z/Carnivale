@@ -30,11 +30,9 @@ namespace Carnivale
 
         // CONSTRUCTORS //
 
-        public LordToil_SetupCarnival() { }
-
-        public LordToil_SetupCarnival(CarnivalInfo info)
+        public LordToil_SetupCarnival()
         {
-            this.data = new LordToilData_SetupCarnival(info);
+            this.data = new LordToilData_SetupCarnival();
         }
 
 
@@ -218,15 +216,15 @@ namespace Carnivale
 
         public override void Notify_PawnLost(Pawn victim, PawnLostCondition cond)
         {
-            if (cond == PawnLostCondition.IncappedOrKilled
-                || cond == PawnLostCondition.MadePrisoner)
-            {
-                // Hostile actions
-                this.lord.ReceiveMemo("HostileConditions");
-                return;
-            }
+            //if (cond == PawnLostCondition.IncappedOrKilled
+            //    || cond == PawnLostCondition.MadePrisoner)
+            //{
+            //    // Hostile actions
+            //    this.lord.ReceiveMemo("HostileConditions");
+            //    return;
+            //}
 
-            // Non-hostile cause of PawnLost
+            //// Non-hostile cause of PawnLost
             this.UpdateAllDuties();
         }
 

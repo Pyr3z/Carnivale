@@ -16,6 +16,8 @@ namespace Carnivale
 
         private static IntVec3 cachedAverageColPos = IntVec3.Invalid;
 
+        private static CarnivalInfo cachedInfo = null;
+
         private static int[] trashThingDefHashes = new int[]
         {
             ThingDefOf.WoodLog.GetHashCode(),
@@ -36,10 +38,25 @@ namespace Carnivale
         };
 
 
+        public static CarnivalInfo CarnivalInfo
+        {
+            get
+            {
+                if (cachedInfo == null)
+                {
+                    cachedInfo = Find.VisibleMap.GetComponent<CarnivalInfo>();
+                }
+
+                return cachedInfo;
+            }
+        }
+
+
         public static void ClearUtilityCaches()
         {
             cachedRoles.Clear();
             cachedAverageColPos = IntVec3.Invalid;
+            cachedInfo = null;
         }
 
 
@@ -378,19 +395,19 @@ namespace Carnivale
             var distFromColony = entrySpot.DistanceTo(averageColPos);
 
             if (Prefs.DevMode)
-                Log.Warning("[Carnivale] Initial distFromColony=" + distFromColony);
+                Log.Message("[Carnivale] Initial distFromColony=" + distFromColony);
 
             var result = entrySpot;
 
             if (TryFindCarnivalSetupPositionLoS(entrySpot, averageColPos, distFromColony, 6, map, out result))
             {
                 if (Prefs.DevMode)
-                    Log.Warning("[Carnivale] Calculated setupSpot: " + result + " (distFromColony=" + result.DistanceTo(averageColPos) + ").");
+                    Log.Message("[Carnivale] Calculated setupSpot: " + result + ". distFromColony=" + result.DistanceTo(averageColPos));
 
                 return result;
             }
 
-            Log.Error(string.Concat(new object[]
+            Log.Warning(string.Concat(new object[]
             {
                 "Could not find carnival setup spot from ",
                 entrySpot,
@@ -432,14 +449,14 @@ namespace Carnivale
             else if (tenth > 3)
             {
                 if (Prefs.DevMode)
-                    Log.Warning("[Carnivale] Failed recursive line-of-sight iteration for setupSpot. Will try " + (tenth - 3) + " more times.");
+                    Log.Message("\t[Carnivale] Failed to find setupSpot by line-of-sight. Will try " + (tenth - 3) + " more times.");
 
                 return TryFindCarnivalSetupPositionLoS(initialSpot, averageColPos, distFromColony, --tenth, map, out result);
             }
             else
             {
                 if (Prefs.DevMode)
-                    Log.Warning("[Carnivale] Failed to find setupSpot by line-of-sight. Trying old random iterative method.");
+                    Log.Message("\t[Carnivale] Failed to find setupSpot by line-of-sight. Trying old random iterative method.");
 
                 return TryFindCarnivalSetupPositionRandomly(initialSpot, averageColPos, distFromColony, 7, map, out result);
             }
@@ -477,7 +494,7 @@ namespace Carnivale
             if (tenth > 4)
             {
                 if (Prefs.DevMode)
-                    Log.Warning("[Carnivale] Failed recursive random iteration for setupSpot. Will try " + (tenth - 4) + " more times.");
+                    Log.Message("\t[Carnivale] Failed to find setupSpot by random iteration. Will try " + (tenth - 4) + " more times.");
 
                 return TryFindCarnivalSetupPositionRandomly(initialSpot, averageColPos, distFromColony, --tenth, map, out result);
             }

@@ -209,6 +209,15 @@
 			  <li>(2,0,-1)</li>
 			</placementOffsets>
 		  </li>
+		  <li>
+		    <thingDef>Sandbags</thingDef>
+			<placementOffsets>
+			  <li>(-3,0,-1)</li>
+			  <li>(-4,0,-1)</li>
+			  <li>(4,0,-1)</li>
+			  <li>(5,0,-1)</li>
+			</placementOffsets>
+		  </li>
 		</interiorThings>
 		
 		<useJob>Job_PayEntryFee</useJob>

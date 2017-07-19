@@ -1,6 +1,5 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
-using System.Linq;
 using Verse;
 using Verse.AI;
 
@@ -8,18 +7,11 @@ namespace Carnivale
 {
     public class JobDriver_PayEntryFee : JobDriver
     {
-        [Unsaved]
-        private CarnivalInfo infoInt = null;
-
         private CarnivalInfo Info
         {
             get
             {
-                if (infoInt == null)
-                {
-                    infoInt = Map.GetComponent<CarnivalInfo>();
-                }
-                return infoInt;
+                return Utilities.CarnivalInfo;
             }
         }
 
@@ -122,7 +114,7 @@ namespace Carnivale
                         );
 
                         if (Prefs.DevMode)
-                            Log.Warning("[Debug] " + this.pawn + " succesfully payed " + carriedThing.stackCount + " silver to " + TicketTaker.NameStringShort);
+                            Log.Message("[Carnivale] " + this.pawn + " succesfully payed " + carriedThing.stackCount + " silver to " + TicketTaker.NameStringShort);
                     }
                 }
             };

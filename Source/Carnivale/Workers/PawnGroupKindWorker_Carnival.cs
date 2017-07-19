@@ -261,7 +261,7 @@ namespace Carnivale
                             mass = thing.Mass();
 
                             if (Prefs.DevMode)
-                                Log.Warning("\t[Carnivale] " + thing.LabelShort + " was to heavy for any carrier. Reducing its stack count to " + thing.stackCount + ".");
+                                Log.Message("\t[Carnivale] " + thing.LabelShort + " was to heavy for any carrier. Reducing its stack count to " + thing.stackCount + " and trying again.");
                         }
 
                         if (mass > baseCapacity)
@@ -355,7 +355,7 @@ namespace Carnivale
                         mass = thing.Mass();
 
                         if (Prefs.DevMode)
-                            Log.Warning("\t[Carnivale] " + thing.LabelShort + " was to heavy for any carrier. Reducing its stack count to " + thing.stackCount + ".");
+                            Log.Message("\t[Carnivale] " + thing.LabelShort + " was to heavy for any carrier. Reducing its stack count to " + thing.stackCount + " and trying again.");
                     }
                 }
 

@@ -51,7 +51,7 @@ namespace Carnivale
             var toil_MoveToSetup = mainGraph.AttachSubgraph(new LordJob_Travel(this.setupCentre).CreateGraph()).StartingToil;
 
             // Next toil is to set up
-            var toil_Setup = new LordToil_SetupCarnival(info);
+            var toil_Setup = new LordToil_SetupCarnival();
             mainGraph.AddToil(toil_Setup);
 
             var trans_Setup = new Transition(toil_MoveToSetup, toil_Setup);
@@ -87,16 +87,6 @@ namespace Carnivale
             trans_FromRest.AddPostAction(new TransitionAction_Message("CarnEntertainNow".Translate(this.lord.faction)));
             mainGraph.AddTransition(trans_FromRest);
 
-            // Defend if attacked (needs work)
-            var toil_Defend = new LordToil_DefendCarnival(this.setupCentre, 30f);
-            mainGraph.AddToil(toil_Defend);
-
-            var trans_Defend = new Transition(toil_Setup, toil_Defend);
-            trans_Defend.AddSources(toil_Entertain);
-            trans_Defend.AddTrigger(new Trigger_BecameColonyEnemy());
-            trans_Defend.AddTrigger(new Trigger_Memo("HostileConditions")); // TODO: make carnies actively attack
-            mainGraph.AddTransition(trans_Defend);
-
             // Strike buildings
             var toil_Strike = new LordToil_StrikeCarnival();
             mainGraph.AddToil(toil_Strike);
@@ -107,15 +97,33 @@ namespace Carnivale
             trans_Strike.AddPostAction(new TransitionAction_Message("CarnPackingUp".Translate(this.lord.faction)));
             mainGraph.AddTransition(trans_Strike);
 
-            // Debug ender
-            if (Prefs.DevMode)
+            // Defend if attacked (needs work)
+            var toil_Defend = new LordToil_DefendCarnival();
+            mainGraph.AddToil(toil_Defend);
+
+            var trans_Defend = new Transition(toil_Setup, toil_Defend);
+            trans_Defend.AddSources(toil_Entertain, toil_Rest, toil_Strike);
+            trans_Defend.AddTrigger(new Trigger_BecameColonyEnemy());
+            trans_Defend.AddTrigger(new Trigger_TickCondition(delegate
             {
-                var trans_StrikeDebug = new Transition(toil_Rest, toil_Strike);
-                trans_StrikeDebug.AddSources(toil_Entertain);
-                trans_StrikeDebug.AddTrigger(new Trigger_TickCondition(() => info.thingsToHaul.Any(t => t.def == ThingDefOf.AIPersonaCore)));
-                trans_StrikeDebug.AddPostAction(new TransitionAction_Message("[Debug] " + "CarnPackingUp".Translate(this.lord.faction)));
-                mainGraph.AddTransition(trans_StrikeDebug);
-            }
+                if (Find.TickManager.TicksGame % 331 == 0)
+                {
+                    var hostiles = Map.attackTargetsCache.TargetsHostileToFaction(lord.faction);
+                    foreach (var hostile in hostiles)
+                    {
+                        if (GenHostility.IsActiveThreat(hostile))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }));
+            trans_Defend.AddPreAction(new TransitionAction_EndAllJobs());
+            trans_Defend.AddPreAction(new TransitionAction_WakeAll());
+            trans_Defend.AddPostAction(new TransitionAction_Message("CarnDefending".Translate(this.lord.faction)));
+            mainGraph.AddTransition(trans_Defend);
 
             // Normal exit map toil
             var toil_Exit = new LordToil_Leave();

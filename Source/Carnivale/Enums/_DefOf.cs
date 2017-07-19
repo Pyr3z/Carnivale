@@ -11,6 +11,10 @@ namespace Carnivale
 
         public static DutyDef Duty_DefendAndExitMapRoadOrBest;
 
+        public static DutyDef Duty_DefendRanged;
+
+        public static DutyDef Duty_DefendMelee;
+
         public static DutyDef Duty_ForceRest;
 
         public static DutyDef Duty_GuardCircuit;

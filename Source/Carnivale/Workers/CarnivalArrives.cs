@@ -54,7 +54,7 @@ namespace Carnivale
             if (parms.spawnRotation != Rot4.East)
             {
                 if (Prefs.DevMode)
-                    Log.Warning("[Carnivale] Spawn centre for CarnivalArrives was not precomputed. Resolving now.");
+                    Log.Message("[Carnivale] Spawn centre for CarnivalArrives was not precomputed. Resolving now.");
 
                 IntVec3 tempSpot = parms.spawnCenter;
 
@@ -92,7 +92,7 @@ namespace Carnivale
             if (!base.TryResolveParms(parms))
             {
                 if (Prefs.DevMode)
-                    Log.Warning("Could not execute CarnivalArrives: the spawn point calculated yesterday is probably no longer valid.");
+                    Log.Warning("[Carnivale] Could not execute CarnivalArrives: the spawn point calculated yesterday is probably no longer valid.");
                 return false;
             }
 
@@ -101,7 +101,7 @@ namespace Carnivale
             if (pawns.Count < 3)
             {
                 if (Prefs.DevMode)
-                    Log.Warning("Could not execute CarnivalArrives: could not generate enough valid pawns.");
+                    Log.Warning("[Carnivale] Could not execute CarnivalArrives: could not generate enough valid pawns.");
                 return false;
             }
 

@@ -32,7 +32,7 @@ namespace Carnivale
                         if (!haulable.IsForbidden(Faction.OfPlayer))
                         {
                             if (Prefs.DevMode)
-                                Log.Warning("[Debug] " + haulable + " from CarnivalInfo.thingsToHaul was claimed by the player. Removing from list.");
+                                Log.Warning("[Carnivale] " + haulable + " from CarnivalInfo.thingsToHaul was claimed by the player. Removing from list.");
 
                             info.thingsToHaul.Remove(haulable);
 

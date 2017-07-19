@@ -383,6 +383,9 @@ namespace Carnivale
 
             daysPassed = GenDate.DaysPassed;
 
+            if (Prefs.DevMode)
+                Log.Warning("———— [Carnivale] Initialised incident with: " + lord.faction + " ————");
+
             // The rest is assigned as the carnival goes along
 
             return this;
@@ -442,7 +445,7 @@ namespace Carnivale
                     if (HaulableValidator(thing, checkForCrates))
                     {
                         if (Prefs.DevMode)
-                            Log.Warning("[Debug] thingsToHaul : Adding " + thing + ". pos=" + thing.Position);
+                            Log.Message("[Carnivale] thingsToHaul : Adding " + thing + ". pos=" + thing.Position);
                         thingsToHaul.Add(thing);
                     }
                 }
@@ -465,8 +468,7 @@ namespace Carnivale
                     var col = colonistsInArea[i];
                     if (!checkForCells.Contains(col.PositionHeld))
                     {
-                        if (colonistsInArea.Remove(col) && Prefs.DevMode)
-                            Log.Warning("[Debug] colonistsInArea : Removing " + col.NameStringShort + ".");
+                        colonistsInArea.Remove(col);
                     }
                 }
             }
@@ -479,8 +481,6 @@ namespace Carnivale
                     && firstPawn.IsColonistPlayerControlled
                     && !colonistsInArea.Contains(firstPawn))
                 {
-                    if (Prefs.DevMode)
-                        Log.Warning("[Debug] colonistsInArea : Adding " + firstPawn.NameStringShort + ".");
                     colonistsInArea.Add(firstPawn);
                 }
             }
@@ -529,10 +529,7 @@ namespace Carnivale
 
             if (building.def == _DefOf.Carn_SignTrash) return;
 
-            if (!(building is Building_Tent))
-            {
-                guardPositions.Add(building.OccupiedRect().ExpandedBy(1).RandomCell);
-            }
+            guardPositions.Add(building.OccupiedRect().ExpandedBy(1).RandomCell);
 
             foreach (var cell in building.OccupiedRect().ExpandedBy(1))
             {
@@ -560,7 +557,7 @@ namespace Carnivale
             }
 
             if (Prefs.DevMode)
-                Log.Warning("[Debug] Tried to find any building of type " + type + " in CarnivalInfo, but none exists.");
+                Log.Warning("[Carnivale] Tried to find any building of type " + type + " in CarnivalInfo, but none exists.");
             return null;
         }
 
@@ -585,7 +582,7 @@ namespace Carnivale
             return null;
         }
 
-        public Building GetRandomBuildingOf(CarnBuildingType type)
+        public Building_Carn GetRandomBuildingOf(CarnBuildingType type)
         {
             if (!Active)
             {
@@ -597,11 +594,11 @@ namespace Carnivale
 
             if (carnivalBuildings.Where(b => b.Is(type)).TryRandomElement(out building))
             {
-                return building;
+                return building as Building_Carn;
             }
 
             if (Prefs.DevMode)
-                Log.Warning("[Debug] Tried to find any building of type " + type + " in CarnivalInfo, but none exists.");
+                Log.Warning("[Carnivale] Tried to find any building of type " + type + " in CarnivalInfo, but none exists.");
             return null;
         }
 
@@ -614,6 +611,18 @@ namespace Carnivale
                     yield return building;
                 }
             }
+        }
+
+        public LocalTargetInfo GetRandomTentDoor(CarnBuildingType secondaryType = CarnBuildingType.Bedroom)
+        {
+            var tent = GetRandomBuildingOf(CarnBuildingType.Tent | secondaryType) as Building_Tent;
+
+            if (tent != null)
+            {
+                return tent.GetTentFlap();
+            }
+
+            return IntVec3.Invalid;
         }
 
 
@@ -739,13 +748,16 @@ namespace Carnivale
             if (!pawnsWithRole[CarnivalRole.Guard]
                 .Where(g => g.needs.rest.CurCategory == RestCategory.Rested
                             && (!withoutAssignedPosition || !rememberedPositions.ContainsKey(g)))
-                .TryRandomElement(out guard))
+                .TryRandomElementByWeight(g => g.health.summaryHealth.SummaryHealthPercent, out guard))
             {
                 if (!pawnsWithRole[CarnivalRole.Guard].TryRandomElementByWeight((Pawn p) => 1f / ((float)p.needs.rest.CurCategory + 1f), out guard))
                 {
-                    guard = pawnsWithRole[CarnivalRole.Any].Where(p => !p.Is(CarnivalRole.Carrier) && !p.IsOnly(CarnivalRole.None)).FirstOrDefault();
+                    guard = pawnsWithRole[CarnivalRole.Any].Where(p => !p.Is(CarnivalRole.Carrier) && !p.IsOnly(CarnivalRole.None) && p.equipment.Primary != null).FirstOrDefault();
                 }
             }
+
+            if (guard == null && Prefs.DevMode)
+                Log.Warning("\t[Carnivale] Got null guard from CarnivalInfo.GetBestGuard().");
 
             return guard;
         }
@@ -761,7 +773,7 @@ namespace Carnivale
             var closestCell = carnivalArea.ClosestCellTo(colonistPos);
 
             if (Prefs.DevMode)
-                Log.Warning("[Carnivale] bannerCell initial pass: " + closestCell);
+                Log.Message("[Carnivale] bannerCell initial pass: " + closestCell);
 
 
             // Mountain line of sight pass
@@ -825,11 +837,11 @@ namespace Carnivale
                 attempts++;
 
                 if (Prefs.DevMode)
-                    Log.Warning("\t[Carnivale] bannerCell mountain line-of-sight pass #" + attempts + ": " + closestCell);
+                    Log.Message("\t[Carnivale] bannerCell mountain line-of-sight pass #" + attempts + ": " + closestCell);
             }
 
             if (attempts == 10 && Prefs.DevMode)
-                Log.Warning("\t[Carnivale] bannerCell mountain line-of-sight passes took too many tries. Leaving it at: " + closestCell);
+                Log.Message("\t[Carnivale] bannerCell mountain line-of-sight passes took too many tries. Leaving it at: " + closestCell);
 
 
             // Mountain proximity pass
@@ -843,7 +855,7 @@ namespace Carnivale
                 attempts++;
 
                 if (Prefs.DevMode)
-                    Log.Warning("\t[Carnivale] bannerCell mountain proximity pass #" + attempts + ": " + closestCell);
+                    Log.Message("\t[Carnivale] bannerCell mountain proximity pass #" + attempts + ": " + closestCell);
             }
 
             if (attempts == 10 && Prefs.DevMode)
@@ -864,7 +876,7 @@ namespace Carnivale
                 }
 
                 if (Prefs.DevMode)
-                    Log.Warning("\t[Carnivale] bannerCell reachability pass: " + closestCell);
+                    Log.Message("\t[Carnivale] bannerCell reachability pass: " + closestCell);
             }
 
 
@@ -898,7 +910,7 @@ namespace Carnivale
                     closestCell = adjustedCell;
 
                     if (Prefs.DevMode)
-                        Log.Warning("\t[Carnivale] bannerCell road pass: " + closestCell);
+                        Log.Message("\t[Carnivale] bannerCell road pass: " + closestCell);
                 }
                 else if (Prefs.DevMode)
                 {
@@ -910,96 +922,8 @@ namespace Carnivale
                 Log.Warning("\t[Carnivale] bannerCell road pass failed. Reason: no roads found in search radius. searchRadius=" + (baseRadius - 10));
             }
 
-            //if (map.roadInfo.roadEdgeTiles.Any())
-            //{
-            //    int searchRadius = (int)(baseRadius) + 10;
-            //    CellRect searchArea = CellRect.CenteredOn(closestCell, searchRadius).ClipInsideMap(map).ContractedBy(10);
-            //    float distSqrd = float.MaxValue;
-            //    float maxDistSqrdToCentre = baseRadius * baseRadius * 4f;
-            //    float minDistSqrdToCentre = (baseRadius / 2) * (baseRadius / 2);
-            //    IntVec3 tempClosestCell = closestCell;
-            //    IntVec3 roadCell = IntVec3.Invalid;
-            //    attempts = 0;
-
-            //    while (attempts < 3 && (!roadCell.IsValid || roadCell.DistanceToSquared(setupCentre) > maxDistSqrdToCentre))
-            //    {
-            //        if (attempts > 0 && roadCell.IsValid)
-            //        {
-            //            // after first pass, try an average of closestCell with setupCentre and closest roadCell
-            //            tempClosestCell = CellsUtil.Average(null, roadCell, tempClosestCell, setupCentre);
-            //            searchRadius -= 5 * attempts;
-            //            searchArea = CellRect.CenteredOn(tempClosestCell, searchRadius).ClipInsideMap(map).ContractedBy(10);
-            //        }
-
-            //        // Find nearest roadcell in area
-            //        foreach (var cell in searchArea)
-            //        {
-            //            if (cell.GetTerrain(map).HasTag("Road")
-            //                && cell.Walkable(map))
-            //            {
-            //                float tempDist = tempClosestCell.DistanceToSquared(cell);
-            //                if (tempDist < distSqrd)
-            //                {
-            //                    if (setupCentre.DistanceToSquared(cell) >= minDistSqrdToCentre)
-            //                    {
-            //                        distSqrd = tempDist;
-            //                        roadCell = cell;
-            //                    }
-            //                }
-            //            }
-            //        }
-
-            //        attempts++;
-
-            //        if (Prefs.DevMode)
-            //            Log.Warning("[Carnivale] bannerCell road pass #" + attempts + ": " + roadCell);
-            //    }
-
-            //    if (roadCell.IsValid)
-            //    {
-            //        var distSqrdToCentre = roadCell.DistanceToSquared(setupCentre);
-            //        if (distSqrdToCentre < maxDistSqrdToCentre && distSqrdToCentre > minDistSqrdToCentre)
-            //        {
-            //            // Found the edge of a road,
-            //            // try to centre it if it is diagonal or vertical
-            //            IntVec3 adjustedCell = roadCell;
-
-            //            if ((adjustedCell + IntVec3.East * 2).GetTerrain(map).HasTag("Road"))
-            //            {
-            //                adjustedCell += IntVec3.East * 2;
-            //            }
-            //            else if ((adjustedCell + IntVec3.West * 2).GetTerrain(map).HasTag("Road"))
-            //            {
-            //                adjustedCell += IntVec3.West * 2;
-            //            }
-            //            else
-            //            {
-            //                adjustedCell += IntVec3.North;
-            //            }
-
-            //            closestCell = adjustedCell.Walkable(map) ? adjustedCell : roadCell;
-
-            //            if (Prefs.DevMode)
-            //                Log.Warning("[Carnivale] bannerCell final road pass: " + closestCell);
-            //        }
-            //        else
-            //        {
-            //            if (Prefs.DevMode)
-            //                Log.Warning("[Carnivale] bannerCell road pass was invalid. Reason: road cell not within acceptable range of setupCentre. roadCell=" + roadCell +
-            //                    ", distSqrdToCentre=" + distSqrdToCentre +
-            //                    ", minDistSqrdToCentre=" + minDistSqrdToCentre +
-            //                    ", maxDistSqrdToCentre=" + maxDistSqrdToCentre);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (Prefs.DevMode)
-            //            Log.Warning("[Carnivale] bannerCell road pass was invalid. Reason: no road cell found in search area. searchRadius=" + searchRadius);
-            //    }
-            //}
-
             if (Prefs.DevMode)
-                Log.Warning("\t[Carnivale] bannerCell pre-buildability pass: " + closestCell);
+                Log.Message("\t[Carnivale] bannerCell pre-buildability pass: " + closestCell);
 
             return closestCell;
         }

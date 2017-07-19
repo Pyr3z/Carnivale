@@ -12,8 +12,6 @@ namespace Carnivale
         private const int PlaceInInventoryDuration = 25;
 
         [Unsaved]
-        private CarnivalInfo infoInt = null;
-        [Unsaved]
         private HaulLocation destInt = 0;
 
         public Thing ThingToHaul
@@ -36,11 +34,7 @@ namespace Carnivale
         {
             get
             {
-                if (infoInt == null)
-                {
-                    infoInt = Map.GetComponent<CarnivalInfo>();
-                }
-                return infoInt;
+                return Utilities.CarnivalInfo;
             }
         }
 
@@ -175,7 +169,7 @@ namespace Carnivale
                         && Info.thingsToHaul.Remove(ThingToHaul))
                     {
                         if (Prefs.DevMode)
-                            Log.Warning("[Debug] thingsToHaul : Removing " + ThingToHaul + ".");
+                            Log.Message("\t[Carnivale] thingsToHaul : Removing " + ThingToHaul + ".");
                     }
                 }
             };
@@ -244,7 +238,7 @@ namespace Carnivale
                     if (carryTracker.innerContainer.TryTransferToContainer(carriedThing, this.Carrier.inventory.innerContainer, carriedThing.stackCount, true))
                     {
                         if (Prefs.DevMode)
-                            Log.Warning("[Debug] " + this.pawn + " succesfully hauled " + carriedThing + " to " + this.Carrier + ". pos=" + this.Carrier.Position);
+                            Log.Message("\t[Carnivale] " + this.pawn + " succesfully hauled " + carriedThing + " to " + this.Carrier + ". pos=" + this.Carrier.Position);
                     }
                 }
             };

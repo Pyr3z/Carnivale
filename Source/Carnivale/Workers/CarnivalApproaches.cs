@@ -54,14 +54,14 @@ namespace Carnivale
             if (!FindCarnivalSpawnSpot(map, out spawnSpot))
             {
                 if (Prefs.DevMode)
-                    Log.Warning("Tried to execute incident CarnivalApproaches, failed to find reachable spawn spot.");
+                    Log.Warning("[Carnivale] Tried to execute incident CarnivalApproaches, failed to find reachable spawn spot.");
                 return false;
             }
 
             if (!FindCarnivalFaction(out parms.faction))
             {
                 if (Prefs.DevMode)
-                    Log.Warning("Tried to execute incident CarnivalApproaches, failed to find valid faction.");
+                    Log.Warning("[Carnivale] Tried to execute incident CarnivalApproaches, failed to find valid faction.");
                 return false;
             }
 

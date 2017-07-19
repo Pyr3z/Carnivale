@@ -25,7 +25,7 @@
   <YouWon>You won a {0}!</YouWon>
   
   <StepRightUp>Step right up, folks!</StepRightUp>
-  <WelcomeCarnival>Welcome to the Carnival!</WelcomeCarnival>
+  <WelcomeCarnival>Welcome to {0}!</WelcomeCarnival>
   <EntryIsOnly>Entry is only {0} silver!</EntryIsOnly>
   
   <YouThere>Hey, you there!</YouThere>
@@ -55,6 +55,7 @@
   <CarnEntertainNow>{0} is now open!</CarnEntertainNow>
   <CarnResting>{0} is closed for the day.</CarnResting>
   <CarnPackingUp>{0} is packing up to leave.</CarnPackingUp>
+  <CarnDefending>{0} is defending themselves!</CarnDefending>
   
   <PawnWonPrize>{0} won {1} in a game of {2}!</PawnWonPrize>
   

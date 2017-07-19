@@ -6,19 +6,11 @@ namespace Carnivale
 {
     public class JobDriver_WanderCarnival : JobDriver
     {
-        [Unsaved]
-        private CarnivalInfo infoInt = null;
-
         private CarnivalInfo Info
         {
             get
             {
-                if (infoInt == null)
-                {
-                    infoInt = Map.GetComponent<CarnivalInfo>();
-                }
-
-                return infoInt;
+                return Utilities.CarnivalInfo;
             }
         }
 

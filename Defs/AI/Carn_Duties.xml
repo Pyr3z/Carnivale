@@ -255,6 +255,65 @@
   </DutyDef>
   
   
+  <!-- Defend carnival -->
+  <DutyDef>
+    <defName>Duty_DefendRanged</defName>
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+	  
+        <li Class="JobGiver_TakeCombatEnhancingDrug">
+          <onlyIfInDanger>true</onlyIfInDanger>
+        </li>
+		
+		<li Class="JobGiver_AIFightEnemies">
+          <targetAcquireRadius>65</targetAcquireRadius>
+          <targetKeepRadius>72</targetKeepRadius>
+        </li>
+		
+        <li Class="JobGiver_AIDefendPoint">
+          <targetAcquireRadius>65</targetAcquireRadius>
+          <targetKeepRadius>72</targetKeepRadius>
+        </li>
+		
+        <li Class="JobGiver_WanderNearDutyLocation">
+          <wanderRadius>8</wanderRadius>
+        </li>
+		
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+  
+  
+  <DutyDef>
+    <defName>Duty_DefendMelee</defName>
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+	  
+        <li Class="JobGiver_TakeCombatEnhancingDrug">
+          <onlyIfInDanger>true</onlyIfInDanger>
+        </li>
+		
+        <li Class="JobGiver_AIFightEnemies">
+          <targetAcquireRadius>32</targetAcquireRadius>
+          <targetKeepRadius>36</targetKeepRadius>
+        </li>
+		
+        <li Class="JobGiver_AIDefendPoint">
+          <targetAcquireRadius>40</targetAcquireRadius>
+          <targetKeepRadius>55</targetKeepRadius>
+        </li>
+		
+        <li Class="JobGiver_WanderNearDutyLocation">
+          <wanderRadius>4</wanderRadius>
+        </li>
+		
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+  
+  
   <!-- Force rest -->
   <DutyDef>
     <defName>Duty_ForceRest</defName>

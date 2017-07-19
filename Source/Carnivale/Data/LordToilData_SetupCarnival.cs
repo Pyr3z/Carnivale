@@ -7,18 +7,20 @@ namespace Carnivale
 {
     public class LordToilData_SetupCarnival : LordToilData
     {
-        private CarnivalInfo info;
-
         public List<Thing> availableCrates = new List<Thing>();
 
         public List<Blueprint> blueprints = new List<Blueprint>();
 
-        public LordToilData_SetupCarnival() { }
-
-        public LordToilData_SetupCarnival(CarnivalInfo carnivalInfo)
+        public CarnivalInfo Info
         {
-            this.info = carnivalInfo;
+            get
+            {
+                return Utilities.CarnivalInfo;
+            }
         }
+
+
+        public LordToilData_SetupCarnival() { }
 
 
         public bool TryHaveWorkerCarry(Thing thing)
@@ -27,7 +29,7 @@ namespace Carnivale
             // Try give pre-designated worker a thing, 4 attempts
             for (int i = 0; i < 4; i++)
             {
-                if (info.pawnsWithRole[CarnivalRole.Worker].TryRandomElement(out worker))
+                if (Info.pawnsWithRole[CarnivalRole.Worker].TryRandomElement(out worker))
                 {
                     if (worker.carryTracker.TryStartCarry(thing))
                     {
@@ -40,7 +42,7 @@ namespace Carnivale
             // Failing that, try giving anyone else a thing, 6 attempts
             for (int i = 0; i < 6; i++)
             {
-                if (info.pawnsWithRole[CarnivalRole.Any].TryRandomElement(out worker))
+                if (Info.pawnsWithRole[CarnivalRole.Any].TryRandomElement(out worker))
                 {
                     if (worker.Is(CarnivalRole.Carrier)
                         || worker.story != null && !worker.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
@@ -55,7 +57,7 @@ namespace Carnivale
             }
 
             // Failing that, try spawning the thing in the centre of the setup area
-            if (GenPlace.TryPlaceThing(thing, info.setupCentre, info.map, ThingPlaceMode.Near, null))
+            if (GenPlace.TryPlaceThing(thing, Info.setupCentre, Info.map, ThingPlaceMode.Near, null))
             {
                 availableCrates.Add(thing);
                 return true;
@@ -111,8 +113,6 @@ namespace Carnivale
                 this.availableCrates.RemoveAll(b => b.Destroyed);
                 this.blueprints.RemoveAll(b => b.Destroyed);
             }
-
-            Scribe_References.Look(ref this.info, "info");
 
             Scribe_Collections.Look(ref this.availableCrates, "availableCrates", LookMode.Reference);
 

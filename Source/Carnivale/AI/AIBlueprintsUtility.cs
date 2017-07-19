@@ -287,7 +287,7 @@ namespace Carnivale
                 info.bannerCell = bannerSpot;
 
                 if (Prefs.DevMode)
-                    Log.Warning("[Carnivale] bannerCell final pass: " + info.bannerCell.ToString());
+                    Log.Message("[Carnivale] bannerCell final pass: " + info.bannerCell.ToString());
 
                 RemoveFirstCrateOf(_DefOf.Carn_Crate_Stall);
                 Utilities.ClearThingsFor(info.map, info.bannerCell, bannerDef.size, rot, false, true);
@@ -296,7 +296,7 @@ namespace Carnivale
 
             // If that fails, try any spot in the carnival area (suboptimal)
 
-            Log.Error("Couldn't find an optimum place for " + bannerDef + ". Trying random place in carnival area.");
+            Log.Warning("Couldn't find an optimum place for " + bannerDef + ". Trying random place in carnival area.");
             bannerSpot = FindRandomPlacementFor(bannerDef, rot);
             
             if (bannerSpot.IsValid)
@@ -304,7 +304,7 @@ namespace Carnivale
                 info.bannerCell = bannerSpot;
 
                 if (Prefs.DevMode)
-                    Log.Warning("[Carnivale] bannerCell final pass: " + info.bannerCell.ToString());
+                    Log.Message("[Carnivale] bannerCell final pass: " + info.bannerCell.ToString());
 
                 RemoveFirstCrateOf(_DefOf.Carn_Crate_Stall);
                 Utilities.ClearThingsFor(info.map, bannerSpot, bannerDef.size, rot, false, true);

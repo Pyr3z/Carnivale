@@ -66,7 +66,7 @@ namespace Carnivale
                     Find.VisibleMap.pawnDestinationManager.RegisterFaction(faction);
 
                     if (Prefs.DevMode)
-                        Log.Warning("[Carnivale] Dynamically added new carnival faction " + faction + " to game.");
+                        Log.Message("[Carnivale] Dynamically added new carnival faction " + faction + " to game.");
                 }
             }
         }
