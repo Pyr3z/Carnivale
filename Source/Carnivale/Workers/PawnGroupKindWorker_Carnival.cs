@@ -79,7 +79,7 @@ namespace Carnivale
             int numCarnies = 0;
             int maxVendors = Mathf.Clamp(groupMaker.traders.First().selectionWeight, 1, MaxVendors);
 
-            for (int i = 0; i < maxVendors && numCarnies < MaxCarnies; i++)
+            for (int i = 0; i < maxVendors; i++)
             {
                 TraderKindDef traderKind = null;
 
@@ -101,7 +101,7 @@ namespace Carnivale
                         break;
                 }
 
-                // Subtracts points:
+                // Subtracts points, first costless:
                 var vendor = GenerateVendor(parms, groupMaker, traderKind, i > 0);
                 if (vendor != null)
                 {
@@ -133,17 +133,17 @@ namespace Carnivale
 
                 allWares.AddRange(ItemCollectionGeneratorDefOf.TraderStock.Worker.Generate(waresParms));
 
-                // Generate carnies for each trader
-                foreach (var carny in GenerateGroup(parms, groupMaker.options, i > 0))
-                {
-                    outPawns.Add(carny);
-                    numCarnies++;
-                }
-
                 // Generate guards for each trader
                 foreach (var guard in GenerateGroup(parms, groupMaker.guards, i > 0))
                 {
                     outPawns.Add(guard);
+                }
+
+                // Generate carnies for each trader
+                foreach (var carny in GenerateGroup(parms, groupMaker.options, i > 0))
+                {
+                    if (numCarnies++ > MaxCarnies) break;
+                    outPawns.Add(carny);
                 }
             }
 
@@ -163,13 +163,15 @@ namespace Carnivale
         /* Private Methods */
 
 
-        private Pawn GenerateVendor(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, TraderKindDef traderKind,  bool subtractPoints = false)
+        private Pawn GenerateVendor(PawnGroupMakerParms parms, PawnGroupMaker groupMaker, TraderKindDef traderKind,  bool subtractPoints)
         {
             if (subtractPoints)
+            {
                 if (parms.points < _DefOf.CarnyTrader.combatPower * 2)
                     return null;
                 else
                     parms.points -= _DefOf.CarnyTrader.combatPower * 2;
+            }
 
             // Generate new vendor
             PawnGenerationRequest request = new PawnGenerationRequest(
@@ -408,7 +410,7 @@ namespace Carnivale
 
 
 
-        private IEnumerable<Pawn> GenerateGroup(PawnGroupMakerParms parms, List<PawnGenOption> options, bool subtractPoints = false)
+        private IEnumerable<Pawn> GenerateGroup(PawnGroupMakerParms parms, List<PawnGenOption> options, bool subtractPoints)
         {
             int counter = 0;
             int maxIterations = options.Max(o => o.selectionWeight);
@@ -420,10 +422,12 @@ namespace Carnivale
                     if (counter < option.selectionWeight)
                     {
                         if (subtractPoints)
+                        {
                             if (option.Cost > parms.points)
                                 continue;
                             else
                                 parms.points -= option.Cost;
+                        }
 
 
                         PawnGenerationRequest request = new PawnGenerationRequest(
@@ -449,8 +453,7 @@ namespace Carnivale
                                 {
                                     return !p.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction);
                                 }
-
-                                if (genderValidator != null)
+                                else if (genderValidator != null)
                                 {
                                     return genderValidator(p);
                                 }
