@@ -14,7 +14,7 @@
 	<slot>Childhood</slot>
 	<title>Carny brat</title>
 	<titleShort>Brat</titleShort>
-	<baseDescription>NAME was raised on the road by HIS caretakers, who happened to roll with a roaming carnival on an outer rimworld. On the road, NAME learned a well-rounded balance of skills in order to maintain HIS place in the caravan. Times weren't always great, but at least there was no shortage of the interesting and the new.</baseDescription>
+	<baseDescription>NAME was raised on the move by HIS caretakers, who happened to roll with an interstellar carnival. When NAME's ship went down near an outer rimworld, only a few of HIS childhood friends and family survived... but that didn't stop them from carrying on the carnival tradition. Luckily for them, this rimworld was populated, though by some of the toughest characters in the galaxy.\n\nOn the road, NAME learned a well-rounded balance of skills in order to pull HIS weight in the caravan. Times weren't always great, but at least there was no shortage of the interesting and the new.</baseDescription>
 	
 	<requiredWorkTags>
 	  <li>Caring</li>
@@ -338,8 +338,8 @@
 	<baseDescription>Rumour has it that NAME was once a performer, with HIS very own act and private tent. Either nobody remembers, or nobody is permitted to remember why HE was permanently demoted to a razorback — a grunt in the carnival workforce. Loading and unloading carnival gear has made HIM strong, as well as a regular contender whenever a brawl breaks out.</baseDescription>
 	
 	<skillGains>
-	  <li><defName>Shooting</defName><degree>1</degree></li>
-	  <li><defName>Melee</defName><degree>3</degree></li>
+	  <li><defName>Shooting</defName><degree>4</degree></li>
+	  <li><defName>Melee</defName><degree>2</degree></li>
 	  <li><defName>Construction</defName><degree>4</degree></li>
 	  <li><defName>Artistic</defName><degree>1</degree></li>
 	  <li><defName>Medicine</defName><degree>-4</degree></li>
@@ -366,9 +366,9 @@
   <Xnope.Defs.BackstoryDef>
     <defName>XnopeBS_Razorback2</defName>
 	<slot>Adulthood</slot>
-	<title>Carnival razorback</title>
+	<title>Experienced razorback</title>
 	<titleShort>Razorback</titleShort>
-	<baseDescription>NAME ran away from HIS urbworld problems to join an interstellar carnival, but struggled to make HIS mark for many years. HECAP was kept as a Razorback, a carnival grunt who earns their keep by simply being dumb muscle. Loading and unloading carnival gear has made NAME strong, as well as a regular contender whenever a brawl breaks out.</baseDescription>
+	<baseDescription>NAME was the only to escape from his last crew when they were attacked by pirates. HECAP was taken in by a ramshackle rimworld carnival, though struggled to make HIS mark for many seasons. Never able to show any talent for show biz, NAME was just a razorback — a carnival grunt who earns their keep by simply being dumb muscle. Loading and unloading carnival gear has made HIM strong, as well as a regular contender whenever a brawl breaks out.</baseDescription>
 	
 	<skillGains>
 	  <li><defName>Shooting</defName><degree>2</degree></li>

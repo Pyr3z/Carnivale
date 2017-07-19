@@ -54,14 +54,14 @@ namespace Carnivale
             if (parms.spawnRotation != Rot4.East)
             {
                 if (Prefs.DevMode)
-                    Log.Warning("[Debug] Spawn centre for CarnivalArrives was not precomputed. Resolving now.");
+                    Log.Warning("[Carnivale] Spawn centre for CarnivalArrives was not precomputed. Resolving now.");
 
                 IntVec3 tempSpot = parms.spawnCenter;
 
                 if (IncidentWorker_CarnivalApproaches.FindCarnivalSpawnSpot(map, out tempSpot))
                     parms.spawnCenter = tempSpot;
                 else if (Prefs.DevMode)
-                    Log.Warning("[Debug] Failed to resolve spawn center for CarnivalArrives. Defaulting.");
+                    Log.Warning("[Carnivale] Failed to resolve spawn center for CarnivalArrives. Defaulting.");
 
                 int feePerColonist = Utilities.CalculateFeePerColonist(parms.points);
                 map.GetComponent<CarnivalInfo>().feePerColonist = -feePerColonist;

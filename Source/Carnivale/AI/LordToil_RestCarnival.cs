@@ -2,6 +2,7 @@
 using RimWorld;
 using System;
 using System.Linq;
+using UnityEngine;
 
 namespace Carnivale
 {
@@ -22,6 +23,7 @@ namespace Carnivale
         public override void UpdateAllDuties()
         {
             int curHour = GenLocalDate.HourInteger(Map);
+            int numActiveGuards = Mathf.RoundToInt(Info.pawnsWithRole[CarnivalRole.Guard].Count / 2f);
 
             foreach (var pawn in lord.ownedPawns)
             {
@@ -30,51 +32,28 @@ namespace Carnivale
                 if (role.Is(CarnivalRole.Worker))
                 {
                     DutyUtility.MeanderAndHelp(pawn, Info.setupCentre, Info.baseRadius);
-                    continue;
                 }
-
-                if (role.IsAny(CarnivalRole.Entertainer, CarnivalRole.Vendor)
-                    && curHour > 22)
+                else if (role.IsAny(CarnivalRole.Entertainer, CarnivalRole.Vendor)
+                    && curHour >= 22)
                 {
                     DutyUtility.ForceRest(pawn);
-                    continue;
                 }
-
-                if (role.Is(CarnivalRole.Guard))
+                else if (role.Is(CarnivalRole.Guard))
                 {
-                    if (pawn.needs.rest.CurCategory == RestCategory.Rested)
+                    if (numActiveGuards > 0 && pawn.needs.rest.CurCategory == RestCategory.Rested)
                     {
-                        IntVec3 spot = IntVec3.Invalid;
-                        if (!Info.rememberedPositions.TryGetValue(pawn, out spot))
-                        {
-                            foreach (var guardSpot in Info.guardPositions)
-                            {
-                                if (!Info.rememberedPositions.Values.Any(c => guardSpot == c))
-                                {
-                                    Info.rememberedPositions.Add(pawn, spot);
-                                    spot = guardSpot;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (spot != null && spot.IsValid)
-                        {
-                            DutyUtility.GuardSmallArea(pawn, spot, 8);
-                            continue;
-                        }
+                        DutyUtility.GuardCircuit(pawn);
+                        numActiveGuards--;
                     }
                     else
                     {
-                        DutyUtility.MeanderAndHelp(pawn, Info.AverageLodgeTentPos, 25f);
-                        continue;
+                        // rest on the off shift if not assigned a position
+                        DutyUtility.ForceRest(pawn);
                     }
                 }
-
-                if (!role.Is(CarnivalRole.Carrier))
+                else if (!role.Is(CarnivalRole.Carrier))
                 {
                     DutyUtility.Meander(pawn, Info.setupCentre, Info.baseRadius);
-                    continue;
                 }
 
             }

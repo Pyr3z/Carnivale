@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using RimWorld;
+using System.Linq;
+using UnityEngine;
 using Verse;
 
 namespace Carnivale
@@ -29,7 +31,7 @@ namespace Carnivale
         public override void UpdateAllDuties()
         {
             var wanderRect = CellRect.CenteredOn(Info.setupCentre, 8);
-            int countCarriers = Info.pawnsWithRole[CarnivalRole.Carrier].Count;
+            int numActiveGuards = Mathf.RoundToInt(Info.pawnsWithRole[CarnivalRole.Guard].Count / 2f);
             IntVec3 pos;
 
             foreach (var pawn in this.lord.ownedPawns)
@@ -38,20 +40,18 @@ namespace Carnivale
 
                 if (pawnRole.Is(CarnivalRole.Guard))
                 {
-                    if (Info.rememberedPositions.TryGetValue(pawn, out pos))
+                    if (numActiveGuards > 0 && pawn.needs.rest.CurCategory == RestCategory.Rested)
                     {
-                        // more carriers = more radius
-                        DutyUtility.GuardSmallArea(pawn, pos, countCarriers);
+                        DutyUtility.GuardCircuit(pawn);
+                        numActiveGuards--;
                     }
                     else
                     {
                         // rest on the off shift if not assigned a position
                         DutyUtility.ForceRest(pawn);
                     }
-                    continue;
                 }
-
-                if (pawnRole.IsAny(CarnivalRole.Vendor, CarnivalRole.Carrier))
+                else if (pawnRole.IsAny(CarnivalRole.Vendor, CarnivalRole.Carrier))
                 {
                     if (Info.rememberedPositions.TryGetValue(pawn, out pos))
                     {
@@ -61,26 +61,22 @@ namespace Carnivale
                     {
                         DutyUtility.HitchToSpot(pawn, pawn.Position);
                     }
-                    continue;
                 }
-
-                if (pawnRole.Is(CarnivalRole.Entertainer))
+                else if (pawnRole.Is(CarnivalRole.Entertainer))
                 {
                     if (Info.rememberedPositions.TryGetValue(pawn, out pos))
                     {
                         DutyUtility.HitchToSpot(pawn, pos);
                     }
-                    continue;
                 }
-
-                if (pawnRole.Is(CarnivalRole.Worker))
+                else if (pawnRole.Is(CarnivalRole.Worker))
                 {
                     DutyUtility.MeanderAndHelp(pawn, Info.AverageLodgeTentPos, 10f);
-                    continue;
                 }
-
-                // Default
-                DutyUtility.MeanderAndHelp(pawn, wanderRect.RandomCell, Info.baseRadius);
+                else
+                {
+                    DutyUtility.MeanderAndHelp(pawn, wanderRect.RandomCell, Info.baseRadius);
+                }
             }
         }
 

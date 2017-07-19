@@ -31,21 +31,7 @@ namespace Carnivale
         {
             base.WorldLoaded();
 
-            // Check if any carnival factions. If not, generate them.
-            if (!Find.FactionManager.AllFactionsListForReading.Any(f => f.IsCarnival()))
-            {
-                var fdef = _DefOf.Carn_Faction_Roaming;
-                int num = Rand.RangeInclusive(fdef.requiredCountAtGameStart, fdef.maxCountAtGameStart);
-                for (int i = 0; i < num; i++)
-                {
-                    var faction = FactionGenerator.NewGeneratedFaction(fdef);
-                    Find.FactionManager.Add(faction);
-                    Find.VisibleMap.pawnDestinationManager.RegisterFaction(faction);
-
-                    if (Prefs.DevMode)
-                        Log.Warning("[Debug] Dynamically added new carnival faction " + faction + " to game.");
-                }
-            }
+            DynamicallyAddFactions();
         }
 
 
@@ -60,9 +46,28 @@ namespace Carnivale
                                      select d)
             {
                 if (Prefs.DevMode)
-                    Log.Message("Successfully injected stuff hack to implied FrameDef " + def.defName);
+                    Log.Message("[Carnivale] Successfully injected stuff hack to implied FrameDef " + def.defName);
                 def.thingClass = typeof(Frame_StuffHacked);
                 def.tickerType = TickerType.Normal;
+            }
+        }
+
+        private static void DynamicallyAddFactions()
+        {
+            // Check if any carnival factions. If not, generate them.
+            if (!Find.FactionManager.AllFactionsListForReading.Any(f => f.IsCarnival()))
+            {
+                var fdef = _DefOf.Carn_Faction_Roaming;
+                int num = Rand.RangeInclusive(fdef.requiredCountAtGameStart, fdef.maxCountAtGameStart);
+                for (int i = 0; i < num; i++)
+                {
+                    var faction = FactionGenerator.NewGeneratedFaction(fdef);
+                    Find.FactionManager.Add(faction);
+                    Find.VisibleMap.pawnDestinationManager.RegisterFaction(faction);
+
+                    if (Prefs.DevMode)
+                        Log.Warning("[Carnivale] Dynamically added new carnival faction " + faction + " to game.");
+                }
             }
         }
     }

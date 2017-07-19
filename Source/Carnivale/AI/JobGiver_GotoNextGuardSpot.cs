@@ -20,9 +20,9 @@ namespace Carnivale
             {
                 pawn.mindState.duty.focus = spot;
 
-                return new Job(JobDefOf.GotoWander, spot)
+                return new Job(JobDefOf.Goto, spot)
                 {
-                    expiryInterval = 1000
+                    locomotionUrgency = LocomotionUrgency.Walk
                 };
             }
             else

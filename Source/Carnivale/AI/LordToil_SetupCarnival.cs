@@ -103,7 +103,7 @@ namespace Carnivale
             Pawn guard = Info.GetBestGuard();
             if (guard != null)
             {
-                Info.rememberedPositions.Add(guard, guardSpot);
+                //Info.rememberedPositions.Add(guard, guardSpot);
                 Info.guardPositions.Add(guardSpot);
 
                 // if can feed animals, give em kibble
@@ -183,14 +183,18 @@ namespace Carnivale
         {
             foreach (Pawn pawn in this.lord.ownedPawns)
             {
-                CarnivalRole pawnRole = pawn.GetCarnivalRole();
+                CarnivalRole role = pawn.GetCarnivalRole();
 
                 // can't use switch case because some roles have multiple bit-flags
-                if (pawnRole.Is(CarnivalRole.Worker))
+                if (role.Is(CarnivalRole.Worker))
                 {
                     DutyUtility.BuildCarnival(pawn, Info.setupCentre, Info.baseRadius);
                 }
-                else if (pawnRole.Is(CarnivalRole.Carrier))
+                else if (role.Is(CarnivalRole.Guard))
+                {
+                    DutyUtility.GuardCircuit(pawn);
+                }
+                else if (role.Is(CarnivalRole.Carrier))
                 {
                     IntVec3 pos;
 

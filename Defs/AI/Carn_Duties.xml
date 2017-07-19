@@ -238,9 +238,13 @@
 		<li Class="Carnivale.JobGiver_GotoNextGuardSpot" />
 		
 		<!-- guard area -->
-	    <li Class="JobGiver_WanderNearDutyLocation">
-	      <wanderRadius>4</wanderRadius>
-	    </li>
+	    <li Class="ThinkNode_ConditionalAtDutyLocation">
+		  <subNodes>
+		    <li Class="JobGiver_WanderNearDutyLocation">
+	          <wanderRadius>4</wanderRadius>
+	        </li>
+		  </subNodes>
+		</li>
 		
 		<!-- satisfy the basic needs, no sleep -->
 		<li Class="ThinkNode_PrioritySorter">

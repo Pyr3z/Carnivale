@@ -112,7 +112,7 @@ namespace Carnivale
             // lodging tents
             tentDef = _DefOf.Carn_TentLodge;
             rot = Rot4.Random;
-            tentSpot = FindRadialPlacementFor(tentDef, rot, info.carnivalArea.ContractedBy(9).FurthestCellFrom(info.bannerCell), 7);
+            tentSpot = FindRadialPlacementFor(tentDef, rot, info.carnivalArea.ContractedBy(9).FurthestCellFrom(Utilities.AverageColonistPosition(info.map)), 7);
 
             IntVec3 lineDirection = rot.ToIntVec3(1); // shifted clockwise by 1
 
@@ -239,7 +239,8 @@ namespace Carnivale
                         // Next spot should be random
                         IntVec3[] points = new IntVec3[]
                         {
-                            info.setupCentre,
+                            stallSpot,
+                            stallSpot,
                             info.carnivalArea.EdgeCells.RandomElement()
                         };
 
@@ -286,7 +287,7 @@ namespace Carnivale
                 info.bannerCell = bannerSpot;
 
                 if (Prefs.DevMode)
-                    Log.Warning("[Debug] bannerCell final pass: " + info.bannerCell.ToString());
+                    Log.Warning("[Carnivale] bannerCell final pass: " + info.bannerCell.ToString());
 
                 RemoveFirstCrateOf(_DefOf.Carn_Crate_Stall);
                 Utilities.ClearThingsFor(info.map, info.bannerCell, bannerDef.size, rot, false, true);
@@ -303,7 +304,7 @@ namespace Carnivale
                 info.bannerCell = bannerSpot;
 
                 if (Prefs.DevMode)
-                    Log.Warning("[Debug] bannerCell final pass: " + info.bannerCell.ToString());
+                    Log.Warning("[Carnivale] bannerCell final pass: " + info.bannerCell.ToString());
 
                 RemoveFirstCrateOf(_DefOf.Carn_Crate_Stall);
                 Utilities.ClearThingsFor(info.map, bannerSpot, bannerDef.size, rot, false, true);
@@ -319,7 +320,13 @@ namespace Carnivale
             var gameMasters = stallUsers.Where(p => p.TraderKind == null).ToList();
             var gameCrates = availableCrates.ListFullCopy().Where(c => c.def.entityDefToBuild != null);
 
-            var gameSpot = CellRect.CenteredOn(info.setupCentre, 16).ClosestCellTo(info.carnivalArea.EdgeCells.RandomElement());
+            var points = new IntVec3[]
+            {
+                info.setupCentre,
+                info.bannerCell
+            };
+
+            var gameSpot = CellRect.CenteredOn(points.Average(), 7).FurthestCellFrom(info.carnivalArea.EdgeCells.RandomElement());
 
             ThingDef gameDef;
             int i = 0;
@@ -327,7 +334,7 @@ namespace Carnivale
             {
                 gameDef = (ThingDef)crate.def.entityDefToBuild;
 
-                gameSpot = FindRadialPlacementFor(gameDef, default(Rot4), gameSpot, 10);
+                gameSpot = FindRadialPlacementFor(gameDef, default(Rot4), gameSpot, 20);
 
                 if (gameSpot.IsValid)
                 {

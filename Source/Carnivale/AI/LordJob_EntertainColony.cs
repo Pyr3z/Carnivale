@@ -38,7 +38,7 @@ namespace Carnivale
         {
             base.Cleanup();
             info.Cleanup();
-            Utilities.cachedRoles.Clear();
+            Utilities.ClearUtilityCaches();
         }
 
         public override StateGraph CreateGraph()

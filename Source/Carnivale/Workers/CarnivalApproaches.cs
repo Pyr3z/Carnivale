@@ -144,9 +144,12 @@ namespace Carnivale
 
         private static bool FindCarnivalFaction(out Faction faction)
         {
-            faction = (from f in Find.FactionManager.AllFactionsListForReading
-                       where f.IsCarnival() && !f.HostileTo(Faction.OfPlayer)
-                       select f).RandomElement();
+            Faction fac = null;
+            Find.FactionManager.AllFactionsListForReading
+                .Where(f => f.IsCarnival() && !f.HostileTo(Faction.OfPlayer))
+                .TryRandomElementByWeight((Faction f) => f.PlayerGoodwill, out fac);
+
+            faction = fac;
 
             if (faction == null) return false;
             return true;
