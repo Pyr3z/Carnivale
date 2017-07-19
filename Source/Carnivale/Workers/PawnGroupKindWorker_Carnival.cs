@@ -398,13 +398,7 @@ namespace Carnivale
                 // Remove things that could not fit for whatever reason
                 if (Prefs.DevMode)
                 {
-                    Log.Warning("\t[Carnivale] "
-                        + thing.LabelShort
-                        + " is too big for any carrier and will be removed from wares. mass="
-                        + thing.Mass()
-                        + ", stackCount="
-                        + thing.stackCount
-                    );
+                    Log.Warning("\t[Carnivale] removing " + thing);
                 }
                 wares.Remove(waresSansPawns[i]);
 

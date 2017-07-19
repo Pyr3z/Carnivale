@@ -1,11 +1,12 @@
-﻿using RimWorld;
-using Verse;
+﻿using Verse;
 using Verse.AI;
 
 namespace Carnivale
 {
     public class JobGiver_GotoNextGuardSpot : JobGiver_Carn
     {
+        private static IntRange numWanders = new IntRange(1, 4);
+
         private int spotIndex = 0;
 
         protected override Job TryGiveJob(Pawn pawn)
@@ -18,10 +19,9 @@ namespace Carnivale
 
             if (spot.IsValid)
             {
-                pawn.mindState.duty.focus = spot;
-
-                return new Job(JobDefOf.Goto, spot)
+                return new Job(_DefOf.Job_GuardSpot, spot)
                 {
+                    count = numWanders.RandomInRange,
                     locomotionUrgency = LocomotionUrgency.Walk
                 };
             }

@@ -18,6 +18,11 @@
 	<driverClass>Carnivale.JobDriver_StrikeBuilding</driverClass>
   </JobDef>
   
+  <JobDef>
+    <defName>Job_GuardSpot</defName>
+	<driverClass>Carnivale.JobDriver_GuardSpot</driverClass>
+  </JobDef>
+  
   
   
   <!-- For colonists -->

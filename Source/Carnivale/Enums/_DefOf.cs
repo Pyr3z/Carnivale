@@ -41,6 +41,8 @@ namespace Carnivale
 
 
 
+        public static JobDef Job_GuardSpot;
+
         public static JobDef Job_HaulToCarrierOrTrash;
 
         public static JobDef Job_PayEntryFee;

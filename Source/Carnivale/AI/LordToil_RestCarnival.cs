@@ -29,16 +29,7 @@ namespace Carnivale
             {
                 CarnivalRole role = pawn.GetCarnivalRole();
 
-                if (role.Is(CarnivalRole.Worker))
-                {
-                    DutyUtility.MeanderAndHelp(pawn, Info.setupCentre, Info.baseRadius);
-                }
-                else if (role.IsAny(CarnivalRole.Entertainer, CarnivalRole.Vendor)
-                    && curHour >= 22)
-                {
-                    DutyUtility.ForceRest(pawn);
-                }
-                else if (role.Is(CarnivalRole.Guard))
+                if (role.Is(CarnivalRole.Guard))
                 {
                     if (numActiveGuards > 0 && pawn.needs.rest.CurCategory == RestCategory.Rested)
                     {
@@ -50,6 +41,15 @@ namespace Carnivale
                         // rest on the off shift if not assigned a position
                         DutyUtility.ForceRest(pawn);
                     }
+                }
+                else if (role.IsAny(CarnivalRole.Entertainer, CarnivalRole.Vendor)
+                    && curHour >= 22)
+                {
+                    DutyUtility.ForceRest(pawn);
+                }
+                else if (role.Is(CarnivalRole.Worker))
+                {
+                    DutyUtility.MeanderAndHelp(pawn, Info.setupCentre, Info.baseRadius);
                 }
                 else if (!role.Is(CarnivalRole.Carrier))
                 {

@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="AI\AIBlueprintsUtility.cs" />
     <Compile Include="AI\DutyUtility.cs" />
+    <Compile Include="AI\JobDriver_GuardSpot.cs" />
     <Compile Include="AI\JobDriver_HaulToCarrierOrTrash.cs" />
     <Compile Include="AI\JobDriver_PayEntryFee.cs" />
     <Compile Include="AI\JobDriver_PlayCarnGame.cs" />
