@@ -63,7 +63,7 @@ namespace Carnivale
                 else if (Prefs.DevMode)
                     Log.Warning("[Carnivale] Failed to resolve spawn center for CarnivalArrives. Defaulting.");
 
-                int feePerColonist = Utilities.CalculateFeePerColonist(parms.points);
+                int feePerColonist = CarnivalUtils.CalculateFeePerColonist(parms.points);
                 map.GetComponent<CarnivalInfo>().feePerColonist = -feePerColonist;
             }
             
@@ -132,12 +132,12 @@ namespace Carnivale
             PawnRelationUtility.Notify_PawnsSeenByPlayer(pawns, ref label, ref text, "LetterRelatedPawnsNeutralGroup".Translate(), true);
             Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.Good, parms.faction.leader, null);
 
-            IntVec3 setupCentre = Utilities.FindCarnivalSetupPositionFrom(parms.spawnCenter, map);
+            //LordJob_EntertainColony lordJob = new LordJob_EntertainColony(durationDays);
+            //Lord lord = LordMaker.MakeNewLord(parms.faction, lordJob, map, pawns);
 
-            LordJob_EntertainColony lordJob = new LordJob_EntertainColony(setupCentre, durationDays);
-            Lord lord = LordMaker.MakeNewLord(parms.faction, lordJob, map, pawns);
+            //CarnivalUtils.Info.ReInitWith(lord, parms.spawnCenter);
 
-            map.GetComponent<CarnivalInfo>().ReInitWith(lord, setupCentre);
+            CarnivalUtils.MakeNewCarnivalLord(parms.faction, map, parms.spawnCenter, durationDays, pawns);
 
             return true;
         }

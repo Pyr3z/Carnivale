@@ -58,6 +58,7 @@
   <CarnDefending>{0} is defending themselves!</CarnDefending>
   <CarnPackingUpHostile>{0} is packing up due to recent events.</CarnPackingUpHostile>
   <CarnFleeing>{0} is fleeing.</CarnFleeing>
+  <CarnLeavingError>{0} is leaving due to not being able to set up.</CarnLeavingError>
   
   <PawnWonPrize>{0} won {1} in a game of {2}!</PawnWonPrize>
   

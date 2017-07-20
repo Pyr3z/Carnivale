@@ -7,11 +7,11 @@ namespace Carnivale
 {
     public class CompCarnBuilding : CompUsable
     {
-        private CarnivalInfo Info
+        protected CarnivalInfo Info
         {
             get
             {
-                return Utilities.CarnivalInfo;
+                return CarnivalUtils.Info;
             }
         }
 
@@ -61,7 +61,7 @@ namespace Carnivale
                     yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (" + Info.feePerColonist + ")", delegate
                     {
                         var silverCount = new ThingCountClass(ThingDefOf.Silver, Info.feePerColonist);
-                        var silverStack = Utilities.FindClosestThings(pawn, silverCount);
+                        var silverStack = CarnivalUtils.FindClosestThings(pawn, silverCount);
 
                         if (silverStack != null && pawn.CanReserveAndReach(silverStack, PathEndMode.Touch, pawn.NormalMaxDanger()))
                         {

@@ -9,7 +9,7 @@ namespace Carnivale
         {
             get
             {
-                return Utilities.CarnivalInfo;
+                return CarnivalUtils.Info;
             }
         }
 

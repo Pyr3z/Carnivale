@@ -65,7 +65,7 @@ namespace Carnivale
                 return false;
             }
 
-            int feePerColonist = Utilities.CalculateFeePerColonist(parms.points);
+            int feePerColonist = CarnivalUtils.CalculateFeePerColonist(parms.points);
 
             // Main dialog node
             string title = "CarnivalApproachesTitle".Translate(parms.faction.Name);
@@ -158,12 +158,23 @@ namespace Carnivale
         // made public in case IncidentParms.spawnCenter needs to be resolved elsewhere
         public static bool FindCarnivalSpawnSpot(Map map, out IntVec3 spot)
         {
-            return CellFinder.TryFindRandomEdgeCellWith(
+            if (!CellFinder.TryFindRandomEdgeCellWith(
                 c => map.reachability.CanReachColony(c)
-                     && (map.roadInfo.roadEdgeTiles.Any() || !c.IsAroundTerrainOfTag(map, 12, "Water")),
+                     && (map.roadInfo.roadEdgeTiles.Any() || c.IsAroundBuildableTerrain(map, 12)),
                 map,
                 CellFinder.EdgeRoadChance_Always,
-                out spot);
+                out spot))
+            {
+                return CellFinder.TryFindRandomEdgeCellWith(
+                    c => map.reachability.CanReachColony(c),
+                    map,
+                    CellFinder.EdgeRoadChance_Always,
+                    out spot);
+            }
+            else
+            {
+                return true;
+            }
         }
 
     }

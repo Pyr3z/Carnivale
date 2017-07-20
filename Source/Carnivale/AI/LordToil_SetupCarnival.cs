@@ -53,7 +53,7 @@ namespace Carnivale
 
 
             // Give chapiteau
-            if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentHuge, 1, Utilities.RandomFabricByCheapness()) != 1)
+            if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentHuge, 1, CarnivalUtils.RandomFabricByCheapness()) != 1)
             {
                 Log.Error("Could not give " + _DefOf.Carn_Crate_TentHuge + " to carnies of faction " + lord.faction + ". It will not be built.");
             }
@@ -65,14 +65,14 @@ namespace Carnivale
 
             int numBedTents = numCarnies > 9 ? Mathf.CeilToInt(numCarnies / 8f) : 1;
 
-            if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentLodge, numBedTents, Utilities.RandomFabricByCheapness()) != numBedTents)
+            if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentLodge, numBedTents, CarnivalUtils.RandomFabricByCheapness()) != numBedTents)
             {
                 Log.Error("Could not give enough " + _DefOf.Carn_Crate_TentLodge + " to carnies of faction " + lord.faction + ". Some will not be built.");
             }
 
             if (Info.pawnsWithRole[CarnivalRole.Manager].Any())
             {
-                if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentMan, 1, Utilities.RandomFabricByExpensiveness()) != 1)
+                if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentMan, 1, CarnivalUtils.RandomFabricByExpensiveness()) != 1)
                 {
                     Log.Error("Could not give " + _DefOf.Carn_Crate_TentMan + " to carnies of faction " + lord.faction + ". It will not be built.");
                 }
@@ -121,7 +121,7 @@ namespace Carnivale
             base.LordToilTick();
 
             // Check if everything is setup
-            if (this.lord.ticksInToil % 601 == 0)
+            if (this.lord.ticksInToil % 919 == 0)
             {
                 if (!(from frame in this.Frames
                       where !frame.DestroyedOrNull()
@@ -243,9 +243,19 @@ namespace Carnivale
             // Do more cleanup here?
             LordToilData_SetupCarnival data = (LordToilData_SetupCarnival)this.data;
 
+            if (!lord.ownedPawns.Any(p => p.Spawned))
+            {
+                foreach (var thing in data.availableCrates.Concat(data.blueprints.Select(b => b as Thing)))
+                {
+                    thing.Destroy();
+                }
+            }
+
             data.availableCrates.RemoveAll(c => c.DestroyedOrNull() || !c.Spawned);
 
             data.blueprints.RemoveAll(c => c.DestroyedOrNull() || !c.Spawned);
+
+            Info.RecalculateCheckForCells();
         }
 
 

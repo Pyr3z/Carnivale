@@ -14,7 +14,7 @@ namespace Carnivale
 
         public override void UpdateAllDuties()
         {
-            LocomotionUrgency urg = Utilities.CarnivalInfo.leavingUrgency;
+            LocomotionUrgency urg = CarnivalUtils.Info.leavingUrgency;
 
             foreach (var pawn in this.lord.ownedPawns)
             {
@@ -42,7 +42,7 @@ namespace Carnivale
 
             if (cond == PawnLostCondition.IncappedOrKilled)
             {
-                Utilities.CarnivalInfo.leavingUrgency = LocomotionUrgency.Sprint;
+                CarnivalUtils.Info.leavingUrgency = LocomotionUrgency.Sprint;
             }
         }
 

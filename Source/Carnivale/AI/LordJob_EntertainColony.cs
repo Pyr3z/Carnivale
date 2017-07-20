@@ -7,11 +7,15 @@ namespace Carnivale
 {
     public class LordJob_EntertainColony : LordJob
     {
-        private CarnivalInfo info;
-
-        private IntVec3 setupCentre;
-
         private int durationTicks;
+
+        private CarnivalInfo Info
+        {
+            get
+            {
+                return CarnivalUtils.Info;
+            }
+        }
 
 
         public LordJob_EntertainColony()
@@ -19,37 +23,30 @@ namespace Carnivale
             
         }
 
-        public LordJob_EntertainColony(IntVec3 setupCentre, int durationDays) : this()
+        public LordJob_EntertainColony(int durationDays) : this()
         {
-            this.setupCentre = setupCentre;
             this.durationTicks = durationDays * GenDate.TicksPerDay;
         }
 
 
         public override void ExposeData()
         {
-            Scribe_References.Look(ref this.info, "info");
-
-            Scribe_Values.Look(ref this.setupCentre, "setupSpot", default(IntVec3), false);
-
             Scribe_Values.Look(ref this.durationTicks, "durationTicks", default(int), false);
         }
 
         public override void Cleanup()
         {
             base.Cleanup();
-            info.Cleanup();
-            Utilities.ClearUtilityCaches();
+            Info.Cleanup();
+            CarnivalUtils.Cleanup();
         }
 
         public override StateGraph CreateGraph()
         {
-            this.info = Map.GetComponent<CarnivalInfo>();
-
             var mainGraph = new StateGraph();
 
             // Use LordJob_Travel as starting toil for this graph:
-            var toil_MoveToSetup = mainGraph.AttachSubgraph(new LordJob_Travel(this.setupCentre).CreateGraph()).StartingToil;
+            var toil_MoveToSetup = mainGraph.AttachSubgraph(new LordJob_Travel(Info.setupCentre).CreateGraph()).StartingToil;
 
             // Next toil is to set up
             var toil_Setup = new LordToil_SetupCarnival();
@@ -57,7 +54,6 @@ namespace Carnivale
 
             var trans_Setup = new Transition(toil_MoveToSetup, toil_Setup);
             trans_Setup.AddTrigger(new Trigger_Memo("TravelArrived"));
-            trans_Setup.AddTrigger(new Trigger_TicksPassed(GenDate.TicksPerHour));
             mainGraph.AddTransition(trans_Setup);
 
             // Meat of the event: entertaining the colony
@@ -78,12 +74,12 @@ namespace Carnivale
             mainGraph.AddTransition(trans_ToRestFromSetup);
 
             var trans_ToRest = new Transition(toil_Entertain, toil_Rest);
-            trans_ToRest.AddTrigger(new Trigger_TickCondition(() => info.AnyCarnyNeedsRest || !info.CanEntertainNow));
+            trans_ToRest.AddTrigger(new Trigger_TickCondition(() => Info.AnyCarnyNeedsRest || !Info.CanEntertainNow));
             trans_ToRest.AddPostAction(new TransitionAction_Message("CarnResting".Translate(this.lord.faction)));
             mainGraph.AddTransition(trans_ToRest);
 
             var trans_FromRest = new Transition(toil_Rest, toil_Entertain);
-            trans_FromRest.AddTrigger(new Trigger_TickCondition(() => !info.AnyCarnyNeedsRest && info.CanEntertainNow));
+            trans_FromRest.AddTrigger(new Trigger_TickCondition(() => !Info.AnyCarnyNeedsRest && Info.CanEntertainNow));
             trans_FromRest.AddPostAction(new TransitionAction_WakeAll());
             trans_FromRest.AddPostAction(new TransitionAction_Message("CarnEntertainNow".Translate(this.lord.faction)));
             mainGraph.AddTransition(trans_FromRest);
@@ -146,13 +142,20 @@ namespace Carnivale
             trans_Exit.AddPostAction(new TransitionAction_WakeAll());
             mainGraph.AddTransition(trans_Exit);
 
-            // panic exit map
-            var trans_ExitPanic = new Transition(toil_Defend, toil_Exit);
-            trans_ExitPanic.AddSources(toil_Strike, toil_Entertain, toil_Rest);
-            trans_ExitPanic.AddTrigger(new Trigger_FractionPawnsLost(0.5f));
-            trans_ExitPanic.AddPreAction(new TransitionAction_Custom(() => info.leavingUrgency = LocomotionUrgency.Sprint));
-            trans_ExitPanic.AddPostAction(new TransitionAction_Message("CarnFleeing".Translate(lord.faction)));
-            mainGraph.AddTransition(trans_ExitPanic);
+            var trans_ExitError = new Transition(toil_MoveToSetup, toil_Exit);
+            trans_ExitError.AddTrigger(new Trigger_TicksPassedWithoutHarmOrMemos(GenDate.TicksPerHour * 2, "TravelArrived"));
+            trans_ExitError.AddPreAction(new TransitionAction_Message("CarnLeavingError".Translate(lord.faction)));
+            trans_ExitError.AddPostAction(new TransitionAction_EndAllJobs());
+            trans_ExitError.AddPostAction(new TransitionAction_WakeAll());
+            mainGraph.AddTransition(trans_ExitError);
+
+            // panic exit map (nvm, handled in def)
+            //var trans_ExitPanic = new Transition(toil_Defend, toil_Exit);
+            //trans_ExitPanic.AddSources(toil_Strike, toil_Entertain, toil_Rest);
+            //trans_ExitPanic.AddTrigger(new Trigger_FractionPawnsLost(0.5f));
+            //trans_ExitPanic.AddPreAction(new TransitionAction_Custom(() => Info.leavingUrgency = LocomotionUrgency.Sprint));
+            //trans_ExitPanic.AddPostAction(new TransitionAction_Message("CarnFleeing".Translate(lord.faction)));
+            //mainGraph.AddTransition(trans_ExitPanic);
 
             return mainGraph;
         }

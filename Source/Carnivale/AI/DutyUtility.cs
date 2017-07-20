@@ -26,7 +26,7 @@ namespace Carnivale
         {
             if (pawn.mindState != null && pawn.equipment.Primary != null && defendPoint.IsValid)
             {
-                var defendRadius = Utilities.CarnivalInfo.baseRadius / 2f;
+                var defendRadius = CarnivalUtils.Info.baseRadius / 2f;
 
                 if (!pawn.equipment.Primary.def.IsMeleeWeapon)
                 {

@@ -342,18 +342,20 @@ namespace Carnivale
 
 
         // Main way to initialise a carnival in town
-        public CarnivalInfo ReInitWith(Lord lord, IntVec3 centre)
+        public CarnivalInfo ReInitWith(Lord lord, IntVec3 spawnCentre)
         {
             // MUST BE CALLED AFTER LordMaker.MakeNewLord()
 
             Cleanup();
 
             currentLord = lord;
-            setupCentre = centre;
 
             // Set radius for carnies to stick to
             baseRadius = lord.ownedPawns.Count + addToRadius.RandomInRange;
             baseRadius = Mathf.Clamp(baseRadius, MinRadius, MaxRadius);
+
+            // Calculate setup centre
+            setupCentre = CarnivalUtils.FindCarnivalSetupPositionFrom(spawnCentre, map);
 
             // Set initial check cells
             checkForCells.AddRange(GenRadial.RadialCellsAround(setupCentre, baseRadius, true)
@@ -371,7 +373,7 @@ namespace Carnivale
             {
                 var role = (CarnivalRole)roles.GetValue(i);
 
-                List<Pawn> pawns = (from p in currentLord.ownedPawns
+                List<Pawn> pawns = (from p in lord.ownedPawns
                                     where i == 0 ? p.IsOnly(role) : p.Is(role)
                                     select p).ToList();
                 if (role == CarnivalRole.Vendor)
@@ -485,7 +487,7 @@ namespace Carnivale
             }
         }
 
-        private void RecalculateCheckForCells()
+        public void RecalculateCheckForCells()
         {
             if (!Active) return;
 
@@ -766,73 +768,32 @@ namespace Carnivale
         {
             // Yo stop working on this. If it ain't broke don't fix it.
 
-            var colonistPos = Utilities.AverageColonistPosition(map);
+            var colonistPos = CarnivalUtils.AverageColonistPosition(map);
 
             // Initial pass
             var closestCell = carnivalArea.ClosestCellTo(colonistPos);
 
             if (Prefs.DevMode)
+            {
                 Log.Message("[Carnivale] bannerCell initial pass: " + closestCell);
+            }
 
 
             // Mountain line of sight pass
 
             int attempts = 0;
-            var quadPos = setupCentre - colonistPos;
             Rot4 rot;
-
             while (attempts < 10 && setupCentre.CountMineableCellsTo(closestCell, map, true) > 4)
             {
-                if (quadPos.x > 0 && quadPos.z > 0)
+                rot = closestCell.RotationFacing(colonistPos);
+
+                var edge = carnivalArea.GetEdgeCells(rot).Where(c => c.Walkable(map));
+
+                if (!edge.TryRandomElementByWeight((IntVec3 c) => 100f / c.DistanceSquaredToNearestColonyBuilding(map, ThingDefOf.Wall, true), out closestCell))
                 {
-                    // quadrant I
-                    if (attempts < 5)
-                    {
-                        rot = Rot4.South;
-                    }
-                    else
-                    {
-                        rot = Rot4.West;
-                    }
-                }
-                else if (quadPos.x < 0 && quadPos.z > 0)
-                {
-                    // quadrant II
-                    if (attempts < 5)
-                    {
-                        rot = Rot4.South;
-                    }
-                    else
-                    {
-                        rot = Rot4.East;
-                    }
-                }
-                else if (quadPos.x < 0 && quadPos.z < 0)
-                {
-                    // quadrant III
-                    if (attempts < 5)
-                    {
-                        rot = Rot4.North;
-                    }
-                    else
-                    {
-                        rot = Rot4.East;
-                    }
-                }
-                else
-                {
-                    // quadrant IV
-                    if (attempts < 5)
-                    {
-                        rot = Rot4.North;
-                    }
-                    else
-                    {
-                        rot = Rot4.West;
-                    }
+                    closestCell = edge.RandomElement();
                 }
 
-                closestCell = carnivalArea.GetEdgeCells(rot).Where(c => c.Walkable(map)).RandomElementWithFallback(closestCell);
                 attempts++;
 
                 if (Prefs.DevMode)
@@ -848,9 +809,9 @@ namespace Carnivale
             attempts = 0;
             IntVec3 nearestMineable;
             while (attempts < 10
-                   && closestCell.DistanceSquaredToNearestMineable(map, 12, out nearestMineable) <= 16)
+                   && closestCell.DistanceSquaredToNearestMineable(map, 12, out nearestMineable) <= 36)
             {
-                closestCell = CellRect.CenteredOn(closestCell, 2).FurthestCellFrom(nearestMineable);
+                closestCell = CellRect.CenteredOn(closestCell, 4).FurthestCellFrom(nearestMineable);
                 attempts++;
 
                 if (Prefs.DevMode)
@@ -863,28 +824,28 @@ namespace Carnivale
 
             // Reachability pass
 
-            if (!map.reachability.CanReach(setupCentre, closestCell, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some))
-            {
-                foreach (var cell in GenRadial.RadialCellsAround(closestCell, 25, false))
-                {
-                    if (map.reachability.CanReach(setupCentre, cell, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some))
-                    {
-                        closestCell = cell;
-                        break;
-                    }
-                }
+            //if (!map.reachability.CanReach(setupCentre, closestCell, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some))
+            //{
+            //    foreach (var cell in GenRadial.RadialCellsAround(closestCell, 25, false))
+            //    {
+            //        if (map.reachability.CanReach(setupCentre, cell, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some))
+            //        {
+            //            closestCell = cell;
+            //            break;
+            //        }
+            //    }
 
-                if (Prefs.DevMode)
-                    Log.Message("\t[Carnivale] bannerCell reachability pass: " + closestCell);
-            }
+            //    if (Prefs.DevMode)
+            //        Log.Message("\t[Carnivale] bannerCell reachability pass: " + closestCell);
+            //}
 
 
             // Road pass
 
             IntVec3 road;
-            if (closestCell.TryFindNearestRoadCell(map, (int)(baseRadius - 10), out road))
+            if (closestCell.TryFindNearestRoadCell(map, (int)(baseRadius - 5), out road))
             {
-                float maxDistSqrdToCentre = baseRadius * baseRadius * 4f;
+                float maxDistSqrdToCentre = baseRadius * baseRadius * 2f;
                 float minDistSqrdToCentre = (baseRadius / 2) * (baseRadius / 2);
 
                 int distSqrdToCentre = road.DistanceToSquared(setupCentre);
