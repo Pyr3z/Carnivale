@@ -21,6 +21,8 @@ namespace Carnivale
 
         public override void DefsLoaded()
         {
+            base.DefsLoaded();
+
             InjectFrameStuffHack();
 
             TheOne.Instantiate();
@@ -32,6 +34,13 @@ namespace Carnivale
             base.WorldLoaded();
 
             DynamicallyAddFactions();
+        }
+
+        public override void MapLoaded(Map map)
+        {
+            base.MapLoaded(map);
+
+            CarnivalUtils.Cleanup();
         }
 
 

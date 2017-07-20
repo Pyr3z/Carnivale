@@ -412,7 +412,73 @@ namespace Carnivale
         }
 
 
-        public static IntVec3 FindCarnivalSetupPositionFrom(IntVec3 entrySpot, Map map)
+        public static bool FindCarnivalSpawnSpot(Map map, out IntVec3 spot)
+        {
+            Func<IntVec3, bool> reachable = c => map.reachability.CanReachColony(c);
+            Func<IntVec3, bool> buildable = c => c.IsAroundBuildableTerrain(map, 7);
+            Func<IntVec3, float> weightByLoS = c => 1f / (c.CountObstructingCellsTo(AverageColonistPosition(map), map) + 1f);
+            Func<IntVec3, float> weightBest = c => (weightByLoS(c) == 1f ? 1f : 0f) + (buildable(c) ? 1f : 0f);
+
+            IEnumerable<IntVec3> roadEdges = map.roadInfo.roadEdgeTiles.Where(reachable);
+
+            if (roadEdges.Any())
+            {
+                if (roadEdges.TryRandomElementByWeight(weightBest, out spot))
+                {
+                    return true;
+                }
+                else if (roadEdges.TryRandomElementByWeight(weightByLoS, out spot))
+                {
+                    return true;
+                }
+            }
+
+            IEnumerable<IntVec3> edges = CellRect.WholeMap(map).CornerlessEdgeCells().Where(reachable);
+
+            if (edges.TryRandomElementByWeight(weightBest, out spot))
+            {
+                return true;
+            }
+            else if (edges.TryRandomElementByWeight(weightByLoS, out spot))
+            {
+                return true;
+            }
+
+            for (int i = 0; i < 100; i++)
+            {
+                spot = CellFinder.RandomEdgeCell(map);
+                if (reachable(spot))
+                {
+                    return true;
+                }
+            }
+
+            spot = IntVec3.Invalid;
+            return false;
+
+            // Old approach
+
+            //if (!CellFinder.TryFindRandomEdgeCellWith(
+            //    c => map.reachability.CanReachColony(c)
+            //         && (map.roadInfo.roadEdgeTiles.Any() || c.IsAroundBuildableTerrain(map, 12)),
+            //    map,
+            //    CellFinder.EdgeRoadChance_Always,
+            //    out spot))
+            //{
+            //    return CellFinder.TryFindRandomEdgeCellWith(
+            //        c => map.reachability.CanReachColony(c),
+            //        map,
+            //        CellFinder.EdgeRoadChance_Always,
+            //        out spot);
+            //}
+            //else
+            //{
+            //    return true;
+            //}
+        }
+
+
+        public static IntVec3 FindCarnivalSetupPosition(IntVec3 entrySpot, Map map)
         {
             if (entrySpot.x == 0)
             {

@@ -51,7 +51,7 @@ namespace Carnivale
             int durationDays = Mathf.RoundToInt(this.def.durationDays.RandomInRange);
 
             // Attempt to find a spawn spot.
-            if (!FindCarnivalSpawnSpot(map, out spawnSpot))
+            if (!CarnivalUtils.FindCarnivalSpawnSpot(map, out spawnSpot))
             {
                 if (Prefs.DevMode)
                     Log.Warning("[Carnivale] Tried to execute incident CarnivalApproaches, failed to find reachable spawn spot.");
@@ -153,28 +153,6 @@ namespace Carnivale
 
             if (faction == null) return false;
             return true;
-        }
-
-        // made public in case IncidentParms.spawnCenter needs to be resolved elsewhere
-        public static bool FindCarnivalSpawnSpot(Map map, out IntVec3 spot)
-        {
-            if (!CellFinder.TryFindRandomEdgeCellWith(
-                c => map.reachability.CanReachColony(c)
-                     && (map.roadInfo.roadEdgeTiles.Any() || c.IsAroundBuildableTerrain(map, 12)),
-                map,
-                CellFinder.EdgeRoadChance_Always,
-                out spot))
-            {
-                return CellFinder.TryFindRandomEdgeCellWith(
-                    c => map.reachability.CanReachColony(c),
-                    map,
-                    CellFinder.EdgeRoadChance_Always,
-                    out spot);
-            }
-            else
-            {
-                return true;
-            }
         }
 
     }

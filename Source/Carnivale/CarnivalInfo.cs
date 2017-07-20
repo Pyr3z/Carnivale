@@ -355,7 +355,7 @@ namespace Carnivale
             baseRadius = Mathf.Clamp(baseRadius, MinRadius, MaxRadius);
 
             // Calculate setup centre
-            setupCentre = CarnivalUtils.FindCarnivalSetupPositionFrom(spawnCentre, map);
+            setupCentre = CarnivalUtils.FindCarnivalSetupPosition(spawnCentre, map);
 
             // Set initial check cells
             checkForCells.AddRange(GenRadial.RadialCellsAround(setupCentre, baseRadius, true)

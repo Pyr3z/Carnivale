@@ -54,7 +54,7 @@ namespace Carnivale
             "WelcomeCarnival"
         };
 
-        private static IntRange tickRange = new IntRange(400, 650);
+        private static IntRange tickRange = new IntRange(650, 1350);
 
         [Unsaved]
         private bool moteArgs = false;
@@ -63,7 +63,7 @@ namespace Carnivale
         private CarnivalRole typeInt = 0;
 
         [Unsaved]
-        private int tick = tickRange.RandomInRange;
+        private int tick = 650;
 
 
         private CarnivalInfo Info
@@ -158,6 +158,7 @@ namespace Carnivale
                 toil.actor.pather.StopDead();
                 toil.actor.Rotation = Rot4.South;
                 toil.actor.mindState.wantsToTradeWithColony = true;
+                tick = tickRange.RandomInRange;
             };
             toil.tickAction = delegate
             {
@@ -213,6 +214,7 @@ namespace Carnivale
             {
                 toil.actor.pather.StopDead();
                 toil.actor.Rotation = Rot4.South;
+                tick = tickRange.RandomInRange;
             };
             toil.tickAction = delegate
             {
@@ -239,6 +241,7 @@ namespace Carnivale
             toil.initAction = delegate
             {
                 toil.actor.pather.StopDead();
+                tick = tickRange.RandomInRange;
             };
             toil.tickAction = delegate
             {
