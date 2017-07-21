@@ -50,7 +50,9 @@ namespace Carnivale
             IntVec3 spawnSpot;
             int durationDays = Mathf.RoundToInt(this.def.durationDays.RandomInRange);
 
-            // Attempt to find a spawn spot.
+            if (Prefs.DevMode)
+                Log.Message("[Carnivale] Calculating spawn centre:");
+
             if (!CarnivalUtils.FindCarnivalSpawnSpot(map, out spawnSpot))
             {
                 if (Prefs.DevMode)

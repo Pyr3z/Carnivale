@@ -425,10 +425,16 @@ namespace Carnivale
             {
                 if (roadEdges.TryRandomElementByWeight(weightBest, out spot))
                 {
+                    if (Prefs.DevMode)
+                        Log.Message("\t[Carnivale] Calculated spawn centre: " + spot + "; optimal road pass");
+
                     return true;
                 }
                 else if (roadEdges.TryRandomElementByWeight(weightByLoS, out spot))
                 {
+                    if (Prefs.DevMode)
+                        Log.Message("\t[Carnivale] Calculated spawn centre: " + spot + "; sub-optimal road pass");
+
                     return true;
                 }
             }
@@ -437,10 +443,16 @@ namespace Carnivale
 
             if (edges.TryRandomElementByWeight(weightBest, out spot))
             {
+                if (Prefs.DevMode)
+                    Log.Message("\t[Carnivale] Calculated spawn centre: " + spot + "; optimal random pass");
+
                 return true;
             }
             else if (edges.TryRandomElementByWeight(weightByLoS, out spot))
             {
+                if (Prefs.DevMode)
+                    Log.Message("\t[Carnivale] Calculated spawn centre: " + spot + "; sub-optimal random pass");
+
                 return true;
             }
 
@@ -449,6 +461,9 @@ namespace Carnivale
                 spot = CellFinder.RandomEdgeCell(map);
                 if (reachable(spot))
                 {
+                    if (Prefs.DevMode)
+                        Log.Message("\t[Carnivale] Calculated spawn centre: " + spot + "; worst random pass");
+
                     return true;
                 }
             }
@@ -564,14 +579,14 @@ namespace Carnivale
             else if (tenth > 3)
             {
                 if (Prefs.DevMode)
-                    Log.Message("\t[Carnivale] Failed to find setupSpot by line-of-sight. Will try " + (tenth - 3) + " more times.");
+                    Log.Warning("\t[Carnivale] Failed to find setupSpot by line-of-sight. Will try " + (tenth - 3) + " more times.");
 
                 return TryFindCarnivalSetupPositionLoS(initialSpot, averageColPos, distFromColony, --tenth, map, out result);
             }
             else
             {
                 if (Prefs.DevMode)
-                    Log.Message("\t[Carnivale] Failed to find setupSpot by line-of-sight. Trying old random iterative method.");
+                    Log.Warning("\t[Carnivale] Failed to find setupSpot by line-of-sight. Trying old random iterative method.");
 
                 return TryFindCarnivalSetupPositionRandomly(initialSpot, averageColPos, distFromColony, 7, map, out result);
             }
@@ -609,7 +624,7 @@ namespace Carnivale
             if (tenth > 4)
             {
                 if (Prefs.DevMode)
-                    Log.Message("\t[Carnivale] Failed to find setupSpot by random iteration. Will try " + (tenth - 4) + " more times.");
+                    Log.Warning("\t[Carnivale] Failed to find setupSpot by random iteration. Will try " + (tenth - 4) + " more times.");
 
                 return TryFindCarnivalSetupPositionRandomly(initialSpot, averageColPos, distFromColony, --tenth, map, out result);
             }
@@ -629,34 +644,16 @@ namespace Carnivale
         }
 
 
-        /// <summary>
-        /// Clears a CellRect of plants and/or haulables, either forcibly or 'gently'.
-        /// </summary>
-        /// <param name="map"></param>
-        /// <param name="spot"></param>
-        /// <param name="size"></param>
-        /// <param name="rot"></param>
-        /// <param name="clearPlants">Forcibly destroys all plants if true, 'gently' designates them for cutting if false.</param>
-        /// <param name="teleportHaulables">Forcibly tries to teleport haulables outside the occupied rectangle if true.</param>
-        public static void ClearThingsFor(Map map, IntVec3 spot, IntVec2 size, Rot4 rot, bool clearPlants = true, bool teleportHaulables = true)
+        public static void ClearThingsFor(Map map, IntVec3 spot, IntVec2 size, Rot4 rot, int expandedBy = 0, bool cutPlants = true, bool teleportHaulables = true)
         {
-            if (!clearPlants && !teleportHaulables) return;
+            if (!cutPlants && !teleportHaulables) return;
 
-            CellRect removeCells = GenAdj.OccupiedRect(spot, rot, size);
-            // Not sure if CellRects are immutable upon assignment?
+            CellRect removeCells = GenAdj.OccupiedRect(spot, rot, size).ExpandedBy(expandedBy);
             CellRect moveToCells = removeCells.ExpandedBy(2).ClipInsideMap(map);
 
             foreach (IntVec3 cell in removeCells)
             {
-                if (clearPlants)
-                {
-                    Plant plant = cell.GetPlant(map);
-                    if (plant != null)
-                    {
-                        plant.Destroy(DestroyMode.KillFinalize);
-                    }
-                }
-                else
+                if (cutPlants)
                 {
                     Plant plant = cell.GetPlant(map);
                     if (plant != null && plant.def.plant.harvestWork >= 200f) // from GenConstruct.BlocksFramePlacement()
@@ -664,7 +661,7 @@ namespace Carnivale
                         Designation des = new Designation(plant, DesignationDefOf.CutPlant);
                         map.designationManager.AddDesignation(des);
 
-                        plant.SetForbiddenIfOutsideHomeArea();
+                        plant.SetForbiddenIfOutsideHomeArea(); // does nothing
                     }
                 }
 

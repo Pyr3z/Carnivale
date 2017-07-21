@@ -98,7 +98,7 @@ namespace Carnivale
                 if (tentSpot.IsValid)
                 {
                     RemoveFirstCrateOf(_DefOf.Carn_Crate_TentHuge);
-                    CarnivalUtils.ClearThingsFor(info.map, tentSpot, tentDef.size, rot, false, true);
+                    CarnivalUtils.ClearThingsFor(info.map, tentSpot, tentDef.size, rot, 2);
                     yield return PlaceBlueprint(tentDef, tentSpot, rot);
                 }
                 else
@@ -133,7 +133,7 @@ namespace Carnivale
                     // bingo
                     firstNewPass = false;
                     RemoveFirstCrateOf(_DefOf.Carn_Crate_TentLodge);
-                    CarnivalUtils.ClearThingsFor(info.map, tentSpot, tentDef.size, rot, false, true);
+                    CarnivalUtils.ClearThingsFor(info.map, tentSpot, tentDef.size, rot, 1);
                     yield return PlaceBlueprint(tentDef, tentSpot, rot);
                 }
                 else if (numFailures % 3 != 0)
@@ -176,7 +176,7 @@ namespace Carnivale
             if (tentSpot.IsValid)
             {
                 RemoveFirstCrateOf(_DefOf.Carn_Crate_TentMan);
-                CarnivalUtils.ClearThingsFor(info.map, tentSpot, tentDef.size, rot, false, true);
+                CarnivalUtils.ClearThingsFor(info.map, tentSpot, tentDef.size, rot, 1);
                 yield return PlaceBlueprint(tentDef, tentSpot, rot);
             }
             else
@@ -186,7 +186,7 @@ namespace Carnivale
                 if (tentSpot.IsValid)
                 {
                     RemoveFirstCrateOf(_DefOf.Carn_Crate_TentMan);
-                    CarnivalUtils.ClearThingsFor(info.map, tentSpot, tentDef.size, rot, false, true);
+                    CarnivalUtils.ClearThingsFor(info.map, tentSpot, tentDef.size, rot, 1);
                     yield return PlaceBlueprint(tentDef, tentSpot, rot);
                 }
                 else
@@ -264,7 +264,7 @@ namespace Carnivale
                 if (stallSpot.IsValid)
                 {
                     RemoveFirstCrateOf(_DefOf.Carn_Crate_Stall);
-                    CarnivalUtils.ClearThingsFor(info.map, stallSpot, stallDef.size, rot, false, true);
+                    CarnivalUtils.ClearThingsFor(info.map, stallSpot, stallDef.size, rot, 2);
                     // Add spot to stall user's spot
                     info.rememberedPositions.Add(stallUser, stallSpot);
                     yield return PlaceBlueprint(stallDef, stallSpot, rot);
@@ -290,7 +290,7 @@ namespace Carnivale
                     Log.Message("[Carnivale] bannerCell final pass: " + info.bannerCell.ToString());
 
                 RemoveFirstCrateOf(_DefOf.Carn_Crate_Stall);
-                CarnivalUtils.ClearThingsFor(info.map, info.bannerCell, bannerDef.size, rot, false, true);
+                CarnivalUtils.ClearThingsFor(info.map, info.bannerCell, bannerDef.size, rot, 2);
                 return PlaceBlueprint(bannerDef, bannerSpot, rot);
             }
 
@@ -307,7 +307,7 @@ namespace Carnivale
                     Log.Message("[Carnivale] bannerCell final pass: " + info.bannerCell.ToString());
 
                 RemoveFirstCrateOf(_DefOf.Carn_Crate_Stall);
-                CarnivalUtils.ClearThingsFor(info.map, bannerSpot, bannerDef.size, rot, false, true);
+                CarnivalUtils.ClearThingsFor(info.map, bannerSpot, bannerDef.size, rot, 2);
                 return PlaceBlueprint(bannerDef, bannerSpot, rot);
             }
 
@@ -339,7 +339,7 @@ namespace Carnivale
                 if (gameSpot.IsValid)
                 {
                     RemoveFirstCrateOf(crate.def);
-                    CarnivalUtils.ClearThingsFor(info.map, gameSpot, gameDef.size, default(Rot4), false, true);
+                    CarnivalUtils.ClearThingsFor(info.map, gameSpot, gameDef.size, default(Rot4), 2);
 
                     if (i < gameMasters.Count)
                     {
