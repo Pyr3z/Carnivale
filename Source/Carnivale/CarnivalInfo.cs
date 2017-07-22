@@ -74,6 +74,8 @@ namespace Carnivale
         private IntVec3 averageLodgeTentPosInt = IntVec3.Invalid;
         [Unsaved]
         private Building_Carn entranceInt = null;
+        [Unsaved]
+        private Building_Tent chapInt = null;
 
         // Properties:
 
@@ -136,6 +138,19 @@ namespace Carnivale
                 }
 
                 return entranceInt;
+            }
+        }
+
+        public Building_Tent Chapiteaux
+        {
+            get
+            {
+                if (chapInt == null)
+                {
+                    chapInt = GetFirstBuildingOf(_DefOf.Carn_TentChap) as Building_Tent;
+                }
+
+                return chapInt;
             }
         }
 
@@ -583,7 +598,7 @@ namespace Carnivale
             return null;
         }
 
-        public Building_Carn GetRandomBuildingOf(CarnBuildingType type)
+        public Building_Carn GetRandomBuildingOf(CarnBuildingType type, bool suppressWarnings = false)
         {
             if (!Active)
             {
@@ -598,7 +613,7 @@ namespace Carnivale
                 return building as Building_Carn;
             }
 
-            if (Prefs.DevMode)
+            if (Prefs.DevMode && !suppressWarnings)
                 Log.Warning("[Carnivale] Tried to find any building of type " + type + " in CarnivalInfo, but none exists.");
             return null;
         }
@@ -614,9 +629,9 @@ namespace Carnivale
             }
         }
 
-        public LocalTargetInfo GetRandomTentDoor(CarnBuildingType secondaryType = CarnBuildingType.Bedroom)
+        public LocalTargetInfo GetRandomTentDoor(bool suppressWarnings = false, CarnBuildingType secondaryType = CarnBuildingType.Bedroom)
         {
-            var tent = GetRandomBuildingOf(CarnBuildingType.Tent | secondaryType) as Building_Tent;
+            var tent = GetRandomBuildingOf(CarnBuildingType.Tent | secondaryType, suppressWarnings) as Building_Tent;
 
             if (tent != null)
             {
@@ -654,7 +669,7 @@ namespace Carnivale
             
 
             Log.Error("Found no spot to put trash. Jobs will be ended. Did the trash area overflow, or was trash cell calculation bad?");
-            this.trashCentre = IntVec3.Invalid;
+            //this.trashCentre = IntVec3.Invalid;
             return trashCentre;
         }
 
@@ -779,8 +794,9 @@ namespace Carnivale
             if (Prefs.DevMode)
                 Log.Message("[Carnivale] bannerCell initial minimum pass: " + closestCell);
 
-            var candidateCells = CellsUtil.TriangleAreaRough(closestCell, colonistPos, 60, minDistToCentre);
-            candidateCells = candidateCells.RandomConsecutiveGroup(candidateCells.Count() / 2).ToList();
+            var candidateCells = CellsUtil.RandomTriangularBisections(closestCell, colonistPos, 60, maxDistToCentre * 1.5f, minDistToCentre, 7)
+                .Where(c => c.DistanceToSquared(colonistPos) < 625f)
+                .ToList();
 
             closestCell = candidateCells.ClosestCellTo(colonistPos, map);
 
@@ -791,9 +807,9 @@ namespace Carnivale
 
             if (!GenSight.LineOfSight(setupCentre, closestCell, map) || !GenSight.LineOfSight(closestCell, colonistPos, map))
             {
-                Func<IntVec3, float> weightLoSSetupCentre = c => 1f / (setupCentre.CountObstructingCellsTo(c, map) + 1f);
+                Func<IntVec3, float> weightLoSSetupCentre = c => 2f / (setupCentre.CountObstructingCellsTo(c, map) + 1f);
                 Func<IntVec3, float> weightLoSColony = c => 1f / (c.CountObstructingCellsTo(colonistPos, map) + 1f);
-                Func<IntVec3, float> weightBest = c => (weightLoSSetupCentre(c) == 1f ? 1f : 0f) + (weightLoSColony(c) == 1f ? 1f : 0f);
+                Func<IntVec3, float> weightBest = c => (weightLoSSetupCentre(c) == 2f ? 2f : 0f) + (weightLoSColony(c) == 1f ? 1f : 0f);
 
                 IntVec3 tempCell;
 
@@ -901,11 +917,11 @@ namespace Carnivale
             }
             else if (map.roadInfo.roadEdgeTiles.Any() && Prefs.DevMode)
             {
-                Log.Warning("\t[Carnivale] bannerCell road pass failed. Reason: no roads found in search radius. searchRadius=" + (baseRadius - 10));
+                Log.Warning("\t[Carnivale] bannerCell road pass failed. Reason: no roads found in search radius. searchRadius=" + (baseRadius));
             }
 
             if (Prefs.DevMode)
-                Log.Message("\t[Carnivale] bannerCell pre-buildability pass: " + closestCell);
+                Log.Message("[Carnivale] bannerCell pre-buildability pass: " + closestCell);
 
             return closestCell;
         }

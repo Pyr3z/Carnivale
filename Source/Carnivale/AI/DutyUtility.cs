@@ -22,11 +22,14 @@ namespace Carnivale
             }
         }
 
-        public static void DefendPoint(Pawn pawn, LocalTargetInfo defendPoint)
+        public static void DefendPoint(Pawn pawn, LocalTargetInfo defendPoint, Thing target = null, float defendRadius = -1f)
         {
             if (pawn.mindState != null && pawn.equipment.Primary != null && defendPoint.IsValid)
             {
-                var defendRadius = CarnivalUtils.Info.baseRadius / 2f;
+                if (defendRadius == -1f)
+                {
+                    defendRadius = CarnivalUtils.Info.baseRadius * 0.66f;
+                }
 
                 if (!pawn.equipment.Primary.def.IsMeleeWeapon)
                 {
@@ -42,9 +45,10 @@ namespace Carnivale
                     pawn.mindState.duty = new PawnDuty(_DefOf.Duty_DefendMelee, defendPoint)
                     {
                         focusSecond = defendPoint,
-                        radius = defendRadius / 2,
+                        radius = defendRadius / 3,
                         locomotion = LocomotionUrgency.Sprint
                     };
+                    pawn.mindState.enemyTarget = target;
                 }
             }
         }

@@ -193,7 +193,7 @@
   </DutyDef>
   
   
-  <!-- Guard small area -->
+  <!-- Guard small area (deprecated) -->
   <DutyDef>
     <defName>Duty_GuardSmallArea</defName>
 	<alwaysShowWeapon>true</alwaysShowWeapon>
@@ -272,7 +272,7 @@
         </li>
 		
 		<li Class="JobGiver_AIFightEnemies">
-          <targetAcquireRadius>40</targetAcquireRadius>
+          <targetAcquireRadius>65</targetAcquireRadius>
           <targetKeepRadius>72</targetKeepRadius>
         </li>
 		
@@ -301,17 +301,13 @@
         </li>
 		
         <li Class="JobGiver_AIFightEnemies">
-          <targetAcquireRadius>32</targetAcquireRadius>
-          <targetKeepRadius>36</targetKeepRadius>
+          <targetAcquireRadius>42</targetAcquireRadius>
+          <targetKeepRadius>8</targetKeepRadius>
         </li>
 		
         <li Class="JobGiver_AIDefendPoint">
-          <targetAcquireRadius>30</targetAcquireRadius>
-          <targetKeepRadius>55</targetKeepRadius>
-        </li>
-		
-        <li Class="JobGiver_WanderNearDutyLocation">
-          <wanderRadius>4</wanderRadius>
+          <targetAcquireRadius>42</targetAcquireRadius>
+          <targetKeepRadius>8</targetKeepRadius>
         </li>
 		
       </subNodes>

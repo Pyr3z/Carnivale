@@ -256,6 +256,8 @@ namespace Carnivale
             data.blueprints.RemoveAll(c => c.DestroyedOrNull() || !c.Spawned);
 
             Info.RecalculateCheckForCells();
+
+            ForbidWoodInArea();
         }
 
 
@@ -373,6 +375,18 @@ namespace Carnivale
             }
         }
 
+        private void ForbidWoodInArea()
+        {
+            foreach (var cell in Info.checkForCells)
+            {
+                var wood = cell.GetThingList(Map).FirstOrDefault(t => t.def == ThingDefOf.WoodLog);
 
+                if (wood != null)
+                {
+                    wood.SetForbidden(true);
+                    Info.thingsToHaul.Add(wood);
+                }
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@
 using RimWorld;
 using Verse;
 using Verse.AI;
+using System.Linq;
 
 namespace Carnivale
 {
@@ -103,9 +104,10 @@ namespace Carnivale
             trans_ToDefend.AddTrigger(new Trigger_BecameColonyEnemy());
             trans_ToDefend.AddTrigger(new Trigger_TickCondition(delegate
             {
-                if (Find.TickManager.TicksGame % 331 == 0)
+                if (Find.TickManager.TicksGame % 223 == 0)
                 {
                     var hostiles = Map.attackTargetsCache.TargetsHostileToFaction(lord.faction);
+
                     foreach (var hostile in hostiles)
                     {
                         if (GenHostility.IsActiveThreat(hostile))
@@ -122,13 +124,17 @@ namespace Carnivale
             trans_ToDefend.AddPostAction(new TransitionAction_Message("CarnDefending".Translate(this.lord.faction)));
             mainGraph.AddTransition(trans_ToDefend);
 
-            var trans_FromDefend = new Transition(toil_Defend, toil_Strike);
-            trans_FromDefend.AddTrigger(new Trigger_TicksPassedWithoutHarm(GenDate.TicksPerHour));
-            trans_FromDefend.AddPreAction(new TransitionAction_EndAllJobs());
-            trans_FromDefend.AddPostAction(new TransitionAction_Message("CarnPackingUpHostile".Translate(this.lord.faction)));
-            mainGraph.AddTransition(trans_FromDefend);
+            var trans_DefendToStrike = new Transition(toil_Defend, toil_Strike);
+            trans_DefendToStrike.AddTrigger(new Trigger_Memo("BattleDonePawnsLost"));
+            trans_DefendToStrike.AddPreAction(new TransitionAction_EndAllJobs());
+            trans_DefendToStrike.AddPostAction(new TransitionAction_Message("CarnPackingUpHostile".Translate(this.lord.faction)));
+            mainGraph.AddTransition(trans_DefendToStrike);
 
-
+            var trans_DefendToRest = new Transition(toil_Defend, toil_Rest);
+            trans_DefendToRest.AddTrigger(new Trigger_Memo("BattleDone"));
+            trans_DefendToRest.AddPreAction(new TransitionAction_EndAllJobs());
+            trans_DefendToRest.AddPostAction(new TransitionAction_Message("CarnResting".Translate(this.lord.faction)));
+            mainGraph.AddTransition(trans_DefendToRest);
 
             // exit map toil
             var toil_Exit = new LordToil_Leave();

@@ -10,8 +10,9 @@ namespace Carnivale
 
         protected override Job TryGiveJob(Pawn pawn)
         {
-            var info = pawn.MapHeld.GetComponent<CarnivalInfo>();
+            var info = CarnivalUtils.Info;
             if (!info.Active
+                || !info.ShouldHaulTrash
                 || !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation)
                 || pawn.story.WorkTagIsDisabled(WorkTags.Hauling))
                 return null;

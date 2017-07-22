@@ -129,6 +129,12 @@ namespace Carnivale
         }
 
 
+        public static bool IsOutdoors(this Pawn pawn)
+        {
+            var room = pawn.GetRoom();
+            return room != null;
+        }
+
 
         public static CarnivalRole GetCarnivalRole(this Pawn pawn, bool cache = true)
         {
@@ -415,9 +421,9 @@ namespace Carnivale
         public static bool FindCarnivalSpawnSpot(Map map, out IntVec3 spot)
         {
             Func<IntVec3, bool> reachable = c => map.reachability.CanReachColony(c);
-            Func<IntVec3, bool> buildable = c => c.IsAroundBuildableTerrain(map, 7);
+            Func<IntVec3, bool> buildable = c => c.IsAroundGoodTerrain(map, 7);
             Func<IntVec3, float> weightByLoS = c => 1f / (c.CountObstructingCellsTo(AverageColonistPosition(map), map) + 1f);
-            Func<IntVec3, float> weightBest = c => (weightByLoS(c) == 1f ? 1f : 0f) + (buildable(c) ? 1f : 0f);
+            Func<IntVec3, float> weightBest = c => (weightByLoS(c) == 1f ? 1f : 0f) + (buildable(c) ? 2f : 0f);
 
             IEnumerable<IntVec3> roadEdges = map.roadInfo.roadEdgeTiles.Where(reachable);
 
@@ -519,18 +525,22 @@ namespace Carnivale
             {
                 averageColPos = AverageColonistPosition(map);
             }
+            else
+            {
+                averageColPos = averageColPos.AverageWith(AverageColonistPosition(map));
+            }
 
             var distFromColony = entrySpot.DistanceTo(averageColPos);
 
             if (Prefs.DevMode)
-                Log.Message("[Carnivale] Initial distFromColony=" + distFromColony);
+                Log.Message("[Carnivale] setupSpot: Initial distFromColony=" + distFromColony);
 
             var result = entrySpot;
 
-            if (TryFindCarnivalSetupPositionLoS(entrySpot, averageColPos, distFromColony, 6, map, out result))
+            if (TryFindCarnivalSetupPositionLoS(entrySpot, averageColPos, distFromColony, 7, map, out result))
             {
                 if (Prefs.DevMode)
-                    Log.Message("[Carnivale] Calculated setupSpot: " + result + ". distFromColony=" + result.DistanceTo(averageColPos));
+                    Log.Message("[Carnivale] setupSpot final pass: " + result + ". distFromColony=" + result.DistanceTo(averageColPos));
 
                 return result;
             }
@@ -547,16 +557,15 @@ namespace Carnivale
 
         private static bool TryFindCarnivalSetupPositionLoS(IntVec3 initialSpot, IntVec3 averageColPos, float distFromColony, int tenth, Map map, out IntVec3 result)
         {
-            var minDistFromStart = (int)Info.baseRadius;
-            var maxDistFromStart = (int)Mathf.Min((distFromColony * tenth / 10f), (distFromColony - Info.baseRadius - 15f));
+            var minDistFromStart = Info.baseRadius;
+            var maxDistFromStart = Mathf.Min((distFromColony * tenth / 10f), (distFromColony - Info.baseRadius - 15f));
 
             if (Prefs.DevMode)
                 Log.Message("\t[Carnivale] minDistFromStart=" + minDistFromStart + ", maxDistFromStart=" + maxDistFromStart);
 
-            var firstPass = initialSpot.CellsInLineTo(averageColPos)
-                            .LimitBetween(minDistFromStart, maxDistFromStart)
-                            .RandomConsecutiveGroup(5)
-                            .MaxBy(c => c.DistanceSquaredToNearestMineable(map, 16));
+            var firstPass = CellsUtil.RandomTriangularBisections(initialSpot, averageColPos, 30f, maxDistFromStart, minDistFromStart, tenth - 2)
+                            .Where(c => c.DistanceToMapEdge(map) > minDistFromStart)
+                            .MaxBy(c => c.DistanceSquaredToNearestMineable(map, 25));
 
             IntVec3 secondPass;
             if (!firstPass.TryFindNearestRoadCell(map, Mathf.Min(maxDistFromStart - minDistFromStart, 56), out secondPass))
@@ -568,7 +577,7 @@ namespace Carnivale
 
             if (finalPass.Standable(map)
                 && !finalPass.Roofed(map)
-                && finalPass.IsAroundTerrainAffordances(map, tenth * 2, TerrainAffordance.Light)
+                && finalPass.IsAroundGoodTerrain(map, tenth * 3)
                 && map.reachability.CanReach(initialSpot, finalPass, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some)
                 && map.reachability.CanReachColony(finalPass)
                 && finalPass.DistanceSquaredToNearestMineable(map, 16) > tenth * tenth * 4)
@@ -579,14 +588,14 @@ namespace Carnivale
             else if (tenth > 3)
             {
                 if (Prefs.DevMode)
-                    Log.Warning("\t[Carnivale] Failed to find setupSpot by line-of-sight. Will try " + (tenth - 3) + " more times.");
+                    Log.Warning("\t[Carnivale] setupSpot: Failed to find by line-of-sight. Will try " + (tenth - 3) + " more times.");
 
                 return TryFindCarnivalSetupPositionLoS(initialSpot, averageColPos, distFromColony, --tenth, map, out result);
             }
             else
             {
                 if (Prefs.DevMode)
-                    Log.Warning("\t[Carnivale] Failed to find setupSpot by line-of-sight. Trying old random iterative method.");
+                    Log.Warning("\t[Carnivale] setupSpot: Failed to find by line-of-sight. Trying old random iterative method.");
 
                 return TryFindCarnivalSetupPositionRandomly(initialSpot, averageColPos, distFromColony, 7, map, out result);
             }
@@ -624,7 +633,7 @@ namespace Carnivale
             if (tenth > 4)
             {
                 if (Prefs.DevMode)
-                    Log.Warning("\t[Carnivale] Failed to find setupSpot by random iteration. Will try " + (tenth - 4) + " more times.");
+                    Log.Warning("\t[Carnivale] setupSpot: Failed to find by random iteration. Will try " + (tenth - 4) + " more times.");
 
                 return TryFindCarnivalSetupPositionRandomly(initialSpot, averageColPos, distFromColony, --tenth, map, out result);
             }

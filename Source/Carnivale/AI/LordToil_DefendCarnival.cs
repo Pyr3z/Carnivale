@@ -9,6 +9,8 @@ namespace Carnivale
 {
     public class LordToil_DefendCarnival : LordToil_Carn
     {
+        private bool pawnsKilled = false;
+
         public override bool AllowSatisfyLongNeeds
         {
             get
@@ -34,39 +36,48 @@ namespace Carnivale
 
         public override void UpdateAllDuties()
         {
-            var nearHostilesPos = Map.attackTargetsCache.TargetsHostileToFaction(lord.faction)
+            var nearHostiles = Map.attackTargetsCache.TargetsHostileToFaction(lord.faction)
                 .Where(targ => !targ.ThreatDisabled())
-                .Select(targ => targ.Thing.PositionHeld)
-                .Average();
+                .Select(targ => targ.Thing);
+
+            var aveHostilesPos = nearHostiles.Select(t => t.Position).Average();
 
             IntVec3 closestGuardSpot;
+            IntVec3 bestGatherSpot;
 
-            if (nearHostilesPos.IsValid)
+            if (aveHostilesPos.IsValid && Info.guardPositions.Any())
             {
-                closestGuardSpot = Info.guardPositions.MinBy(c => c.DistanceToSquared(nearHostilesPos));
-            }
-            else if (Info.guardPositions.Count > 2)
-            {
-                closestGuardSpot = CellsUtil.Average(Info.guardPositions.RandomConsecutiveGroup(3));
+                closestGuardSpot = Info.guardPositions.MinBy(c => c.DistanceToSquared(aveHostilesPos));
             }
             else
             {
                 closestGuardSpot = Info.bannerCell;
             }
 
+            if (Info.Chapiteaux != null)
+            {
+                bestGatherSpot = Info.Chapiteaux.Position;
+            }
+            else
+            {
+                bestGatherSpot = Info.setupCentre;
+            }
             
 
             foreach (var pawn in lord.ownedPawns)
             {
                 if (pawn.Dead || pawn.Downed) continue;
 
+                var distressedCarny = RandomExposedCarnyByHealth(pawn);
+                var nearHost = nearHostiles.MinBy(t => pawn.Position.DistanceToSquared(t.Position));
+                
                 CarnivalRole role = pawn.GetCarnivalRole();
 
                 if (role.Is(CarnivalRole.Manager))
                 {
                     var guard = Info.GetBestGuard(false);
 
-                    if (guard != null && !guard.Dead && !guard.Downed)
+                    if (Rand.Chance(0.4f) && guard != null && !guard.Dead && !guard.Downed)
                     {
                         pawn.mindState.duty = new PawnDuty(DutyDefOf.Escort, guard, 7f)
                         {
@@ -75,43 +86,56 @@ namespace Carnivale
                     }
                     else
                     {
-                        var carny = RandomCarnyByHealth();
-
-                        if (carny != null)
+                        if (distressedCarny != null)
                         {
-                            DutyUtility.DefendPoint(pawn, carny);
+                            DutyUtility.DefendPoint(pawn, distressedCarny, null, 5f);
                         }
                         else
                         {
-                            DutyUtility.DefendPoint(pawn, closestGuardSpot);
+                            DutyUtility.DefendPoint(pawn, closestGuardSpot, nearHost);
                         }
                     }
                 }
                 else if (role.Is(CarnivalRole.Guard))
                 {
-                    DutyUtility.DefendPoint(pawn, closestGuardSpot);
-                }
-                else if (pawn.equipment != null && pawn.equipment.Primary != null)
-                {
-                    var carny = RandomCarnyByHealth();
-                    IntVec3 tentDoor;
-
-                    if (carny != null)
+                    if (distressedCarny != null && (Rand.Chance(0.33f) || pawn.mindState.enemyTarget == null))
                     {
-                        DutyUtility.DefendPoint(pawn, carny);
-                    }
-                    else if (Rand.Bool && (tentDoor = Info.GetRandomTentDoor().Cell).IsValid)
-                    {
-                        DutyUtility.DefendPoint(pawn, tentDoor);
+                        DutyUtility.DefendPoint(pawn, distressedCarny, null, 5f);
                     }
                     else
                     {
-                        DutyUtility.DefendPoint(pawn, closestGuardSpot);
+                        DutyUtility.DefendPoint(pawn, closestGuardSpot, nearHost);
+                    }
+                }
+                else if (pawn.equipment != null && pawn.equipment.Primary != null)
+                {
+                    if (pawn.health.summaryHealth.SummaryHealthPercent > 0.85f)
+                    {
+                        IntVec3 tentDoor;
+
+                        if (distressedCarny != null)
+                        {
+                            DutyUtility.DefendPoint(pawn, distressedCarny, nearHost);
+                        }
+                        else if (Rand.Bool && (tentDoor = Info.GetRandomTentDoor(true, CarnBuildingType.Attraction).Cell).IsValid)
+                        {
+                            DutyUtility.DefendPoint(pawn, tentDoor, nearHost);
+                        }
+                        else
+                        {
+                            DutyUtility.DefendPoint(pawn, closestGuardSpot, nearHost);
+                        }
+                    }
+                    else
+                    {
+                        DutyUtility.DefendPoint(pawn, bestGatherSpot, null, 4f);
                     }
                 }
                 else
                 {
-                    pawn.mindState.duty = new PawnDuty(DutyDefOf.Travel, Info.AverageLodgeTentPos)
+                    // TODO
+
+                    pawn.mindState.duty = new PawnDuty(DutyDefOf.Travel, bestGatherSpot)
                     {
                         locomotion = LocomotionUrgency.Sprint
                     };
@@ -124,20 +148,58 @@ namespace Carnivale
         {
             base.Notify_PawnLost(victim, cond);
 
+            if (cond == PawnLostCondition.IncappedOrKilled)
+            {
+                this.pawnsKilled = true;
+            }
+
             UpdateAllDuties();
         }
 
+        public override void LordToilTick()
+        {
+            base.LordToilTick();
 
-        private Pawn RandomCarnyByHealth()
+            if (Find.TickManager.TicksGame % 223 == 0)
+            {
+                var hostiles = Map.attackTargetsCache.TargetsHostileToFaction(lord.faction);
+                var anyHostiles = false;
+
+                foreach (var hostile in hostiles)
+                {
+                    if (GenHostility.IsActiveThreat(hostile))
+                    {
+                        anyHostiles = true;
+                        break;
+                    }
+                }
+
+                if (!anyHostiles)
+                {
+                    if (pawnsKilled)
+                    {
+                        lord.ReceiveMemo("BattleDonePawnsLost");
+                    }
+                    else
+                    {
+                        lord.ReceiveMemo("BattleDone");
+                    }
+                }
+            }
+        }
+
+
+        private Pawn RandomExposedCarnyByHealth(Pawn searcher)
         {
             Pawn pawn = null;
             Info.pawnsWithRole[CarnivalRole.Entertainer]
                 .Concat(Info.pawnsWithRole[CarnivalRole.Vendor])
-                .Where(p => !p.Dead && p.health.summaryHealth.SummaryHealthPercent < 0.95f)
-                .TryRandomElementByWeight(p => 1f / p.health.summaryHealth.SummaryHealthPercent, out pawn);
+                .Where(p => p != searcher && !p.Dead && p.IsOutdoors() && p.health.summaryHealth.SummaryHealthPercent < 0.95f)
+                .TryRandomElementByWeight(p => p.Downed ? 100f : 1f / p.health.summaryHealth.SummaryHealthPercent, out pawn);
 
             return pawn;
         }
+
 
     }
 }

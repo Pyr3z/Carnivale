@@ -358,14 +358,25 @@ namespace Carnivale
 
         private static Blueprint PlaceTrashBlueprint()
         {
-            ThingDef signDef = _DefOf.Carn_SignTrash;
-            IntVec3 trashPos = info.carnivalArea.ContractedBy(5).FurthestCellFrom(cachedPos.Average(), true, delegate (IntVec3 c) 
-            {
-                if (GenRadial.RadialCellsAround(info.bannerCell, 7, false).Contains(c))
-                    return false;
+            var signDef = _DefOf.Carn_SignTrash;
+            var noGo = CellRect.CenteredOn(info.bannerCell, 10);
+            IntVec3 trashPos;
 
-                return true;
-            });
+            if (!CellRect.CenteredOn(info.bannerCell, 20).Cells
+                .Where(c => !noGo.Contains(c))
+                .TryRandomElement(out trashPos))
+            {
+                if (Prefs.DevMode)
+                    Log.Message("[Carnivale] New trash position calculation failed. Using old method.");
+
+                trashPos = info.carnivalArea.ContractedBy(5).FurthestCellFrom(cachedPos.Average(), true, delegate (IntVec3 c)
+                {
+                    if (noGo.Contains(c))
+                        return false;
+
+                    return true;
+                });
+            }
 
             if (!CanPlaceBlueprintAt(trashPos, signDef))
             {
@@ -374,7 +385,7 @@ namespace Carnivale
 
             if (!trashPos.IsValid)
             {
-                Log.Error("Could not find any place for a trash spot. Trash will not be hauled.");
+                Log.Error("[Carnivale] Could not find any place for a trash spot. Trash will not be hauled.");
                 info.TrashCentre = IntVec3.Invalid;
                 return null;
             }
