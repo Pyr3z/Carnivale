@@ -83,7 +83,7 @@
     <apparelAllowHeadwearChance>0.4</apparelAllowHeadwearChance>
     <weaponMoney>
       <min>0</min>
-      <max>250</max>
+      <max>150</max>
     </weaponMoney>
     <weaponTags>
       <li>Gun</li>
@@ -143,7 +143,7 @@
     <apparelAllowHeadwearChance>0.4</apparelAllowHeadwearChance>
     <weaponMoney>
       <min>0</min>
-      <max>250</max>
+      <max>200</max>
     </weaponMoney>
     <weaponTags>
       <li>Gun</li>
@@ -187,10 +187,10 @@
       <min>800</min>
       <max>1300</max>
     </apparelMoney>
-    <apparelAllowHeadwearChance>0.95</apparelAllowHeadwearChance> <!-- Hats. Always. -->
+    <apparelAllowHeadwearChance>0.99</apparelAllowHeadwearChance> <!-- Hats. Always. -->
     <weaponMoney>
-      <min>200</min>
-      <max>600</max>
+      <min>150</min>
+      <max>550</max>
     </weaponMoney>
     <weaponTags>
       <li>Gun</li>
@@ -284,19 +284,19 @@
     <apparelAllowHeadwearChance>0.2</apparelAllowHeadwearChance>
     <weaponMoney>
       <min>200</min>
-      <max>600</max>
+      <max>500</max>
     </weaponMoney>
     <weaponTags>
       <li>Gun</li>
     </weaponTags>
     <techHediffsMoney>
-      <min>200</min>
+      <min>0</min>
       <max>300</max>
     </techHediffsMoney>
     <techHediffsTags>
       <li>Simple</li>
     </techHediffsTags>
-    <techHediffsChance>0.001</techHediffsChance>
+    <techHediffsChance>0.08</techHediffsChance>
     
     <inventoryOptions>
       <skipChance>0.50</skipChance>
@@ -336,13 +336,13 @@
       <li>Melee</li>
     </weaponTags>
     <techHediffsMoney>
-      <min>200</min>
+      <min>0</min>
       <max>300</max>
     </techHediffsMoney>
     <techHediffsTags>
       <li>Simple</li>
     </techHediffsTags>
-    <techHediffsChance>0.001</techHediffsChance>
+    <techHediffsChance>0.04</techHediffsChance>
     
     <inventoryOptions>
       <skipChance>0.50</skipChance>

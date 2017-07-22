@@ -249,6 +249,16 @@
 		    <li Class="JobGiver_SatisfyChemicalNeed" />
 		  </subNodes>
 		</li>
+		
+		<!-- Get joy -->
+		<li Class="ThinkNode_ConditionalNeedPercentageAbove">
+		  <need>Joy</need>
+		  <threshold>0.35</threshold>
+		  <invert>true</invert>
+		  <subNodes>
+		    <li Class="JobGiver_GetJoy" />
+		  </subNodes>
+		</li>
 	    
 		<!-- TODO: feed animals -->
 	    <li Class="Carnivale.ThinkNode_CanInteractWithAnimals">

@@ -453,6 +453,11 @@ namespace Carnivale
                                 {
                                     return !p.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction);
                                 }
+                                else if (p.Is(CarnivalRole.Guard, false))
+                                {
+                                    var shoot = p.skills.GetSkill(SkillDefOf.Shooting).Level;
+                                    return shoot > 4;
+                                }
                                 else if (genderValidator != null)
                                 {
                                     return genderValidator(p);

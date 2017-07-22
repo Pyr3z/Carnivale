@@ -782,7 +782,7 @@ namespace Carnivale
         private IntVec3 PreCalculateBannerCell()
         {
             var minDistToCentre = baseRadius / 2 + 5f;
-            var maxDistToCentre = baseRadius + 10f;
+            var maxDistToCentre = baseRadius + 7f;
             var minDistSqrdToCentre = minDistToCentre * minDistToCentre;
             var maxDistSqrdToCentre = maxDistToCentre * maxDistToCentre;
 
@@ -795,7 +795,7 @@ namespace Carnivale
                 Log.Message("[Carnivale] bannerCell initial minimum pass: " + closestCell);
 
             var candidateCells = CellsUtil.RandomTriangularBisections(closestCell, colonistPos, 60, maxDistToCentre * 1.5f, minDistToCentre, 7)
-                .Where(c => c.DistanceToSquared(colonistPos) < 625f)
+                .Where(c => c.DistanceToSquared(colonistPos) > 625f && c.DistanceToSquared(setupCentre) < maxDistSqrdToCentre)
                 .ToList();
 
             closestCell = candidateCells.ClosestCellTo(colonistPos, map);
