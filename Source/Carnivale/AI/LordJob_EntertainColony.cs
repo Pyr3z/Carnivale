@@ -1,8 +1,6 @@
 ﻿using Verse.AI.Group;
 using RimWorld;
 using Verse;
-using Verse.AI;
-using System.Linq;
 
 namespace Carnivale
 {

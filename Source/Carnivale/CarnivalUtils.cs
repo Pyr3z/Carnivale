@@ -123,9 +123,11 @@ namespace Carnivale
             return faction.def.defName.StartsWith("Carn_");
         }
 
-        public static bool IsCarny(this Pawn pawn)
+        public static bool IsCarny(this Pawn pawn, bool checkByFaction = true)
         {
-            return pawn.RaceProps.Humanlike && pawn.Faction != null && pawn.Faction.IsCarnival();
+            return pawn.RaceProps.Humanlike
+                && (checkByFaction && pawn.Faction != null && pawn.Faction.IsCarnival())
+                || (!checkByFaction && pawn.kindDef.defName.StartsWith("Carny"));
         }
 
 

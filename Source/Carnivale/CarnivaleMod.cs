@@ -1,5 +1,6 @@
 ﻿using HugsLib;
 using RimWorld;
+using RimWorld.Planet;
 using System.Linq;
 using Verse;
 
@@ -43,6 +44,67 @@ namespace Carnivale
             CarnivalUtils.Cleanup();
         }
 
+
+        public static void NukeEverything(Game game)
+        {
+            ProfilerThreadCheck.BeginSample("CarnivaleNuke");
+
+            var facList = game.World.factionManager.AllFactionsListForReading;
+            for (int i = facList.Count - 1; i > 0; i--)
+            {
+                var fac = facList[i];
+                if (fac.IsCarnival())
+                {
+                    foreach (var map in game.Maps)
+                    {
+                        var lord = map.lordManager.lords.FirstOrDefault(l => l.LordJob is LordJob_EntertainColony);
+
+                        if (lord != null)
+                        {
+                            map.lordManager.RemoveLord(lord);
+                        }
+
+                        foreach (var pawn in map.mapPawns.AllPawns.Where(p => fac == p.Faction || p.IsCarny(false)))
+                        {
+                            pawn.DeSpawn();
+                            game.World.worldPawns.PassToWorld(pawn, PawnDiscardDecideMode.Discard);
+                        }
+
+                        foreach (var thing in map.listerThings.AllThings.Where(t => fac == t.Faction))
+                        {
+                            thing.Destroy();
+                        }
+                    }
+
+                    fac.RemoveAllRelations();
+                    facList.RemoveAt(i);
+                }
+            }
+
+            foreach (var pawn in game.World.worldPawns.AllPawnsAliveOrDead.Where(p => p.IsCarny(false)))
+            {
+                game.World.worldPawns.RemovePawn(pawn);
+            }
+
+            foreach (var map in game.Maps)
+            {
+                map.pawnDestinationManager = new PawnDestinationManager();
+            }
+
+            string fileName;
+            if (game.Info.permadeathMode)
+            {
+                fileName = game.Info.permadeathModeUniqueName;
+            }
+            else
+            {
+                fileName = game.AnyPlayerHomeMap.info.parent.LabelCap;
+            }
+
+            GameDataSaveLoader.SaveGame(fileName + "_Nuked");
+
+            ProfilerThreadCheck.EndSample();
+        }
 
 
         private static void InjectFrameStuffHack()
