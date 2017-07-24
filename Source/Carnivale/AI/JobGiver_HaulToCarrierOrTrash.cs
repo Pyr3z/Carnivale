@@ -10,7 +10,7 @@ namespace Carnivale
 
         protected override Job TryGiveJob(Pawn pawn)
         {
-            var info = CarnivalUtils.Info;
+            var info = CarnUtils.Info;
             if (!info.Active
                 || !info.ShouldHaulTrash
                 || !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation)

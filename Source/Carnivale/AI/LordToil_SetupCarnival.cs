@@ -53,7 +53,7 @@ namespace Carnivale
 
 
             // Give chapiteau
-            if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentHuge, 1, CarnivalUtils.RandomFabricByCheapness()) != 1)
+            if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentHuge, 1, CarnUtils.RandomFabricByCheapness()) != 1)
             {
                 Log.Error("Could not give " + _DefOf.Carn_Crate_TentHuge + " to carnies of faction " + lord.faction + ". It will not be built.");
             }
@@ -65,14 +65,14 @@ namespace Carnivale
 
             int numBedTents = numCarnies > 9 ? Mathf.CeilToInt(numCarnies / 8f) : 1;
 
-            if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentLodge, numBedTents, CarnivalUtils.RandomFabricByCheapness()) != numBedTents)
+            if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentLodge, numBedTents, CarnUtils.RandomFabricByCheapness()) != numBedTents)
             {
                 Log.Error("Could not give enough " + _DefOf.Carn_Crate_TentLodge + " to carnies of faction " + lord.faction + ". Some will not be built.");
             }
 
             if (Info.pawnsWithRole[CarnivalRole.Manager].Any())
             {
-                if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentMan, 1, CarnivalUtils.RandomFabricByExpensiveness()) != 1)
+                if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentMan, 1, CarnUtils.RandomFabricByExpensiveness()) != 1)
                 {
                     Log.Error("Could not give " + _DefOf.Carn_Crate_TentMan + " to carnies of faction " + lord.faction + ". It will not be built.");
                 }

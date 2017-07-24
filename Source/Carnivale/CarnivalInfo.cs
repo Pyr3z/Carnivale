@@ -370,7 +370,7 @@ namespace Carnivale
             baseRadius = Mathf.Clamp(baseRadius, MinRadius, MaxRadius);
 
             // Calculate setup centre
-            setupCentre = CarnivalUtils.FindCarnivalSetupPosition(spawnCentre, map);
+            setupCentre = CarnUtils.FindCarnivalSetupPosition(spawnCentre, map);
 
             // Set initial check cells
             checkForCells.AddRange(GenRadial.RadialCellsAround(setupCentre, baseRadius, true)
@@ -786,7 +786,16 @@ namespace Carnivale
             var minDistSqrdToCentre = minDistToCentre * minDistToCentre;
             var maxDistSqrdToCentre = maxDistToCentre * maxDistToCentre;
 
-            var colonistPos = CarnivalUtils.AverageColonistPosition(map);
+            IntVec3 colonistPos;
+
+            if (!(colonistPos = CarnUtils.ApproxClosestColonistBuilding(map, setupCentre, ThingDefOf.Door)).IsValid)
+            {
+                colonistPos = CarnUtils.AverageColonistPosition(map);
+            }
+            else
+            {
+                colonistPos = colonistPos.AverageWith(CarnUtils.AverageColonistPosition(map));
+            }
 
             // Initial pass
             var closestCell = CellRect.CenteredOn(setupCentre, (int)minDistToCentre).ClosestCellTo(colonistPos);
@@ -794,9 +803,10 @@ namespace Carnivale
             if (Prefs.DevMode)
                 Log.Message("[Carnivale] bannerCell initial minimum pass: " + closestCell);
 
-            var candidateCells = CellsUtil.RandomTriangularBisections(closestCell, colonistPos, 60, maxDistToCentre * 1.5f, minDistToCentre, 7)
-                .Where(c => c.DistanceToSquared(colonistPos) > 625f && c.DistanceToSquared(setupCentre) < maxDistSqrdToCentre)
-                .ToList();
+            var candidateCells = CellsUtil.RandomCellsInTriangleFast(closestCell, colonistPos, 75, (maxDistToCentre - minDistToCentre), 100, delegate (IntVec3 c)
+            {
+                return c.Standable(map);
+            });
 
             closestCell = candidateCells.ClosestCellTo(colonistPos, map);
 
@@ -819,23 +829,11 @@ namespace Carnivale
                     if (Prefs.DevMode)
                         Log.Message("\t[Carnivale] bannerCell optimal LoS pass: " + closestCell);
                 }
-                else if (candidateCells.TryRandomElementByWeight(c => weightLoSColony(c) == 1f ? 1f : 0f, out tempCell))
+                else if (candidateCells.TryRandomElementByWeight(weightLoSSetupCentre + weightLoSColony, out tempCell))
                 {
                     closestCell = tempCell;
                     if (Prefs.DevMode)
-                        Log.Message("\t[Carnivale] bannerCell sub-optimal colony LoS pass: " + closestCell);
-                }
-                else if (candidateCells.TryRandomElementByWeight(c => weightLoSSetupCentre(c) == 1f ? 1f : 0f, out tempCell))
-                {
-                    closestCell = tempCell;
-                    if (Prefs.DevMode)
-                        Log.Message("\t[Carnivale] bannerCell sub-optimal setup centre LoS pass: " + closestCell);
-                }
-                else if (candidateCells.TryRandomElementByWeight(weightLoSSetupCentre, out tempCell))
-                {
-                    closestCell = tempCell;
-                    if (Prefs.DevMode)
-                        Log.Message("\t[Carnivale] bannerCell least optimal LoS pass: " + closestCell);
+                        Log.Message("\t[Carnivale] bannerCell sub-optimal LoS pass: " + closestCell);
                 }
                 else
                 {

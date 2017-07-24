@@ -134,7 +134,7 @@ namespace Carnivale
                     // offset is necessary for reinstallation
                     IntVec3 offset = child.Position - this.oldPosition;
                     child.Position = this.Position + offset;
-                    CarnivalUtils.SpawnThingNoWipe(child, map, respawningAfterLoad);
+                    CarnUtils.SpawnThingNoWipe(child, map, respawningAfterLoad);
                 }
             }
 

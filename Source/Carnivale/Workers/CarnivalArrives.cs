@@ -58,13 +58,13 @@ namespace Carnivale
 
                 IntVec3 tempSpot = parms.spawnCenter;
 
-                if (CarnivalUtils.FindCarnivalSpawnSpot(map, out tempSpot))
+                if (CarnUtils.FindCarnivalSpawnSpot(map, out tempSpot))
                     parms.spawnCenter = tempSpot;
                 else if (Prefs.DevMode)
                     Log.Warning("[Carnivale] Failed to resolve spawn center for CarnivalArrives. Defaulting.");
 
-                int feePerColonist = CarnivalUtils.CalculateFeePerColonist(parms.points);
-                map.GetComponent<CarnivalInfo>().feePerColonist = -feePerColonist;
+                int feePerColonist = CarnUtils.CalculateFeePerColonist(parms.points);
+                CarnUtils.Info.feePerColonist = -feePerColonist;
             }
             
             PawnGroupMakerParms defaultMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(parms);
@@ -76,6 +76,8 @@ namespace Carnivale
                 IntVec3 spawnPoint = CellFinder.RandomClosewalkCellNear(parms.spawnCenter, map, spawnPointSpread, null);
                 GenSpawn.Spawn(p, spawnPoint, map);
             }
+
+            parms.faction.leader.skills.GetSkill(SkillDefOf.Shooting).levelInt = 9;
 
             return list;
         }
@@ -137,7 +139,7 @@ namespace Carnivale
 
             //CarnivalUtils.Info.ReInitWith(lord, parms.spawnCenter);
 
-            CarnivalUtils.MakeNewCarnivalLord(parms.faction, map, parms.spawnCenter, durationDays, pawns);
+            CarnUtils.MakeNewCarnivalLord(parms.faction, map, parms.spawnCenter, durationDays, pawns);
 
             return true;
         }

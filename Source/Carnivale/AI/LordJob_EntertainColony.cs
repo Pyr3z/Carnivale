@@ -12,7 +12,7 @@ namespace Carnivale
         {
             get
             {
-                return CarnivalUtils.Info;
+                return CarnUtils.Info;
             }
         }
 
@@ -37,7 +37,7 @@ namespace Carnivale
         {
             base.Cleanup();
             Info.Cleanup();
-            CarnivalUtils.Cleanup();
+            CarnUtils.Cleanup();
         }
 
         public override StateGraph CreateGraph()

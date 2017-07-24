@@ -41,7 +41,7 @@ namespace Carnivale
         {
             get
             {
-                return CarnivalUtils.Info;
+                return CarnUtils.Info;
             }
         }
 

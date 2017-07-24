@@ -11,7 +11,7 @@ namespace Carnivale
         {
             get
             {
-                return CarnivalUtils.Info;
+                return CarnUtils.Info;
             }
         }
 
@@ -61,7 +61,7 @@ namespace Carnivale
                     yield return new FloatMenuOption(this.FloatMenuOptionLabel + " (" + Info.feePerColonist + ")", delegate
                     {
                         var silverCount = new ThingCountClass(ThingDefOf.Silver, Info.feePerColonist);
-                        var silverStack = CarnivalUtils.FindClosestThings(pawn, silverCount);
+                        var silverStack = CarnUtils.FindClosestThings(pawn, silverCount);
 
                         if (silverStack != null && pawn.CanReserveAndReach(silverStack, PathEndMode.Touch, pawn.NormalMaxDanger()))
                         {

@@ -10,7 +10,7 @@ using Xnope;
 
 namespace Carnivale
 {
-    public static class CarnivalUtils
+    public static class CarnUtils
     {
         // Remember to flush this whenever a carnival exits the map
         private static Dictionary<Pawn, CarnivalRole> cachedRoles = new Dictionary<Pawn, CarnivalRole>();

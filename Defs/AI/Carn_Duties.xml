@@ -10,7 +10,7 @@
 	  <subNodes>
 	  
 	    <li Class="JobGiver_FightFiresNearPoint">
-		  <maxDistFromPoint>25</maxDistFromPoint>
+		  <maxDistFromPoint>45</maxDistFromPoint>
 		</li>
 		
 		<li Class="ThinkNode_Subtree">
@@ -33,7 +33,19 @@
     <defName>Duty_StrikeBuildings</defName>
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
-	  
+	    
+		<li Class="JobGiver_FightFiresNearPoint">
+		  <maxDistFromPoint>45</maxDistFromPoint>
+		</li>
+		
+		<!-- satisfy the basic needs, no sleep -->
+		<li Class="ThinkNode_PrioritySorter">
+		  <subNodes>
+		    <li Class="JobGiver_GetFood" />
+		    <li Class="JobGiver_SatisfyChemicalNeed" />
+		  </subNodes>
+		</li>
+		
 	    <!-- Strike buildings -->
 	    <li Class="Carnivale.JobGiver_StrikeBuildings" />
 		
@@ -68,16 +80,8 @@
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
 	  
-		<!-- Goto carnival area if not already -->
-		<!-- <li Class="Carnivale.ThinkNode_InCarnivalArea"> -->
-		  <!-- <invert>true</invert> -->
-		  <!-- <subNodes> -->
-		    <!-- <li Class="Carnivale.JobGiver_GotoCarnivalArea" /> -->
-		  <!-- </subNodes> -->
-		<!-- </li> -->
-	  
 	    <li Class="JobGiver_FightFiresNearPoint">
-		  <maxDistFromPoint>25</maxDistFromPoint>
+		  <maxDistFromPoint>45</maxDistFromPoint>
 		</li>
 	    
 		<!-- satisfy needs -->
@@ -132,16 +136,8 @@
 	<thinkNode Class="ThinkNode_Priority">
 	  <subNodes>
 	  
-		<!-- Goto carnival area if not already -->
-		<!-- <li Class="Carnivale.ThinkNode_InCarnivalArea"> -->
-		  <!-- <invert>true</invert> -->
-		  <!-- <subNodes> -->
-		    <!-- <li Class="Carnivale.JobGiver_GotoCarnivalArea" /> -->
-		  <!-- </subNodes> -->
-		<!-- </li> -->
-	  
 	    <li Class="JobGiver_FightFiresNearPoint">
-		  <maxDistFromPoint>25</maxDistFromPoint>
+		  <maxDistFromPoint>45</maxDistFromPoint>
 		</li>
 	    
 		<!-- satisfy needs or do work -->
@@ -235,8 +231,8 @@
 	  <subNodes>
 		
 		<li Class="JobGiver_AIFightEnemies">
-          <targetAcquireRadius>40</targetAcquireRadius>
-          <targetKeepRadius>72</targetKeepRadius>
+          <targetAcquireRadius>75</targetAcquireRadius>
+          <targetKeepRadius>80</targetKeepRadius>
         </li>
 		
 		<!-- Goto next guard area -->
@@ -281,14 +277,9 @@
           <onlyIfInDanger>true</onlyIfInDanger>
         </li>
 		
-		<li Class="JobGiver_AIFightEnemies">
-          <targetAcquireRadius>65</targetAcquireRadius>
-          <targetKeepRadius>72</targetKeepRadius>
-        </li>
-		
         <li Class="JobGiver_AIDefendPoint">
-          <targetAcquireRadius>65</targetAcquireRadius>
-          <targetKeepRadius>72</targetKeepRadius>
+          <targetAcquireRadius>72</targetAcquireRadius>
+          <targetKeepRadius>77</targetKeepRadius>
         </li>
 		
         <li Class="JobGiver_WanderNearDutyLocation">
@@ -310,14 +301,9 @@
           <onlyIfInDanger>true</onlyIfInDanger>
         </li>
 		
-        <li Class="JobGiver_AIFightEnemies">
-          <targetAcquireRadius>42</targetAcquireRadius>
-          <targetKeepRadius>8</targetKeepRadius>
-        </li>
-		
         <li Class="JobGiver_AIDefendPoint">
-          <targetAcquireRadius>42</targetAcquireRadius>
-          <targetKeepRadius>8</targetKeepRadius>
+          <targetAcquireRadius>65</targetAcquireRadius>
+          <targetKeepRadius>67</targetKeepRadius>
         </li>
 		
       </subNodes>

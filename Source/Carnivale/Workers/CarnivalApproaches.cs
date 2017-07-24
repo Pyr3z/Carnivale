@@ -53,7 +53,7 @@ namespace Carnivale
             if (Prefs.DevMode)
                 Log.Message("[Carnivale] Calculating spawn centre:");
 
-            if (!CarnivalUtils.FindCarnivalSpawnSpot(map, out spawnSpot))
+            if (!CarnUtils.FindCarnivalSpawnSpot(map, out spawnSpot))
             {
                 if (Prefs.DevMode)
                     Log.Warning("[Carnivale] Tried to execute incident CarnivalApproaches, failed to find reachable spawn spot.");
@@ -67,7 +67,7 @@ namespace Carnivale
                 return false;
             }
 
-            int feePerColonist = CarnivalUtils.CalculateFeePerColonist(parms.points);
+            int feePerColonist = CarnUtils.CalculateFeePerColonist(parms.points);
 
             // Main dialog node
             string title = "CarnivalApproachesTitle".Translate(parms.faction.Name);

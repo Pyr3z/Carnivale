@@ -28,7 +28,7 @@ namespace Carnivale
             {
                 if (defendRadius == -1f)
                 {
-                    defendRadius = CarnivalUtils.Info.baseRadius * 0.66f;
+                    defendRadius = CarnUtils.Info.baseRadius * 0.66f;
                 }
 
                 if (!pawn.equipment.Primary.def.IsMeleeWeapon)
@@ -152,7 +152,7 @@ namespace Carnivale
         {
             if (pawn.mindState != null)
             {
-                pawn.mindState.duty = new PawnDuty(_DefOf.Duty_StrikeBuildings);
+                pawn.mindState.duty = new PawnDuty(_DefOf.Duty_StrikeBuildings, CarnUtils.Info.setupCentre);
             }
         }
     }

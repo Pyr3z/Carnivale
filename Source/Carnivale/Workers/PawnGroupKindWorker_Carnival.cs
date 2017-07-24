@@ -455,8 +455,8 @@ namespace Carnivale
                                 }
                                 else if (p.Is(CarnivalRole.Guard, false))
                                 {
-                                    var shoot = p.skills.GetSkill(SkillDefOf.Shooting).Level;
-                                    return shoot > 4;
+                                    Mathf.Clamp(p.skills.GetSkill(SkillDefOf.Shooting).levelInt += Rand.RangeInclusive(1, 5), 0, 20);
+                                    return !p.story.traits.HasTrait(TraitDefOf.Brawler);
                                 }
                                 else if (genderValidator != null)
                                 {
@@ -472,9 +472,7 @@ namespace Carnivale
                             null
                         );
 
-                        var pawn = PawnGenerator.GeneratePawn(request);
-
-                        yield return pawn;
+                        yield return PawnGenerator.GeneratePawn(request);
                     }
                 }
 

@@ -111,7 +111,7 @@
     <Compile Include="Patches\CarnyDrugPolicyPatch.cs" />
     <Compile Include="Patches\CarnyJoyNeedPatch.cs" />
     <Compile Include="Rendering\PawnDanceWiggler.cs" />
-    <Compile Include="CarnivalUtils.cs" />
+    <Compile Include="CarnUtils.cs" />
     <Compile Include="Workers\CarnivalArrives.cs" />
     <Compile Include="Workers\CarnivalFireball.cs" />
     <Compile Include="Workers\CarnivalJustice.cs" />

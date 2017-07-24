@@ -14,8 +14,8 @@ namespace Carnivale
 
         protected override Job TryGiveJob(Pawn pawn)
         {
-            if (!pawn.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction)
-                    && pawn.skills.GetSkill(SkillDefOf.Construction).Level > 2)
+            if (pawn.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction)
+                    && pawn.skills.GetSkill(SkillDefOf.Construction).Level < 2)
             {
                 return null;
             }

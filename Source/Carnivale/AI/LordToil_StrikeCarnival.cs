@@ -17,25 +17,19 @@ namespace Carnivale
 
         // OVERRIDE METHODS //
 
-        public override void Init()
-        {
-            foreach (var building in Info.carnivalBuildings)
-            {
-                
-            }
-        }
-
-
         public override void UpdateAllDuties()
         {
+            var guard = Info.pawnsWithRole[CarnivalRole.Guard].MinBy(p => p.skills.GetSkill(SkillDefOf.Construction).Level);
+
+            DutyUtility.GuardCircuit(guard);
+
             foreach (var pawn in lord.ownedPawns)
             {
                 CarnivalRole role = pawn.GetCarnivalRole();
 
-                if (!role.Is(CarnivalRole.Carrier))
+                if (!role.Is(CarnivalRole.Carrier) && pawn != guard)
                 {
                     DutyUtility.StrikeBuildings(pawn);
-                    continue;
                 }
 
             }
