@@ -798,23 +798,68 @@ namespace Carnivale
             }
 
             // Initial pass
-            var closestCell = CellRect.CenteredOn(setupCentre, (int)minDistToCentre).ClosestCellTo(colonistPos);
+            var closestCell = CellRect.CenteredOn(setupCentre, (int)minDistToCentre).EdgeCells.ClosestCellTo(colonistPos, map);
 
             if (Prefs.DevMode)
                 Log.Message("[Carnivale] bannerCell initial minimum pass: " + closestCell);
 
-            var candidateCells = CellsUtil.RandomCellsInTriangleFast(closestCell, colonistPos, 75, (maxDistToCentre - minDistToCentre), 100, delegate (IntVec3 c)
-            {
-                return c.Standable(map);
-            });
+            var candidateTri = CellTriangle.FromTarget(closestCell, colonistPos, 55, (maxDistToCentre - minDistToCentre));
 
-            closestCell = candidateCells.ClosestCellTo(colonistPos, map);
+            closestCell = candidateTri.CellsInLineBC.ClosestCellTo(colonistPos, map);
 
             if (Prefs.DevMode)
-                Log.Message("[Carnivale] bannerCell triangular spread pass: " + closestCell);
+                Log.Message("\t[Carnivale] bannerCell triangular spread pass: " + closestCell);
+
+            // Road pass
+
+            IntVec3 road;
+            if (closestCell.TryFindNearestRoadCell(map, (int)(baseRadius), out road))
+            {
+                bool found = false;
+                foreach (var rcell in GenRadial.RadialCellsAround(road, 5, true))
+                {
+                    int distSqrdToCentre = rcell.DistanceToSquared(setupCentre);
+                    if (distSqrdToCentre < maxDistSqrdToCentre && distSqrdToCentre > minDistSqrdToCentre)
+                    {
+                        // Found the edge of a road, try to centre it
+                        var adjustedCell = road;
+
+                        if ((adjustedCell + IntVec3.East * 2).GetTerrain(map).HasTag("Road"))
+                        {
+                            adjustedCell += IntVec3.East * 2;
+                        }
+                        else if ((adjustedCell + IntVec3.West * 2).GetTerrain(map).HasTag("Road"))
+                        {
+                            adjustedCell += IntVec3.West * 2;
+                        }
+                        else
+                        {
+                            adjustedCell += IntVec3.North;
+                        }
+
+                        closestCell = adjustedCell;
+                        found = true;
+
+                        if (Prefs.DevMode)
+                            Log.Message("\t[Carnivale] bannerCell road pass: " + closestCell);
+
+                        break;
+                    }
+                }
+
+                if (!found && Prefs.DevMode)
+                {
+                    Log.Warning("\t[Carnivale] bannerCell road pass failed. Reason: out of range from setupCentre.");
+                }
+            }
+            else if (map.roadInfo.roadEdgeTiles.Any() && Prefs.DevMode)
+            {
+                Log.Warning("\t[Carnivale] bannerCell road pass failed. Reason: no roads found in search radius. searchRadius=" + (baseRadius));
+            }
 
             // line of sight pass
 
+            var candidateCells = candidateTri.Where(c => c.InBounds(map) && c.Standable(map));
             if (!GenSight.LineOfSight(setupCentre, closestCell, map) || !GenSight.LineOfSight(closestCell, colonistPos, map))
             {
                 Func<IntVec3, float> weightLoSSetupCentre = c => 2f / (setupCentre.CountObstructingCellsTo(c, map) + 1f);
@@ -842,7 +887,6 @@ namespace Carnivale
                 }
             }
 
-
             // Mountain proximity pass
 
             var attempts = 0;
@@ -860,63 +904,7 @@ namespace Carnivale
             if (attempts == 10 && Prefs.DevMode)
                 Log.Warning("\t[Carnivale] bannerCell mountain proximity passes took too many tries. Leaving it at: " + closestCell);
 
-
-            // Reachability pass
-
-            //if (!map.reachability.CanReach(setupCentre, closestCell, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some))
-            //{
-            //    foreach (var cell in GenRadial.RadialCellsAround(closestCell, 25, false))
-            //    {
-            //        if (map.reachability.CanReach(setupCentre, cell, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some))
-            //        {
-            //            closestCell = cell;
-            //            break;
-            //        }
-            //    }
-
-            //    if (Prefs.DevMode)
-            //        Log.Message("\t[Carnivale] bannerCell reachability pass: " + closestCell);
-            //}
-
-
-            // Road pass
-
-            IntVec3 road;
-            if (closestCell.TryFindNearestRoadCell(map, (int)(baseRadius), out road))
-            {
-                int distSqrdToCentre = road.DistanceToSquared(setupCentre);
-                if (distSqrdToCentre < maxDistSqrdToCentre && distSqrdToCentre > minDistSqrdToCentre)
-                {
-                    // Found the edge of a road, try to centre it
-                    var adjustedCell = road;
-
-                    if ((adjustedCell + IntVec3.East * 2).GetTerrain(map).HasTag("Road"))
-                    {
-                        adjustedCell += IntVec3.East * 2;
-                    }
-                    else if ((adjustedCell + IntVec3.West * 2).GetTerrain(map).HasTag("Road"))
-                    {
-                        adjustedCell += IntVec3.West * 2;
-                    }
-                    else
-                    {
-                        adjustedCell += IntVec3.North;
-                    }
-
-                    closestCell = adjustedCell;
-
-                    if (Prefs.DevMode)
-                        Log.Message("\t[Carnivale] bannerCell road pass: " + closestCell);
-                }
-                else if (Prefs.DevMode)
-                {
-                    Log.Warning("\t[Carnivale] bannerCell road pass failed. Reason: out of range from setupCentre.");
-                }
-            }
-            else if (map.roadInfo.roadEdgeTiles.Any() && Prefs.DevMode)
-            {
-                Log.Warning("\t[Carnivale] bannerCell road pass failed. Reason: no roads found in search radius. searchRadius=" + (baseRadius));
-            }
+            // End passes
 
             if (Prefs.DevMode)
                 Log.Message("[Carnivale] bannerCell pre-buildability pass: " + closestCell);
