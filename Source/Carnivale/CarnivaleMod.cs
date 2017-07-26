@@ -41,7 +41,7 @@ namespace Carnivale
         {
             base.MapLoaded(map);
 
-            CarnivalUtils.Cleanup();
+            CarnUtils.Cleanup();
         }
 
 
@@ -88,6 +88,13 @@ namespace Carnivale
 
             foreach (var map in game.Maps)
             {
+                var info = map.GetComponent<CarnivalInfo>();
+
+                if (info != null)
+                {
+                    map.components.Remove(info);
+                }
+
                 map.pawnDestinationManager = new PawnDestinationManager();
             }
 

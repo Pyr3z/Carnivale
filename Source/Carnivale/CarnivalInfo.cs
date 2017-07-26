@@ -370,7 +370,7 @@ namespace Carnivale
             baseRadius = Mathf.Clamp(baseRadius, MinRadius, MaxRadius);
 
             // Calculate setup centre
-            setupCentre = CarnUtils.FindCarnivalSetupPosition(spawnCentre, map);
+            setupCentre = CarnUtils.BestCarnivalSetupPosition(spawnCentre, map);
 
             // Set initial check cells
             checkForCells.AddRange(GenRadial.RadialCellsAround(setupCentre, baseRadius, true)
@@ -803,6 +803,8 @@ namespace Carnivale
             if (Prefs.DevMode)
                 Log.Message("[Carnivale] bannerCell initial minimum pass: " + closestCell);
 
+            // Triangular spread pass
+
             var candidateTri = CellTriangle.FromTarget(closestCell, colonistPos, 55, (maxDistToCentre - minDistToCentre));
 
             closestCell = candidateTri.CellsInLineBC.ClosestCellTo(colonistPos, map);
@@ -816,7 +818,7 @@ namespace Carnivale
             if (closestCell.TryFindNearestRoadCell(map, (int)(baseRadius), out road))
             {
                 bool found = false;
-                foreach (var rcell in GenRadial.RadialCellsAround(road, 5, true))
+                foreach (var rcell in GenRadial.RadialCellsAround(road, 7, true))
                 {
                     int distSqrdToCentre = rcell.DistanceToSquared(setupCentre);
                     if (distSqrdToCentre < maxDistSqrdToCentre && distSqrdToCentre > minDistSqrdToCentre)
@@ -849,7 +851,7 @@ namespace Carnivale
 
                 if (!found && Prefs.DevMode)
                 {
-                    Log.Warning("\t[Carnivale] bannerCell road pass failed. Reason: out of range from setupCentre.");
+                    Log.Warning("\t[Carnivale] bannerCell road pass failed. Reason: out of range from setupCentre. Initial road=" + road);
                 }
             }
             else if (map.roadInfo.roadEdgeTiles.Any() && Prefs.DevMode)
@@ -883,7 +885,7 @@ namespace Carnivale
                 else
                 {
                     if (Prefs.DevMode)
-                        Log.Warning("\t[Carnivale] bannerCell failed all LoS passes. Leaving it at: " + closestCell);
+                        Log.Warning("\t[Carnivale] bannerCell failed all LoS passes. Is candidateCells empty? Leaving it at: " + closestCell);
                 }
             }
 
