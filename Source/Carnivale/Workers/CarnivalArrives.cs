@@ -58,7 +58,7 @@ namespace Carnivale
 
                 IntVec3 tempSpot = parms.spawnCenter;
 
-                if (CarnUtils.BestCarnivalSpawnSpot(map, out tempSpot))
+                if (CarnCellFinder.BestCarnivalSpawnSpot(map, out tempSpot))
                     parms.spawnCenter = tempSpot;
                 else if (Prefs.DevMode)
                     Log.Warning("[Carnivale] Failed to resolve spawn center for CarnivalArrives. Defaulting.");

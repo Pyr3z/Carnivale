@@ -53,7 +53,7 @@ namespace Carnivale
             if (Prefs.DevMode)
                 Log.Message("[Carnivale] Calculating spawn centre:");
 
-            if (!CarnUtils.BestCarnivalSpawnSpot(map, out spawnSpot))
+            if (!CarnCellFinder.BestCarnivalSpawnSpot(map, out spawnSpot))
             {
                 if (Prefs.DevMode)
                     Log.Warning("[Carnivale] Tried to execute incident CarnivalApproaches, failed to find reachable spawn spot.");

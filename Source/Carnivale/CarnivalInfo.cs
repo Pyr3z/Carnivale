@@ -12,7 +12,7 @@ namespace Carnivale
 {
     public sealed class CarnivalInfo : MapComponent, ILoadReferenceable
     {
-        private static IntRange addToRadius = new IntRange(13, 20);
+        private static IntRange addToRadius = new IntRange(5, 12);
 
         private const int TrashRadius = 4;
 
@@ -370,7 +370,7 @@ namespace Carnivale
             baseRadius = Mathf.Clamp(baseRadius, MinRadius, MaxRadius);
 
             // Calculate setup centre
-            setupCentre = CarnUtils.BestCarnivalSetupPosition(spawnCentre, map);
+            setupCentre = CarnCellFinder.BestCarnivalSetupPosition(spawnCentre, map);
 
             // Set initial check cells
             checkForCells.AddRange(GenRadial.RadialCellsAround(setupCentre, baseRadius, true)
@@ -781,20 +781,20 @@ namespace Carnivale
 
         private IntVec3 PreCalculateBannerCell()
         {
-            var minDistToCentre = baseRadius / 2 + 5f;
-            var maxDistToCentre = baseRadius + 7f;
+            var minDistToCentre = baseRadius / 2;
+            var maxDistToCentre = baseRadius + 3f;
             var minDistSqrdToCentre = minDistToCentre * minDistToCentre;
             var maxDistSqrdToCentre = maxDistToCentre * maxDistToCentre;
 
             IntVec3 colonistPos;
 
-            if (!(colonistPos = CarnUtils.ApproxClosestColonistBuilding(map, setupCentre, ThingDefOf.Door)).IsValid)
+            if (!(colonistPos = CarnCellFinder.ApproxClosestColonistBuilding(map, setupCentre, ThingDefOf.Door)).IsValid)
             {
-                colonistPos = CarnUtils.AverageColonistPosition(map);
+                colonistPos = CarnCellFinder.AverageColonistPosition(map);
             }
             else
             {
-                colonistPos = colonistPos.AverageWith(CarnUtils.AverageColonistPosition(map));
+                colonistPos = colonistPos.AverageWith(CarnCellFinder.AverageColonistPosition(map));
             }
 
             // Initial pass
@@ -807,10 +807,40 @@ namespace Carnivale
 
             var candidateTri = CellTriangle.FromTarget(closestCell, colonistPos, 55, (maxDistToCentre - minDistToCentre));
 
-            closestCell = candidateTri.CellsInLineBC.ClosestCellTo(colonistPos, map);
+            closestCell = candidateTri.EdgeBC.ClosestCellTo(colonistPos, map);
 
             if (Prefs.DevMode)
                 Log.Message("\t[Carnivale] bannerCell triangular spread pass: " + closestCell);
+
+            // line of sight pass
+
+            var candidateCells = candidateTri.Where(c => c.InBounds(map));
+            if (!GenSight.LineOfSight(setupCentre, closestCell, map) || !GenSight.LineOfSight(closestCell, colonistPos, map))
+            {
+                Func<IntVec3, float> weightLoSSetupCentre = c => 2f / (setupCentre.CountObstructingCellsTo(c, map) + 1f);
+                Func<IntVec3, float> weightLoSColony = c => 1f / (c.CountObstructingCellsTo(colonistPos, map) + 1f);
+                Func<IntVec3, float> weightBest = c => (weightLoSSetupCentre(c) == 2f ? 2f : 0f) + (weightLoSColony(c) == 1f ? 1f : 0f);
+
+                IntVec3 tempCell;
+
+                if (candidateCells.TryRandomElementByWeight(weightBest, out tempCell))
+                {
+                    closestCell = tempCell;
+                    if (Prefs.DevMode)
+                        Log.Message("\t[Carnivale] bannerCell optimal LoS pass: " + closestCell);
+                }
+                else if (candidateCells.TryRandomElementByWeight(weightLoSSetupCentre + weightLoSColony, out tempCell))
+                {
+                    closestCell = tempCell;
+                    if (Prefs.DevMode)
+                        Log.Message("\t[Carnivale] bannerCell sub-optimal LoS pass: " + closestCell);
+                }
+                else
+                {
+                    if (Prefs.DevMode)
+                        Log.Warning("\t[Carnivale] bannerCell failed all LoS passes. Is candidateCells empty? Leaving it at: " + closestCell);
+                }
+            }
 
             // Road pass
 
@@ -857,36 +887,6 @@ namespace Carnivale
             else if (map.roadInfo.roadEdgeTiles.Any() && Prefs.DevMode)
             {
                 Log.Warning("\t[Carnivale] bannerCell road pass failed. Reason: no roads found in search radius. searchRadius=" + (baseRadius));
-            }
-
-            // line of sight pass
-
-            var candidateCells = candidateTri.Where(c => c.InBounds(map) && c.Standable(map));
-            if (!GenSight.LineOfSight(setupCentre, closestCell, map) || !GenSight.LineOfSight(closestCell, colonistPos, map))
-            {
-                Func<IntVec3, float> weightLoSSetupCentre = c => 2f / (setupCentre.CountObstructingCellsTo(c, map) + 1f);
-                Func<IntVec3, float> weightLoSColony = c => 1f / (c.CountObstructingCellsTo(colonistPos, map) + 1f);
-                Func<IntVec3, float> weightBest = c => (weightLoSSetupCentre(c) == 2f ? 2f : 0f) + (weightLoSColony(c) == 1f ? 1f : 0f);
-
-                IntVec3 tempCell;
-
-                if (candidateCells.TryRandomElementByWeight(weightBest, out tempCell))
-                {
-                    closestCell = tempCell;
-                    if (Prefs.DevMode)
-                        Log.Message("\t[Carnivale] bannerCell optimal LoS pass: " + closestCell);
-                }
-                else if (candidateCells.TryRandomElementByWeight(weightLoSSetupCentre + weightLoSColony, out tempCell))
-                {
-                    closestCell = tempCell;
-                    if (Prefs.DevMode)
-                        Log.Message("\t[Carnivale] bannerCell sub-optimal LoS pass: " + closestCell);
-                }
-                else
-                {
-                    if (Prefs.DevMode)
-                        Log.Warning("\t[Carnivale] bannerCell failed all LoS passes. Is candidateCells empty? Leaving it at: " + closestCell);
-                }
             }
 
             // Mountain proximity pass

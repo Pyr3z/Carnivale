@@ -112,7 +112,7 @@ namespace Carnivale
             // lodging tents
             tentDef = _DefOf.Carn_TentLodge;
             rot = Rot4.Random;
-            tentSpot = FindRadialPlacementFor(tentDef, rot, info.carnivalArea.ContractedBy(9).FurthestCellFrom(CarnUtils.AverageColonistPosition(info.map)), 7);
+            tentSpot = FindRadialPlacementFor(tentDef, rot, info.carnivalArea.ContractedBy(9).FurthestCellFrom(CarnCellFinder.AverageColonistPosition(info.map)), 7);
 
             IntVec3 lineDirection = rot.ToIntVec3(1); // shifted clockwise by 1
 
