@@ -15,8 +15,6 @@ namespace Carnivale
         // Remember to flush this whenever a carnival exits the map
         private static Dictionary<Pawn, CarnivalRole> cachedRoles = new Dictionary<Pawn, CarnivalRole>();
 
-        private static IntVec3 cachedAverageColPos = IntVec3.Invalid;
-
         private static CarnivalInfo cachedInfo = null;
 
         private static int[] trashThingDefHashes = new int[]
@@ -57,7 +55,7 @@ namespace Carnivale
         {
             cachedRoles.Clear();
             cachedInfo = null;
-            CarnCellFinder.Cleanup();
+            CellsUtil.Cleanup();
         }
 
 

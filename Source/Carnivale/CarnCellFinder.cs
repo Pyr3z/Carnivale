@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -12,8 +11,6 @@ namespace Carnivale
 {
     public static class CarnCellFinder
     {
-        private static IntVec3 cachedAverageColPos = IntVec3.Invalid;
-
         private static CarnivalInfo Info
         {
             get
@@ -22,7 +19,23 @@ namespace Carnivale
             }
         }
 
-        private static float MinimumDistToColony
+        private static IntVec3 AverageColPos
+        {
+            get
+            {
+                return CellsUtil.AverageColonistPosition(Info.map);
+            }
+        }
+
+        private static int MinDistToMapEdge
+        {
+            get
+            {
+                return (int)Info.baseRadius;
+            }
+        }
+
+        private static float MinDistToColony
         {
             get
             {
@@ -30,55 +43,11 @@ namespace Carnivale
             }
         }
 
-        public static void Cleanup()
-        {
-            cachedAverageColPos = IntVec3.Invalid;
-        }
-
-        public static IntVec3 AverageColonistPosition(Map map, bool cache = true)
-        {
-            if (cache && cachedAverageColPos.IsValid)
-            {
-                return cachedAverageColPos;
-            }
-
-            var colonistThingsLocList = new List<IntVec3>();
-
-            foreach (var pawn in map.mapPawns.FreeColonistsSpawned)
-            {
-                colonistThingsLocList.Add(pawn.Position);
-            }
-            foreach (var building in map.listerBuildings.allBuildingsColonist.Where(b => b.def == ThingDefOf.Wall || b is Building_Bed || b is IAttackTarget))
-            {
-                colonistThingsLocList.Add(building.Position);
-            }
-
-            var ave = colonistThingsLocList.Average();
-
-            if (cache)
-            {
-                Log.Message("[Carnivale] Cached average colonist position: " + ave);
-                cachedAverageColPos = ave;
-            }
-
-            return ave;
-        }
-
-        public static IntVec3 ApproxClosestColonistBuilding(Map map, IntVec3 from, ThingDef def)
-        {
-            var result = IntVec3.Invalid;
-            var ave = CellsUtil.Average(null, AverageColonistPosition(map), from);
-
-            ave.TryFindNearestColonistBuilding(map, out result, def);
-
-            return result;
-        }
-
         public static bool BestCarnivalSpawnSpot(Map map, out IntVec3 spot)
         {
             Func<IntVec3, bool> reachable = c => map.reachability.CanReachColony(c);
             Func<IntVec3, bool> buildable = c => c.IsAroundGoodTerrain(map, 7);
-            Func<IntVec3, float> weightByLoS = c => 1f / (c.CountObstructingCellsTo(AverageColonistPosition(map), map) + 1f);
+            Func<IntVec3, float> weightByLoS = c => 1f / (c.CountObstructingCellsTo(AverageColPos, map) + 1f);
             Func<IntVec3, float> weightBest = c => (weightByLoS(c) == 1f ? 1f : 0f) + (buildable(c) ? 2f : 0f);
 
             IEnumerable<IntVec3> roadEdges = map.roadInfo.roadEdgeTiles.Where(reachable);
@@ -132,26 +101,6 @@ namespace Carnivale
 
             spot = IntVec3.Invalid;
             return false;
-
-            // Old approach
-
-            //if (!CellFinder.TryFindRandomEdgeCellWith(
-            //    c => map.reachability.CanReachColony(c)
-            //         && (map.roadInfo.roadEdgeTiles.Any() || c.IsAroundBuildableTerrain(map, 12)),
-            //    map,
-            //    CellFinder.EdgeRoadChance_Always,
-            //    out spot))
-            //{
-            //    return CellFinder.TryFindRandomEdgeCellWith(
-            //        c => map.reachability.CanReachColony(c),
-            //        map,
-            //        CellFinder.EdgeRoadChance_Always,
-            //        out spot);
-            //}
-            //else
-            //{
-            //    return true;
-            //}
         }
 
 
@@ -176,14 +125,14 @@ namespace Carnivale
 
             IntVec3 averageColPos;
 
-            if (!(averageColPos = ApproxClosestColonistBuilding(map, initPos, ThingDefOf.Door)).IsValid
-                && !(averageColPos = ApproxClosestColonistBuilding(map, initPos, ThingDefOf.Wall)).IsValid)
+            if (!(averageColPos = CellsUtil.ApproxClosestColonistBuilding(map, initPos, ThingDefOf.Door)).IsValid
+                && !(averageColPos = CellsUtil.ApproxClosestColonistBuilding(map, initPos, ThingDefOf.Wall)).IsValid)
             {
-                averageColPos = AverageColonistPosition(map);
+                averageColPos = AverageColPos;
             }
             else
             {
-                averageColPos = averageColPos.AverageWith(AverageColonistPosition(map));
+                averageColPos = averageColPos.AverageWith(AverageColPos);
             }
 
             var distFromColony = initPos.DistanceTo(averageColPos);
@@ -213,7 +162,24 @@ namespace Carnivale
 
         public static bool TryCarnivalSetupPosition_Triangular(IntVec3 initPos, IntVec3 colPos, float distFromColony, Map map, out IntVec3 result)
         {
-            var candidateTri = CellTriangle.FromTarget(initPos, colPos, 55, MinimumDistToColony);
+            var minDistSqrToColony = MinDistToColony * MinDistToColony;
+            var distSqrToColony = distFromColony * distFromColony;
+
+            var mapRect = CellRect.WholeMap(map).ContractedBy(MinDistToMapEdge);
+            var halfAngle = Mathf.Lerp(75f, 15f, distSqrToColony / map.Size.LengthHorizontalSquared);
+
+            var candidateTri = CellTriangle
+                .FromTarget(colPos, initPos, halfAngle, MinDistToColony)
+                .ClipInside(mapRect);
+
+            Func<IntVec3, bool> reachable = c => map.reachability.CanReachColony(c);
+            Func<IntVec3, bool> buildable = c => c.IsAroundGoodTerrain(map, 5);
+            Func<IntVec3, bool> validDist = c => c.DistanceToSquared(colPos) >= minDistSqrToColony;
+
+            var candidateCells = candidateTri
+                .Where(c => reachable(c) && buildable(c) && validDist(c));
+
+
 
             result = IntVec3.Invalid;
             return false;

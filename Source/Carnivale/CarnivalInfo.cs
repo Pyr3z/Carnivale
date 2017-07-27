@@ -788,13 +788,13 @@ namespace Carnivale
 
             IntVec3 colonistPos;
 
-            if (!(colonistPos = CarnCellFinder.ApproxClosestColonistBuilding(map, setupCentre, ThingDefOf.Door)).IsValid)
+            if (!(colonistPos = CellsUtil.ApproxClosestColonistBuilding(map, setupCentre, ThingDefOf.Door)).IsValid)
             {
-                colonistPos = CarnCellFinder.AverageColonistPosition(map);
+                colonistPos = CellsUtil.AverageColonistPosition(map);
             }
             else
             {
-                colonistPos = colonistPos.AverageWith(CarnCellFinder.AverageColonistPosition(map));
+                colonistPos = colonistPos.AverageWith(CellsUtil.AverageColonistPosition(map));
             }
 
             // Initial pass
