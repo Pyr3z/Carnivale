@@ -160,13 +160,16 @@ namespace Carnivale
             return result;
         }
 
-        public static bool TryCarnivalSetupPosition_Triangular(IntVec3 initPos, IntVec3 colPos, float distFromColony, Map map, out IntVec3 result)
+        private static bool TryCarnivalSetupPosition_Triangular(IntVec3 initPos, IntVec3 colPos, float distFromColony, Map map, out IntVec3 result)
         {
             var minDistSqrToColony = MinDistToColony * MinDistToColony;
             var distSqrToColony = distFromColony * distFromColony;
 
             var mapRect = CellRect.WholeMap(map).ContractedBy(MinDistToMapEdge);
             var halfAngle = Mathf.Lerp(75f, 15f, distSqrToColony / map.Size.LengthHorizontalSquared);
+
+            if (Prefs.DevMode)
+                Log.Message("\t[Carnivale] triangular setupSpot: MinDistToMapEdge=" + MinDistToMapEdge + ", MinDistToColony=" + MinDistToColony + ", halfAngle=" + halfAngle);
 
             var candidateTri = CellTriangle
                 .FromTarget(colPos, initPos, halfAngle, MinDistToColony)
@@ -175,11 +178,24 @@ namespace Carnivale
             Func<IntVec3, bool> reachable = c => map.reachability.CanReachColony(c);
             Func<IntVec3, bool> buildable = c => c.IsAroundGoodTerrain(map, 5);
             Func<IntVec3, bool> validDist = c => c.DistanceToSquared(colPos) >= minDistSqrToColony;
+            Func<IntVec3, float> weightDist = c => distSqrToColony / (c.DistanceToSquared(colPos) + 1f);
+            Func<IntVec3, float> weightRoad = c => !map.roadInfo.roadEdgeTiles.Any() ? 0f : 0.75f / (c.DistanceSquaredToNearestRoad(map, halfAngle / 2f) + 1f);
 
             var candidateCells = candidateTri
                 .Where(c => reachable(c) && buildable(c) && validDist(c));
 
+            if (candidateCells.TryRandomElementByWeight(weightDist + weightRoad, out result))
+            {
+                if (Prefs.DevMode)
+                    Log.Message("\t[Carnivale] triangular setupSpot: successfully found cell. result=" + result);
 
+                return true;
+            }
+            else
+            {
+                if (Prefs.DevMode)
+                    Log.Warning("\t[Carnivale] triangular setupSpot: unable to find cell in candidates.");
+            }
 
             result = IntVec3.Invalid;
             return false;
