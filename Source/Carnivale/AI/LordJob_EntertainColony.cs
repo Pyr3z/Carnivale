@@ -147,7 +147,7 @@ namespace Carnivale
             mainGraph.AddTransition(trans_Exit);
 
             var trans_ExitError = new Transition(toil_MoveToSetup, toil_Exit);
-            trans_ExitError.AddTrigger(new Trigger_TicksPassedWithoutHarmOrMemos(GenDate.TicksPerHour * 2, "TravelArrived"));
+            trans_ExitError.AddTrigger(new Trigger_TicksPassedWithoutHarmOrMemos(GenDate.TicksPerHour * 8, "TravelArrived"));
             trans_ExitError.AddPreAction(new TransitionAction_Message("CarnLeavingError".Translate(lord.faction)));
             trans_ExitError.AddPostAction(new TransitionAction_EndAllJobs());
             trans_ExitError.AddPostAction(new TransitionAction_WakeAll());

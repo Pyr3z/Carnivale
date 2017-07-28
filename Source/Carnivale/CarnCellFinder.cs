@@ -39,7 +39,7 @@ namespace Carnivale
         {
             get
             {
-                return Info.baseRadius * 1.5f;
+                return Mathf.Min(Info.baseRadius * 2.5f, 70f);
             }
         }
 
@@ -106,22 +106,22 @@ namespace Carnivale
 
         public static IntVec3 BestCarnivalSetupPosition(IntVec3 initPos, Map map)
         {
-            if (initPos.x == 0)
-            {
-                initPos.x += 10;
-            }
-            if (initPos.z == 0)
-            {
-                initPos.z += 10;
-            }
-            if (initPos.x == map.Size.x)
-            {
-                initPos.x -= 10;
-            }
-            if (initPos.z == map.Size.z)
-            {
-                initPos.z -= 10;
-            }
+            //if (initPos.x == 0)
+            //{
+            //    initPos.x += MinDistToMapEdge;
+            //}
+            //if (initPos.z == 0)
+            //{
+            //    initPos.z += MinDistToMapEdge;
+            //}
+            //if (initPos.x == map.Size.x - 1)
+            //{
+            //    initPos.x -= MinDistToMapEdge;
+            //}
+            //if (initPos.z == map.Size.z - 1)
+            //{
+            //    initPos.z -= MinDistToMapEdge;
+            //}
 
             IntVec3 averageColPos;
 
@@ -142,22 +142,35 @@ namespace Carnivale
 
             var result = initPos;
 
-            if (TryCarnivalSetupPosition_Thirds(initPos, averageColPos, distFromColony, 7, map, out result))
+            if (TryCarnivalSetupPosition_Triangular(initPos, averageColPos, distFromColony, map, out result))
             {
                 if (Prefs.DevMode)
                     Log.Message("[Carnivale] setupSpot: final pass: " + result + ". distFromColony=" + result.DistanceTo(averageColPos));
 
                 return result;
             }
+            else
+            {
+                if (Prefs.DevMode)
+                    Log.Warning("\t[Carnivale] setupSpot: triangular algorithm failed. Using old random iteration algorithm.");
+
+                if (TryCarnivalSetupPosition_Random(initPos, averageColPos, distFromColony, 7, map, out result))
+                {
+                    if (Prefs.DevMode)
+                        Log.Message("[Carnivale] setupSpot: final pass: " + result + ". distFromColony=" + result.DistanceTo(averageColPos));
+
+                    return result;
+                }
+            }
 
             Log.Error(string.Concat(new object[]
             {
-                "Could not find carnival setup spot from ",
+                "[Carnivale] Could not find carnival setup spot from ",
                 initPos,
                 ", expect more errors. Using ",
-                result
+                initPos
             }));
-            return result;
+            return initPos;
         }
 
         private static bool TryCarnivalSetupPosition_Triangular(IntVec3 initPos, IntVec3 colPos, float distFromColony, Map map, out IntVec3 result)
@@ -166,7 +179,7 @@ namespace Carnivale
             var distSqrToColony = distFromColony * distFromColony;
 
             var mapRect = CellRect.WholeMap(map).ContractedBy(MinDistToMapEdge);
-            var halfAngle = Mathf.Lerp(75f, 15f, distSqrToColony / map.Size.LengthHorizontalSquared);
+            var halfAngle = Mathf.Lerp(15f, 75f, distSqrToColony / map.Size.LengthHorizontalSquared);
 
             if (Prefs.DevMode)
                 Log.Message("\t[Carnivale] triangular setupSpot: MinDistToMapEdge=" + MinDistToMapEdge + ", MinDistToColony=" + MinDistToColony + ", halfAngle=" + halfAngle);
@@ -176,33 +189,37 @@ namespace Carnivale
                 .ClipInside(mapRect);
 
             Func<IntVec3, bool> reachable = c => map.reachability.CanReachColony(c);
-            Func<IntVec3, bool> buildable = c => c.IsAroundGoodTerrain(map, 5);
             Func<IntVec3, bool> validDist = c => c.DistanceToSquared(colPos) >= minDistSqrToColony;
-            Func<IntVec3, float> weightDist = c => distSqrToColony / (c.DistanceToSquared(colPos) + 1f);
-            Func<IntVec3, float> weightRoad = c => !map.roadInfo.roadEdgeTiles.Any() ? 0f : 0.75f / (c.DistanceSquaredToNearestRoad(map, halfAngle / 2f) + 1f);
+            Func<IntVec3, float> weightBuildable = c => c.IsAroundGoodTerrain(map, 5) ? 10f : 0f;
+            Func<IntVec3, float> weightDist = c => Rand.Range(0, 20) + distSqrToColony / (c.DistanceToSquared(colPos) + 1f);
+            Func<IntVec3, float> weightRoad = c => !map.roadInfo.roadEdgeTiles.Any() ? 1f : 0.75f / (c.DistanceSquaredToNearestRoad(map, halfAngle / 2f) + 1f);
 
             var candidateCells = candidateTri
-                .Where(c => reachable(c) && buildable(c) && validDist(c));
+                .Where(c => reachable(c) && validDist(c));
 
-            if (candidateCells.TryRandomElementByWeight(weightDist + weightRoad, out result))
+            try
             {
+                result = candidateCells.MaxBy(weightBuildable + weightDist + weightRoad);
+
                 if (Prefs.DevMode)
                     Log.Message("\t[Carnivale] triangular setupSpot: successfully found cell. result=" + result);
 
                 return true;
             }
-            else
+            catch (InvalidOperationException e)
             {
                 if (Prefs.DevMode)
                     Log.Warning("\t[Carnivale] triangular setupSpot: unable to find cell in candidates.");
-            }
 
-            result = IntVec3.Invalid;
-            return false;
+                result = IntVec3.Invalid;
+                return false;
+            }
         }
 
         private static bool TryCarnivalSetupPosition_Thirds(IntVec3 initPos, IntVec3 colPos, float distFromColony, int tenth, Map map, out IntVec3 result)
         {
+            // This algorithm sucks.
+
             var minDistFromEdge = Info.baseRadius / 2;
             var minDistFromColony = Mathf.Lerp(Info.baseRadius + 25, distFromColony - minDistFromEdge, tenth / 10f);
             var minSqrDistFromColony = minDistFromColony * minDistFromColony;
@@ -333,19 +350,21 @@ namespace Carnivale
 
         private static bool TryCarnivalSetupPosition_Random(IntVec3 initPos, IntVec3 colPos, float distFromColony, int tenth, Map map, out IntVec3 result)
         {
-            var minDistFromColony = (int)Mathf.Min((distFromColony * tenth / 10f), (distFromColony - Info.baseRadius - 15f));
-            var minSqrDistFromColony = minDistFromColony * minDistFromColony;
+            var minDistToColony = (int)MinDistToColony;
+            var minSqrDistToColony = minDistToColony * minDistToColony;
 
-            var cellRect = CellRect.CenteredOn(initPos, (int)(minDistFromColony - distFromColony / 5f));
+            if (Prefs.DevMode)
+                Log.Message("\t[Carnivale] random setupSpot: minDistToColony=" + minDistToColony);
+
+            var cellRect = CellRect.CenteredOn(initPos, (minDistToColony * tenth / 10));
             cellRect.ClipInsideMap(map);
-            cellRect = cellRect.ContractedBy((int)Info.baseRadius);
 
             IntVec3 randomCell;
             for (int attempt = 0; attempt < tenth * 10; attempt++)
             {
                 randomCell = cellRect.RandomCell;
                 if (randomCell.Standable(map)
-                    && randomCell.DistanceToSquared(colPos) <= minSqrDistFromColony
+                    && randomCell.DistanceToSquared(colPos) >= minSqrDistToColony
                     && !randomCell.Roofed(map)
                     && randomCell.IsAroundTerrainAffordances(map, tenth * 2, TerrainAffordance.Light)
                     && map.reachability.CanReach(initPos, randomCell, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Some)

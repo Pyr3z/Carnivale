@@ -783,8 +783,6 @@ namespace Carnivale
         {
             var minDistToCentre = baseRadius / 2;
             var maxDistToCentre = baseRadius + 3f;
-            var minDistSqrdToCentre = minDistToCentre * minDistToCentre;
-            var maxDistSqrdToCentre = maxDistToCentre * maxDistToCentre;
 
             IntVec3 colonistPos;
 
@@ -807,19 +805,20 @@ namespace Carnivale
 
             var candidateTri = CellTriangle.FromTarget(closestCell, colonistPos, 55, (maxDistToCentre - minDistToCentre));
 
-            closestCell = candidateTri.EdgeBC.ClosestCellTo(colonistPos, map);
+            closestCell = candidateTri.B.AverageWith(candidateTri.C);
 
             if (Prefs.DevMode)
-                Log.Message("\t[Carnivale] bannerCell triangular spread pass: " + closestCell);
+                Log.Message("\t[Carnivale] bannerCell closest to colony pass: " + closestCell);
 
             // line of sight pass
 
-            var candidateCells = candidateTri.Where(c => c.InBounds(map));
             if (!GenSight.LineOfSight(setupCentre, closestCell, map) || !GenSight.LineOfSight(closestCell, colonistPos, map))
             {
                 Func<IntVec3, float> weightLoSSetupCentre = c => 2f / (setupCentre.CountObstructingCellsTo(c, map) + 1f);
                 Func<IntVec3, float> weightLoSColony = c => 1f / (c.CountObstructingCellsTo(colonistPos, map) + 1f);
                 Func<IntVec3, float> weightBest = c => (weightLoSSetupCentre(c) == 2f ? 2f : 0f) + (weightLoSColony(c) == 1f ? 1f : 0f);
+
+                var candidateCells = candidateTri.Where(c => c.InBounds(map));
 
                 IntVec3 tempCell;
 
@@ -847,7 +846,9 @@ namespace Carnivale
             IntVec3 road;
             if (closestCell.TryFindNearestRoadCell(map, (int)(baseRadius), out road))
             {
-                bool found = false;
+                var minDistSqrdToCentre = minDistToCentre * minDistToCentre;
+                var maxDistSqrdToCentre = maxDistToCentre * maxDistToCentre;
+                var found = false;
                 foreach (var rcell in GenRadial.RadialCellsAround(road, 7, true))
                 {
                     int distSqrdToCentre = rcell.DistanceToSquared(setupCentre);
