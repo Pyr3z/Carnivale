@@ -84,7 +84,7 @@ namespace Carnivale
             // Forbid things so colonists can access them after they are hauled to trash
             if (this.factionInt != Faction.OfPlayer)
             {
-                foreach (var cell in this.OccupiedRect())
+                foreach (var cell in this.OccupiedRect().ExpandedBy(2))
                 {
                     foreach (var thing in cell.GetThingList(map).Where(t => t.def.EverHaulable))
                     {

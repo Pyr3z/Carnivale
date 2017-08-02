@@ -70,6 +70,11 @@ namespace Carnivale
                 }
             }
 
+            if (DestType == HaulLocation.ToColony)
+            {
+                return "hauling " + ThingToHaul.Label + " to colony."; 
+            }
+
             return base.GetReport();
         }
 
@@ -111,7 +116,7 @@ namespace Carnivale
 
                 yield return PlaceTargetInCarrierInventory();
             }
-            else if (DestType == HaulLocation.ToTrash)
+            else if (DestType == HaulLocation.ToTrash || DestType == HaulLocation.ToColony)
             {
                 Toil findTrashSpot = FindTrashSpot();
 
@@ -170,6 +175,12 @@ namespace Carnivale
                     {
                         if (Prefs.DevMode)
                             Log.Message("\t[Carnivale] thingsToHaul : Removing " + ThingToHaul + ".");
+                    }
+
+                    if (DestType == HaulLocation.ToColony)
+                    {
+                        if (Prefs.DevMode)
+                            Log.Message("\t[Carnivale] colonistPrizes : Removing " + ThingToHaul + ".");
                     }
                 }
             };

@@ -380,7 +380,7 @@ namespace Carnivale
 
         public static int CalculateFeePerColonist(float points)
         {
-            int fee = (int)(points / (20f + Find.VisibleMap.mapPawns.FreeColonistsCount * 2)) + Rand.Range(-5, 5);
+            int fee = (int)(points / (20f + Find.VisibleMap.mapPawns.ColonistCount * 2)) + Rand.Range(-5, 5);
 
             Mathf.Clamp(fee, 9, 30);
 
@@ -509,6 +509,11 @@ namespace Carnivale
 
         public static HaulLocation DefaultHaulLocation(this Thing thing, bool haulCrates = false)
         {
+            if (Info.colonistPrizes.Contains(thing))
+            {
+                return HaulLocation.ToColony;
+            }
+
             return thing.def.DefaultHaulLocation(haulCrates);
         }
 

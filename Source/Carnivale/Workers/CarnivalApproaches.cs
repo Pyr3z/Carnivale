@@ -67,6 +67,7 @@ namespace Carnivale
                 return false;
             }
 
+            // Calculate fe
             int feePerColonist = CarnUtils.CalculateFeePerColonist(parms.points);
 
             // Main dialog node
@@ -101,7 +102,7 @@ namespace Carnivale
                 // End cheaty.
 
                 // Assign fee per colonist to CarnivalInfo
-                map.GetComponent<CarnivalInfo>().feePerColonist = -feePerColonist;
+                CarnUtils.Info.feePerColonist = -feePerColonist;
 
                 QueuedIncident qi = new QueuedIncident(new FiringIncident(_DefOf.CarnivalArrives, null, arrivalParms), Find.TickManager.TicksGame + GenDate.TicksPerDay);
                 Find.Storyteller.incidentQueue.Add(qi);
@@ -148,7 +149,7 @@ namespace Carnivale
         {
             Faction fac = null;
             Find.FactionManager.AllFactionsListForReading
-                .Where(f => f.IsCarnival() && !f.HostileTo(Faction.OfPlayer))
+                .Where(f => f.IsCarnival() && f.PlayerGoodwill > 0)
                 .TryRandomElementByWeight((Faction f) => f.PlayerGoodwill, out fac);
 
             faction = fac;

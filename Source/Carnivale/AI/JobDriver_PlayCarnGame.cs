@@ -115,6 +115,7 @@ namespace Carnivale
                 if (this.victory && AssignedCarny != null && ChoosePrize())
                 {
                     this.CurJob.SetTarget(TargetIndex.B, AssignedCarny);
+                    MoteMaker.ThrowText(AssignedCarny.DrawPos, Map, "YouWon".Translate(PrizeLabelShort), 5);
                     this.ReadyForNextToil();
                 }
                 else
@@ -147,9 +148,19 @@ namespace Carnivale
                             EndJobWith(JobCondition.Errored);
                         }
 
-                        prize.Position = AssignedCarny.Position + IntVec3.West;
+                        if (prize is Apparel && pawn.apparel.CanWearWithoutDroppingAnything(prize.def))
+                        {
+                            pawn.apparel.Wear(prize as Apparel);
+                        }
+                        else
+                        {
+                            prize.Position = AssignedCarny.Position + IntVec3.West;
+                            prize.SetForbidden(true);
+                            Info.colonistPrizes.Add(prize);
 
-                        MoteMaker.ThrowText(AssignedCarny.DrawPos, Map, "YouWon".Translate(PrizeLabelShort), 5);
+                            if (Prefs.DevMode)
+                                Log.Message("\t[Carnivale] colonistPrizes : Adding " + prize + ".");
+                        }
                     }
                     else
                     {
@@ -179,16 +190,30 @@ namespace Carnivale
 
         protected bool ChooseApparel()
         {
-            return Info.pawnsWithRole[CarnivalRole.Vendor].First().trader.Goods
+            bool flag = Info.pawnsWithRole[CarnivalRole.Vendor].First().trader.Goods
                    .Where(t => t is Apparel && t.MarketValue < 150)
                    .TryRandomElementByWeight(e => 1 / e.MarketValue, out this.prize);
+
+            if (Prefs.DevMode && !flag)
+            {
+                Log.Warning("[Carnivale] Could not find a prize while somebody won a game.");
+            }
+
+            return flag;
         }
 
         protected bool ChooseBeer()
         {
-            return Info.pawnsWithRole[CarnivalRole.Vendor].First().trader.Goods
+            bool flag = Info.pawnsWithRole[CarnivalRole.Vendor].First().trader.Goods
                    .Where(t => t.def == ThingDefOf.Beer)
                    .TryRandomElementByWeight(e => 1 / e.stackCount, out this.prize);
+
+            if (Prefs.DevMode && !flag)
+            {
+                Log.Warning("[Carnivale] Could not find a prize while somebody won a game.");
+            }
+
+            return flag;
         }
     }
 }
