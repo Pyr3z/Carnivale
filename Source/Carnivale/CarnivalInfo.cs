@@ -12,7 +12,7 @@ namespace Carnivale
 {
     public sealed class CarnivalInfo : MapComponent, ILoadReferenceable
     {
-        private static IntRange addToRadius = new IntRange(5, 12);
+        private static IntRange addToRadius = new IntRange(3, 10);
 
         private const int TrashRadius = 4;
 
@@ -22,7 +22,7 @@ namespace Carnivale
 
         public const float MinRadius = 15f;
 
-        public const float MaxRadius = 35f;
+        public const float MaxRadius = 29f;
 
 
         // Fields
@@ -356,6 +356,15 @@ namespace Carnivale
             {
                 rememberedPositions = new Dictionary<Pawn, IntVec3>();
             }
+
+            if (colonistPrizes != null)
+            {
+                colonistPrizes.Clear();
+            }
+            else
+            {
+                colonistPrizes = new HashSet<Thing>();
+            }
     }
 
 
@@ -389,7 +398,7 @@ namespace Carnivale
             carnivalArea = CellRect.CenteredOn(setupCentre, (int)baseRadius + 10).ClipInsideMap(map).ContractedBy(10);
 
             // Set initial banner spot
-            bannerCell = PreCalculateBannerCell();
+            bannerCell = CarnCellFinder.PreCalculateBannerCell();
 
             // Cache pawn roles to lists
             var roles = Enum.GetValues(typeof(CarnivalRole));
