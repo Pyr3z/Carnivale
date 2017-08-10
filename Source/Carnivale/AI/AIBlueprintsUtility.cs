@@ -252,7 +252,6 @@ namespace Carnivale
                     IntVec3[] points = new IntVec3[]
                     {
                         info.setupCentre,
-                        info.bannerCell,
                         info.bannerCell
                     };
 
@@ -362,7 +361,7 @@ namespace Carnivale
             var noGo = CellRect.CenteredOn(info.bannerCell, 10);
             IntVec3 trashPos;
 
-            if (!CellRect.CenteredOn(info.bannerCell, 20).Cells
+            if (!CellRect.CenteredOn(info.bannerCell, 15).Cells
                 .Where(c => !noGo.Contains(c))
                 .TryRandomElement(out trashPos))
             {
