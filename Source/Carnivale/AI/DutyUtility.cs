@@ -28,13 +28,18 @@ namespace Carnivale
                 pawn.workSettings.SetPriority(_DefOf.PlantCutting, 2);
         }
 
+        public static void ChargeHostiles(Pawn pawn)
+        {
+            pawn.mindState.duty = new PawnDuty(_DefOf.Duty_ChargeNearestHostile);
+        }
+
         public static void DefendPoint(Pawn pawn, LocalTargetInfo defendPoint, Thing target = null, float defendRadius = -1f)
         {
             if (pawn.equipment.Primary != null && defendPoint.IsValid)
             {
                 if (defendRadius == -1f)
                 {
-                    defendRadius = CarnUtils.Info.baseRadius * 0.66f;
+                    defendRadius = CarnUtils.Info.baseRadius;
                 }
 
                 if (!pawn.equipment.Primary.def.IsMeleeWeapon)

@@ -2,7 +2,6 @@
 using System.Linq;
 using UnityEngine;
 using Verse;
-using Verse.AI.Group;
 
 namespace Carnivale
 {
@@ -20,13 +19,21 @@ namespace Carnivale
 
             if (Info.Entrance != null && Info.Entrance.assignedPawn == null)
             {
-                if (!Info.AssignAnnouncerToBuilding(Info.GetBestEntertainer(false), Info.Entrance))
+                if (!Info.AssignEntertainerToBuilding(Info.GetBestEntertainer(false), Info.Entrance))
                 {
-                    Log.Warning("Unable to assign a ticket taker to carnival entrance.");
+                    Log.Warning("[Carnivale] Unable to assign a ticket taker to carnival entrance.");
                 }
             }
 
             TryAssignEntertainersToGames();
+
+            foreach (var col in Map.mapPawns.FreeColonistsSpawned)
+            {
+                if (col.needs != null && col.needs.mood != null)
+                {
+                    col.needs.mood.thoughts.memories.RemoveMemoriesOfDef(_DefOf.Thought_MissCarnival);
+                }
+            }
         }
 
         public override void UpdateAllDuties()
@@ -92,6 +99,16 @@ namespace Carnivale
             {
                 lord.ReceiveMemo("StopEntertaining");
             }
+
+            if (Prefs.DevMode)
+            {
+                foreach (var col in Info.allowedColonists)
+                {
+                    Log.Message("\t[Carnivale] allowedColonists: Removing " + col);
+                }
+            }
+
+            Info.allowedColonists.Clear();
         }
 
 
@@ -102,7 +119,7 @@ namespace Carnivale
                 var announcer = Info.GetBestEntertainer();
                 if (announcer != null)
                 {
-                    Info.AssignAnnouncerToBuilding(announcer, game, true);
+                    Info.AssignEntertainerToBuilding(announcer, game, true);
                 }
             }
         }

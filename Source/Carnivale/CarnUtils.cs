@@ -24,6 +24,11 @@ namespace Carnivale
             ThingDefOf.RawBerries.GetHashCode()
         };
 
+        private static int[] trashThingCategoryDefHashes = new int[]
+        {
+            ThingCategoryDefOf.Corpses.GetHashCode()
+        };
+
         private static int[] carrierThingCategoryDefHashes = new int[]
         {
             ThingCategoryDefOf.Foods.GetHashCode(),
@@ -494,11 +499,21 @@ namespace Carnivale
                     return HaulLocation.ToCarriers;
                 }
 
+                if (trashThingCategoryDefHashes.Contains(cat.GetHashCode()))
+                {
+                    return HaulLocation.ToTrash;
+                }
+
                 foreach (var parentCat in cat.Parents)
                 {
                     if (carrierThingCategoryDefHashes.Contains(parentCat.GetHashCode()))
                     {
                         return HaulLocation.ToCarriers;
+                    }
+
+                    if (trashThingCategoryDefHashes.Contains(parentCat.GetHashCode()))
+                    {
+                        return HaulLocation.ToTrash;
                     }
                 }
             }
@@ -524,8 +539,33 @@ namespace Carnivale
                 return null;
             }
 
-            Predicate<Thing> validator = t => !t.IsForbidden(pawn) && pawn.CanReserve(t, 1);
-            return GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForDef(things.thingDef), PathEndMode.InteractionCell, TraverseParms.For(pawn, pawn.NormalMaxDanger()), 9999f, validator);
+            Predicate<Thing> validator = t => !t.IsForbidden(pawn) && pawn.CanReserve(t, 25, Info.feePerColonist);
+
+            return GenClosest.ClosestThingReachable(
+                pawn.Position,
+                pawn.Map,
+                ThingRequest.ForDef(things.thingDef),
+                PathEndMode.InteractionCell,
+                TraverseParms.For(pawn, pawn.NormalMaxDanger()),
+                9999f,
+                validator);
+        }
+
+
+        public static void GainComfortFromConstant(this Pawn pawn, float amount)
+        {
+            if (Find.TickManager.TicksGame % 10 == 0 && pawn.needs != null && pawn.needs.comfort != null && !pawn.IsCarny())
+            {
+                pawn.needs.comfort.ComfortUsed(amount);
+            }
+        }
+
+        public static void GainJoyFromConstant(this Pawn pawn, float amountPerHour, JoyKindDef def)
+        {
+            if (pawn.needs != null && pawn.needs.joy != null)
+            {
+                pawn.needs.joy.GainJoy(amountPerHour * 0.000144f, def);
+            }
         }
     }
 }

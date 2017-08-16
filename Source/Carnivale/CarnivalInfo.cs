@@ -457,6 +457,7 @@ namespace Carnivale
                 if (Find.TickManager.TicksGame % 1013 == 0)
                 {
                     if (currentLord.CurLordToil is LordToil_EntertainColony
+                        && Rand.Chance(0.167f)
                         && !alreadyHadShowToday && !showingNow
                         && GenLocalDate.HourFloat(map) > MinShowHour
                         && GenLocalDate.HourFloat(map) < MaxShowHour)
@@ -475,8 +476,6 @@ namespace Carnivale
                     {
                         daysPassed = day;
                         alreadyEntertainedToday = false;
-                        // Colonists must pay every day
-                        allowedColonists.Clear();
                     }
                 }
                 else if (Find.TickManager.TicksGame % 757 == 0)
@@ -748,16 +747,20 @@ namespace Carnivale
                 return Entrance.assignedPawn;
             }
 
+            Func<Pawn, float> weight = (Pawn p) => p.skills.GetSkill(SkillDefOf.Artistic).Level + p.skills.GetSkill(SkillDefOf.Social).Level;
+
             Pawn entertainer = null;
 
             if (!(from p in pawnsWithRole[CarnivalRole.Entertainer]
                   where p.story != null && p.story.adulthood != null
                     && ( backstoryTitle == null || p.story.adulthood.TitleShort == backstoryTitle)
                     && !withoutAssignedPostion || !rememberedPositions.ContainsKey(p)
-                  select p).TryRandomElement(out entertainer))
+                  select p).TryMaxByWeight(weight, out entertainer))
             {
-                // If no pawns have the announcer backstory
-                if (!pawnsWithRole[CarnivalRole.Entertainer].Where(p => !withoutAssignedPostion || !rememberedPositions.ContainsKey(p)).TryRandomElement(out entertainer))
+                // If no optimal pawns
+                if (!pawnsWithRole[CarnivalRole.Entertainer]
+                    .Where(p => !withoutAssignedPostion || !rememberedPositions.ContainsKey(p))
+                    .TryMaxByWeight(weight, out entertainer))
                 {
                     // No entertainers either, use leader
                     if (!withoutAssignedPostion || !rememberedPositions.ContainsKey(currentLord.faction.leader))
@@ -773,9 +776,9 @@ namespace Carnivale
             return entertainer;
         }
 
-        public bool AssignAnnouncerToBuilding(Pawn announcer, Building_Carn building, bool relieveExistingPawn = false)
+        public bool AssignEntertainerToBuilding(Pawn entertainer, Building_Carn building, bool relieveExistingPawn = false)
         {
-            if (announcer == null || building == null) return false;
+            if (entertainer == null || building == null) return false;
 
             var cell = building.GetAnnouncerCell();
 
@@ -786,8 +789,8 @@ namespace Carnivale
                     if (relieveExistingPawn)
                     {
                         rememberedPositions.Remove(building.assignedPawn);
-                        building.assignedPawn = announcer;
-                        rememberedPositions.Add(announcer, cell);
+                        building.assignedPawn = entertainer;
+                        rememberedPositions.Add(entertainer, cell);
                         guardPositions.Add(cell);
                         return true;
                     }
@@ -798,8 +801,8 @@ namespace Carnivale
                 }
                 else
                 {
-                    building.assignedPawn = announcer;
-                    rememberedPositions.Add(announcer, cell);
+                    building.assignedPawn = entertainer;
+                    rememberedPositions.Add(entertainer, cell);
                     guardPositions.Add(cell);
                     return true;
                 }
@@ -833,7 +836,7 @@ namespace Carnivale
             Building_Carn venue;
             if (Chapiteaux.DestroyedOrNull())
             {
-                Log.Warning("[Carnivale] Tried to start a show, but the chapiteaux is missing.");
+                Log.Warning("[Carnivale] Tried to start a show, but the chapiteaux venue is missing.");
                 return false;
             }
 

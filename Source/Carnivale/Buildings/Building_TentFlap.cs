@@ -5,7 +5,7 @@ namespace Carnivale
 {
     public class Building_TentFlap : Building_Door
     {
-        public bool everAvailableToNonCarnies = false;
+        public bool availableToNonCarnies = false;
 
         public Building_Tent parent;
 
@@ -15,13 +15,14 @@ namespace Carnivale
 
             if (parent.OccupiedRect().Contains(p.Position)) return true;
 
-            if (!everAvailableToNonCarnies) return false;
+            if (!availableToNonCarnies) return false;
 
             if (p.Faction.HostileTo(this.Faction)) return false;
 
-            if (CarnUtils.Info.allowedColonists.Contains(p)) return true;
+            return CarnUtils.Info.entertainingNow;
 
-            return false;
+            // WHY THIS FUCKING NOT WORK
+            //return CarnUtils.Info.showingNow && CarnUtils.Info.allowedColonists.Contains(p);
         }
 
 
@@ -29,7 +30,9 @@ namespace Carnivale
         {
             base.ExposeData();
 
-            Scribe_Values.Look(ref this.everAvailableToNonCarnies, "availableToNonCarnies", false);
+            Scribe_Values.Look(ref this.availableToNonCarnies, "availableToNonCarnies", false);
+
+            Scribe_References.Look(ref this.parent, "parentTent");
         }
 
     }

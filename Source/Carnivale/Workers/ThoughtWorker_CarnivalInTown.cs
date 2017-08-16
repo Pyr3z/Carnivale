@@ -10,7 +10,7 @@ namespace Carnivale
             // No carnies
             if (p.IsCarny()) return false;
 
-            if (p.MapHeld.GetComponent<CarnivalInfo>().Active)
+            if (CarnUtils.Info.Active)
             {
                 // Pessimists / Depressives get reduced benefit
                 var naturalMood = p.story.traits.GetTrait(TraitDefOf.NaturalMood);

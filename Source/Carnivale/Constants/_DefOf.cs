@@ -9,6 +9,8 @@ namespace Carnivale
     {
         public static DutyDef Duty_BuildCarnival;
 
+        public static DutyDef Duty_ChargeNearestHostile;
+
         public static DutyDef Duty_DefendAndExitMapRoadOrBest;
 
         public static DutyDef Duty_DefendRanged;
@@ -144,6 +146,14 @@ namespace Carnivale
         public static ThingDef WoolCamel;
 
         public static ThingDef WoolAlpaca;
+
+
+
+        public static ThoughtDef Thought_AttendedShow;
+
+        public static ThoughtDef Thought_CarnivalInTown;
+
+        public static ThoughtDef Thought_MissCarnival;
 
 
 

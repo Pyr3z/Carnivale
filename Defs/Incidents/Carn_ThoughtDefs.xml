@@ -25,4 +25,38 @@
     </stages>
   </ThoughtDef>
   
+  
+  <ThoughtDef>
+    <defName>Thought_AttendedShow</defName>
+	<thoughtClass>Thought_Memory</thoughtClass>
+	<durationDays>10</durationDays>
+	<stackLimit>10</stackLimit>
+	<nextThought>Thought_MissCarnival</nextThought>
+	
+	<stages>
+	  <li>
+	    <label>saw a carnival show</label>
+		<description>I had no idea people could move that way!</description>
+		<baseMoodEffect>2</baseMoodEffect>
+	  </li>
+	</stages>
+	
+  </ThoughtDef>
+  
+  
+  <ThoughtDef>
+    <defName>Thought_MissCarnival</defName>
+	<thoughtClass>Thought_Memory</thoughtClass>
+	<durationDays>5</durationDays>
+	
+	<stages>
+	  <li>
+	    <label>longing for carnival</label>
+		<description>I miss the carnival.</description>
+		<baseMoodEffect>-3</baseMoodEffect>
+	  </li>
+	</stages>
+	
+  </ThoughtDef>
+  
 </ThoughtDefs>

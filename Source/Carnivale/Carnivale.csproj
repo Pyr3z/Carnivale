@@ -84,6 +84,7 @@
     <Compile Include="AI\ThinkNode_ConditionalCarny.cs" />
     <Compile Include="Buildings\CompHighStriker.cs" />
     <Compile Include="CarnCellFinder.cs" />
+    <Compile Include="Constants\Constants.cs" />
     <Compile Include="Data\LordToilData_AttendShow.cs" />
     <Compile Include="AI\LordToil_Carn.cs" />
     <Compile Include="AI\LordToil_DefendCarnival.cs" />
@@ -104,10 +105,10 @@
     <Compile Include="Data\DeepReferenceableList.cs" />
     <Compile Include="Data\LordToilData_Entertain.cs" />
     <Compile Include="Data\LordToilData_SetupCarnival.cs" />
-    <Compile Include="Enums\CarnBuildingType.cs" />
-    <Compile Include="Enums\CarnivalRole.cs" />
-    <Compile Include="Enums\HaulLocation.cs" />
-    <Compile Include="Enums\_DefOf.cs" />
+    <Compile Include="Constants\CarnBuildingType.cs" />
+    <Compile Include="Constants\CarnivalRole.cs" />
+    <Compile Include="Constants\HaulLocation.cs" />
+    <Compile Include="Constants\_DefOf.cs" />
     <Compile Include="AI\LordJob_EntertainColony.cs" />
     <Compile Include="One\TheOne.cs" />
     <Compile Include="Patches\CarniesOnlyDoCarnivalsPatch.cs" />

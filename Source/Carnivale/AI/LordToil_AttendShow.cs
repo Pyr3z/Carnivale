@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using RimWorld;
+using System.Linq;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
@@ -64,7 +65,27 @@ namespace Carnivale
                     continue;
                 }
 
+                pawn.Reserve(spectateSpot);
+
                 DutyUtility.AttendShow(pawn, spectateSpot, Data.entertainerSpot);
+            }
+        }
+
+
+        public override void LordToilTick()
+        {
+            if (Find.TickManager.TicksGame % 10 == 0)
+            {
+                foreach (var pawn in lord.ownedPawns.Where(p => Data.audienceRect.Contains(p.Position)))
+                {
+                    pawn.GainComfortFromConstant(Constants.Comfort_Chapiteaux);
+                    pawn.GainJoyFromConstant(Constants.Joy_Chapiteaux, JoyKindDefOf.Gluttonous);
+
+                    if (Find.TickManager.TicksGame % 3000 == 0 && pawn.needs != null && pawn.needs.mood != null)
+                    {
+                        pawn.needs.mood.thoughts.memories.TryGainMemory(_DefOf.Thought_AttendedShow);
+                    }
+                }
             }
         }
 

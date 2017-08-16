@@ -199,37 +199,20 @@
   </DutyDef>
   
   
-  <!-- Guard small area (deprecated) -->
+  <!-- Charge nearest hostile -->
   <DutyDef>
-    <defName>Duty_GuardSmallArea</defName>
-	<alwaysShowWeapon>true</alwaysShowWeapon>
-	<thinkNode Class="ThinkNode_Priority">
-	  <subNodes>
-	    
-		<li Class="JobGiver_FightFiresNearPoint">
-		  <maxDistFromPoint>8</maxDistFromPoint>
-		</li>
-	    
-		<!-- satisfy the basic needs, no sleep -->
-		<li Class="ThinkNode_PrioritySorter">
-		  <subNodes>
-		    <li Class="JobGiver_GetFood" />
-		    <li Class="JobGiver_SatisfyChemicalNeed" />
-		  </subNodes>
-		</li>
-		
-		<!-- guard area -->
-	    <li Class="JobGiver_WanderNearDutyLocation">
-	      <wanderRadius>4</wanderRadius>
-	    </li>
-	    
-		<!-- TODO: feed animals -->
-	    <li Class="Carnivale.ThinkNode_CanInteractWithAnimals">
-	      
-	    </li>
-		
-	  </subNodes>
-	</thinkNode>
+    <defName>Duty_ChargeNearestHostile</defName>
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="JobGiver_TakeCombatEnhancingDrug" />
+        <li Class="JobGiver_AIFightEnemies">
+          <targetAcquireRadius>65</targetAcquireRadius>
+          <targetKeepRadius>72</targetKeepRadius>
+        </li>
+        <li Class="JobGiver_AIGotoNearestHostile" />
+      </subNodes>
+    </thinkNode>
   </DutyDef>
   
   

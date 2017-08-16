@@ -185,20 +185,20 @@ namespace Carnivale
 
             toil.initAction = delegate
             {
-                toil.actor.pather.StopDead();
-                toil.actor.Rotation = Rot4.South;
-                toil.actor.mindState.wantsToTradeWithColony = true;
+                pawn.pather.StopDead();
+                pawn.Rotation = Rot4.South;
+                pawn.mindState.wantsToTradeWithColony = true;
                 tick = tickRange.RandomInRange;
             };
             toil.tickAction = delegate
             {
-                if (toil.actor.IsHashIntervalTick(tick)
+                if (pawn.IsHashIntervalTick(tick)
                     && Info.colonistsInArea.Any())
                 {
                     if (!moteArgs)
                     {
                         MoteMaker.ThrowText(
-                            toil.actor.DrawPos,
+                            pawn.DrawPos,
                             Map,
                             strings0Arg.RandomElement().Translate(),
                             3f
@@ -206,7 +206,7 @@ namespace Carnivale
                     }
                     else
                     {
-                        var randomWareLabel = toil.actor.trader.Goods
+                        var randomWareLabel = pawn.trader.Goods
                             .RandomElementByWeight(t => t.GetInnerIfMinified().MarketValue)
                             .GetInnerIfMinified()
                             .LabelNoCount;
@@ -217,7 +217,7 @@ namespace Carnivale
                         }
 
                         MoteMaker.ThrowText(
-                            toil.actor.DrawPos,
+                            pawn.DrawPos,
                             Map,
                             strings1Arg.RandomElement().Translate(randomWareLabel).CapitalizeFirst(),
                             5f
@@ -229,7 +229,7 @@ namespace Carnivale
             };
             toil.AddFinishAction(delegate
             {
-                toil.actor.mindState.wantsToTradeWithColony = false;
+                pawn.mindState.wantsToTradeWithColony = false;
             });
 
             return toil;
@@ -242,25 +242,25 @@ namespace Carnivale
 
             toil.initAction = delegate
             {
-                toil.actor.pather.StopDead();
+                pawn.pather.StopDead();
                 tick = tickRange.RandomInRange;
 
                 if (TargetB.IsValid)
                 {
-                    toil.actor.Rotation = TargetA.Cell.RotationFacing(TargetB.Cell);
+                    pawn.Rotation = TargetA.Cell.RotationFacing(TargetB.Cell);
                 }
                 else
                 {
-                    toil.actor.Rotation = Rot4.South;
+                    pawn.Rotation = Rot4.South;
                 }
             };
             toil.tickAction = delegate
             {
-                if (toil.actor.IsHashIntervalTick(tick)
+                if (pawn.IsHashIntervalTick(tick)
                     && Info.colonistsInArea.Any())
                 {
                     MoteMaker.ThrowText(
-                        toil.actor.DrawPos,
+                        pawn.DrawPos,
                         Map,
                         strings0Arg.RandomElement().Translate(pawn.Faction),
                         3f
@@ -278,26 +278,26 @@ namespace Carnivale
 
             toil.initAction = delegate
             {
-                toil.actor.pather.StopDead();
+                pawn.pather.StopDead();
                 tick = tickRange.RandomInRange;
 
                 if (TargetB.IsValid)
                 {
-                    toil.actor.Rotation = TargetA.Cell.RotationFacing(TargetB.Cell);
+                    pawn.Rotation = TargetA.Cell.RotationFacing(TargetB.Cell);
                 }
             };
 
+            
             if (!TargetB.IsValid)
             {
                 toil.tickAction = delegate
                 {
-                    if (toil.actor.IsHashIntervalTick(tick))
+                    if (pawn.IsHashIntervalTick(tick))
                     {
-                        toil.actor.Rotation = Rot4.Random;
+                        pawn.Rotation = Rot4.Random;
                     }
                 };
             }
-            
 
             return toil;
         }

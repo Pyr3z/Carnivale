@@ -114,7 +114,7 @@ namespace Carnivale
 
         public override string GetReport()
         {
-            return "LordJobAttendingShow".Translate();
+            return "Carnival";
         }
 
 

@@ -35,7 +35,7 @@ namespace Carnivale
         {
             //this.EndOnDespawnedOrNull(TargetIndex.A, JobCondition.Incompletable);
 
-            var reserve = Toils_Reserve.Reserve(TargetIndex.A, 25);
+            var reserve = Toils_Reserve.Reserve(TargetIndex.A, 25, Info.feePerColonist);
             yield return reserve;
 
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
@@ -50,7 +50,7 @@ namespace Carnivale
             var findTicketTaker = FindTicketTaker();
             yield return findTicketTaker;
 
-            yield return Toils_Reserve.Reserve(TargetIndex.B);
+            //yield return Toils_Reserve.Reserve(TargetIndex.B);
 
             yield return Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.Touch)
                     .JumpIf(() => !JobDriver_PrepareCaravan_GatherItems.IsUsableCarrier(TicketTaker, this.pawn, false), findTicketTaker);
@@ -112,9 +112,6 @@ namespace Carnivale
                             "EnjoyCarnival".Translate(),
                             3f
                         );
-
-                        if (Prefs.DevMode)
-                            Log.Message("[Carnivale] " + this.pawn + " succesfully payed " + Info.feePerColonist + " silver to " + TicketTaker.NameStringShort);
                     }
                 }
             };
@@ -126,8 +123,11 @@ namespace Carnivale
             {
                 initAction = delegate
                 {
-                    //TargetThingB.SetForbidden(true, true);
                     Info.allowedColonists.Add(this.pawn);
+
+                    if (Prefs.DevMode)
+                        Log.Message("\t[Carnivale] allowedColonists: Added " + pawn + ".");
+
                     EndJobWith(JobCondition.Succeeded);
                 },
                 defaultCompleteMode = ToilCompleteMode.Instant,

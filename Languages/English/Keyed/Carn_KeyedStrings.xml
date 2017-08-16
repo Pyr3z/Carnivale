@@ -19,7 +19,7 @@
   <LetterCarnivalArrival>The traveling carnival, {0}, is entering your territory and will begin to set up their attractions. They will remain for {1} days.</LetterCarnivalArrival>
   <CarnivalArrivalVendorsList>\n\nThere are several vendors with them:</CarnivalArrivalVendorsList>
   
-  <LetterLabelShowBegins>New show!</LetterLabelShowBegins>
+  <LetterLabelShowBegins>Carnival: New Show</LetterLabelShowBegins>
   <LetterShowBegins>{0} is putting on a show at {1}!</LetterShowBegins>
   
   
@@ -76,7 +76,7 @@
   
   
   <!-- Report strings -->
-  <LordJobAttendingShow>attending carnival show.</LordJobAttendingShow>
+  
   
   
   <!-- Float menu options (when not in defs) -->

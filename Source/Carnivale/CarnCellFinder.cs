@@ -192,6 +192,9 @@ namespace Carnivale
             var maxWeight = 0f;
             foreach (var cell in candidateTri.InRandomOrder().Where(c => validDist(c) && reachable(c) && validRoad(c)))
             {
+                if (Prefs.DevMode)
+                    map.debugDrawer.FlashCell(cell);
+
                 var weight = weightBuildable(cell) + weightDist(cell);
                 var thresh = Rand.Range(19, 24);
 

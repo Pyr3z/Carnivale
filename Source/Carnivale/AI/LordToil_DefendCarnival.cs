@@ -10,6 +10,7 @@ namespace Carnivale
     public class LordToil_DefendCarnival : LordToil_Carn
     {
         private int pawnsKilled = 0;
+        private int numChargers = 0;
 
         public override bool AllowSatisfyLongNeeds
         {
@@ -67,7 +68,6 @@ namespace Carnivale
             {
                 bestGatherSpot = Info.setupCentre;
             }
-            
 
             foreach (var pawn in lord.ownedPawns)
             {
@@ -103,7 +103,12 @@ namespace Carnivale
                 }
                 else if (role.Is(CarnivalRole.Guard))
                 {
-                    if (distressedCarny != null && (Rand.Chance(0.33f) || pawn.mindState.enemyTarget == null))
+                    if (numChargers > 0)
+                    {
+                        DutyUtility.ChargeHostiles(pawn);
+                        numChargers--;
+                    }
+                    else if (distressedCarny != null && (Rand.Chance(0.33f) || pawn.mindState.enemyTarget == null))
                     {
                         DutyUtility.DefendPoint(pawn, distressedCarny, null, 5f);
                     }
@@ -114,13 +119,18 @@ namespace Carnivale
                 }
                 else if (pawn.equipment != null && pawn.equipment.Primary != null)
                 {
-                    if (pawn.health.summaryHealth.SummaryHealthPercent > 0.85f)
+                    if (numChargers > 0)
+                    {
+                        DutyUtility.ChargeHostiles(pawn);
+                        numChargers--;
+                    }
+                    else if (pawn.health.summaryHealth.SummaryHealthPercent > 0.85f)
                     {
                         IntVec3 tentDoor;
 
                         if (distressedCarny != null)
                         {
-                            DutyUtility.DefendPoint(pawn, distressedCarny, nearHost);
+                            DutyUtility.DefendPoint(pawn, distressedCarny, nearHost, 5f);
                         }
                         else if (Rand.Bool && (tentDoor = Info.GetRandomTentDoor(true, CarnBuildingType.Attraction).Cell).IsValid)
                         {
@@ -133,7 +143,7 @@ namespace Carnivale
                     }
                     else
                     {
-                        DutyUtility.DefendPoint(pawn, bestGatherSpot, null, 4f);
+                        DutyUtility.DefendPoint(pawn, bestGatherSpot, null, 5f);
                     }
                 }
                 else
@@ -155,7 +165,8 @@ namespace Carnivale
 
             if (cond == PawnLostCondition.IncappedOrKilled)
             {
-                this.pawnsKilled++;
+                pawnsKilled++;
+                numChargers++;
             }
 
             UpdateAllDuties();
@@ -197,8 +208,7 @@ namespace Carnivale
         private Pawn RandomExposedCarnyByHealth(Pawn searcher)
         {
             Pawn pawn = null;
-            Info.pawnsWithRole[CarnivalRole.Entertainer]
-                .Concat(Info.pawnsWithRole[CarnivalRole.Vendor])
+            lord.ownedPawns
                 .Where(p => p != searcher && !p.Dead && p.IsOutdoors() && p.health.summaryHealth.SummaryHealthPercent < 0.95f)
                 .TryRandomElementByWeight(p => p.Downed ? 100f : 1f / p.health.summaryHealth.SummaryHealthPercent, out pawn);
 

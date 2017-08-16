@@ -36,7 +36,7 @@ namespace Carnivale
                 door.Position = doorCell;
 
                 if (Props.type.Is(CarnBuildingType.Attraction))
-                    door.everAvailableToNonCarnies = true;
+                    door.availableToNonCarnies = true;
 
                 //GenSpawn.Spawn(door, doorCell, map); // spawned in base method now
                 childBuildings.Add(door); 
