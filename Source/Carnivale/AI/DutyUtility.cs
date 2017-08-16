@@ -84,11 +84,6 @@ namespace Carnivale
             pawn.mindState.duty = new PawnDuty(_DefOf.Duty_GuardCircuit);
         }
 
-        public static void GuardSmallArea(Pawn pawn, IntVec3 centre, float radius)
-        {
-            pawn.mindState.duty = new PawnDuty(_DefOf.Duty_GuardSmallArea, centre, radius);
-        }
-
         public static void HitchToSpot(Pawn pawn, IntVec3 spot)
         {
             pawn.mindState.duty = new PawnDuty(_DefOf.Duty_HitchToSpot, spot);

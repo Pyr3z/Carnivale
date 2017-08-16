@@ -21,8 +21,6 @@ namespace Carnivale
 
         public static DutyDef Duty_GuardCircuit;
 
-        public static DutyDef Duty_GuardSmallArea;
-
         public static DutyDef Duty_HitchToSpot;
 
         public static DutyDef Duty_Meander;
