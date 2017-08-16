@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Verse;
 using Verse.AI;
+using Xnope;
 
 namespace Carnivale
 {
@@ -54,6 +55,15 @@ namespace Carnivale
             "WelcomeCarnival"
         };
 
+        private static string[] entertainingMotes0Arg = new string[]
+        {
+            "Entertain1",
+            "Entertain2",
+            "Entertain3",
+            "Entertain4",
+            "Entertain5"
+        };
+
         private static IntRange tickRange = new IntRange(650, 1350);
 
         [Unsaved]
@@ -90,6 +100,19 @@ namespace Carnivale
         public override string GetReport()
         {
             // TODO: translations
+
+            if (TargetB.IsValid)
+            {
+                if (pawn.IsCarny())
+                {
+                    return "entertaining.";
+                }
+                else
+                {
+                    return "spectating.";
+                }
+            }
+
             if (Type.Is(CarnivalRole.Vendor))
             {
                 return "peddling goods.";
@@ -130,11 +153,18 @@ namespace Carnivale
             else if (Type.Is(CarnivalRole.Entertainer))
             {
                 // TODO: differentiate between announcers and game masters
-                standToil = StandWithMotes(announcerMotes0Arg);
+                if (TargetB.IsValid)
+                {
+                    standToil = StandWithMotes(entertainingMotes0Arg);
+                }
+                else
+                {
+                    standToil = StandWithMotes(announcerMotes0Arg);
+                }
             }
             else
             {
-                standToil = CarrierStand();
+                standToil = StaticStand();
             }
 
             standToil.socialMode = RandomSocialMode.SuperActive;
@@ -213,8 +243,16 @@ namespace Carnivale
             toil.initAction = delegate
             {
                 toil.actor.pather.StopDead();
-                toil.actor.Rotation = Rot4.South;
                 tick = tickRange.RandomInRange;
+
+                if (TargetB.IsValid)
+                {
+                    toil.actor.Rotation = TargetA.Cell.RotationFacing(TargetB.Cell);
+                }
+                else
+                {
+                    toil.actor.Rotation = Rot4.South;
+                }
             };
             toil.tickAction = delegate
             {
@@ -233,7 +271,7 @@ namespace Carnivale
             return toil;
         }
 
-        private Toil CarrierStand()
+        private Toil StaticStand()
         {
             // stand, rotate randomly
             Toil toil = new Toil();
@@ -242,14 +280,24 @@ namespace Carnivale
             {
                 toil.actor.pather.StopDead();
                 tick = tickRange.RandomInRange;
-            };
-            toil.tickAction = delegate
-            {
-                if (toil.actor.IsHashIntervalTick(tick))
+
+                if (TargetB.IsValid)
                 {
-                    toil.actor.Rotation = Rot4.Random;
+                    toil.actor.Rotation = TargetA.Cell.RotationFacing(TargetB.Cell);
                 }
             };
+
+            if (!TargetB.IsValid)
+            {
+                toil.tickAction = delegate
+                {
+                    if (toil.actor.IsHashIntervalTick(tick))
+                    {
+                        toil.actor.Rotation = Rot4.Random;
+                    }
+                };
+            }
+            
 
             return toil;
         }

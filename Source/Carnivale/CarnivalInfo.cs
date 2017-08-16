@@ -16,9 +16,13 @@ namespace Carnivale
 
         private const int TrashRadius = 4;
 
+        public const float MinEntertainHour = 10f;
+
         public const float MaxEntertainHour = 22f;
 
-        public const float MinEntertainHour = 10f;
+        private const float MinShowHour = 12f;
+
+        private const float MaxShowHour = 19f;
 
         public const float MinRadius = 15f;
 
@@ -45,9 +49,13 @@ namespace Carnivale
 
         public bool entertainingNow;
 
+        public bool alreadyHadShowToday;
+
+        public bool showingNow;
+
         public int feePerColonist = -1;
 
-        public List<Pawn> allowedColonists;
+        public HashSet<Pawn> allowedColonists;
 
         public List<Building> carnivalBuildings;
 
@@ -226,6 +234,10 @@ namespace Carnivale
 
             Scribe_Values.Look(ref this.entertainingNow, "entertainingNow", false);
 
+            Scribe_Values.Look(ref this.alreadyHadShowToday, "alreadyHadShowToday", false);
+
+            Scribe_Values.Look(ref this.showingNow, "showingNow", false);
+
             Scribe_Values.Look(ref this.feePerColonist, "feePerColonist", -1);
 
             Scribe_Collections.Look(ref this.allowedColonists, "allowedColonists", LookMode.Reference);
@@ -272,6 +284,10 @@ namespace Carnivale
 
             entertainingNow = false;
 
+            alreadyHadShowToday = false;
+
+            showingNow = false;
+
             checkRemoveColonists = false;
 
             anyCarnyNeedsRest = false;
@@ -291,7 +307,7 @@ namespace Carnivale
             }
             else
             {
-                allowedColonists = new List<Pawn>();
+                allowedColonists = new HashSet<Pawn>();
             }
 
             if (thingsToHaul != null)
@@ -438,7 +454,17 @@ namespace Carnivale
         {
             if (Active)
             {
-                if (Find.TickManager.TicksGame % 1009 == 0)
+                if (Find.TickManager.TicksGame % 1013 == 0)
+                {
+                    if (currentLord.CurLordToil is LordToil_EntertainColony
+                        && !alreadyHadShowToday && !showingNow
+                        && GenLocalDate.HourFloat(map) > MinShowHour
+                        && GenLocalDate.HourFloat(map) < MaxShowHour)
+                    {
+                        TryStartShow();
+                    }
+                }
+                else if (Find.TickManager.TicksGame % 1009 == 0)
                 {
                     // Check if there are any things needing to be hauled to carriers or trash
                     CheckForHaulables(false);
@@ -709,7 +735,7 @@ namespace Carnivale
         }
 
 
-        public Pawn GetBestAnnouncer(bool withoutAssignedPostion = true)
+        public Pawn GetBestEntertainer(bool withoutAssignedPostion = true, string backstoryTitle = "Announcer")
         {
             if (!Active)
             {
@@ -717,28 +743,34 @@ namespace Carnivale
             }
 
 
-            if (Entrance != null && Entrance.assignedPawn != null && (!withoutAssignedPostion || !rememberedPositions.ContainsKey(Entrance.assignedPawn)))
+            if (backstoryTitle == "Announcer" && Entrance != null && Entrance.assignedPawn != null && (!withoutAssignedPostion || !rememberedPositions.ContainsKey(Entrance.assignedPawn)))
             {
                 return Entrance.assignedPawn;
             }
 
-            Pawn ticketTaker;
+            Pawn entertainer = null;
 
             if (!(from p in pawnsWithRole[CarnivalRole.Entertainer]
                   where p.story != null && p.story.adulthood != null
-                    && p.story.adulthood.TitleShort == "Announcer"
+                    && ( backstoryTitle == null || p.story.adulthood.TitleShort == backstoryTitle)
                     && !withoutAssignedPostion || !rememberedPositions.ContainsKey(p)
-                  select p).TryRandomElement(out ticketTaker))
+                  select p).TryRandomElement(out entertainer))
             {
                 // If no pawns have the announcer backstory
-                if (!pawnsWithRole[CarnivalRole.Entertainer].Where(p => !withoutAssignedPostion || !rememberedPositions.ContainsKey(p)).TryRandomElement(out ticketTaker))
+                if (!pawnsWithRole[CarnivalRole.Entertainer].Where(p => !withoutAssignedPostion || !rememberedPositions.ContainsKey(p)).TryRandomElement(out entertainer))
                 {
                     // No entertainers either, use leader
-                    return currentLord.faction.leader;
+                    if (!withoutAssignedPostion || !rememberedPositions.ContainsKey(currentLord.faction.leader))
+                    {
+                        entertainer = currentLord.faction.leader;
+                    }
                 }
             }
 
-            return ticketTaker;
+            if (entertainer == null && Prefs.DevMode)
+                Log.Warning("[Carnivale] Warning: GetBestEntertainer() resulted in a null pawn.");
+
+            return entertainer;
         }
 
         public bool AssignAnnouncerToBuilding(Pawn announcer, Building_Carn building, bool relieveExistingPawn = false)
@@ -796,6 +828,33 @@ namespace Carnivale
             return guard;
         }
 
+        private bool TryStartShow()
+        {
+            Building_Carn venue;
+            if (Chapiteaux.DestroyedOrNull())
+            {
+                Log.Warning("[Carnivale] Tried to start a show, but the chapiteaux is missing.");
+                return false;
+            }
 
+            venue = Chapiteaux;
+
+            var entertainer = GetBestEntertainer(true, null);
+
+            if (entertainer == null)
+            {
+                Log.Warning("[Carnivale] Tried to start a show, but no valid entertainer was found.");
+                return false;
+            }
+
+            LordMaker.MakeNewLord(Faction.OfPlayer, new LordJob_JoinableShow(venue, entertainer), map);
+
+            Find.LetterStack.ReceiveLetter("LetterLabelShowBegins".Translate(),
+                "LetterShowBegins".Translate(entertainer.LabelCapNoCount, venue.LabelCap),
+                LetterDefOf.Good,
+                venue);
+
+            return true;
+        }
     }
 }

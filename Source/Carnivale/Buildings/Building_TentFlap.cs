@@ -19,7 +19,7 @@ namespace Carnivale
 
             if (p.Faction.HostileTo(this.Faction)) return false;
 
-            if (this.Map.GetComponent<CarnivalInfo>().allowedColonists.Contains(p)) return true;
+            if (CarnUtils.Info.allowedColonists.Contains(p)) return true;
 
             return false;
         }

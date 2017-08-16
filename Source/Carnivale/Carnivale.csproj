@@ -77,13 +77,14 @@
     <Compile Include="AI\JobGiver_StandAtLoc.cs" />
     <Compile Include="AI\JobGiver_StrikeBuildings.cs" />
     <Compile Include="AI\JobDriver_PlayHighStriker.cs" />
+    <Compile Include="AI\LordJob_JoinableShow.cs" />
+    <Compile Include="AI\LordToil_AttendShow.cs" />
     <Compile Include="AI\LordToil_Leave.cs" />
     <Compile Include="AI\JobGiver_Carn.cs" />
-    <Compile Include="AI\ThinkNode_GotoCarnival.cs" />
     <Compile Include="AI\ThinkNode_ConditionalCarny.cs" />
     <Compile Include="Buildings\CompHighStriker.cs" />
     <Compile Include="CarnCellFinder.cs" />
-    <Compile Include="Data\LordToilData_SetupCarnival.cs" />
+    <Compile Include="Data\LordToilData_AttendShow.cs" />
     <Compile Include="AI\LordToil_Carn.cs" />
     <Compile Include="AI\LordToil_DefendCarnival.cs" />
     <Compile Include="AI\LordToil_EntertainColony.cs" />
@@ -91,7 +92,6 @@
     <Compile Include="AI\LordToil_SetupCarnival.cs" />
     <Compile Include="AI\LordToil_StrikeCarnival.cs" />
     <Compile Include="AI\ThinkNode_CanInteractWithAnimals.cs" />
-    <Compile Include="AI\ThinkNode_InCarnivalArea.cs" />
     <Compile Include="Buildings\Blueprint_StuffHacked.cs" />
     <Compile Include="Buildings\Building_Carn.cs" />
     <Compile Include="Buildings\Building_Tent.cs" />
@@ -102,6 +102,8 @@
     <Compile Include="CarnivaleMod.cs" />
     <Compile Include="CarnivalInfo.cs" />
     <Compile Include="Data\DeepReferenceableList.cs" />
+    <Compile Include="Data\LordToilData_Entertain.cs" />
+    <Compile Include="Data\LordToilData_SetupCarnival.cs" />
     <Compile Include="Enums\CarnBuildingType.cs" />
     <Compile Include="Enums\CarnivalRole.cs" />
     <Compile Include="Enums\HaulLocation.cs" />

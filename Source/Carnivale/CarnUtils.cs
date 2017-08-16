@@ -100,7 +100,6 @@ namespace Carnivale
         {
             if (!pawn.Faction.IsCarnival())
             {
-                Log.Error("Tried to get a CarnivalRole for " + pawn.NameStringShort + ", who is not in a carnival faction.");
                 return CarnivalRole.None;
             }
 

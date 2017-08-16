@@ -19,7 +19,7 @@ namespace Carnivale
                 return null;
             }
 
-            return new Job(_DefOf.Job_StandAtLoc, duty.focus);
+            return new Job(_DefOf.Job_StandAtLoc, duty.focus, duty.focusSecond);
         }
     }
 }

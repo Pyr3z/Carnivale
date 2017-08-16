@@ -74,6 +74,16 @@
   </DutyDef>
   
   
+  <!-- Goto and stand, do not satisfy needs -->
+  <DutyDef>
+    <defName>Duty_StandAtLoc</defName>
+	<thinkNode Class="ThinkNode_Priority">
+	  <subNodes>
+	    <li Class="Carnivale.JobGiver_StandAtLoc" />
+	  </subNodes>
+	</thinkNode>
+  </DutyDef>
+  
   <!-- Meander -->
   <DutyDef>
     <defName>Duty_Meander</defName>

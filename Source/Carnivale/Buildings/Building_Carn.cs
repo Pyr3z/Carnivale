@@ -38,6 +38,13 @@ namespace Carnivale
             }
         }
 
+        public virtual IntVec3 AudienceCentre
+        {
+            get
+            {
+                return Position;
+            }
+        }
 
 
         public override Color DrawColorTwo

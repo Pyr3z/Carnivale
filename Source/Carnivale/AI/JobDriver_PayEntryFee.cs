@@ -35,7 +35,7 @@ namespace Carnivale
         {
             //this.EndOnDespawnedOrNull(TargetIndex.A, JobCondition.Incompletable);
 
-            var reserve = Toils_Reserve.Reserve(TargetIndex.A);
+            var reserve = Toils_Reserve.Reserve(TargetIndex.A, 25);
             yield return reserve;
 
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
@@ -80,11 +80,11 @@ namespace Carnivale
             {
                 initAction = delegate
                 {
-                    var ticketTaker = Info.GetBestAnnouncer(false);
+                    var ticketTaker = Info.GetBestEntertainer(false);
 
                     if (ticketTaker == null)
                     {
-                        Log.Error("Found no ticket taker to give silver to.");
+                        Log.Error("[Carnivale] Found no ticket taker to give silver to.");
                         base.EndJobWith(JobCondition.Errored);
                     }
 
@@ -114,7 +114,7 @@ namespace Carnivale
                         );
 
                         if (Prefs.DevMode)
-                            Log.Message("[Carnivale] " + this.pawn + " succesfully payed " + carriedThing.stackCount + " silver to " + TicketTaker.NameStringShort);
+                            Log.Message("[Carnivale] " + this.pawn + " succesfully payed " + Info.feePerColonist + " silver to " + TicketTaker.NameStringShort);
                     }
                 }
             };

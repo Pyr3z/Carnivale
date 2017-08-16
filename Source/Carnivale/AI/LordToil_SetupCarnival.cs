@@ -55,7 +55,7 @@ namespace Carnivale
             // Give chapiteau
             if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentHuge, 1, CarnUtils.RandomFabricByCheapness()) != 1)
             {
-                Log.Error("Could not give " + _DefOf.Carn_Crate_TentHuge + " to carnies of faction " + lord.faction + ". It will not be built.");
+                Log.Error("[Carnivale] Could not give " + _DefOf.Carn_Crate_TentHuge + " to carnies of faction " + lord.faction + ". It will not be built.");
             }
 
 
@@ -67,14 +67,14 @@ namespace Carnivale
 
             if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentLodge, numBedTents, CarnUtils.RandomFabricByCheapness()) != numBedTents)
             {
-                Log.Error("Could not give enough " + _DefOf.Carn_Crate_TentLodge + " to carnies of faction " + lord.faction + ". Some will not be built.");
+                Log.Error("[Carnivale] Could not give enough " + _DefOf.Carn_Crate_TentLodge + " to carnies of faction " + lord.faction + ". Some will not be built.");
             }
 
             if (Info.pawnsWithRole[CarnivalRole.Manager].Any())
             {
                 if (data.TryHaveWorkerCarry(_DefOf.Carn_Crate_TentMan, 1, CarnUtils.RandomFabricByExpensiveness()) != 1)
                 {
-                    Log.Error("Could not give " + _DefOf.Carn_Crate_TentMan + " to carnies of faction " + lord.faction + ". It will not be built.");
+                    Log.Error("[Carnivale] Could not give " + _DefOf.Carn_Crate_TentMan + " to carnies of faction " + lord.faction + ". It will not be built.");
                 }
             }
 
@@ -166,7 +166,7 @@ namespace Carnivale
                             // No frames, blueprints, OR buildings
                             // Nothing is buildable. Was the carnival attacked?
                             lord.ReceiveMemo("NoBuildings");
-                            Log.Error("LordToil_SetupCarnival found no frames, blueprints, or buildings after " + lord.ticksInToil + " ticks.");
+                            Log.Error("[Carnivale] LordToil_SetupCarnival found no frames, blueprints, or buildings after " + lord.ticksInToil + " ticks.");
                             return;
                         }
                     }
@@ -360,18 +360,16 @@ namespace Carnivale
 
             Error:
 
-            if (countSpots == countCarriers)
+            for (int i = 0; i < countSpots && i < countCarriers; i++)
             {
-                for (int i = 0; i < countSpots; i++)
-                {
-                    // Add calculated spots to rememberedPositions
-                    Info.rememberedPositions.Add(Info.pawnsWithRole[CarnivalRole.Carrier][i], spots[i]);
-                    yield return spots[i];
-                }
+                // Add calculated spots to rememberedPositions
+                Info.rememberedPositions.Add(Info.pawnsWithRole[CarnivalRole.Carrier][i], spots[i]);
+                yield return spots[i];
             }
-            else
+
+            if (countSpots != countCarriers)
             {
-                Log.Error("Not enough spots found for carnival carriers to chill.");
+                Log.Error("[Carnivale] Not enough spots found for carnival carriers to chill. countSpots=" + countSpots + ", countCarriers=" + countCarriers);
             }
         }
 

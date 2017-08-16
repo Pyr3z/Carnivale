@@ -9,7 +9,7 @@ namespace Carnivale
 {
     public class LordToil_DefendCarnival : LordToil_Carn
     {
-        private bool pawnsKilled = false;
+        private int pawnsKilled = 0;
 
         public override bool AllowSatisfyLongNeeds
         {
@@ -26,6 +26,11 @@ namespace Carnivale
         {
             if (Prefs.DevMode)
                 Log.Message("[Carnivale] Carnival is in defending mode.");
+
+            foreach (var lord in Map.lordManager.lords)
+            {
+                lord.ReceiveMemo("DangerPresent");
+            }
         }
 
         public override void Cleanup()
@@ -150,7 +155,7 @@ namespace Carnivale
 
             if (cond == PawnLostCondition.IncappedOrKilled)
             {
-                this.pawnsKilled = true;
+                this.pawnsKilled++;
             }
 
             UpdateAllDuties();
@@ -176,7 +181,7 @@ namespace Carnivale
 
                 if (!anyHostiles)
                 {
-                    if (pawnsKilled)
+                    if (pawnsKilled > lord.ownedPawns.Count / 4)
                     {
                         lord.ReceiveMemo("BattleDonePawnsLost");
                     }

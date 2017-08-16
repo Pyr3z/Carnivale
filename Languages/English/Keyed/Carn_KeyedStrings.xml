@@ -19,6 +19,9 @@
   <LetterCarnivalArrival>The traveling carnival, {0}, is entering your territory and will begin to set up their attractions. They will remain for {1} days.</LetterCarnivalArrival>
   <CarnivalArrivalVendorsList>\n\nThere are several vendors with them:</CarnivalArrivalVendorsList>
   
+  <LetterLabelShowBegins>New show!</LetterLabelShowBegins>
+  <LetterShowBegins>{0} is putting on a show at {1}!</LetterShowBegins>
+  
   
   <!-- Motes -->
   <EnjoyCarnival>Enjoy the carnival!</EnjoyCarnival>
@@ -47,6 +50,12 @@
   <Prizes>Prizes, prizes, prizes!</Prizes>
   <HaveWhatItTakes>Do you have what it takes?</HaveWhatItTakes>
   
+  <Entertain1>Boing!</Entertain1>
+  <Entertain2>Hup, hup, hup</Entertain2>
+  <Entertain3>Pshhh patta pta!</Entertain3>
+  <Entertain4>Tata, ti-ta, tata ti-ta</Entertain4>
+  <Entertain5>Tada!</Entertain5>
+  
   
   <!-- Messages -->
   <CarnTentInvalidInterior>{0} cannot be placed over similar buildings.</CarnTentInvalidInterior>
@@ -61,6 +70,13 @@
   <CarnLeavingError>{0} is leaving due to not being able to set up.</CarnLeavingError>
   
   <PawnWonPrize>{0} won {1} in a game of {2}!</PawnWonPrize>
+  
+  <ShowEnded>{0}'s show has ended.</ShowEnded>
+  <ShowEndedBad>{0}'s show has been called off.</ShowEndedBad>
+  
+  
+  <!-- Report strings -->
+  <LordJobAttendingShow>attending carnival show.</LordJobAttendingShow>
   
   
   <!-- Float menu options (when not in defs) -->

@@ -27,6 +27,8 @@ namespace Carnivale
 
         public static DutyDef Duty_MeanderAndHelp;
 
+        public static DutyDef Duty_StandAtLoc;
+
         public static DutyDef Duty_StrikeBuildings;
 
 

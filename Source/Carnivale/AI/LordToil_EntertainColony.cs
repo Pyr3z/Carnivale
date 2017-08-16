@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using Verse;
+using Verse.AI.Group;
 
 namespace Carnivale
 {
@@ -19,7 +20,7 @@ namespace Carnivale
 
             if (Info.Entrance != null && Info.Entrance.assignedPawn == null)
             {
-                if (!Info.AssignAnnouncerToBuilding(Info.GetBestAnnouncer(false), Info.Entrance))
+                if (!Info.AssignAnnouncerToBuilding(Info.GetBestEntertainer(false), Info.Entrance))
                 {
                     Log.Warning("Unable to assign a ticket taker to carnival entrance.");
                 }
@@ -80,13 +81,17 @@ namespace Carnivale
             }
         }
 
-
         public override void Cleanup()
         {
             base.Cleanup();
 
             Info.entertainingNow = false;
             Info.alreadyEntertainedToday = true;
+
+            foreach (var lord in Map.lordManager.lords)
+            {
+                lord.ReceiveMemo("StopEntertaining");
+            }
         }
 
 
@@ -94,12 +99,13 @@ namespace Carnivale
         {
             foreach (var game in Info.GetBuildingsOf(CarnBuildingType.Attraction | CarnBuildingType.Stall).Select(g => g as Building_Carn))
             {
-                var announcer = Info.GetBestAnnouncer();
+                var announcer = Info.GetBestEntertainer();
                 if (announcer != null)
                 {
                     Info.AssignAnnouncerToBuilding(announcer, game, true);
                 }
             }
         }
+
     }
 }
