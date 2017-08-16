@@ -1,6 +1,7 @@
 ﻿using Verse.AI.Group;
 using RimWorld;
 using Verse;
+using Verse.AI;
 
 namespace Carnivale
 {
@@ -153,13 +154,14 @@ namespace Carnivale
             trans_ExitError.AddPostAction(new TransitionAction_WakeAll());
             mainGraph.AddTransition(trans_ExitError);
 
-            // panic exit map (nvm, handled in def)
-            //var trans_ExitPanic = new Transition(toil_Defend, toil_Exit);
-            //trans_ExitPanic.AddSources(toil_Strike, toil_Entertain, toil_Rest);
-            //trans_ExitPanic.AddTrigger(new Trigger_FractionPawnsLost(0.5f));
-            //trans_ExitPanic.AddPreAction(new TransitionAction_Custom(() => Info.leavingUrgency = LocomotionUrgency.Sprint));
-            //trans_ExitPanic.AddPostAction(new TransitionAction_Message("CarnFleeing".Translate(lord.faction)));
-            //mainGraph.AddTransition(trans_ExitPanic);
+            // panic exit map (handled in def?)
+            var trans_ExitPanic = new Transition(toil_Defend, toil_Exit);
+            trans_ExitPanic.AddSources(toil_Strike, toil_Entertain, toil_Rest);
+            trans_ExitPanic.AddTrigger(new Trigger_FractionPawnsLost(0.4f));
+            trans_ExitPanic.AddTrigger(new Trigger_Memo("LeaderKilled"));
+            trans_ExitPanic.AddPreAction(new TransitionAction_Custom(() => Info.leavingUrgency = LocomotionUrgency.Sprint));
+            trans_ExitPanic.AddPostAction(new TransitionAction_Message("MessageFightersFleeing".Translate(lord.faction.def.pawnsPlural.CapitalizeFirst(), lord.faction)));
+            mainGraph.AddTransition(trans_ExitPanic);
 
             return mainGraph;
         }

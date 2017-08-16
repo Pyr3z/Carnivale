@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using Verse;
+using Verse.AI;
 using Verse.AI.Group;
 
 namespace Carnivale
@@ -89,12 +90,7 @@ namespace Carnivale
 
         public override float VoluntaryJoinPriorityFor(Pawn p)
         {
-            if (p == entertainer)
-            {
-                return 100f;
-            }
-
-            if (info.allowedColonists.Contains(p))
+            if (info.allowedColonists.Contains(p) && p.CanReach(spot, PathEndMode.OnCell, Danger.Deadly))
             {
                 return VoluntarilyJoinableLordJobJoinPriorities.PartyGuest;
             }

@@ -399,7 +399,7 @@ namespace Carnivale
 
 
 
-        private static bool CanPlaceBlueprintAt(IntVec3 spot, ThingDef def, Rot4 rot = default(Rot4))
+        public static bool CanPlaceBlueprintAt(IntVec3 spot, ThingDef def, Rot4 rot = default(Rot4))
         {
             if (!spot.IsValid) return false;
 
@@ -416,13 +416,13 @@ namespace Carnivale
         }
 
 
-        private static Blueprint PlaceBlueprint(ThingDef def, IntVec3 spot, Rot4 rotation = default(Rot4), ThingDef stuff = null)
+        public static Blueprint PlaceBlueprint(ThingDef def, IntVec3 spot, Rot4 rotation = default(Rot4), ThingDef stuff = null)
         {
             return GenConstruct.PlaceBlueprintForBuild(def, spot, info.map, rotation, info.currentLord.faction, stuff);
         }
 
 
-        private static IntVec3 FindRandomPlacementFor(ThingDef def, Rot4 rot = default(Rot4), bool preferFarFromColony = false, int contractedBy = 0)
+        public static IntVec3 FindRandomPlacementFor(ThingDef def, Rot4 rot = default(Rot4), bool preferFarFromColony = false, int contractedBy = 0)
         {
             CellRect noGo = CellRect.CenteredOn(info.bannerCell, info.carnivalArea.Width / 2);
 
@@ -446,7 +446,7 @@ namespace Carnivale
             return IntVec3.Invalid;
         }
 
-        private static IntVec3 FindRandomPlacementFor(ThingDef def, Rot4 rot, CellRect searchArea)
+        public static IntVec3 FindRandomPlacementFor(ThingDef def, Rot4 rot, CellRect searchArea)
         {
             for (int i = 0; i < 200; i++)
             {
@@ -464,7 +464,7 @@ namespace Carnivale
             return IntVec3.Invalid;
         }
 
-        private static IntVec3 FindRadialCardinalPlacementFor(ThingDef def, Rot4 rot, IntVec3 centre, int radius)
+        public static IntVec3 FindRadialCardinalPlacementFor(ThingDef def, Rot4 rot, IntVec3 centre, int radius)
         {
             byte rotb = (byte)Rand.Range(0, 4);
             
@@ -491,7 +491,7 @@ namespace Carnivale
             return IntVec3.Invalid;
         }
 
-        private static IntVec3 FindRadialPlacementFor(ThingDef def, Rot4 rot, IntVec3 centre, int radius)
+        public static IntVec3 FindRadialPlacementFor(ThingDef def, Rot4 rot, IntVec3 centre, int radius)
         {
             foreach (var cell in GenRadial.RadialCellsAround(centre, radius, true))
             {

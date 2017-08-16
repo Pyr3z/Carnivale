@@ -11,17 +11,13 @@ namespace Carnivale
 
         public override bool PawnCanOpen(Pawn p)
         {
-            if (p.Faction == this.Faction) return true;
-
-            if (parent.OccupiedRect().Contains(p.Position)) return true;
-
-            if (!availableToNonCarnies) return false;
-
-            if (p.Faction.HostileTo(this.Faction)) return false;
-
-            return CarnUtils.Info.entertainingNow;
-
             // WHY THIS FUCKING NOT WORK
+            return p.Faction == this.Faction
+                || parent.OccupiedRect().Contains(p.Position)
+                || (!p.Faction.HostileTo(this.Faction)
+                    && availableToNonCarnies
+                    /*&& CarnUtils.Info.entertainingNow*/);
+
             //return CarnUtils.Info.showingNow && CarnUtils.Info.allowedColonists.Contains(p);
         }
 
@@ -30,7 +26,7 @@ namespace Carnivale
         {
             base.ExposeData();
 
-            Scribe_Values.Look(ref this.availableToNonCarnies, "availableToNonCarnies", false);
+            Scribe_Values.Look(ref this.availableToNonCarnies, "availableToNonCarnies");
 
             Scribe_References.Look(ref this.parent, "parentTent");
         }

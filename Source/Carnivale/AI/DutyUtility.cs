@@ -56,7 +56,7 @@ namespace Carnivale
                     pawn.mindState.duty = new PawnDuty(_DefOf.Duty_DefendMelee, defendPoint)
                     {
                         focusSecond = defendPoint,
-                        radius = defendRadius / 3,
+                        radius = defendRadius,
                         locomotion = LocomotionUrgency.Sprint
                     };
                     pawn.mindState.enemyTarget = target;

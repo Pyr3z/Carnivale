@@ -299,6 +299,8 @@
           <targetKeepRadius>67</targetKeepRadius>
         </li>
 		
+		<li Class="JobGiver_Work"/>
+		
       </subNodes>
     </thinkNode>
   </DutyDef>

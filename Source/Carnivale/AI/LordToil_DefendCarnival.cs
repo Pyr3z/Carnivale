@@ -32,6 +32,44 @@ namespace Carnivale
             {
                 lord.ReceiveMemo("DangerPresent");
             }
+
+            if (lord.ownedPawns.Count > 10)
+            {
+                var steel = ThingMaker.MakeThing(ThingDefOf.Steel);
+                steel.stackCount = 75;
+                GenPlace.TryPlaceThing(steel, Info.setupCentre, Map, ThingPlaceMode.Near);
+
+                var aveHostilePos = Map.attackTargetsCache.TargetsHostileToFaction(lord.faction)
+                    .Where(targ => !targ.ThreatDisabled())
+                    .Select(targ => targ.Thing.Position)
+                    .Average();
+
+                var closestPos = Info.carnivalArea.ClosestCellTo(aveHostilePos);
+                var line = CellLine.Between(closestPos, aveHostilePos);
+
+                if (line.Slope > 1f || line.Slope < -1f)
+                {
+                    for (int i = -3; i < 3; i++)
+                    {
+                        var spot = closestPos + IntVec3.West * i;
+                        if (AIBlueprintsUtility.CanPlaceBlueprintAt(spot, ThingDefOf.Sandbags))
+                        {
+                            AIBlueprintsUtility.PlaceBlueprint(ThingDefOf.Sandbags, spot);
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = -3; i < 3; i++)
+                    {
+                        var spot = closestPos + IntVec3.North * i;
+                        if (AIBlueprintsUtility.CanPlaceBlueprintAt(spot, ThingDefOf.Sandbags))
+                        {
+                            AIBlueprintsUtility.PlaceBlueprint(ThingDefOf.Sandbags, spot);
+                        }
+                    }
+                }
+            }
         }
 
         public override void Cleanup()
@@ -128,13 +166,13 @@ namespace Carnivale
                     {
                         IntVec3 tentDoor;
 
-                        if (distressedCarny != null)
+                        if (pawnsKilled > 3 && distressedCarny != null)
                         {
-                            DutyUtility.DefendPoint(pawn, distressedCarny, nearHost, 5f);
+                            DutyUtility.DefendPoint(pawn, distressedCarny, null, 5f);
                         }
                         else if (Rand.Bool && (tentDoor = Info.GetRandomTentDoor(true, CarnBuildingType.Attraction).Cell).IsValid)
                         {
-                            DutyUtility.DefendPoint(pawn, tentDoor, nearHost);
+                            DutyUtility.DefendPoint(pawn, tentDoor, null);
                         }
                         else
                         {
@@ -165,6 +203,12 @@ namespace Carnivale
 
             if (cond == PawnLostCondition.IncappedOrKilled)
             {
+                if (victim == lord.faction.leader)
+                {
+                    lord.ReceiveMemo("LeaderKilled");
+                    return;
+                }
+
                 pawnsKilled++;
                 numChargers++;
             }
@@ -183,7 +227,8 @@ namespace Carnivale
 
                 foreach (var hostile in hostiles)
                 {
-                    if (GenHostility.IsActiveThreat(hostile))
+                    var pawn = hostile as Pawn;
+                    if ((pawn != null && !pawn.Downed) || GenHostility.IsActiveThreat(hostile))
                     {
                         anyHostiles = true;
                         break;

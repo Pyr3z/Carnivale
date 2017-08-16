@@ -12,7 +12,7 @@ namespace Carnivale
 {
     public sealed class CarnivalInfo : MapComponent, ILoadReferenceable
     {
-        private static IntRange addToRadius = new IntRange(3, 10);
+        private static IntRange addToRadius = new IntRange(3, 9);
 
         private const int TrashRadius = 4;
 
@@ -20,13 +20,13 @@ namespace Carnivale
 
         public const float MaxEntertainHour = 22f;
 
-        private const float MinShowHour = 12f;
+        private const float MinShowHour = 11.5f;
 
-        private const float MaxShowHour = 19f;
+        private const float MaxShowHour = 20.5f;
 
         public const float MinRadius = 15f;
 
-        public const float MaxRadius = 29f;
+        public const float MaxRadius = 26f;
 
 
         // Fields
@@ -454,18 +454,7 @@ namespace Carnivale
         {
             if (Active)
             {
-                if (Find.TickManager.TicksGame % 1013 == 0)
-                {
-                    if (currentLord.CurLordToil is LordToil_EntertainColony
-                        && Rand.Chance(0.167f)
-                        && !alreadyHadShowToday && !showingNow
-                        && GenLocalDate.HourFloat(map) > MinShowHour
-                        && GenLocalDate.HourFloat(map) < MaxShowHour)
-                    {
-                        TryStartShow();
-                    }
-                }
-                else if (Find.TickManager.TicksGame % 1009 == 0)
+                if (Find.TickManager.TicksGame % 1009 == 0)
                 {
                     // Check if there are any things needing to be hauled to carriers or trash
                     CheckForHaulables(false);
@@ -476,6 +465,17 @@ namespace Carnivale
                     {
                         daysPassed = day;
                         alreadyEntertainedToday = false;
+                    }
+                }
+                else if (Find.TickManager.TicksGame % 799 == 0)
+                {
+                    if (currentLord.CurLordToil is LordToil_EntertainColony
+                        && Rand.Chance(0.21f)
+                        && !alreadyHadShowToday && !showingNow
+                        && GenLocalDate.HourFloat(map) > MinShowHour
+                        && GenLocalDate.HourFloat(map) < MaxShowHour)
+                    {
+                        TryStartShow();
                     }
                 }
                 else if (Find.TickManager.TicksGame % 757 == 0)

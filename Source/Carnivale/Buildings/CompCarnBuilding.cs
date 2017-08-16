@@ -67,7 +67,7 @@ namespace Carnivale
                         {
                             var job = new Job(Props.useJob, silverStack)
                             {
-                                expiryInterval = GenDate.TicksPerHour
+                                expiryInterval = GenDate.TicksPerHour * 10
                             };
                             pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                         }
