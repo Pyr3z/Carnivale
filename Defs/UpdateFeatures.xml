@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UpdateFeatureDefs>
+  
+  <HugsLib.UpdateFeatureDef>
+    <defName>UpdateFeatures_Carnivale</defName>
+	<modNameReadable>Carnivale</modNameReadable>
+	<modIdentifier>Carnivale</modIdentifier>
+	<assemblyVersion>0.0.9</assemblyVersion>
+	<content>New in this version: a 'nuke' mod setting. You MUST activate this to uninstall this mod. I'm sorry, that's just the way it is. After activating, a new save file will be created with the appendix '_Nuked'. Load this and you're golden.</content>
+  </HugsLib.UpdateFeatureDef>
+  
+</UpdateFeatureDefs>

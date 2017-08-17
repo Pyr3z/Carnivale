@@ -12,7 +12,7 @@ namespace Carnivale
 {
     public sealed class CarnivalInfo : MapComponent, ILoadReferenceable
     {
-        private static IntRange addToRadius = new IntRange(3, 9);
+        private static IntRange AddToRadius = new IntRange(3, 9);
 
         private const int TrashRadius = 4;
 
@@ -400,7 +400,7 @@ namespace Carnivale
             currentLord = lord;
 
             // Set radius for carnies to stick to
-            baseRadius = lord.ownedPawns.Count + addToRadius.RandomInRange;
+            baseRadius = lord.ownedPawns.Count + AddToRadius.RandomInRange;
             baseRadius = Mathf.Clamp(baseRadius, MinRadius, MaxRadius);
 
             // Calculate setup centre

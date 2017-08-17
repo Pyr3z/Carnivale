@@ -4,5 +4,9 @@
 	<author>Xnope</author>
 	<targetVersion>0.17.1546</targetVersion>
   <url>https://github.com/Xnope/rimworld-carnivale</url>
-	<description>Introduces a new unique faction type: roaming carnivals! They will contact you over radio asking to enter your map and try to set up an array of games and shows to perk up the spirits of your colonists -- for a price, of course. If they prove to be a nuisance, you can tell them to be on their way... but carnies often don't take kindly to that kind of hospitality, and at the very least are unlikely to return.</description>
+	<description>Introduces a new unique faction type: roaming carnivals! They will contact you over radio asking to enter your map and try to set up an array of games and shows to perk up the spirits of your colonists -- for a price, of course. If they prove to be a nuisance, you can tell them to be on their way... but carnies often don't take kindly to that kind of hospitality, and at the very least are unlikely to return.
+	
+	This mod requires HugsLib and XnopeCore, the latter of which comes included in this version.
+	
+	You MUST use the nuke function in the mod settings before uninstalling. Do not forget me!</description>
 </ModMetaData>

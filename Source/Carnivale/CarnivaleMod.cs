@@ -1,6 +1,8 @@
 ﻿using HugsLib;
+using HugsLib.Settings;
 using RimWorld;
 using RimWorld.Planet;
+using System.Collections.Generic;
 using System.Linq;
 using Verse;
 
@@ -13,6 +15,8 @@ namespace Carnivale
 
         protected override bool HarmonyAutoPatch { get { return true; } }
 
+        private SettingHandle<bool> nuke;
+
 
         static CarnivaleMod()
         {
@@ -23,6 +27,16 @@ namespace Carnivale
         public override void DefsLoaded()
         {
             base.DefsLoaded();
+
+            nuke = Settings.GetHandle<bool>("doNuke", "DoNuke".Translate(), "DoNukeDesc".Translate(), false);
+            nuke.Unsaved = true;
+            nuke.OnValueChanged = delegate (bool n)
+            {
+                if (n)
+                {
+                    NukeEverything(Current.Game);
+                }
+            };
 
             InjectFrameStuffHack();
 
@@ -64,10 +78,18 @@ namespace Carnivale
                             map.lordManager.RemoveLord(lord);
                         }
 
-                        foreach (var pawn in map.mapPawns.AllPawns.Where(p => fac == p.Faction || p.IsCarny(false)))
+                        foreach (var pawn in map.mapPawns.AllPawns)
                         {
-                            pawn.DeSpawn();
-                            game.World.worldPawns.PassToWorld(pawn, PawnDiscardDecideMode.Discard);
+                            if (fac == pawn.Faction || pawn.IsCarny(false))
+                            {
+                                pawn.DeSpawn();
+                                game.World.worldPawns.PassToWorld(pawn, PawnDiscardDecideMode.Discard);
+                            }
+                            else if (pawn.needs != null && pawn.needs.mood != null)
+                            {
+                                pawn.needs.mood.thoughts.memories.RemoveMemoriesOfDef(_DefOf.Thought_AttendedShow);
+                                pawn.needs.mood.thoughts.memories.RemoveMemoriesOfDef(_DefOf.Thought_MissCarnival);
+                            }
                         }
 
                         foreach (var thing in map.listerThings.AllThings.Where(t => fac == t.Faction))
@@ -81,7 +103,21 @@ namespace Carnivale
                 }
             }
 
-            foreach (var pawn in game.World.worldPawns.AllPawnsAliveOrDead.Where(p => p.IsCarny(false)))
+            List<Pawn> tmpPawnsToRemove = new List<Pawn>();
+            foreach (var pawn in game.World.worldPawns.AllPawnsAliveOrDead)
+            {
+                if (pawn.IsCarny(false))
+                {
+                    tmpPawnsToRemove.Add(pawn);
+                }
+                else if (pawn.needs != null && pawn.needs.mood != null)
+                {
+                    pawn.needs.mood.thoughts.memories.RemoveMemoriesOfDef(_DefOf.Thought_AttendedShow);
+                    pawn.needs.mood.thoughts.memories.RemoveMemoriesOfDef(_DefOf.Thought_MissCarnival);
+                }
+            }
+
+            foreach (var pawn in tmpPawnsToRemove)
             {
                 game.World.worldPawns.RemovePawn(pawn);
             }
@@ -92,6 +128,7 @@ namespace Carnivale
 
                 if (info != null)
                 {
+                    info.Cleanup();
                     map.components.Remove(info);
                 }
 

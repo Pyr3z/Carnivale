@@ -3,6 +3,8 @@
 
   <!-- General dialog options -->
   <HangUp>Hang up</HangUp>
+  <DoNuke>Nuke everything (required for uninstall)</DoNuke>
+  <DoNukeDesc>Destroys everything touched by this mod. YOU MUST DO THIS BEFORE REMOVING.</DoNukeDesc>
   
   <!-- Carnival Approaches -->
   <CarnivalApproachesTitle>{0} contacts you via short range radio.</CarnivalApproachesTitle>
@@ -19,7 +21,7 @@
   <LetterCarnivalArrival>The traveling carnival, {0}, is entering your territory and will begin to set up their attractions. They will remain for {1} days.</LetterCarnivalArrival>
   <CarnivalArrivalVendorsList>\n\nThere are several vendors with them:</CarnivalArrivalVendorsList>
   
-  <LetterLabelShowBegins>Carnival: New Show</LetterLabelShowBegins>
+  <LetterLabelShowBegins>Carnival Show Open</LetterLabelShowBegins>
   <LetterShowBegins>{0} is putting on a show at {1}!</LetterShowBegins>
   
   

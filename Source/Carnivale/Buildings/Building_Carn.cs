@@ -91,11 +91,21 @@ namespace Carnivale
             // Forbid things so colonists can access them after they are hauled to trash
             if (this.factionInt != Faction.OfPlayer)
             {
-                foreach (var cell in this.OccupiedRect().ExpandedBy(2))
+                var occ = this.OccupiedRect().ExpandedBy(2);
+                var tele = occ.ExpandedBy(1);
+
+                foreach (var cell in occ)
                 {
-                    foreach (var thing in cell.GetThingList(map).Where(t => t.def.EverHaulable))
+                    foreach (var thing in cell.GetThingList(map))
                     {
-                        thing.SetForbidden(true, false);
+                        if (thing.def.EverHaulable)
+                        {
+                            thing.SetForbidden(true, false);
+                        }
+                        if (thing is Pawn && (thing.Faction == null || thing.Faction != this.Faction))
+                        {
+                            thing.Position = tele.Cells.Where(c => !c.GetThingList(map).Any(t => t is Building)).RandomElement();
+                        }
                     }
                 }
             }
