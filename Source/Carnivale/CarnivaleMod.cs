@@ -135,6 +135,8 @@ namespace Carnivale
                 map.pawnDestinationManager = new PawnDestinationManager();
             }
 
+            game.storyteller.incidentQueue.Clear();
+
             string fileName;
             if (game.Info.permadeathMode)
             {
