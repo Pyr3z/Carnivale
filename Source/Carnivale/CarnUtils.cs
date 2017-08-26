@@ -179,9 +179,9 @@ namespace Carnivale
 
         public static IEnumerable<CarnivalRole> GetCarnivalRolesIndividually(this Pawn pawn)
         {
-            byte bitFlaggedRoles = (byte)pawn.GetCarnivalRole();
+            byte bits = (byte)pawn.GetCarnivalRole();
 
-            if (bitFlaggedRoles == 0)
+            if (bits == 0)
             {
                 yield return CarnivalRole.None;
                 yield break;
@@ -189,9 +189,10 @@ namespace Carnivale
 
             for (byte bitPos = 0; bitPos < 8; bitPos++)
             {
-                if ((bitFlaggedRoles & (1 << bitPos)) != 0)
+                var bit = (1 << bitPos);
+                if ((bits & bit) != 0)
                 {
-                    yield return (CarnivalRole)bitPos;
+                    yield return (CarnivalRole)bit;
                 }
             }
         }
